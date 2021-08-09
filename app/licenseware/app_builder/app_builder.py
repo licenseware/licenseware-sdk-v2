@@ -5,49 +5,31 @@
 
 class AppBuilder:
     
-    """
-    Description:
-    
-        AppBuilder creates the base Api and common functionality for an app 
+    def __init__(
+        self, 
+        id: str, 
+        name: str, 
+        description: str, 
+        flags: list = None, 
+        **kwargs
+    ):
         
-    Usage:
-    
-        from licenseware.app_builder import AppBuilder
-
-        ifmp_app = AppBuilder(
-            id = "ifmp",
-            name = "Infrastructure Mapper",
-            description = "Overview of devices and networks",
-            flags = ['Beta']
-            # + other params
-        )
-
-        ifmp_app.register_uploader(uploader_instance)
-        ifmp_app.register_endpoint(endpoint_instance)
-        ifmp_app.register_report(report_instance)
-
-        app = ifmp_app()
-
-        # where app is the Flask app instance
-
-
-    """
-    
-    
-    def __init__(self, id: str, name: str, description: str, flags: list = None, **kwargs):
-        self.id = id # validate id to be only lowercase with underscores
+        # input parameters
+        self.id = id 
         self.name = name
         self.description = description
         self.flags = flags
+        self.kwargs = kwargs
+        
+        # AppBuilder internal parameters
+        self.flask_app = None
+        self.restx_api = None
     
+
+    def __call__(self):
+        return self.flask_app
+        
     
-    def register_uploader(self, instance):
-        print(instance.__name__, "registered")
-    
-    
-    def register_uploaders(self, *instances):
-        for instance in instances:
-            self.register_uploader(instance)
     
     
     def register_endpoint(self, instance):
@@ -56,6 +38,15 @@ class AppBuilder:
     def register_endpoints(self, *instances):
         for instance in instances:
             self.register_endpoint(instance)
+    
+
+    def register_uploader(self, instance):
+        print(instance.__name__, "registered")
+    
+    
+    def register_uploaders(self, *instances):
+        for instance in instances:
+            self.register_uploader(instance)
     
     
     def register_report(self, instance):
