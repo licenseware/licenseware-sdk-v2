@@ -1,0 +1,16 @@
+2021-08-10 11:53:21.013[ ERROR ]
+app.licenseware.auth.auth:connect:58
+{'status': 'fail', 'message': 'Could not create account'}
+
+2021-08-10 11:54:47.765[ ERROR ]
+app.licenseware.auth.auth:connect:58
+{'status': 'fail', 'message': 'Could not create account'}
+
+2021-08-10 11:57:02.496[ ERROR ]
+app.licenseware.auth.auth:connect:61
+{'status': 'fail', 'message': 'Could not create account'}
+
+2021-08-10 11:57:43.112[ ERROR ]
+app.licenseware.auth.auth:connect:61
+{'status': 'fail', 'message': 'Could not create account'}
+
