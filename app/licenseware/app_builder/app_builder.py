@@ -40,11 +40,12 @@ class AppBuilder:
         self.description = description
         self.version = str(version)
         self.flags = flags
+        
         self.authorizations = doc_authorizations
         self.decorators = api_decorators
         self.kwargs = kwargs
         
-        self.prefix = '/' + id
+        self.prefix = '/' + self.id
         self.app = None
         self.api = None
         self.namespaces = []
@@ -52,21 +53,13 @@ class AppBuilder:
     
     def __call__(self): return self
     
-    def init_app(self, app:Flask):
-
+    
+    def init_api(self, app: Flask):
+        
         self.app = app
         
-        # self.add_app_route("/", self.index)
-        # self.add_app_route("/<param>", self.show_param)
-        
-        self.init_api()
-        
-        
-        
-    def init_api(self, app: Flask = None):
-        
         api = Api(
-            app=self.app or app,
+            app=self.app,
             title=self.name,
             version=self.version,
             description=self.description,
@@ -79,87 +72,102 @@ class AppBuilder:
             doc='/'
         )
         
-        for ns in self.namespaces:
-            api.add_namespace(ns)
+        return api
+        
+        # self.add_api_namespace()
+        
+        # for ns in self.namespaces:
+        #     api.add_namespace(ns)
         
         
-    def add_api_namespace(self, ns:Namespace = None,  name:str = None, description:str = None):   
+    # def add_api_namespace(self, ns:Namespace = None,  name:str = None, description:str = None):   
              
-        ns = Namespace(
-            name = name or self.name, 
-            description = description or self.description
-        )
+    #     ns = Namespace(
+    #         name = name or self.id, 
+    #         description = description or self.description
+    #     )
         
-        self.namespaces.append(ns)
-            
-         
-    def add_ns_route(self):
-        
-        @self.ns.route('/hello')
-        class HelloWorld(Resource):
-            def get(self):
-                return {'hello': 'world'}
+    #     @ns.route('/hello')
+    #     class HelloWorld(Resource):
+    #         def get(self):
+    #             return {'hello': 'world'}
 
+        
+    #     self.namespaces.append(ns)
+            
+        
             
             
-    def add_route(self, handler:Any, route:str = None, methods:list = ['GET'], **options):
+    # def add_route(self, handler:Any, route:str = None, methods:list = ['GET'], **options):
         
-        methods += self.http_methods_from_handler(handler)
+    #     methods += self.http_methods_from_handler(handler)
         
-        if inspect.isclass(handler):
-            self.add_api_route(route, handler, methods, **options)
+    #     if inspect.isclass(handler):
+    #         self.add_api_route(route, handler, methods, **options)
     
-        if inspect.isfunction(handler):
-            self.add_app_route(route, handler, methods, **options)
+    #     if inspect.isfunction(handler):
+    #         self.add_app_route(route, handler, methods, **options)
     
-        raise ValueError("Parameter handler can be only a function or a class")
+    #     raise ValueError("Parameter handler can be only a function or a class")
         
         
-    def http_methods_from_handler(self, handler: Any):
+    # def http_methods_from_handler(self, handler: Any):
         
-        methods = []
+    #     methods = []
         
-        handler_name = handler.__name__.upper()
+    #     handler_name = handler.__name__.upper()
         
-        # GET is available by default
+    #     # GET is available by default
         
-        if handler_name.startswith("POST"):
-            methods.append("POST")
+    #     if handler_name.startswith("POST"):
+    #         methods.append("POST")
         
-        if handler_name.startswith("PUT"):
-            methods.append("PUT")
+    #     if handler_name.startswith("PUT"):
+    #         methods.append("PUT")
         
-        if handler_name.startswith("DELETE"):
-            methods.append("DELETE")
+    #     if handler_name.startswith("DELETE"):
+    #         methods.append("DELETE")
             
-        return methods
+    #     return methods
         
     
-    def add_app_route(self, route:str, func:Callable, methods:list = ['GET'], **options):
-        assert route.startswith("/")
-        self.app.add_url_rule(route, endpoint=func.__name__, view_func=func, methods=methods, **options)
+    # def add_app_route(self, route:str, func:Callable, methods:list = ['GET'], **options):
+    #     assert route.startswith("/")
+    #     self.app.add_url_rule(route, endpoint=func.__name__, view_func=func, methods=methods, **options)
     
     
-    def add_api_route(self, route:str, klass:Type, methods:list = ['GET'], **options):
-        assert route.startswith("/")
-        # #TODO integrate restx
-        # self.app.add_url_rule(route, endpoint=func.__name__, view_func=func, methods=methods, **options)
+    # def add_api_route(self, route:str, klass:Type, methods:list = ['GET'], **options):
+    #     assert route.startswith("/")
+    #     # #TODO integrate restx
+    #     # self.app.add_url_rule(route, endpoint=func.__name__, view_func=func, methods=methods, **options)
         
         
-    def index(self, *args, **kwargs):
-        print(args)
-        print(kwargs)
-        print(request)
-        return "ok"
+    # def index(self, *args, **kwargs):
+    #     print(args)
+    #     print(kwargs)
+    #     print(request)
+    #     return "ok"
     
     
-    def show_param(self, *args, **kwargs):
-        print(args)
-        print(kwargs)
-        print(request)
-        return "ok"
+    # def show_param(self, *args, **kwargs):
+    #     print(args)
+    #     print(kwargs)
+    #     print(request)
+    #     return "ok"
     
     
+    
+    # def init_app(self, app:Flask):
+
+        # self.app = app
+        
+        # self.add_app_route("/", self.index)
+        # self.add_app_route("/<param>", self.show_param)
+        
+        # self.init_api()
+    
+    
+        
     def register_endpoint(self, instance):
         print(instance.__name__, "registered")
             

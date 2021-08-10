@@ -1,12 +1,7 @@
 from flask import Flask
-# from flask import Blueprint
+from flask_restx import Namespace, Resource
 from app.licenseware.app_builder import AppBuilder
 from app.licenseware.common.constants import flags
-
-
-app = Flask(__name__)
-# bp = Blueprint('api', __name__)
-
 
 
 ifmp_app = AppBuilder(
@@ -17,12 +12,37 @@ ifmp_app = AppBuilder(
 )
 
 
-ifmp_app.init_app(app)
-# ifmp_app.init_app(bp)
+
+app = Flask(__name__)
+
+# Flask
+
+@app.route('/custom-app-route')
+def custom_app_route():
+    return "custom-app-route"
+
+
+# RestX
+
+ns = Namespace("custom")
+
+class CustomApiRoute(Resource):    
+    @ns.doc("custom")
+    def get(self):
+        return "custom-api-route"
+    
+ns.add_resource(CustomApiRoute, "/custom-api-route")
+
+
+# Build Api
+api = ifmp_app.init_api(app)
+
+# Add custom api endpoint
+api.add_namespace(ns, path='/ns-prefix')
 
 
 
-# app.register_blueprint(bp)
+
 
 
 if __name__ == "__main__":
