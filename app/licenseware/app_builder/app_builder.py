@@ -30,6 +30,12 @@ class AppBuilder:
         description: str,
         version:float = 1.0, 
         flags: list = None,
+        icon="default.png", 
+        app_activation_url='/app/init',
+        refresh_registration_url='/register_all',
+        editable_tables_url='/editable_tables',
+        history_report_url='/reports/history_report',
+        tenant_registration_url='/tenant_registration_url',
         doc_authorizations: dict = authorizations,
         api_decorators: list = None,
         **kwargs
@@ -39,8 +45,15 @@ class AppBuilder:
         self.name = name
         self.description = description
         self.version = str(version)
-        self.flags = flags
         
+        self.flags = flags
+        self.icon = icon
+        self.app_activation_url = app_activation_url
+        self.refresh_registration_url = refresh_registration_url
+        self.editable_tables_url = editable_tables_url
+        self.history_report_url = history_report_url
+        self.tenant_registration_url = tenant_registration_url
+    
         self.authorizations = doc_authorizations
         self.decorators = api_decorators
         self.kwargs = kwargs
@@ -73,6 +86,39 @@ class AppBuilder:
         )
         
         return api
+    
+    
+    
+    def register_endpoint(self, instance):
+        print(instance.__name__, "registered")
+            
+            
+    def register_endpoints(self, *instances):
+        for instance in instances:
+            self.register_endpoint(instance)
+    
+
+    def register_uploader(self, instance):
+        print(instance.__name__, "registered")
+    
+    
+    def register_uploaders(self, *instances):
+        for instance in instances:
+            self.register_uploader(instance)
+    
+    
+    def register_report(self, instance):
+        print(instance.__name__, "registered")
+            
+        
+    def register_reports(self, *instances):
+        for instance in instances:
+            self.register_report(instance)
+            
+    
+        
+    
+    
         
         # self.add_api_namespace()
         
@@ -168,29 +214,4 @@ class AppBuilder:
     
     
         
-    def register_endpoint(self, instance):
-        print(instance.__name__, "registered")
-            
-    def register_endpoints(self, *instances):
-        for instance in instances:
-            self.register_endpoint(instance)
-    
-
-    def register_uploader(self, instance):
-        print(instance.__name__, "registered")
-    
-    
-    def register_uploaders(self, *instances):
-        for instance in instances:
-            self.register_uploader(instance)
-    
-    
-    def register_report(self, instance):
-        print(instance.__name__, "registered")
-            
-        
-    def register_reports(self, *instances):
-        for instance in instances:
-            self.register_report(instance)
-            
     
