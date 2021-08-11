@@ -8,7 +8,7 @@ class EndpointBuilder:
     """
     Usage: 
     
-    from licenseware.endpoint_builder import EndpointBuilder
+    from app.licenseware.endpoint_builder import EndpointBuilder
     
     index_endpoint = EndpointBuilder(
         route = "/",

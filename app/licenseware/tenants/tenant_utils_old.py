@@ -1,9 +1,9 @@
 import datetime
 import licenseware.mongodata as m
-from licenseware.serializer.analysis_status import AnalysisStatusSchema
-from licenseware.utils.log_config import log
-from licenseware.utils.file_timeouts import FileTimeout
-from licenseware.utils.base_collection_names import (
+from app.licenseware.serializer.analysis_status import AnalysisStatusSchema
+from app.licenseware.utils.log_config import log
+from app.licenseware.utils.file_timeouts import FileTimeout
+from app.licenseware.utils.base_collection_names import (
     mongo_data_collection_name,
     mongo_utilization_collection_name,
     mongo_analysis_collection_name

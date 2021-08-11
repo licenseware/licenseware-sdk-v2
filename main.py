@@ -1,8 +1,14 @@
+from dotenv import load_dotenv
+load_dotenv()  
+    
+    
 from flask import Flask
 from flask import Blueprint
 from flask_restx import Namespace, Resource
 from app.licenseware.app_builder import AppBuilder
 from app.licenseware.common.constants import flags
+from app.licenseware.utils.logger import log
+
 
 
 ifmp_app = AppBuilder(
@@ -47,13 +53,14 @@ custom_ns.add_resource(CustomApiRoute, "/custom-api-route")
 
 
 # Build Api
-api = ifmp_app.init_api(app)
+ifmp_app.init_api(app)
 
 # Add custom api endpoint
-api.add_namespace(custom_ns, path='/ns-prefix')
+ifmp_app.add_namespace(custom_ns, path='/ns-prefix')
 
 
-
+# Register app to registry-service
+ifmp_app.register_app()
 
 
 

@@ -1,6 +1,6 @@
-run-app:	
+run-main:	
 	python3 main.py
 	
-run-services:
+run-mock:
 	python3 mock_server.py
 	

@@ -3,7 +3,7 @@
 Register an app to registry service
 
 
-from licenseware import AppDefinition
+from app.licenseware import AppDefinition
 
 app_definition = AppDefinition(
     id="new-service",
@@ -26,9 +26,9 @@ which represents that tenant has processed files and has saved data as a result
 
 import os
 import requests
-from licenseware.utils.urls import BASE_URL, REGISTRY_SERVICE_URL
-from licenseware.utils.log_config import log
-from licenseware.decorators.auth_decorators import authenticated_machine
+from app.licenseware.utils.urls import BASE_URL, REGISTRY_SERVICE_URL
+from app.licenseware.utils.log_config import log
+from app.licenseware.decorators.auth_decorators import authenticated_machine
 
 
 

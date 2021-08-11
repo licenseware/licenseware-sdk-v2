@@ -14,3 +14,19 @@ app.licenseware.auth.auth:connect:61
 app.licenseware.auth.auth:connect:61
 {'status': 'fail', 'message': 'Could not create account'}
 
+2021-08-11 11:37:08.492[ WARNING ]
+app.licenseware.registry_service.register_app:register_app:14
+App not registered, no auth token available
+
+2021-08-11 11:37:08.872[ WARNING ]
+app.licenseware.registry_service.register_app:register_app:14
+App not registered, no auth token available
+
+2021-08-11 13:15:50.686[ ERROR ]
+app.licenseware.registry_service.register_app:register_app:51
+Could not register app Infrastructure Mapper
+
+2021-08-11 13:15:51.089[ ERROR ]
+app.licenseware.registry_service.register_app:register_app:51
+Could not register app Infrastructure Mapper
+

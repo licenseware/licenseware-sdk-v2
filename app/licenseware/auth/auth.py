@@ -10,7 +10,7 @@ class Authenticator:
     
     Licenseware authentification
 
-    from licenseware.auth import Authenticator
+    from app.licenseware.auth import Authenticator
 
     response = Authenticator.connect() 
     
@@ -57,7 +57,7 @@ class Authenticator:
             os.environ['APP_AUTHENTICATED'] = 'false'
             log.error(response)
             
-        return response
+        return response, status_code
 
     def _login(self):
         

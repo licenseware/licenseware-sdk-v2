@@ -1,8 +1,18 @@
-import inspect
-from typing import Any, Callable, Type
-from flask import Flask, request
-from flask_restx import Namespace, Api, Resource
+# import inspect
+# from typing import Any, Callable, Type
+# from flask import request
+# from flask_restx import Namespace, , Resource
 
+from typing import Callable
+from flask import Flask
+from flask_restx import Api
+from flask_restx.namespace import Namespace
+from app.licenseware.registry_service import register_app
+from app.licenseware.utils.logger import log
+from app.licenseware.tenants import get_activated_tenants, get_tenants_with_data
+
+
+        
 
 authorizations = {
     'TenantId': {
@@ -18,9 +28,6 @@ authorizations = {
 }
 
 
-#TODO add default decorators list 
-
-
 class AppBuilder:
     
     def __init__(
@@ -30,12 +37,14 @@ class AppBuilder:
         description: str,
         version:float = 1.0, 
         flags: list = None,
-        icon="default.png", 
-        app_activation_url='/app/init',
-        refresh_registration_url='/register_all',
-        editable_tables_url='/editable_tables',
-        history_report_url='/reports/history_report',
-        tenant_registration_url='/tenant_registration_url',
+        activated_tenants_func: Callable = get_activated_tenants, 
+        tenants_with_data_func: Callable = get_tenants_with_data,
+        app_activation_url: str ='/app/init',
+        refresh_registration_url: str ='/register_all',
+        editable_tables_url: str ='/editable_tables',
+        history_report_url: str ='/reports/history_report',
+        tenant_registration_url: str ='/tenant_registration_url',
+        icon: str ="default.png",
         doc_authorizations: dict = authorizations,
         api_decorators: list = None,
         **kwargs
@@ -45,26 +54,40 @@ class AppBuilder:
         self.name = name
         self.description = description
         self.version = str(version)
-        
         self.flags = flags
         self.icon = icon
+        
+        # Add to self activated tenants and tenants with data
+        self.activated_tenants_func = activated_tenants_func
+        self.tenants_with_data_func = tenants_with_data_func
+        
+        self.activated_tenants = None 
+        self.tenants_with_data = None
+        
+        if self.activated_tenants_func:
+            self.activated_tenants = self.activated_tenants_func()
+        
+        if self.tenants_with_data_func:
+            self.tenants_with_data = self.tenants_with_data_func()
+            
+        # Routes TODO maybe path or route instead of url is more appropiate?     
         self.app_activation_url = app_activation_url
         self.refresh_registration_url = refresh_registration_url
         self.editable_tables_url = editable_tables_url
         self.history_report_url = history_report_url
         self.tenant_registration_url = tenant_registration_url
-    
+
         self.authorizations = doc_authorizations
         self.decorators = api_decorators
-        self.kwargs = kwargs
+        # parameters with default values provided can be added stright to __init__  
+        # otherwise added them to kwargs until apps are actualized
+        self.kwargs = kwargs    
         
-        self.prefix = '/' + self.id
+        self.prefix = '/' + self.id + '/v' + self.version
         self.app = None
         self.api = None
-        self.namespaces = []
-    
-    
-    def __call__(self): return self
+        
+        self.app_vars = vars(self)
     
     
     def init_api(self, app: Flask):
@@ -85,32 +108,42 @@ class AppBuilder:
             doc='/'
         )
         
-        return api
+        self.api = api
+        
+    
+    def add_namespace(self, ns:Namespace, path:str = None):
+        assert path.startswith('/')
+        self.api.add_namespace(ns, path=path)
+    
+    
+    def register_app(self):
+        register_app(**self.app_vars)
+    
+
+    def register_all(self):
+        register_app(**self.app_vars)
+        #TODO register all uploaders, reports, etc
+    
     
     
     
     def register_endpoint(self, instance):
         print(instance.__name__, "registered")
             
-            
     def register_endpoints(self, *instances):
         for instance in instances:
             self.register_endpoint(instance)
     
-
     def register_uploader(self, instance):
         print(instance.__name__, "registered")
-    
     
     def register_uploaders(self, *instances):
         for instance in instances:
             self.register_uploader(instance)
     
-    
     def register_report(self, instance):
         print(instance.__name__, "registered")
             
-        
     def register_reports(self, *instances):
         for instance in instances:
             self.register_report(instance)

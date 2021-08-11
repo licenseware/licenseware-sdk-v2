@@ -1,5 +1,5 @@
 """
-from licenseware import AppCreator
+from app.licenseware import AppCreator
 from ..uploaders import valid_sccm_file
 
 
@@ -83,21 +83,21 @@ api.add_namespace(etc)
 from typing import List
 from flask import request
 from flask_restx import Namespace, Resource
-from licenseware.namespace_generator.schema_namespace import auth_header_doc
-from licenseware.editable_table import editable_tables_from_schemas
-from licenseware.report_creator import ReportCreator
-from licenseware.registry import (
+from app.licenseware.namespace_generator.schema_namespace import auth_header_doc
+from app.licenseware.editable_table import editable_tables_from_schemas
+from app.licenseware.report_creator import ReportCreator
+from app.licenseware.registry import (
     AppDefinition, 
     Uploader
 )
 
 
-from licenseware.decorators.failsafe_decorator import failsafe
-from licenseware.decorators.auth_decorators import authorization_check, machine_check
+from app.licenseware.decorators.failsafe_decorator import failsafe
+from app.licenseware.decorators.auth_decorators import authorization_check, machine_check
 
 from .tenant_utils import TenantUtils
-from licenseware.utils.urls import URL_PREFIX
-from licenseware.auth import Authenticator
+from app.licenseware.utils.urls import URL_PREFIX
+from app.licenseware.auth import Authenticator
 
 
 
