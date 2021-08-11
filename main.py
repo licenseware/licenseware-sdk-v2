@@ -5,9 +5,12 @@ load_dotenv()
 from flask import Flask
 from flask import Blueprint
 from flask_restx import Namespace, Resource
+
 from app.licenseware.app_builder import AppBuilder
-from app.licenseware.common.constants import flags
+from app.licenseware.uploader_builder import UploaderBuilder
+
 from app.licenseware.utils.logger import log
+from app.licenseware.common.constants import flags
 
 
 
@@ -61,6 +64,28 @@ ifmp_app.add_namespace(custom_ns, path='/ns-prefix')
 
 # Register app to registry-service
 ifmp_app.register_app()
+
+
+
+# UPLOADERS
+
+def validate_rv_tools_file(file):
+    return True
+
+
+rv_tools_uploader = UploaderBuilder(
+    name="RVTools", 
+    description="XLSX export from RVTools after scanning your Vmware infrastructure.", 
+    accepted_file_types=['.xls', '.xlsx'],
+    validator=validate_rv_tools_file
+)
+
+
+
+ifmp_app.register_uploader(rv_tools_uploader)
+
+
+
 
 
 

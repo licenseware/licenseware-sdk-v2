@@ -1,1 +1,2 @@
-from .validate_register_app_payload import validate_register_app_payload
+from .validate_route import validate_route
+from .validate_icon import validate_icon

@@ -60,6 +60,7 @@ class envs:
     
     REGISTRY_SERVICE_URL:str = os.getenv('REGISTRY_SERVICE_URL')
     REGISTER_APP_URL:str = os.getenv('REGISTRY_SERVICE_URL') + '/apps'
+    REGISTER_UPLOADER_URL:str = os.getenv("REGISTRY_SERVICE_URL") + '/uploaders'
     
     BASE_URL:str = os.getenv('API_HOST')
     PORT:str = os.getenv('API_PORT')

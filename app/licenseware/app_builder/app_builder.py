@@ -110,6 +110,7 @@ class AppBuilder:
         
         self.api = api
         
+        
     def register_app(self):
         response, status_code = register_app(**self.app_vars)
         if status_code not in {200, 201}:
@@ -121,6 +122,14 @@ class AppBuilder:
         self.api.add_namespace(ns, path=path)
     
     
+    def register_uploader(self, instance):
+        #TODO
+        # send register info to registry-service
+        # attach endpoints to this app
+        log.debug(instance.__name__, "registered")
+    
+
+
 
     #TODO's
     def register_all(self):
@@ -129,21 +138,19 @@ class AppBuilder:
     
     
     def register_endpoint(self, instance):
-        print(instance.__name__, "registered")
+        log.debug(instance.__name__, "registered")
             
     def register_endpoints(self, *instances):
         for instance in instances:
             self.register_endpoint(instance)
     
-    def register_uploader(self, instance):
-        print(instance.__name__, "registered")
     
     def register_uploaders(self, *instances):
         for instance in instances:
             self.register_uploader(instance)
     
     def register_report(self, instance):
-        print(instance.__name__, "registered")
+        log.debug(instance.__name__, "registered")
             
     def register_reports(self, *instances):
         for instance in instances:
@@ -223,16 +230,16 @@ class AppBuilder:
         
         
     # def index(self, *args, **kwargs):
-    #     print(args)
-    #     print(kwargs)
-    #     print(request)
+    #     log.debug(args)
+    #     log.debug(kwargs)
+    #     log.debug(request)
     #     return "ok"
     
     
     # def show_param(self, *args, **kwargs):
-    #     print(args)
-    #     print(kwargs)
-    #     print(request)
+    #     log.debug(args)
+    #     log.debug(kwargs)
+    #     log.debug(request)
     #     return "ok"
     
     

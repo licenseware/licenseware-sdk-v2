@@ -2,7 +2,7 @@ import requests
 from app.licenseware.utils.logger import log
 from app.licenseware.common.constants import envs
 from app.licenseware.decorators.auth_decorators import authenticated_machine
-from app.licenseware.common.validators import validate_register_app_payload
+from app.licenseware.common.validators.registry_payload_validators import validate_register_app_payload
 
 
 
@@ -39,17 +39,16 @@ def register_app(**kwargs):
         }]
     }
     
+    log.info(payload)    
     validate_register_app_payload(payload)
 
-    log.info(payload)
-    
     headers = {"Authorization": envs.get_auth_token()}
     registration = requests.post(url=envs.REGISTER_APP_URL, json=payload, headers=headers)
     
     if registration.status_code != 200:
-        nok_msg = f"Could not register app {kwargs['name']}"
-        log.error(nok_msg)
-        return { "status": "fail", "message": nok_msg }, 500
+        nokmsg = f"Could not register app {kwargs['name']}"
+        log.error(nokmsg)
+        return { "status": "fail", "message": nokmsg }, 500
     
     return {
         "status": "success",

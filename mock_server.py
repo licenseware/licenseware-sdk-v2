@@ -51,8 +51,13 @@ def create_machines():
 
 
 @app.route('/registry-service/apps', methods=['POST'])
-def registry_service():
+def register_app():
     return {'status': 'success'}, 200
+
+@app.route('/registry-service/uploaders', methods=['POST'])
+def register_uploader():
+    return {'status': 'success'}, 200
+
 
 
 
