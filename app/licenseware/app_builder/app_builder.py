@@ -110,21 +110,22 @@ class AppBuilder:
         
         self.api = api
         
+    def register_app(self):
+        response, status_code = register_app(**self.app_vars)
+        if status_code not in {200, 201}:
+            raise Exception("App failed to register!")
+        
     
     def add_namespace(self, ns:Namespace, path:str = None):
         assert path.startswith('/')
         self.api.add_namespace(ns, path=path)
     
     
-    def register_app(self):
-        register_app(**self.app_vars)
-    
 
+    #TODO's
     def register_all(self):
         register_app(**self.app_vars)
         #TODO register all uploaders, reports, etc
-    
-    
     
     
     def register_endpoint(self, instance):
