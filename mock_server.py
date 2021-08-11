@@ -50,7 +50,7 @@ def create_machines():
 
 
 
-@app.route('/registry-service', methods=['POST'])
+@app.route('/registry-service/apps', methods=['POST'])
 def registry_service():
     return {'status': 'success'}, 200
 
