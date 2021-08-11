@@ -47,7 +47,7 @@ class TestAuth(unittest.TestCase):
                 
         self.assertEqual(envs.get_auth_token(), "long_auth_token")
         self.assertEqual(envs.get_tenant_id(), "uuid4_tenant_id")
-        self.assertEqual(envs.is_app_authenticated(), True)
+        self.assertEqual(envs.app_is_authenticated(), True)
         self.assertIsNotNone(envs.get_auth_token_datetime())
         
         

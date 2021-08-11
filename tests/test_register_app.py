@@ -14,4 +14,4 @@ class TestRegisterApp(unittest.TestCase):
     def test_register_app(self):
         response, status_code = register_app(**payload)
         self.assertEqual(status_code, 200)
-        self.assertEquals(response['status'], "success")
+        self.assertEqual(response['status'], "success")

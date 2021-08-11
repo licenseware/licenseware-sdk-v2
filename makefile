@@ -4,3 +4,5 @@ run-main:
 run-mock:
 	python3 mock_server.py
 	
+run-tests:
+	python3 -m unittest tests/*
