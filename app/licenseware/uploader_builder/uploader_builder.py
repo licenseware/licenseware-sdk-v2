@@ -55,6 +55,17 @@ class UploaderBuilder:
         
     def register_uploader(self):
         return register_uploader(**self.uploader_vars)
+    
+    
+    def check_tenant_quota(self, tenant_id:str, uploader_id:str):
+        #TODO
+        return {'status': 'success'}, 200
+        
+    
+    def validate_filenames(self, request_obj):
+        #TODO
+        return {'status': 'success'}, 200
+        
 
         
         

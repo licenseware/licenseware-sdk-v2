@@ -74,3 +74,14 @@ def get_tenants_with_data(tenant_id=None, data_collection_name:str = None):
 
     log.info(f"enabled_tenants: {enabled_tenants}")
     return enabled_tenants
+
+
+
+def clear_tenant_data(tenant_id, data_collection_name:str = None):
+
+    res = m.delete(
+        match={'tenant_id': tenant_id},
+        collection=data_collection_name or envs.MONGO_DATA_NAME 
+    )
+
+    log.info(f"tenant data deleted: {res}")

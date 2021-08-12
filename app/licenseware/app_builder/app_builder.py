@@ -11,7 +11,11 @@ from .register_all_route import add_register_all_route
 from .editable_tables_route import add_editable_tables_route
 from .app_route import add_app_route
 from .app_activation_route import add_app_activation_route
-
+from .uploads_filenames_validation_routes import add_uploads_filenames_validation_routes
+from .uploads_filestream_validation_routes import add_uploads_filestream_validation_routes
+from .uploads_status_routes import add_uploads_status_routes
+from .uploads_quota_routes import add_uploads_quota_routes
+from .tenant_registration_route import add_tenant_registration_route
 
 
 
@@ -128,18 +132,15 @@ class AppBuilder:
         # Api must be passed from route function back to this context
         
         self.api = add_app_route(self.api, self.app_vars)
-        self.api = add_app_activation_route(self.api, self.uploaders)
+        self.api = add_app_activation_route(self.api, self.app_vars, self.uploaders)
         self.api = add_register_all_route(self.api, self.reports, self.uploaders)
         self.api = add_editable_tables_route(self.api, self.editable_tables_schemas)
+        self.api = add_uploads_filenames_validation_routes(self.api, self.uploaders)
+        self.api = add_uploads_filestream_validation_routes(self.api, self.uploaders)
+        self.api = add_uploads_status_routes(self.api, self.uploaders)
+        self.api = add_uploads_quota_routes(self.api, self.uploaders)
+        self.api = add_tenant_registration_url(self.api)
         
-        # self.add_register_all_route()
-        # self.add_editable_tables_route()
-        
-        # self.add_uploads_filenames_validation_routes()
-        # self.add_uploads_filestream_validation_routes()
-        # self.add_uploads_status_routes()
-        # self.add_uploads_quota_routes()
-        # self.add_tenant_registration_url()
                     
                     
     def register_app(self):
