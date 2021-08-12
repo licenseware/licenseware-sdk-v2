@@ -4,10 +4,7 @@ from flask import Flask
 app = Flask(__name__)
 
 
-# self.assertEqual(envs.AUTH_USERS_URL, 'http://localhost:5000/auth/users')
-# self.assertEqual(envs.AUTH_MACHINES_URL, 'http://localhost:5000/auth/machines')
 
-        
 @app.route('/')
 def index():
     return 'Auth service mock server'

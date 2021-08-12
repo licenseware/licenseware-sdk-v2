@@ -3,6 +3,7 @@
 # from flask import request
 # from flask_restx import Namespace, , Resource
 
+from app.licenseware.common.constants.envs import envs
 from typing import Callable
 from flask import Flask
 from flask_restx import Api
@@ -32,11 +33,10 @@ class AppBuilder:
     
     def __init__(
         self, 
-        id: str, 
         name: str, 
         description: str,
         version:float = 1.0, 
-        flags: list = None,
+        flags: list = [],
         activated_tenants_func: Callable = get_activated_tenants, 
         tenants_with_data_func: Callable = get_tenants_with_data,
         app_activation_url: str ='/app/init',
@@ -50,7 +50,7 @@ class AppBuilder:
         **kwargs
     ):
         
-        self.id = id 
+        self.app_id = envs.APP_ID 
         self.name = name
         self.description = description
         self.version = str(version)
@@ -83,7 +83,7 @@ class AppBuilder:
         # otherwise added them to kwargs until apps are actualized
         self.kwargs = kwargs    
         
-        self.prefix = '/' + self.id + '/v' + self.version
+        self.prefix = '/' + self.app_id + '/v' + self.version
         self.app = None
         self.api = None
         
@@ -122,12 +122,8 @@ class AppBuilder:
         self.api.add_namespace(ns, path=path)
     
     
-    def register_uploader(self, instance):
-        #TODO
-        # send register info to registry-service
-        # attach endpoints to this app
-        log.debug(instance.__name__, "registered")
-    
+    def register_uploader(self, uploader):
+        uploader.register_uploader()
 
 
 
@@ -170,7 +166,7 @@ class AppBuilder:
     # def add_api_namespace(self, ns:Namespace = None,  name:str = None, description:str = None):   
              
     #     ns = Namespace(
-    #         name = name or self.id, 
+    #         name = name or self.app_id, 
     #         description = description or self.description
     #     )
         

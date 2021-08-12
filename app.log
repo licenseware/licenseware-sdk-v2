@@ -38,3 +38,15 @@ Could not register app Infrastructure Mapper
 app.licenseware.registry_service.register_app:register_app:51
 Could not register app Infrastructure Mapper
 
+2021-08-12 06:05:12.423[ ERROR ]
+app.licenseware.auth.auth:connect:58
+{'status': 'fail', 'message': 'Could not create account'}
+
+2021-08-12 06:05:12.425[ WARNING ]
+app.licenseware.decorators.auth_decorators.authenticated_machine:decorated:15
+Could not refresh token
+
+2021-08-12 06:10:55.975[ ERROR ]
+app.licenseware.registry_service.register_app:register_app:50
+Could not register app Infrastructure Mapper
+

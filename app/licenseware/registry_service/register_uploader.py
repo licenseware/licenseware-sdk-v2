@@ -38,8 +38,8 @@ def register_uploader(**kwargs):
         }]
     }
 
+    # log.info(payload)
     validate_register_uploader_payload(payload)
-    log.info(payload)
     
     headers = {"Authorization": envs.get_auth_token()}
     registration = requests.post(url=envs.REGISTER_UPLOADER_URL, json=payload, headers=headers)

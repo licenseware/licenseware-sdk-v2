@@ -11,8 +11,12 @@ from app.licenseware.common.validators import validate_route, validate_icon
 class UploaderInfoSchema(Schema):
     
     app_id = fields.Str(required=True, validate=validate.Length(min=3))
-    uploader_id = fields.Str(required=True, validate=validate.Length(min=3))
-    name = fields.Str(required=True, validate=validate.Length(min=3))  
+    upload_id = fields.Str(required=True, validate=validate.Length(min=3))
+    # TODO change it to uploader_id for registry service
+    # uploader_id = fields.Str(required=True, validate=validate.Length(min=3))
+    upload_name = fields.Str(required=True, validate=validate.Length(min=3))  
+    # TODO change it to name in registry service
+    # name = fields.Str(required=True, validate=validate.Length(min=3))  
     description = fields.Str(required=True, validate=validate.Length(min=10))
     flags = fields.List(fields.Str, required=False) #TODO add oneOf validator
     accepted_file_types = fields.List(fields.Str, required=True)

@@ -37,16 +37,13 @@ def get_auth_machines_url():
     return None
 
 
-# usually machine name is `name-service` where name is id
-_app_id = os.getenv("LWARE_IDENTITY_USER").split('-')[0].upper()
-
 
 @dataclass
 class envs:
 
     # Environment variables available at startup
     
-    APP_ID:str = _app_id
+    APP_ID:str = os.getenv("APP_ID")
     LWARE_USER:str = os.getenv('LWARE_IDENTITY_USER')
     LWARE_PASSWORD:str = os.getenv('LWARE_IDENTITY_PASSWORD')
     
@@ -62,15 +59,14 @@ class envs:
     REGISTER_APP_URL:str = os.getenv('REGISTRY_SERVICE_URL') + '/apps'
     REGISTER_UPLOADER_URL:str = os.getenv("REGISTRY_SERVICE_URL") + '/uploaders'
     
-    BASE_URL:str = os.getenv('API_HOST')
-    PORT:str = os.getenv('API_PORT')
-    APP_PREFIX:str = os.getenv('APP_URL_PREFIX') or _app_id
-    UPLOAD_PATH:str = os.getenv("UPLOAD_PATH", 'tmp/lware')
+    BASE_URL:str = os.getenv('APP_HOST') + "/" + os.getenv("APP_ID")
+    UPLOAD_URL:str = os.getenv('APP_HOST') + "/" + os.getenv("APP_ID") + '/uploads'
+    FILE_UPLOAD_PATH:str = os.getenv("FILE_UPLOAD_PATH", 'tmp/lware')
     
     # Base mongo collection names
-    MONGO_DATA_NAME:str = _app_id + "Data"
-    MONGO_UTILIZATION_NAME:str = _app_id + "Utilization"
-    MONGO_ANALYSIS_NAME:str = _app_id + "Analysis"
+    MONGO_DATA_NAME:str = os.getenv("APP_ID").upper() + "Data"
+    MONGO_UTILIZATION_NAME:str = os.getenv("APP_ID").upper() + "Utilization"
+    MONGO_ANALYSIS_NAME:str = os.getenv("APP_ID").upper() + "Analysis"
 
     
     # Environment variables added later by the app

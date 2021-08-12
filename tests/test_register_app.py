@@ -5,7 +5,7 @@ from app.licenseware.registry_service import register_app
 # python3 -m unittest tests/test_register_app.py 
 
 
-payload = {'id': 'ifmp', 'name': 'Infrastructure Mapper', 'activated_tenants': [], 'tenants_with_data': [], 'description': 'Overview of devices and networks', 'flags': ['beta'], 'icon': 'default.png', 'refresh_registration_url': 'http://localhost:5000/register_all', 'app_activation_url': 'http://localhost:5000/app/init', 'editable_tables_url': 'http://localhost:5000/editable_tables', 'history_report_url': 'http://localhost:5000/reports/history_report', 'tenant_registration_url': 'http://localhost:5000/tenant_registration_url'}
+payload = {'app_id': 'ifmp', 'name': 'Infrastructure Mapper', 'activated_tenants': [], 'tenants_with_data': [], 'description': 'Overview of devices and networks', 'flags': ['beta'], 'icon': 'default.png', 'refresh_registration_url': 'http://localhost:5000/ifmp/register_all', 'app_activation_url': 'http://localhost:5000/ifmp/app/init', 'editable_tables_url': 'http://localhost:5000/ifmp/editable_tables', 'history_report_url': 'http://localhost:5000/ifmp/reports/history_report', 'tenant_registration_url': 'http://localhost:5000/ifmp/tenant_registration_url'}
 
 
 
