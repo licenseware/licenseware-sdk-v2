@@ -20,8 +20,7 @@ def register_app(**kwargs):
             "message": "App not registered, no auth token available"
         }, 401
         
-    full_url = lambda url: envs.BASE_URL + url
-
+    
     payload = {
         'data': [{
             "app_id": kwargs['app_id'],
@@ -31,11 +30,11 @@ def register_app(**kwargs):
             "description": kwargs['description'],
             "flags": kwargs['flags'],
             "icon": kwargs['icon'],
-            "refresh_registration_url":  full_url(kwargs['refresh_registration_url']),
-            "app_activation_url": full_url(kwargs['app_activation_url']),
-            "editable_tables_url": full_url(kwargs['editable_tables_url']),
-            "history_report_url":  full_url(kwargs['history_report_url']),
-            "tenant_registration_url":  full_url(kwargs['tenant_registration_url'])
+            "refresh_registration_url":  kwargs['refresh_registration_url'],
+            "app_activation_url": kwargs['app_activation_url'],
+            "editable_tables_url": kwargs['editable_tables_url'],
+            "history_report_url":  kwargs['history_report_url'],
+            "tenant_registration_url":  kwargs['tenant_registration_url']
         }]
     }
     

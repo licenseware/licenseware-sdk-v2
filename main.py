@@ -72,6 +72,13 @@ def validate_rv_tools_file(file):
     return True
 
 
+class ValidateRVTOOLS:
+    
+    quota = 1
+    
+    
+
+
 rv_tools_uploader = UploaderBuilder(
     name="RVTools", 
     description="XLSX export from RVTools after scanning your Vmware infrastructure.", 
