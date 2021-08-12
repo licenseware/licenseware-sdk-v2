@@ -9,9 +9,14 @@ from flask_restx import Namespace, Resource
 from app.licenseware.app_builder import AppBuilder
 from app.licenseware.uploader_builder import UploaderBuilder
 
+from app.licenseware.auth import Authenticator
+
 from app.licenseware.utils.logger import log
 from app.licenseware.common.constants import flags
 
+
+
+Authenticator.connect()
 
 
 ifmp_app = AppBuilder(
@@ -55,7 +60,7 @@ custom_ns.add_resource(CustomApiRoute, "/custom-api-route")
 
 
 # Build Api
-ifmp_app.init_api(app)
+ifmp_app.init_app(app)
 
 # Add custom api endpoint
 ifmp_app.add_namespace(custom_ns, path='/ns-prefix')
@@ -75,7 +80,10 @@ def validate_rv_tools_file(file):
 class ValidateRVTOOLS:
     
     quota = 1
-    
+    #quota based on plan type
+    #free plan quota limited
+    #paid unlimited/per-use
+    #check AnalysisStats
     
 
 

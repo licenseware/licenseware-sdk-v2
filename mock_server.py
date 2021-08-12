@@ -46,6 +46,23 @@ def create_machines():
         }, 200
 
 
+@app.route('/auth/machine_authorization', methods=['GET'])
+def machine_authorization():
+    return {
+            'status': 'success', 
+            'Authorization': 'long_auth_token',
+            'TenantId': 'uuid4_tenant_id',
+        }, 200
+
+
+@app.route('/auth/verify', methods=['GET'])
+def user_authorization():
+    return {
+            'status': 'success', 
+            'Authorization': 'long_auth_token',
+            'TenantId': 'uuid4_tenant_id',
+        }, 200
+
 
 @app.route('/registry-service/apps', methods=['POST'])
 def register_app():

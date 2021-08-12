@@ -54,7 +54,7 @@ class UploaderBuilder:
         
         
     def register_uploader(self):
-        register_uploader(**self.uploader_vars)
+        return register_uploader(**self.uploader_vars)
 
         
         

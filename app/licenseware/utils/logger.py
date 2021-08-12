@@ -8,7 +8,7 @@ Basic functionality:
 
 from loguru import logger
 
-log.debug("Debug log")
+log._debug("Debug log")
 log.info("Info log")
 log.success("Success log")
 log.warning("Warning log")
@@ -54,12 +54,12 @@ environment:
 
 import os, sys, json
 from loguru import logger as log
+ 
 
+_debug = os.getenv('DEBUG', '').lower() == 'true'
+_log_level = 'DEBUG' if _debug else 'WARNING'
 
-debug = os.getenv('DEBUG', '').lower() == 'true'
-log_level = 'DEBUG' if debug else 'WARNING'
-
-log_format = """<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green>[ <level>{level}</level> ]
+_log_format = """<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green>[ <level>{level}</level> ]
 <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan>
 <level>{message}</level>
 """
@@ -69,13 +69,13 @@ log.remove(0)
 log.add(
     "app.log", 
     rotation="monthly", 
-    level=log_level, 
-    format=log_format
+    level=_log_level, 
+    format=_log_format
 )
 
 log.add(
     sys.stderr, 
-    format=log_format
+    format=_log_format
 )
 
 

@@ -23,16 +23,16 @@ from dataclasses import dataclass
 
 def get_auth_users_url():
     
-    if os.getenv('AUTH_SERVICE_URL') and os.getenv('AUTH_SERVICE_USERS_URL_PATH'):
-        return os.getenv('AUTH_SERVICE_URL') + os.getenv('AUTH_SERVICE_USERS_URL_PATH')
+    if os.environ['AUTH_SERVICE_URL'] and os.environ['AUTH_SERVICE_USERS_URL_PATH']:
+        return os.environ['AUTH_SERVICE_URL'] + os.environ['AUTH_SERVICE_USERS_URL_PATH']
     
     return None
 
 
 def get_auth_machines_url():
 
-    if os.getenv('AUTH_SERVICE_URL') and os.getenv('AUTH_SERVICE_MACHINES_URL_PATH'):
-        return os.getenv('AUTH_SERVICE_URL') + os.getenv('AUTH_SERVICE_MACHINES_URL_PATH')
+    if os.environ['AUTH_SERVICE_URL'] and os.environ['AUTH_SERVICE_MACHINES_URL_PATH']:
+        return os.environ['AUTH_SERVICE_URL'] + os.environ['AUTH_SERVICE_MACHINES_URL_PATH']
         
     return None
 
@@ -43,30 +43,30 @@ class envs:
 
     # Environment variables available at startup
     
-    APP_ID:str = os.getenv("APP_ID")
-    LWARE_USER:str = os.getenv('LWARE_IDENTITY_USER')
-    LWARE_PASSWORD:str = os.getenv('LWARE_IDENTITY_PASSWORD')
+    APP_ID:str = os.environ["APP_ID"]
+    LWARE_USER:str = os.environ['LWARE_IDENTITY_USER']
+    LWARE_PASSWORD:str = os.environ['LWARE_IDENTITY_PASSWORD']
     
     AUTH_USERS_URL:str = get_auth_users_url()
     AUTH_MACHINES_URL:str = get_auth_machines_url()
-    AUTH_BASE_URL:str = os.getenv('AUTH_SERVICE_URL')
-    AUTH_MACHINES_ROUTE:str = os.getenv('AUTH_SERVICE_MACHINES_URL_PATH')
-    AUTH_USERS_ROUTE:str = os.getenv('AUTH_SERVICE_USERS_URL_PATH')
-    AUTH_MACHINE_CHECK_URL:str = os.getenv('AUTH_SERVICE_URL') + '/machine_authorization'
-    AUTH_USER_CHECK_URL:str = os.getenv('AUTH_SERVICE_URL') + '/verify'
+    AUTH_BASE_URL:str = os.environ['AUTH_SERVICE_URL']
+    AUTH_MACHINES_ROUTE:str = os.environ['AUTH_SERVICE_MACHINES_URL_PATH']
+    AUTH_USERS_ROUTE:str = os.environ['AUTH_SERVICE_USERS_URL_PATH']
+    AUTH_MACHINE_CHECK_URL:str = os.environ['AUTH_SERVICE_URL'] + '/machine_authorization'
+    AUTH_USER_CHECK_URL:str = os.environ['AUTH_SERVICE_URL'] + '/verify'
     
-    REGISTRY_SERVICE_URL:str = os.getenv('REGISTRY_SERVICE_URL')
-    REGISTER_APP_URL:str = os.getenv('REGISTRY_SERVICE_URL') + '/apps'
-    REGISTER_UPLOADER_URL:str = os.getenv("REGISTRY_SERVICE_URL") + '/uploaders'
+    REGISTRY_SERVICE_URL:str = os.environ['REGISTRY_SERVICE_URL']
+    REGISTER_APP_URL:str = os.environ['REGISTRY_SERVICE_URL'] + '/apps'
+    REGISTER_UPLOADER_URL:str = os.environ['REGISTRY_SERVICE_URL'] + '/uploaders'
     
-    BASE_URL:str = os.getenv('APP_HOST') + "/" + os.getenv("APP_ID")
-    UPLOAD_URL:str = os.getenv('APP_HOST') + "/" + os.getenv("APP_ID") + '/uploads'
+    BASE_URL:str = os.environ['APP_HOST'] + "/" + os.environ["APP_ID"]
+    UPLOAD_URL:str = os.environ['APP_HOST'] + "/" + os.environ["APP_ID"] + '/uploads'
     FILE_UPLOAD_PATH:str = os.getenv("FILE_UPLOAD_PATH", 'tmp/lware')
     
     # Base mongo collection names
-    MONGO_DATA_NAME:str = os.getenv("APP_ID").upper() + "Data"
-    MONGO_UTILIZATION_NAME:str = os.getenv("APP_ID").upper() + "Utilization"
-    MONGO_ANALYSIS_NAME:str = os.getenv("APP_ID").upper() + "Analysis"
+    MONGO_DATA_NAME:str = os.environ["APP_ID"].upper() + "Data"
+    MONGO_UTILIZATION_NAME:str = os.environ["APP_ID"].upper() + "Utilization"
+    MONGO_ANALYSIS_NAME:str = os.environ["APP_ID"].upper() + "Analysis"
 
     
     # Environment variables added later by the app
@@ -86,6 +86,8 @@ class envs:
     
     @classmethod
     def app_is_authenticated(cls):
-        return bool(os.getenv('APP_AUTHENTICATED'))
-    
+        if os.getenv('APP_AUTHENTICATED') == 'true':
+            return True
+        return False
+        
     

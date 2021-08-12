@@ -1,25 +1,28 @@
-# import inspect
-# from typing import Any, Callable, Type
-# from flask import request
-# from flask_restx import Namespace, , Resource
-
+from flask_restx.resource import Resource
 from app.licenseware.common.constants.envs import envs
 from typing import Callable
 from flask import Flask
-from flask_restx import Api
-from flask_restx.namespace import Namespace
+from flask_restx import Api, Namespace
 from app.licenseware.registry_service import register_app
-from app.licenseware.utils.logger import log
 from app.licenseware.tenants import get_activated_tenants, get_tenants_with_data
-from app.licenseware.common.validators import validate_route
+from app.licenseware.utils.logger import log
 
-        
+from .register_all_route import add_register_all_route
+from .editable_tables_route import add_editable_tables_route
+from .app_route import add_app_route
+from .app_activation_route import add_app_activation_route
+
+
+
+
+# TODO TenantId is not posible 
+# because either flask or swagger capitalizes values from headers 
 
 authorizations = {
-    'TenantId': {
+    'Tenantid': {
         'type': 'apiKey',
         'in': 'header',
-        'name': 'TenantId'
+        'name': 'Tenantid'  
     },
     'Authorization': {
         'type': 'apiKey',
@@ -36,7 +39,8 @@ class AppBuilder:
         name: str, 
         description: str,
         flags: list = [],
-        version:float = 1.0, 
+        version:int = 1, 
+        editable_tables_schemas:list = [],
         activated_tenants_func: Callable = get_activated_tenants, 
         tenants_with_data_func: Callable = get_tenants_with_data,
         app_activation_path: str ='/app/init',
@@ -56,6 +60,7 @@ class AppBuilder:
         self.version = str(version)
         self.flags = flags
         self.icon = icon
+        self.editable_tables_schemas = editable_tables_schemas
         
         # Add to self activated tenants and tenants with data
         self.activated_tenants_func = activated_tenants_func
@@ -70,7 +75,6 @@ class AppBuilder:
         if self.tenants_with_data_func:
             self.tenants_with_data = self.tenants_with_data_func()
             
-
         self.app_activation_url = envs.BASE_URL + app_activation_path
         self.refresh_registration_url = envs.BASE_URL + refresh_registration_path
         self.editable_tables_url = envs.BASE_URL + editable_tables_path
@@ -86,15 +90,25 @@ class AppBuilder:
         self.prefix = '/' + self.app_id + '/v' + self.version
         self.app = None
         self.api = None
+        self.ns  = None
+        self.reports = []
+        self.uploaders = []
         
         self.app_vars = vars(self)
     
     
-    def init_api(self, app: Flask):
+    def init_app(self, app: Flask):
         
         self.app = app
         
-        api = Api(
+        self.init_api()
+        self.add_default_routes()
+        
+   
+    
+    def init_api(self):
+        
+        self.api = Api(
             app=self.app,
             title=self.name,
             version=self.version,
@@ -108,15 +122,32 @@ class AppBuilder:
             doc='/'
         )
         
-        self.api = api
         
+    
+    def add_default_routes(self):
+        # Api must be passed from route function back to this context
         
+        self.api = add_app_route(self.api, self.app_vars)
+        self.api = add_app_activation_route(self.api, self.uploaders)
+        self.api = add_register_all_route(self.api, self.reports, self.uploaders)
+        self.api = add_editable_tables_route(self.api, self.editable_tables_schemas)
+        
+        # self.add_register_all_route()
+        # self.add_editable_tables_route()
+        
+        # self.add_uploads_filenames_validation_routes()
+        # self.add_uploads_filestream_validation_routes()
+        # self.add_uploads_status_routes()
+        # self.add_uploads_quota_routes()
+        # self.add_tenant_registration_url()
+                    
+                    
     def register_app(self):
         response, status_code = register_app(**self.app_vars)
         if status_code not in {200, 201}:
             raise Exception("App failed to register!")
-        
-        
+            
+            
     def register_uploader(self, uploader):
         response, status_code = uploader.register_uploader()
         if status_code not in {200, 201}:
@@ -124,8 +155,10 @@ class AppBuilder:
 
 
     def add_namespace(self, ns:Namespace, path:str = None):
-        validate_route(path)
         self.api.add_namespace(ns, path=path)
+        
+    def add_resource(self, resource:Resource, path:str):
+        self.api.add_resource(resource, path)
     
 
 

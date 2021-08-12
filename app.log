@@ -50,3 +50,51 @@ Could not refresh token
 app.licenseware.registry_service.register_app:register_app:50
 Could not register app Infrastructure Mapper
 
+2021-08-12 08:15:31.307[ WARNING ]
+app.licenseware.decorators.auth_decorators.machine_check:decorated:19
+Missing Authorization information
+
+2021-08-12 08:32:41.478[ WARNING ]
+app.licenseware.decorators.auth_decorators.machine_check:decorated:19
+Missing Authorization information
+
+2021-08-12 09:23:25.406[ WARNING ]
+app.licenseware.decorators.auth_decorators.machine_check:decorated:21
+Missing Authorization information
+
+2021-08-12 09:39:32.070[ WARNING ]
+app.licenseware.decorators.auth_decorators.machine_check:decorated:21
+Missing Authorization information
+
+2021-08-12 10:22:12.683[ WARNING ]
+app.licenseware.decorators.auth_decorators.authorization_check:decorated:21
+Missing Tenant or Authorization information
+
+2021-08-12 10:25:36.724[ WARNING ]
+app.licenseware.decorators.auth_decorators.authorization_check:decorated:23
+Missing Tenant or Authorization information
+
+2021-08-12 10:29:13.177[ WARNING ]
+app.licenseware.decorators.auth_decorators.authorization_check:decorated:23
+Missing Tenant or Authorization information
+
+2021-08-12 11:19:15.136[ WARNING ]
+app.licenseware.decorators.auth_decorators.authorization_check:decorated:23
+Missing Tenant or Authorization information
+
+2021-08-12 11:20:45.533[ WARNING ]
+app.licenseware.decorators.auth_decorators.authorization_check:decorated:23
+Missing Tenant or Authorization information
+
+2021-08-12 11:25:01.299[ WARNING ]
+app.licenseware.decorators.auth_decorators.authorization_check:decorated:23
+Missing Tenant or Authorization information
+
+2021-08-12 11:40:01.550[ WARNING ]
+app.licenseware.decorators.auth_decorators.authorization_check:decorated:23
+Missing Tenant or Authorization information
+
+2021-08-12 11:40:37.582[ WARNING ]
+app.licenseware.decorators.auth_decorators.authorization_check:decorated:23
+Missing Tenant or Authorization information
+

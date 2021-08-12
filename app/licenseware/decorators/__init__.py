@@ -1,0 +1,1 @@
+from .failsafe_decorator import failsafe

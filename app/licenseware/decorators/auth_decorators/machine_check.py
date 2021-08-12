@@ -15,11 +15,13 @@ def machine_check(f):
         
         fail_message = "Missing Authorization information"
         
-        if "Authorization" not in request.headers:
+        headers = dict(request.headers)
+        
+        if "Authorization" not in headers:
             log.warning(fail_message)
             return {'status': 'fail', 'message':fail_message}, 403
 
-        headers = {"Authorization": request.headers.get("Authorization")}
+        headers = {"Authorization": headers["Authorization"]}
         response = requests.get(url=envs.AUTH_MACHINE_CHECK_URL, headers=headers)
         
         if response.status_code != 200:

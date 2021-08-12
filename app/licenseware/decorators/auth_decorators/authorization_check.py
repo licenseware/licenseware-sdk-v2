@@ -15,13 +15,18 @@ def authorization_check(f):
         
         fail_message = "Missing Tenant or Authorization information"
         
-        if "Authorization" not in request.headers or "TenantId" not in request.headers:
+        headers = dict(request.headers)
+        
+        # log.debug(headers.keys())
+        #TODO flask or swagger alters headers by adding .capitalize() on them, probably.. 
+        
+        if "Authorization" not in headers or "Tenantid" not in headers:
             log.warning(fail_message)
             return {'status': 'fail', 'message':fail_message}, 403
 
         headers = {
-            "TenantId": request.headers.get("TenantId"),
-            "Authorization": request.headers.get("Authorization")
+            "TenantId": headers["Tenantid"],
+            "Authorization": headers["Authorization"]
         }
 
         response = requests.get(url=envs.AUTH_USER_CHECK_URL, headers=headers)
