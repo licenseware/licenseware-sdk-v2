@@ -55,3 +55,9 @@ def register_uploader(**kwargs):
     nokmsg = f"Could not register uploader '{kwargs['uploader_id']}'"
     log.error(nokmsg)
     return {"status": "fail", "message": nokmsg}, 400
+
+
+
+
+
+

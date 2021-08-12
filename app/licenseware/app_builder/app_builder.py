@@ -127,6 +127,7 @@ class AppBuilder:
 
 
 
+
     #TODO's
     def register_all(self):
         register_app(**self.app_vars)
