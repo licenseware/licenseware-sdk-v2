@@ -16,10 +16,9 @@ import app.licenseware.mongodata as mongodata
 # or to constants or an endpoint?
 
 #TODO
-# add a `unit` per upload 
-# ex: MDM "sccm_queries" we count 1 utilization for each 3 pack of csv files
-# something like: get_sccm_queries_usage(3) == 1
 
+# Add to uploader class validator the way quota is calculated
+# calculate_quota()
 
 QUOTA = {
     #IFMP
@@ -39,7 +38,7 @@ QUOTA = {
     "pdf_contract": 1, # 1 pdf contract
     
     #MDM
-    "sccm_queries": 1 # 1 pack of 3 csv files
+    "sccm_queries": 3 # 1 pack of 3 csv files
 }
 
 
@@ -57,14 +56,9 @@ def get_quota_reset_date():
 
 
 
-# TODO there is an issue with quota each time a new tenant is created quota is reseted 
-# resulting in an unlimited use
+# call auth for user_id
+# machine_authorization, query param get request -> calculate quota based on user_id
 
-# add a new endpoint to auth service with returns all tenants asociated with an user id
-# calculate quota based on sum of tenants usage
-# when a tenant/project is deleted from front-end 
-# set tenant status to disabled in utilization collection 
-# keep tenant utilization document until next reset quota
 
 
 
@@ -80,7 +74,7 @@ class Quota:
         self.tenant_id = tenant_id
         self.uploader_id = uploader_id
         self.schema = schema or AppUtilizationSchema
-        self.collection = collection or envs.MONGO_UTILIZATION_NAME
+        self.collection = collection or envs.MONGO_COLLECTION_UTILIZATION_NAME
         self.query = {
             'tenant_id': self.tenant_id, 
             'uploader_id': self.uploader_id

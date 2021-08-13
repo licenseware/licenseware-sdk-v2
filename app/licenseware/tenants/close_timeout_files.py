@@ -15,7 +15,7 @@ def close_timed_out_files(analysis_collection_name:str = None):
     _filter = {'files.status': {"$eq": 'Running'},
                 'files.analysis_date': {'$gt': start_time.isoformat(), '$lt': time_out_time.isoformat()}}
 
-    stats_collection = m.get_collection(analysis_collection_name or envs.MONGO_ANALYSIS_NAME)
+    stats_collection = m.get_collection(analysis_collection_name or envs.MONGO_COLLECTION_ANALYSIS_NAME)
 
     update_data = {
         '$set': {

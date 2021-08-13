@@ -50,9 +50,8 @@ class Authenticator:
 
         if status_code == 200:
             os.environ['AUTH_TOKEN'] = response.get("Authorization", "Authorization not found")
-            os.environ['TENANT_ID'] = response.get("TenantId", "TenantId not found")
-            os.environ['APP_AUTHENTICATED'] = 'true'
             os.environ['AUTH_TOKEN_DATETIME'] = datetime.utcnow().isoformat()
+            os.environ['APP_AUTHENTICATED'] = 'true'
         else:
             os.environ['APP_AUTHENTICATED'] = 'false'
             log.error(response)

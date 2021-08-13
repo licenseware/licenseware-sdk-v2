@@ -6,5 +6,7 @@ from dataclasses import dataclass
 class states:
     IDLE:str = 'idle'
     RUNNING:str = 'running'
+    SUCCESS:str = 'success'
+    FAIL:str = 'fail'
 
 

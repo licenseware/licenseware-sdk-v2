@@ -5,6 +5,7 @@ from marshmallow import (
     validates,      #decorator  
 )
 
+from app.licenseware.common.constants import flags
 from app.licenseware.common.validators import validate_route, validate_icon
 
 
@@ -19,7 +20,7 @@ class AppInfoSchema(Schema):
     tenants_with_app_activated = fields.List(fields.Dict, required=True) #TODO
     tenants_with_data_available = fields.List(fields.Dict, required=True) #TODO
     description = fields.Str(required=True, validate=validate.Length(min=10))
-    flags = fields.List(fields.Str, required=False) #TODO add oneOf validator
+    flags = fields.List(fields.Str, required=False, validate=validate.OneOf(flags.BETA, flags.SOON))
     icon = fields.Str(required=False, validate=validate_icon)
     refresh_registration_url = fields.Str(required=True, validate=validate_route)
     app_activation_url = fields.Str(required=True, validate=validate_route)

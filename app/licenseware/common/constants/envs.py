@@ -58,15 +58,16 @@ class envs:
     REGISTRY_SERVICE_URL:str = os.environ['REGISTRY_SERVICE_URL']
     REGISTER_APP_URL:str = os.environ['REGISTRY_SERVICE_URL'] + '/apps'
     REGISTER_UPLOADER_URL:str = os.environ['REGISTRY_SERVICE_URL'] + '/uploaders'
+    REGISTER_UPLOADER_STATUS_URL:str = os.environ['REGISTRY_SERVICE_URL'] + '/uploaders/status'
     
     BASE_URL:str = os.environ['APP_HOST'] + "/" + os.environ["APP_ID"]
     UPLOAD_URL:str = os.environ['APP_HOST'] + "/" + os.environ["APP_ID"] + '/uploads'
     FILE_UPLOAD_PATH:str = os.getenv("FILE_UPLOAD_PATH", 'tmp/lware')
     
     # Base mongo collection names
-    MONGO_DATA_NAME:str = os.environ["APP_ID"].upper() + "Data"
-    MONGO_UTILIZATION_NAME:str = os.environ["APP_ID"].upper() + "Utilization"
-    MONGO_ANALYSIS_NAME:str = os.environ["APP_ID"].upper() + "Analysis"
+    MONGO_COLLECTION_DATA_NAME:str = os.environ["APP_ID"].upper() + "Data" 
+    MONGO_COLLECTION_UTILIZATION_NAME:str = os.environ["APP_ID"].upper() + "Utilization"
+    MONGO_COLLECTION_ANALYSIS_NAME:str = os.environ["APP_ID"].upper() + "Analysis"
 
     
     # Environment variables added later by the app
@@ -79,10 +80,6 @@ class envs:
     @classmethod
     def get_auth_token_datetime(cls):
         return os.getenv('AUTH_TOKEN_DATETIME')
-    
-    @classmethod
-    def get_tenant_id(cls):
-        return os.getenv('TENANT_ID')
     
     @classmethod
     def app_is_authenticated(cls):

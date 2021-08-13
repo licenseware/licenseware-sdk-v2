@@ -27,26 +27,17 @@ class TestAuth(unittest.TestCase):
     
     def test_envs_dataclass_dynamic(self):
         
-        self.assertEqual(os.getenv('TENANT_ID'), None)
-        os.environ['TENANT_ID'] = 'custom_uuid4_tenant_id'
-        self.assertEqual(os.getenv('TENANT_ID'), 'custom_uuid4_tenant_id')
-        os.environ.pop('TENANT_ID')
+        self.assertEqual(os.getenv('SOMETHING'), None)
+        os.environ['SOMETHING'] = 'some value'
+        self.assertEqual(os.getenv('SOMETHING'), 'some value')
+        os.environ.pop('SOMETHING')
     
 
-    def test_envs_dataclass_dynamic_loading_envs(self):
-        
-        self.assertEqual(envs.get_tenant_id(), None)
-        os.environ['TENANT_ID'] = 'custom_uuid4_tenant_id'
-        self.assertEqual(envs.get_tenant_id(), 'custom_uuid4_tenant_id')
-        os.environ.pop('TENANT_ID')
-        
-    
     def test_auth(self):
         
         Authenticator.connect()
                 
         self.assertEqual(envs.get_auth_token(), "long_auth_token")
-        self.assertEqual(envs.get_tenant_id(), "uuid4_tenant_id")
         self.assertEqual(envs.app_is_authenticated(), True)
         self.assertIsNotNone(envs.get_auth_token_datetime())
         

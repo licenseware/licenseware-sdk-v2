@@ -28,7 +28,7 @@ authorizations = {
     'Tenantid': {
         'type': 'apiKey',
         'in': 'header',
-        'name': 'Tenantid'  
+        'name': 'Tenantid'   #TenantId
     },
     'Authorization': {
         'type': 'apiKey',
@@ -109,7 +109,7 @@ class AppBuilder:
         self.app_vars = vars(self)
     
     
-    def init_app(self, app: Flask):
+    def init_app(self, app: Flask, register:bool =True):
         
         self.app = app
         
@@ -119,8 +119,8 @@ class AppBuilder:
         self.authenticate_app()
         self.init_api()
         self.add_default_routes()
-        self.register_app()
-   
+        if register: self.register_app()
+        
    
     def authenticate_app(self):
         response, status_code = Authenticator.connect()

@@ -6,10 +6,8 @@ from flask import Flask
 
 from app.licenseware.app_builder import AppBuilder
 from app.licenseware.uploader_builder import UploaderBuilder
-
-
-from app.licenseware.utils.logger import log
 from app.licenseware.common.constants import flags
+from app.licenseware.utils.logger import log
 
 
 app = Flask(__name__)
@@ -28,7 +26,38 @@ ifmp_app = AppBuilder(
 #TODO add quota for free plan to class
 class ValidateRVTOOLS:
     
-    quota = 1
+    class Meta:
+        quota = 1
+        uploader_id = "rv_tools" # or class name
+        filename_success_message = "Filename is valid"
+        filename_failed_message  =  "Filename is not valid" #"File must be a excel file (.xlsx) and contain rv_tools or rvtools in the filename"
+        
+        
+    # if not provided default functions will be used  
+    
+    def calculate_quota(self):
+        # TODO
+        pass
+      
+    def validate_files(self, flask_request):
+        
+        filenames = flask_request.json
+        
+        return {
+            'status': 'success'
+        }
+        
+    def upload_files(self, flask_request):
+        
+        filenames = flask_request.json
+        
+        return {
+            'status': 'success'
+        }
+        
+
+        
+    
     #quota based on plan type
     #free plan quota limited
     #paid unlimited/per-use
@@ -36,9 +65,9 @@ class ValidateRVTOOLS:
     
 
 # rv_tools will be the uploader_id
-def validate_rv_tools(request_odj): 
+def validate_rv_tools(request_obj): 
     
-    log.debug(request_odj)
+    log.debug(request_obj)
     
     return True
 
@@ -47,19 +76,16 @@ rv_tools_uploader = UploaderBuilder(
     name="RVTools", 
     description="XLSX export from RVTools after scanning your Vmware infrastructure.", 
     accepted_file_types=['.xls', '.xlsx'],
-    validator=validate_rv_tools
+    validator_class=validate_rv_tools
 )
 
 
 ifmp_app.register_uploader(rv_tools_uploader)
 
 
-# Keep the init_app after registering uploaders/reports/namespaces 
-ifmp_app.init_app(app)
-
-# Register app to registry-service
-# ifmp_app.register_app() This is handled in init_app too
-
+# Invoke the init_app after registering uploaders/reports/namespaces 
+ifmp_app.register_app()
+ifmp_app.init_app(app, register=True)
 
 
 

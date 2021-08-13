@@ -7,7 +7,7 @@ from app.licenseware.tenants import  get_activated_tenants, get_tenants_with_dat
 
 
 def add_tenant_registration_route(api: Api, app_vars:dict):
-
+    
     @api.route(app_vars['tenant_registration_path'])
     class TenantRegistration(Resource): 
         @failsafe(fail_code=500)
