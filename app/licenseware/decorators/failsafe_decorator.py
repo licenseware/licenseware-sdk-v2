@@ -1,3 +1,4 @@
+import traceback
 from functools import wraps
 from app.licenseware.utils.logger import log
 
@@ -5,23 +6,39 @@ from app.licenseware.utils.logger import log
 def failsafe(*dargs, fail_code=0, success_code=0):
     """
         Prevents a function to raise an exception and break the app.
-        Returns a string with the exception and saves the traceback in failsafe.log
+        Returns a string with the exception and saves the traceback in app.log
         If fail_code or success_code is specified then a json response will be returned.
         
         @failsafe
         def fun1(): raise Exception("test")
         print(fun1())
-        # >>test
+        >>test
 
         @failsafe(fail_code=500)
         def fun2(): raise Exception("test")
         print(fun2())
-        # >> ({'status': 'Fail', 'message': 'test'}, 500)
+        >> ({'status': 'fail', 'message': 'test'}, 500)
 
         @failsafe(fail_code=500, success_code=200)
         def fun3(): return "test"
         print(fun3())
-        # >> ({'status': 'Success', 'message': 'test'}, 200)
+        >> ({'status': 'success', 'message': 'test'}, 200)
+        
+        This decorator is very useful to prevent app crashes but still logging them
+        
+        Ex:
+        
+        @api.route('/)
+        @failsafe(fail_code=500)
+        def viewfunc():
+            raise Exception("Inevitable app crash")
+        
+        When called the route up will return:
+        {'status': 'fail', 'message': "Inevitable app crash"}, 500
+        
+        Unknown/Unhandled errors maybe not so useful for the user.
+        
+        But with the errors you raised there is no issue.
         
     """
     
@@ -34,7 +51,7 @@ def failsafe(*dargs, fail_code=0, success_code=0):
                     return {"status": "success", "message": response}, success_code
                 return response
             except Exception as err:
-                log.exception("\n\n\n-------------Failsafe traceback:\n\n")
+                log.error(traceback.format_exc())
                 if fail_code:
                     return {"status": "fail", "message": str(err)}, fail_code
                 return str(err)

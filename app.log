@@ -1,0 +1,10 @@
+2021-08-13 15:39:46.439[ ERROR ]
+app.licenseware.common.validators.schema_validator:schema_validator:20
+Validation failed 
+ {'data': ['Shorter than minimum length 5.']}
+
+2021-08-13 15:48:09.822[ ERROR ]
+app.licenseware.common.validators.schema_validator:schema_validator:20
+Validation failed 
+ {'data': {0: {'_schema': ['Invalid input type.']}, 1: {'_schema': ['Invalid input type.']}, 2: {'_schema': ['Invalid input type.']}}}
+

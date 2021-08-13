@@ -16,7 +16,11 @@ def add_uploads_filenames_validation_routes(api: Api, uploaders:list):
             @api.doc('Validate file name')
             def post(self):
                 #TODO check quota here instead of validator
-                return uploader.validate_filenames(request)
+                
+                uploader.validate_filenames(request)
+                
+                
+                return 
 
     return api
     

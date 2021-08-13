@@ -16,6 +16,6 @@ class FileValidationSchema(Schema):
 class FileUploadValidationSchema(Schema):
     status = fields.Str(required=True, validate=validate.OneOf(states.SUCCESS, states.FAIL)) 
     message = fields.Str(required=True, validate=validate.Length(min=10))
-    validation = fields.List(fields.Nested(FileValidationSchema), required=True)
-    units = fields.Int(requred=True)
+    validation = fields.List(fields.Nested(FileValidationSchema), required=False, allow_none=True)
+    units = fields.Int(requred=False, allow_none=True)
     

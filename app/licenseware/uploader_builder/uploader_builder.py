@@ -63,26 +63,34 @@ class UploaderBuilder:
     def register_uploader(self):
         return register_uploader(**self.uploader_vars)
 
+    def validate_filenames(self, flask_request):
+        
+        response = self.validator_class.validate_filenames(flask_request)
+        
+        
+        return {'status': 'TODO'}, 200
+        
+        
+        
+    def upload_files(self, flask_request):
+        #TODO
+        return {'status': 'TODO'}, 200
+    
+
+
     def init_tenant_quota(self, tenant_id:str):
         #TODO
-        return {'status': 'success'}, 200
+        return {'status': 'TODO'}, 200
     
     def upload_tenant_quota(self, tenant_id:str):
         #TODO
-        return {'status': 'success'}, 200
+        return {'status': 'TODO'}, 200
     
     def check_tenant_quota(self, tenant_id:str):
         #TODO
-        return {'status': 'success'}, 200
+        return {'status': 'TODO'}, 200
         
         
-    # def validate_filenames(self, flask_request):
-    #     #TODO
-    #     return {'status': 'success'}, 200
-        
-    # def upload_files(self, flask_request):
-    #     #TODO
-    #     return {'status': 'success'}, 200
         
         
         

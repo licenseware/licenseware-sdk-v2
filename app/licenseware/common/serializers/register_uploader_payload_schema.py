@@ -35,24 +35,3 @@ class RegisterUploaderPayloadSchema(Schema):
 
 
 
-
-"""
-payload = {
-    'data': [{
-        # "app_id": self.app_id,
-        # name < "upload_name": self.upload_name,
-        # uploader_id < "upload_id": self.uploader_id, #TODO Field to be later renamed to uploader_id
-        # "accepted_file_types": self.accepted_file_types,
-        # "description": self.description,
-        # "flags": self.flags,
-        # "upload_url": self.base_url + self.upload_url,
-        # "upload_validation_url": self.base_url + self.upload_validation_url,
-        # "quota_validation_url": self.base_url + self.quota_validation_url,
-        # "status_check_url": self.base_url + self.status_check_url,
-        # "history_url": self.base_url + self.history_url, TODO not neeeded anymore
-        "status": self.status,
-        # "icon": self.icon,
-    }]
-}
-
-"""

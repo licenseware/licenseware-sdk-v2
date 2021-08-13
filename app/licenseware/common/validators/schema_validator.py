@@ -4,7 +4,6 @@ from marshmallow import Schema
 
 def schema_validator(schema:Schema, data:dict, raise_error=True):
     
-    # ok_msg = "Validation of register app payload successful"
     nok_msg = lambda err: f"Validation failed \n {err}"
     
     if raise_error:

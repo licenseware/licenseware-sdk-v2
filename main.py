@@ -30,22 +30,21 @@ class ValidateRVTOOLS:
         quota = 1
         uploader_id = "rv_tools" # or class name
         filename_success_message = "Filename is valid"
-        filename_failed_message  =  "Filename is not valid" #"File must be a excel file (.xlsx) and contain rv_tools or rvtools in the filename"
-        
-        
-    # if not provided default functions will be used  
+        filename_failed_message  =  "Filename is not valid"
     
     def calculate_quota(self):
         # TODO
         pass
       
-    def validate_files(self, flask_request):
+      
+    def validate_filenames(self, flask_request):
         
         filenames = flask_request.json
         
         return {
             'status': 'success'
         }
+        
         
     def upload_files(self, flask_request):
         
