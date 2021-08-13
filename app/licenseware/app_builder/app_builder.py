@@ -6,6 +6,8 @@ from flask_restx import Api, Namespace
 from app.licenseware.registry_service import register_app
 from app.licenseware.tenants import get_activated_tenants, get_tenants_with_data
 from app.licenseware.utils.logger import log
+from app.licenseware.auth import Authenticator
+
 
 from .register_all_route import add_register_all_route
 from .editable_tables_route import add_editable_tables_route
@@ -51,7 +53,7 @@ class AppBuilder:
         refresh_registration_path: str ='/register_all',
         editable_tables_path: str ='/editable_tables',
         history_report_path: str ='/reports/history_report',
-        tenant_registration_path: str ='/tenant_registration_path',
+        tenant_registration_path: str ='/tenant_registration',
         icon: str ="default.png",
         doc_authorizations: dict = authorizations,
         api_decorators: list = None,
@@ -79,6 +81,12 @@ class AppBuilder:
         if self.tenants_with_data_func:
             self.tenants_with_data = self.tenants_with_data_func()
             
+        self.app_activation_path = app_activation_path
+        self.refresh_registration_path = refresh_registration_path
+        self.editable_tables_path = editable_tables_path
+        self.history_report_path = history_report_path
+        self.tenant_registration_path = tenant_registration_path
+        
         self.app_activation_url = envs.BASE_URL + app_activation_path
         self.refresh_registration_url = envs.BASE_URL + refresh_registration_path
         self.editable_tables_url = envs.BASE_URL + editable_tables_path
@@ -105,10 +113,20 @@ class AppBuilder:
         
         self.app = app
         
+        if not self.uploaders: log.warning("No uploaders provided")
+        if not self.reports  : log.warning("No reports provided")
+         
+        self.authenticate_app()
         self.init_api()
         self.add_default_routes()
-        
+        self.register_app()
    
+   
+    def authenticate_app(self):
+        response, status_code = Authenticator.connect()
+        if status_code != 200:
+            raise Exception("App failed to authenticate!")
+    
     
     def init_api(self):
         
@@ -129,17 +147,20 @@ class AppBuilder:
         
     
     def add_default_routes(self):
-        # Api must be passed from route function back to this context
         
+        # Here we are adding the routes available for each app
+        # Api must be passed from route function back to this context
+    
         self.api = add_app_route(self.api, self.app_vars)
         self.api = add_app_activation_route(self.api, self.app_vars, self.uploaders)
         self.api = add_register_all_route(self.api, self.reports, self.uploaders)
         self.api = add_editable_tables_route(self.api, self.editable_tables_schemas)
+        self.api = add_tenant_registration_route(self.api, self.app_vars)
+        
         self.api = add_uploads_filenames_validation_routes(self.api, self.uploaders)
         self.api = add_uploads_filestream_validation_routes(self.api, self.uploaders)
         self.api = add_uploads_status_routes(self.api, self.uploaders)
         self.api = add_uploads_quota_routes(self.api, self.uploaders)
-        self.api = add_tenant_registration_url(self.api)
         
                     
                     
@@ -150,9 +171,13 @@ class AppBuilder:
             
             
     def register_uploader(self, uploader):
+        
+        self.uploaders.append(uploader)
+        
         response, status_code = uploader.register_uploader()
         if status_code not in {200, 201}:
             raise Exception("Uploader failed to register!")
+
 
 
     def add_namespace(self, ns:Namespace, path:str = None):

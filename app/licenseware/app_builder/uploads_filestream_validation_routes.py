@@ -21,6 +21,7 @@ def add_uploads_filestream_validation_routes(api: Api, uploaders:list):
                 if 'true' in clear_data.lower():
                     clear_tenant_data(request.headers.get("TenantId"))
 
+                #TODO check quota here instead of validator
                 return uploader.upload_files(request)
 
     return api

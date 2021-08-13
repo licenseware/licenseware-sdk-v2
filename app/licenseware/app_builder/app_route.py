@@ -6,7 +6,6 @@ from app.licenseware.registry_service import register_app
 
 
 def add_app_route(api: Api, app_vars:dict):
-    
     @api.route('/app')
     class AppRegistration(Resource):
         @failsafe(fail_code=500)

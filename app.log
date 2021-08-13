@@ -98,3 +98,2017 @@ Missing Tenant or Authorization information
 app.licenseware.decorators.auth_decorators.authorization_check:decorated:23
 Missing Tenant or Authorization information
 
+2021-08-13 09:13:38.270[ ERROR ]
+app.licenseware.decorators.failsafe_decorator:wrapper:37
+
+
+
+-------------Failsafe traceback:
+
+
+
+Traceback (most recent call last):
+
+  File "/usr/lib/python3.8/runpy.py", line 194, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+           │         │     └ {'__name__': '__main__', '__doc__': 'Main entry point', '__package__': 'unittest', '__loader__': <_frozen_importlib_external....
+           │         └ <code object <module> at 0x7f4b1eed9920, file "/usr/lib/python3.8/unittest/__main__.py", line 1>
+           └ <function _run_code at 0x7f4b1f5f8040>
+  File "/usr/lib/python3.8/runpy.py", line 87, in _run_code
+    exec(code, run_globals)
+         │     └ {'__name__': '__main__', '__doc__': 'Main entry point', '__package__': 'unittest', '__loader__': <_frozen_importlib_external....
+         └ <code object <module> at 0x7f4b1eed9920, file "/usr/lib/python3.8/unittest/__main__.py", line 1>
+  File "/usr/lib/python3.8/unittest/__main__.py", line 18, in <module>
+    main(module=None)
+    └ <class 'unittest.main.TestProgram'>
+  File "/usr/lib/python3.8/unittest/main.py", line 101, in __init__
+    self.runTests()
+    │    └ <function TestProgram.runTests at 0x7f4b1ee3cf70>
+    └ <unittest.main.TestProgram object at 0x7f4b1f5dbfd0>
+  File "/usr/lib/python3.8/unittest/main.py", line 271, in runTests
+    self.result = testRunner.run(self.test)
+    │             │          │   │    └ <unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<tests.test_app_builder_ro...
+    │             │          │   └ <unittest.main.TestProgram object at 0x7f4b1f5dbfd0>
+    │             │          └ <function TextTestRunner.run at 0x7f4b1ee3c8b0>
+    │             └ <unittest.runner.TextTestRunner object at 0x7f4b1f7a54c0>
+    └ <unittest.main.TestProgram object at 0x7f4b1f5dbfd0>
+  File "/usr/lib/python3.8/unittest/runner.py", line 176, in run
+    test(result)
+    │    └ <unittest.runner.TextTestResult run=1 errors=0 failures=0>
+    └ <unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<tests.test_app_builder_ro...
+  File "/usr/lib/python3.8/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+           │    │    │       └ {}
+           │    │    └ (<unittest.runner.TextTestResult run=1 errors=0 failures=0>,)
+           │    └ <function TestSuite.run at 0x7f4b1eecd790>
+           └ <unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<tests.test_app_builder_ro...
+  File "/usr/lib/python3.8/unittest/suite.py", line 122, in run
+    test(result)
+    │    └ <unittest.runner.TextTestResult run=1 errors=0 failures=0>
+    └ <unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<tests.test_app_builder_routes.TestAppBuilderRoutes testMet...
+  File "/usr/lib/python3.8/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+           │    │    │       └ {}
+           │    │    └ (<unittest.runner.TextTestResult run=1 errors=0 failures=0>,)
+           │    └ <function TestSuite.run at 0x7f4b1eecd790>
+           └ <unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<tests.test_app_builder_routes.TestAppBuilderRoutes testMet...
+  File "/usr/lib/python3.8/unittest/suite.py", line 122, in run
+    test(result)
+    │    └ <unittest.runner.TextTestResult run=1 errors=0 failures=0>
+    └ <unittest.suite.TestSuite tests=[<tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>, <tests....
+  File "/usr/lib/python3.8/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+           │    │    │       └ {}
+           │    │    └ (<unittest.runner.TextTestResult run=1 errors=0 failures=0>,)
+           │    └ <function TestSuite.run at 0x7f4b1eecd790>
+           └ <unittest.suite.TestSuite tests=[<tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>, <tests....
+  File "/usr/lib/python3.8/unittest/suite.py", line 122, in run
+    test(result)
+    │    └ <unittest.runner.TextTestResult run=1 errors=0 failures=0>
+    └ <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>
+  File "/usr/lib/python3.8/unittest/case.py", line 736, in __call__
+    return self.run(*args, **kwds)
+           │    │    │       └ {}
+           │    │    └ (<unittest.runner.TextTestResult run=1 errors=0 failures=0>,)
+           │    └ <function TestCase.run at 0x7f4b1eec5dc0>
+           └ <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>
+  File "/usr/lib/python3.8/unittest/case.py", line 676, in run
+    self._callTestMethod(testMethod)
+    │    │               └ <bound method TestAppBuilderRoutes.test_app_init_route of <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test...
+    │    └ <function TestCase._callTestMethod at 0x7f4b1eec5c10>
+    └ <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>
+  File "/usr/lib/python3.8/unittest/case.py", line 633, in _callTestMethod
+    method()
+    └ <bound method TestAppBuilderRoutes.test_app_init_route of <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test...
+
+  File "/home/acmt/Documents/lware/draft-lware/tests/test_app_builder_routes.py", line 45, in test_app_init_route
+    response = self.app.get(pathto('/app/init'), headers=headers)
+               │    │   │   │                            └ {'Tenantid': 'TheTenantid', 'Authorization': 'TheAuthorization'}
+               │    │   │   └ <function <lambda> at 0x7f4b1ee65550>
+               │    │   └ <function Client.get at 0x7f4b1e616550>
+               │    └ <FlaskClient <Flask 'main'>>
+               └ <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>
+
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/test.py", line 1006, in get
+    return self.open(*args, **kw)
+           │    │     │       └ {'headers': {'Tenantid': 'TheTenantid', 'Authorization': 'TheAuthorization'}, 'method': 'GET'}
+           │    │     └ ('/ifmp/v1/app/init',)
+           │    └ <function FlaskClient.open at 0x7f4b1dd95ca0>
+           └ <FlaskClient <Flask 'main'>>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/testing.py", line 222, in open
+    return Client.open(
+           │      └ <function Client.open at 0x7f4b1e6164c0>
+           └ <class 'werkzeug.test.Client'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/test.py", line 970, in open
+    response = self.run_wsgi_app(environ.copy(), buffered=buffered)
+               │    │            │       │                └ False
+               │    │            │       └ <method 'copy' of 'dict' objects>
+               │    │            └ {'REMOTE_ADDR': '127.0.0.1', 'HTTP_USER_AGENT': 'werkzeug/1.0.1', 'REQUEST_METHOD': 'GET', 'SCRIPT_NAME': '', 'PATH_INFO': '/...
+               │    └ <function Client.run_wsgi_app at 0x7f4b1e6163a0>
+               └ <FlaskClient <Flask 'main'>>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/test.py", line 861, in run_wsgi_app
+    rv = run_wsgi_app(self.application, environ, buffered=buffered)
+         │            │    │            │                 └ False
+         │            │    │            └ {'REMOTE_ADDR': '127.0.0.1', 'HTTP_USER_AGENT': 'werkzeug/1.0.1', 'REQUEST_METHOD': 'GET', 'SCRIPT_NAME': '', 'PATH_INFO': '/...
+         │            │    └ <Flask 'main'>
+         │            └ <FlaskClient <Flask 'main'>>
+         └ <function run_wsgi_app at 0x7f4b1e616a60>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/test.py", line 1096, in run_wsgi_app
+    app_rv = app(environ, start_response)
+             │   │        └ <function run_wsgi_app.<locals>.start_response at 0x7f4b1ee3c940>
+             │   └ {'REMOTE_ADDR': '127.0.0.1', 'HTTP_USER_AGENT': 'werkzeug/1.0.1', 'REQUEST_METHOD': 'GET', 'SCRIPT_NAME': '', 'PATH_INFO': '/...
+             └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 2464, in __call__
+    return self.wsgi_app(environ, start_response)
+           │    │        │        └ <function run_wsgi_app.<locals>.start_response at 0x7f4b1ee3c940>
+           │    │        └ {'REMOTE_ADDR': '127.0.0.1', 'HTTP_USER_AGENT': 'werkzeug/1.0.1', 'REQUEST_METHOD': 'GET', 'SCRIPT_NAME': '', 'PATH_INFO': '/...
+           │    └ <function Flask.wsgi_app at 0x7f4b1e51cc10>
+           └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+               │    └ <function Flask.full_dispatch_request at 0x7f4b1e51c310>
+               └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+         │    └ <function Flask.dispatch_request at 0x7f4b1e51c280>
+         └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+           │    │              │    │           │   └ {}
+           │    │              │    │           └ <Request 'http://localhost/ifmp/v1/app/init' [GET]>
+           │    │              │    └ 'initialize_tenant_app'
+           │    │              └ <Rule '/ifmp/v1/app/init' (GET, OPTIONS, HEAD) -> initialize_tenant_app>
+           │    └ {'static': <bound method _PackageBoundObject.send_static_file of <Flask 'main'>>, 'custom_app_route': <function custom_app_ro...
+           └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask_restx/api.py", line 397, in wrapper
+    resp = resource(*args, **kwargs)
+           │         │       └ {}
+           │         └ ()
+           └ <function View.as_view.<locals>.view at 0x7f4b1de110d0>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/views.py", line 89, in view
+    return self.dispatch_request(*args, **kwargs)
+           │    │                 │       └ {}
+           │    │                 └ ()
+           │    └ <function Resource.dispatch_request at 0x7f4b1e23c790>
+           └ <app.licenseware.app_builder.app_activation_route.add_app_activation_route.<locals>.InitializeTenantApp object at 0x7f4b1dd90...
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask_restx/resource.py", line 44, in dispatch_request
+    resp = meth(*args, **kwargs)
+           │     │       └ {}
+           │     └ ()
+           └ <bound method add_app_activation_route.<locals>.InitializeTenantApp.get of <app.licenseware.app_builder.app_activation_route....
+
+> File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/failsafe_decorator.py", line 32, in wrapper
+    response = f(*args, **kwargs)
+               │  │       └ {}
+               │  └ (<app.licenseware.app_builder.app_activation_route.add_app_activation_route.<locals>.InitializeTenantApp object at 0x7f4b1dd9...
+               └ <function add_app_activation_route.<locals>.InitializeTenantApp.get at 0x7f4b1de11160>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/auth_decorators/authorization_check.py", line 37, in decorated
+    return f(*args, **kwargs)
+           │  │       └ {}
+           │  └ (<app.licenseware.app_builder.app_activation_route.add_app_activation_route.<locals>.InitializeTenantApp object at 0x7f4b1dd9...
+           └ <function add_app_activation_route.<locals>.InitializeTenantApp.get at 0x7f4b1de111f0>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/app_builder/app_activation_route.py", line 21, in get
+    qmsg, _ = uploader.init_quota(tenant_id)
+              │                   └ 'TheTenantid'
+              └ <app.licenseware.uploader_builder.uploader_builder.UploaderBuilder object at 0x7f4b1de5b3a0>
+
+AttributeError: 'UploaderBuilder' object has no attribute 'init_quota'
+2021-08-13 09:13:55.177[ ERROR ]
+app.licenseware.decorators.failsafe_decorator:wrapper:37
+
+
+
+-------------Failsafe traceback:
+
+
+
+Traceback (most recent call last):
+
+  File "/usr/lib/python3.8/runpy.py", line 194, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+           │         │     └ {'__name__': '__main__', '__doc__': 'Main entry point', '__package__': 'unittest', '__loader__': <_frozen_importlib_external....
+           │         └ <code object <module> at 0x7fd60d7e8920, file "/usr/lib/python3.8/unittest/__main__.py", line 1>
+           └ <function _run_code at 0x7fd60df07040>
+  File "/usr/lib/python3.8/runpy.py", line 87, in _run_code
+    exec(code, run_globals)
+         │     └ {'__name__': '__main__', '__doc__': 'Main entry point', '__package__': 'unittest', '__loader__': <_frozen_importlib_external....
+         └ <code object <module> at 0x7fd60d7e8920, file "/usr/lib/python3.8/unittest/__main__.py", line 1>
+  File "/usr/lib/python3.8/unittest/__main__.py", line 18, in <module>
+    main(module=None)
+    └ <class 'unittest.main.TestProgram'>
+  File "/usr/lib/python3.8/unittest/main.py", line 101, in __init__
+    self.runTests()
+    │    └ <function TestProgram.runTests at 0x7fd60d74bf70>
+    └ <unittest.main.TestProgram object at 0x7fd60deeafd0>
+  File "/usr/lib/python3.8/unittest/main.py", line 271, in runTests
+    self.result = testRunner.run(self.test)
+    │             │          │   │    └ <unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<tests.test_app_builder_ro...
+    │             │          │   └ <unittest.main.TestProgram object at 0x7fd60deeafd0>
+    │             │          └ <function TextTestRunner.run at 0x7fd60d74b8b0>
+    │             └ <unittest.runner.TextTestRunner object at 0x7fd60e0b44c0>
+    └ <unittest.main.TestProgram object at 0x7fd60deeafd0>
+  File "/usr/lib/python3.8/unittest/runner.py", line 176, in run
+    test(result)
+    │    └ <unittest.runner.TextTestResult run=1 errors=0 failures=0>
+    └ <unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<tests.test_app_builder_ro...
+  File "/usr/lib/python3.8/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+           │    │    │       └ {}
+           │    │    └ (<unittest.runner.TextTestResult run=1 errors=0 failures=0>,)
+           │    └ <function TestSuite.run at 0x7fd60d7dc790>
+           └ <unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<tests.test_app_builder_ro...
+  File "/usr/lib/python3.8/unittest/suite.py", line 122, in run
+    test(result)
+    │    └ <unittest.runner.TextTestResult run=1 errors=0 failures=0>
+    └ <unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<tests.test_app_builder_routes.TestAppBuilderRoutes testMet...
+  File "/usr/lib/python3.8/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+           │    │    │       └ {}
+           │    │    └ (<unittest.runner.TextTestResult run=1 errors=0 failures=0>,)
+           │    └ <function TestSuite.run at 0x7fd60d7dc790>
+           └ <unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<tests.test_app_builder_routes.TestAppBuilderRoutes testMet...
+  File "/usr/lib/python3.8/unittest/suite.py", line 122, in run
+    test(result)
+    │    └ <unittest.runner.TextTestResult run=1 errors=0 failures=0>
+    └ <unittest.suite.TestSuite tests=[<tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>, <tests....
+  File "/usr/lib/python3.8/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+           │    │    │       └ {}
+           │    │    └ (<unittest.runner.TextTestResult run=1 errors=0 failures=0>,)
+           │    └ <function TestSuite.run at 0x7fd60d7dc790>
+           └ <unittest.suite.TestSuite tests=[<tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>, <tests....
+  File "/usr/lib/python3.8/unittest/suite.py", line 122, in run
+    test(result)
+    │    └ <unittest.runner.TextTestResult run=1 errors=0 failures=0>
+    └ <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>
+  File "/usr/lib/python3.8/unittest/case.py", line 736, in __call__
+    return self.run(*args, **kwds)
+           │    │    │       └ {}
+           │    │    └ (<unittest.runner.TextTestResult run=1 errors=0 failures=0>,)
+           │    └ <function TestCase.run at 0x7fd60d7d4dc0>
+           └ <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>
+  File "/usr/lib/python3.8/unittest/case.py", line 676, in run
+    self._callTestMethod(testMethod)
+    │    │               └ <bound method TestAppBuilderRoutes.test_app_init_route of <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test...
+    │    └ <function TestCase._callTestMethod at 0x7fd60d7d4c10>
+    └ <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>
+  File "/usr/lib/python3.8/unittest/case.py", line 633, in _callTestMethod
+    method()
+    └ <bound method TestAppBuilderRoutes.test_app_init_route of <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test...
+
+  File "/home/acmt/Documents/lware/draft-lware/tests/test_app_builder_routes.py", line 45, in test_app_init_route
+    response = self.app.get(pathto('/app/init'), headers=headers)
+               │    │   │   │                            └ {'Tenantid': 'TheTenantid', 'Authorization': 'TheAuthorization'}
+               │    │   │   └ <function <lambda> at 0x7fd60d774550>
+               │    │   └ <function Client.get at 0x7fd60cf25550>
+               │    └ <FlaskClient <Flask 'main'>>
+               └ <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>
+
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/test.py", line 1006, in get
+    return self.open(*args, **kw)
+           │    │     │       └ {'headers': {'Tenantid': 'TheTenantid', 'Authorization': 'TheAuthorization'}, 'method': 'GET'}
+           │    │     └ ('/ifmp/v1/app/init',)
+           │    └ <function FlaskClient.open at 0x7fd60c6a4d30>
+           └ <FlaskClient <Flask 'main'>>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/testing.py", line 222, in open
+    return Client.open(
+           │      └ <function Client.open at 0x7fd60cf254c0>
+           └ <class 'werkzeug.test.Client'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/test.py", line 970, in open
+    response = self.run_wsgi_app(environ.copy(), buffered=buffered)
+               │    │            │       │                └ False
+               │    │            │       └ <method 'copy' of 'dict' objects>
+               │    │            └ {'REMOTE_ADDR': '127.0.0.1', 'HTTP_USER_AGENT': 'werkzeug/1.0.1', 'REQUEST_METHOD': 'GET', 'SCRIPT_NAME': '', 'PATH_INFO': '/...
+               │    └ <function Client.run_wsgi_app at 0x7fd60cf253a0>
+               └ <FlaskClient <Flask 'main'>>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/test.py", line 861, in run_wsgi_app
+    rv = run_wsgi_app(self.application, environ, buffered=buffered)
+         │            │    │            │                 └ False
+         │            │    │            └ {'REMOTE_ADDR': '127.0.0.1', 'HTTP_USER_AGENT': 'werkzeug/1.0.1', 'REQUEST_METHOD': 'GET', 'SCRIPT_NAME': '', 'PATH_INFO': '/...
+         │            │    └ <Flask 'main'>
+         │            └ <FlaskClient <Flask 'main'>>
+         └ <function run_wsgi_app at 0x7fd60cf25a60>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/test.py", line 1096, in run_wsgi_app
+    app_rv = app(environ, start_response)
+             │   │        └ <function run_wsgi_app.<locals>.start_response at 0x7fd60d74b940>
+             │   └ {'REMOTE_ADDR': '127.0.0.1', 'HTTP_USER_AGENT': 'werkzeug/1.0.1', 'REQUEST_METHOD': 'GET', 'SCRIPT_NAME': '', 'PATH_INFO': '/...
+             └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 2464, in __call__
+    return self.wsgi_app(environ, start_response)
+           │    │        │        └ <function run_wsgi_app.<locals>.start_response at 0x7fd60d74b940>
+           │    │        └ {'REMOTE_ADDR': '127.0.0.1', 'HTTP_USER_AGENT': 'werkzeug/1.0.1', 'REQUEST_METHOD': 'GET', 'SCRIPT_NAME': '', 'PATH_INFO': '/...
+           │    └ <function Flask.wsgi_app at 0x7fd60ce2bc10>
+           └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+               │    └ <function Flask.full_dispatch_request at 0x7fd60ce2b310>
+               └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+         │    └ <function Flask.dispatch_request at 0x7fd60ce2b280>
+         └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+           │    │              │    │           │   └ {}
+           │    │              │    │           └ <Request 'http://localhost/ifmp/v1/app/init' [GET]>
+           │    │              │    └ 'initialize_tenant_app'
+           │    │              └ <Rule '/ifmp/v1/app/init' (OPTIONS, HEAD, GET) -> initialize_tenant_app>
+           │    └ {'static': <bound method _PackageBoundObject.send_static_file of <Flask 'main'>>, 'custom_app_route': <function custom_app_ro...
+           └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask_restx/api.py", line 397, in wrapper
+    resp = resource(*args, **kwargs)
+           │         │       └ {}
+           │         └ ()
+           └ <function View.as_view.<locals>.view at 0x7fd60c71f160>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/views.py", line 89, in view
+    return self.dispatch_request(*args, **kwargs)
+           │    │                 │       └ {}
+           │    │                 └ ()
+           │    └ <function Resource.dispatch_request at 0x7fd60cb4b790>
+           └ <app.licenseware.app_builder.app_activation_route.add_app_activation_route.<locals>.InitializeTenantApp object at 0x7fd60c69f...
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask_restx/resource.py", line 44, in dispatch_request
+    resp = meth(*args, **kwargs)
+           │     │       └ {}
+           │     └ ()
+           └ <bound method add_app_activation_route.<locals>.InitializeTenantApp.get of <app.licenseware.app_builder.app_activation_route....
+
+> File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/failsafe_decorator.py", line 32, in wrapper
+    response = f(*args, **kwargs)
+               │  │       └ {}
+               │  └ (<app.licenseware.app_builder.app_activation_route.add_app_activation_route.<locals>.InitializeTenantApp object at 0x7fd60c69...
+               └ <function add_app_activation_route.<locals>.InitializeTenantApp.get at 0x7fd60c71f1f0>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/auth_decorators/authorization_check.py", line 37, in decorated
+    return f(*args, **kwargs)
+           │  │       └ {}
+           │  └ (<app.licenseware.app_builder.app_activation_route.add_app_activation_route.<locals>.InitializeTenantApp object at 0x7fd60c69...
+           └ <function add_app_activation_route.<locals>.InitializeTenantApp.get at 0x7fd60c71f280>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/app_builder/app_activation_route.py", line 21, in get
+    qmsg, _ = uploader.init_quota(tenant_id)
+              │                   └ 'TheTenantid'
+              └ <app.licenseware.uploader_builder.uploader_builder.UploaderBuilder object at 0x7fd60c76b3a0>
+
+AttributeError: 'UploaderBuilder' object has no attribute 'init_quota'
+2021-08-13 09:18:47.011[ ERROR ]
+app.licenseware.decorators.failsafe_decorator:wrapper:37
+
+
+
+-------------Failsafe traceback:
+
+
+
+Traceback (most recent call last):
+
+  File "/usr/lib/python3.8/runpy.py", line 194, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+           │         │     └ {'__name__': '__main__', '__doc__': 'Main entry point', '__package__': 'unittest', '__loader__': <_frozen_importlib_external....
+           │         └ <code object <module> at 0x7f5b5ec90920, file "/usr/lib/python3.8/unittest/__main__.py", line 1>
+           └ <function _run_code at 0x7f5b5f3b0040>
+  File "/usr/lib/python3.8/runpy.py", line 87, in _run_code
+    exec(code, run_globals)
+         │     └ {'__name__': '__main__', '__doc__': 'Main entry point', '__package__': 'unittest', '__loader__': <_frozen_importlib_external....
+         └ <code object <module> at 0x7f5b5ec90920, file "/usr/lib/python3.8/unittest/__main__.py", line 1>
+  File "/usr/lib/python3.8/unittest/__main__.py", line 18, in <module>
+    main(module=None)
+    └ <class 'unittest.main.TestProgram'>
+  File "/usr/lib/python3.8/unittest/main.py", line 101, in __init__
+    self.runTests()
+    │    └ <function TestProgram.runTests at 0x7f5b5ebf3f70>
+    └ <unittest.main.TestProgram object at 0x7f5b5f393fd0>
+  File "/usr/lib/python3.8/unittest/main.py", line 271, in runTests
+    self.result = testRunner.run(self.test)
+    │             │          │   │    └ <unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<tests.test_app_builder_ro...
+    │             │          │   └ <unittest.main.TestProgram object at 0x7f5b5f393fd0>
+    │             │          └ <function TextTestRunner.run at 0x7f5b5ebf38b0>
+    │             └ <unittest.runner.TextTestRunner object at 0x7f5b5f55d4c0>
+    └ <unittest.main.TestProgram object at 0x7f5b5f393fd0>
+  File "/usr/lib/python3.8/unittest/runner.py", line 176, in run
+    test(result)
+    │    └ <unittest.runner.TextTestResult run=1 errors=0 failures=0>
+    └ <unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<tests.test_app_builder_ro...
+  File "/usr/lib/python3.8/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+           │    │    │       └ {}
+           │    │    └ (<unittest.runner.TextTestResult run=1 errors=0 failures=0>,)
+           │    └ <function TestSuite.run at 0x7f5b5ec85790>
+           └ <unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<tests.test_app_builder_ro...
+  File "/usr/lib/python3.8/unittest/suite.py", line 122, in run
+    test(result)
+    │    └ <unittest.runner.TextTestResult run=1 errors=0 failures=0>
+    └ <unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<tests.test_app_builder_routes.TestAppBuilderRoutes testMet...
+  File "/usr/lib/python3.8/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+           │    │    │       └ {}
+           │    │    └ (<unittest.runner.TextTestResult run=1 errors=0 failures=0>,)
+           │    └ <function TestSuite.run at 0x7f5b5ec85790>
+           └ <unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<tests.test_app_builder_routes.TestAppBuilderRoutes testMet...
+  File "/usr/lib/python3.8/unittest/suite.py", line 122, in run
+    test(result)
+    │    └ <unittest.runner.TextTestResult run=1 errors=0 failures=0>
+    └ <unittest.suite.TestSuite tests=[<tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>, <tests....
+  File "/usr/lib/python3.8/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+           │    │    │       └ {}
+           │    │    └ (<unittest.runner.TextTestResult run=1 errors=0 failures=0>,)
+           │    └ <function TestSuite.run at 0x7f5b5ec85790>
+           └ <unittest.suite.TestSuite tests=[<tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>, <tests....
+  File "/usr/lib/python3.8/unittest/suite.py", line 122, in run
+    test(result)
+    │    └ <unittest.runner.TextTestResult run=1 errors=0 failures=0>
+    └ <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>
+  File "/usr/lib/python3.8/unittest/case.py", line 736, in __call__
+    return self.run(*args, **kwds)
+           │    │    │       └ {}
+           │    │    └ (<unittest.runner.TextTestResult run=1 errors=0 failures=0>,)
+           │    └ <function TestCase.run at 0x7f5b5ec7ddc0>
+           └ <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>
+  File "/usr/lib/python3.8/unittest/case.py", line 676, in run
+    self._callTestMethod(testMethod)
+    │    │               └ <bound method TestAppBuilderRoutes.test_app_init_route of <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test...
+    │    └ <function TestCase._callTestMethod at 0x7f5b5ec7dc10>
+    └ <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>
+  File "/usr/lib/python3.8/unittest/case.py", line 633, in _callTestMethod
+    method()
+    └ <bound method TestAppBuilderRoutes.test_app_init_route of <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test...
+
+  File "/home/acmt/Documents/lware/draft-lware/tests/test_app_builder_routes.py", line 45, in test_app_init_route
+    response = self.app.get(pathto('/app/init'), headers=headers)
+               │    │   │   │                            └ {'Tenantid': 'TheTenantid', 'Authorization': 'TheAuthorization'}
+               │    │   │   └ <function <lambda> at 0x7f5b5ec1d550>
+               │    │   └ <function Client.get at 0x7f5b5e3cf550>
+               │    └ <FlaskClient <Flask 'main'>>
+               └ <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>
+
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/test.py", line 1006, in get
+    return self.open(*args, **kw)
+           │    │     │       └ {'headers': {'Tenantid': 'TheTenantid', 'Authorization': 'TheAuthorization'}, 'method': 'GET'}
+           │    │     └ ('/ifmp/v1/app/init',)
+           │    └ <function FlaskClient.open at 0x7f5b5db4c820>
+           └ <FlaskClient <Flask 'main'>>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/testing.py", line 222, in open
+    return Client.open(
+           │      └ <function Client.open at 0x7f5b5e3cf4c0>
+           └ <class 'werkzeug.test.Client'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/test.py", line 970, in open
+    response = self.run_wsgi_app(environ.copy(), buffered=buffered)
+               │    │            │       │                └ False
+               │    │            │       └ <method 'copy' of 'dict' objects>
+               │    │            └ {'REMOTE_ADDR': '127.0.0.1', 'HTTP_USER_AGENT': 'werkzeug/1.0.1', 'REQUEST_METHOD': 'GET', 'SCRIPT_NAME': '', 'PATH_INFO': '/...
+               │    └ <function Client.run_wsgi_app at 0x7f5b5e3cf3a0>
+               └ <FlaskClient <Flask 'main'>>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/test.py", line 861, in run_wsgi_app
+    rv = run_wsgi_app(self.application, environ, buffered=buffered)
+         │            │    │            │                 └ False
+         │            │    │            └ {'REMOTE_ADDR': '127.0.0.1', 'HTTP_USER_AGENT': 'werkzeug/1.0.1', 'REQUEST_METHOD': 'GET', 'SCRIPT_NAME': '', 'PATH_INFO': '/...
+         │            │    └ <Flask 'main'>
+         │            └ <FlaskClient <Flask 'main'>>
+         └ <function run_wsgi_app at 0x7f5b5e3cfa60>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/test.py", line 1096, in run_wsgi_app
+    app_rv = app(environ, start_response)
+             │   │        └ <function run_wsgi_app.<locals>.start_response at 0x7f5b5ebf3940>
+             │   └ {'REMOTE_ADDR': '127.0.0.1', 'HTTP_USER_AGENT': 'werkzeug/1.0.1', 'REQUEST_METHOD': 'GET', 'SCRIPT_NAME': '', 'PATH_INFO': '/...
+             └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 2464, in __call__
+    return self.wsgi_app(environ, start_response)
+           │    │        │        └ <function run_wsgi_app.<locals>.start_response at 0x7f5b5ebf3940>
+           │    │        └ {'REMOTE_ADDR': '127.0.0.1', 'HTTP_USER_AGENT': 'werkzeug/1.0.1', 'REQUEST_METHOD': 'GET', 'SCRIPT_NAME': '', 'PATH_INFO': '/...
+           │    └ <function Flask.wsgi_app at 0x7f5b5e2d5c10>
+           └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+               │    └ <function Flask.full_dispatch_request at 0x7f5b5e2d5310>
+               └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+         │    └ <function Flask.dispatch_request at 0x7f5b5e2d5280>
+         └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+           │    │              │    │           │   └ {}
+           │    │              │    │           └ <Request 'http://localhost/ifmp/v1/app/init' [GET]>
+           │    │              │    └ 'initialize_tenant_app'
+           │    │              └ <Rule '/ifmp/v1/app/init' (OPTIONS, HEAD, GET) -> initialize_tenant_app>
+           │    └ {'static': <bound method _PackageBoundObject.send_static_file of <Flask 'main'>>, 'specs': <function View.as_view.<locals>.vi...
+           └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask_restx/api.py", line 397, in wrapper
+    resp = resource(*args, **kwargs)
+           │         │       └ {}
+           │         └ ()
+           └ <function View.as_view.<locals>.view at 0x7f5b5dbcdd30>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/views.py", line 89, in view
+    return self.dispatch_request(*args, **kwargs)
+           │    │                 │       └ {}
+           │    │                 └ ()
+           │    └ <function Resource.dispatch_request at 0x7f5b5dff5790>
+           └ <app.licenseware.app_builder.app_activation_route.add_app_activation_route.<locals>.InitializeTenantApp object at 0x7f5b5db56...
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask_restx/resource.py", line 44, in dispatch_request
+    resp = meth(*args, **kwargs)
+           │     │       └ {}
+           │     └ ()
+           └ <bound method add_app_activation_route.<locals>.InitializeTenantApp.get of <app.licenseware.app_builder.app_activation_route....
+
+> File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/failsafe_decorator.py", line 32, in wrapper
+    response = f(*args, **kwargs)
+               │  │       └ {}
+               │  └ (<app.licenseware.app_builder.app_activation_route.add_app_activation_route.<locals>.InitializeTenantApp object at 0x7f5b5db5...
+               └ <function add_app_activation_route.<locals>.InitializeTenantApp.get at 0x7f5b5dbcddc0>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/auth_decorators/authorization_check.py", line 37, in decorated
+    return f(*args, **kwargs)
+           │  │       └ {}
+           │  └ (<app.licenseware.app_builder.app_activation_route.add_app_activation_route.<locals>.InitializeTenantApp object at 0x7f5b5db5...
+           └ <function add_app_activation_route.<locals>.InitializeTenantApp.get at 0x7f5b5dbcde50>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/app_builder/app_activation_route.py", line 21, in get
+    qmsg, _ = uploader.init_quota(tenant_id)
+              │                   └ 'TheTenantid'
+              └ <app.licenseware.uploader_builder.uploader_builder.UploaderBuilder object at 0x7f5b5dbff1c0>
+
+AttributeError: 'UploaderBuilder' object has no attribute 'init_quota'
+2021-08-13 09:19:21.078[ ERROR ]
+app.licenseware.decorators.failsafe_decorator:wrapper:37
+
+
+
+-------------Failsafe traceback:
+
+
+
+Traceback (most recent call last):
+
+  File "/usr/lib/python3.8/threading.py", line 890, in _bootstrap
+    self._bootstrap_inner()
+    │    └ <function Thread._bootstrap_inner at 0x7f3511495430>
+    └ <Thread(Thread-18, started daemon 139865299592960)>
+  File "/usr/lib/python3.8/threading.py", line 932, in _bootstrap_inner
+    self.run()
+    │    └ <function Thread.run at 0x7f3511495160>
+    └ <Thread(Thread-18, started daemon 139865299592960)>
+  File "/usr/lib/python3.8/threading.py", line 870, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Thread(Thread-18, started daemon 139865299592960)>
+    │    │        │    └ (<socket.socket fd=12, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 4000), raddr=(...
+    │    │        └ <Thread(Thread-18, started daemon 139865299592960)>
+    │    └ <bound method ThreadingMixIn.process_request_thread of <werkzeug.serving.ThreadedWSGIServer object at 0x7f350fd18070>>
+    └ <Thread(Thread-18, started daemon 139865299592960)>
+  File "/usr/lib/python3.8/socketserver.py", line 683, in process_request_thread
+    self.finish_request(request, client_address)
+    │    │              │        └ ('127.0.0.1', 60252)
+    │    │              └ <socket.socket fd=12, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 4000), raddr=('...
+    │    └ <function BaseServer.finish_request at 0x7f3510b754c0>
+    └ <werkzeug.serving.ThreadedWSGIServer object at 0x7f350fd18070>
+  File "/usr/lib/python3.8/socketserver.py", line 360, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    │    │                   │        │               └ <werkzeug.serving.ThreadedWSGIServer object at 0x7f350fd18070>
+    │    │                   │        └ ('127.0.0.1', 60252)
+    │    │                   └ <socket.socket fd=12, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 4000), raddr=('...
+    │    └ <class 'werkzeug.serving.WSGIRequestHandler'>
+    └ <werkzeug.serving.ThreadedWSGIServer object at 0x7f350fd18070>
+  File "/usr/lib/python3.8/socketserver.py", line 747, in __init__
+    self.handle()
+    │    └ <function WSGIRequestHandler.handle at 0x7f35108a2040>
+    └ <werkzeug.serving.WSGIRequestHandler object at 0x7f350c3ff370>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 345, in handle
+    BaseHTTPRequestHandler.handle(self)
+    │                      │      └ <werkzeug.serving.WSGIRequestHandler object at 0x7f350c3ff370>
+    │                      └ <function BaseHTTPRequestHandler.handle at 0x7f3510920940>
+    └ <class 'http.server.BaseHTTPRequestHandler'>
+  File "/usr/lib/python3.8/http/server.py", line 427, in handle
+    self.handle_one_request()
+    │    └ <function WSGIRequestHandler.handle_one_request at 0x7f35108a21f0>
+    └ <werkzeug.serving.WSGIRequestHandler object at 0x7f350c3ff370>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 379, in handle_one_request
+    return self.run_wsgi()
+           │    └ <function WSGIRequestHandler.run_wsgi at 0x7f351089ff70>
+           └ <werkzeug.serving.WSGIRequestHandler object at 0x7f350c3ff370>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 323, in run_wsgi
+    execute(self.server.app)
+    │       │    │      └ <werkzeug.debug.DebuggedApplication object at 0x7f350fdaac40>
+    │       │    └ <werkzeug.serving.ThreadedWSGIServer object at 0x7f350fd18070>
+    │       └ <werkzeug.serving.WSGIRequestHandler object at 0x7f350c3ff370>
+    └ <function WSGIRequestHandler.run_wsgi.<locals>.execute at 0x7f350c42f550>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 314, in execute
+    for data in application_iter:
+                └ <generator object DebuggedApplication.debug_application at 0x7f350ec46c10>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/debug/__init__.py", line 304, in debug_application
+    app_iter = self.app(environ, start_response)
+               │    │   │        └ <function WSGIRequestHandler.run_wsgi.<locals>.start_response at 0x7f350c42f4c0>
+               │    │   └ {'wsgi.version': (1, 0), 'wsgi.url_scheme': 'http', 'wsgi.input': <_io.BufferedReader name=12>, 'wsgi.errors': <_io.TextIOWra...
+               │    └ <Flask 'main'>
+               └ <werkzeug.debug.DebuggedApplication object at 0x7f350fdaac40>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 2464, in __call__
+    return self.wsgi_app(environ, start_response)
+           │    │        │        └ <function WSGIRequestHandler.run_wsgi.<locals>.start_response at 0x7f350c42f4c0>
+           │    │        └ {'wsgi.version': (1, 0), 'wsgi.url_scheme': 'http', 'wsgi.input': <_io.BufferedReader name=12>, 'wsgi.errors': <_io.TextIOWra...
+           │    └ <function Flask.wsgi_app at 0x7f35105f7c10>
+           └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+               │    └ <function Flask.full_dispatch_request at 0x7f35105f7310>
+               └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+         │    └ <function Flask.dispatch_request at 0x7f35105f7280>
+         └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+           │    │              │    │           │   └ {}
+           │    │              │    │           └ <Request 'http://localhost:4000/ifmp/v1/uploads/quota/rv_tools_file' [GET]>
+           │    │              │    └ 'uploader_quota'
+           │    │              └ <Rule '/ifmp/v1/uploads/quota/rv_tools_file' (GET, OPTIONS, HEAD) -> uploader_quota>
+           │    └ {'static': <bound method _PackageBoundObject.send_static_file of <Flask 'main'>>, 'specs': <function View.as_view.<locals>.vi...
+           └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask_restx/api.py", line 397, in wrapper
+    resp = resource(*args, **kwargs)
+           │         │       └ {}
+           │         └ ()
+           └ <function View.as_view.<locals>.view at 0x7f350fdac700>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/views.py", line 89, in view
+    return self.dispatch_request(*args, **kwargs)
+           │    │                 │       └ {}
+           │    │                 └ ()
+           │    └ <function Resource.dispatch_request at 0x7f3510396940>
+           └ <app.licenseware.app_builder.uploads_quota_routes.add_uploads_quota_routes.<locals>.UploaderQuota object at 0x7f350c3ff7f0>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask_restx/resource.py", line 44, in dispatch_request
+    resp = meth(*args, **kwargs)
+           │     │       └ {}
+           │     └ ()
+           └ <bound method add_uploads_quota_routes.<locals>.UploaderQuota.get of <app.licenseware.app_builder.uploads_quota_routes.add_up...
+
+> File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/failsafe_decorator.py", line 32, in wrapper
+    response = f(*args, **kwargs)
+               │  │       └ {}
+               │  └ (<app.licenseware.app_builder.uploads_quota_routes.add_uploads_quota_routes.<locals>.UploaderQuota object at 0x7f350c3ff7f0>,)
+               └ <function add_uploads_quota_routes.<locals>.UploaderQuota.get at 0x7f350fdac790>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/auth_decorators/authorization_check.py", line 37, in decorated
+    return f(*args, **kwargs)
+           │  │       └ {}
+           │  └ (<app.licenseware.app_builder.uploads_quota_routes.add_uploads_quota_routes.<locals>.UploaderQuota object at 0x7f350c3ff7f0>,)
+           └ <function add_uploads_quota_routes.<locals>.UploaderQuota.get at 0x7f350fdac820>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/app_builder/uploads_quota_routes.py", line 19, in get
+    return uploader.check_tenant_quota(request.headers.get("TenantId"))
+           │        │                  └ <Request 'http://localhost:4000/ifmp/v1/uploads/quota/rv_tools_file' [GET]>
+           │        └ <function UploaderBuilder.check_tenant_quota at 0x7f350fe6ed30>
+           └ <app.licenseware.uploader_builder.uploader_builder.UploaderBuilder object at 0x7f350fe68f10>
+
+TypeError: check_tenant_quota() missing 1 required positional argument: 'uploader_id'
+2021-08-13 09:26:04.474[ ERROR ]
+app.licenseware.decorators.failsafe_decorator:wrapper:37
+
+
+
+-------------Failsafe traceback:
+
+
+
+Traceback (most recent call last):
+
+  File "/usr/lib/python3.8/runpy.py", line 194, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+           │         │     └ {'__name__': '__main__', '__doc__': 'Main entry point', '__package__': 'unittest', '__loader__': <_frozen_importlib_external....
+           │         └ <code object <module> at 0x7f340848e920, file "/usr/lib/python3.8/unittest/__main__.py", line 1>
+           └ <function _run_code at 0x7f3408bae040>
+  File "/usr/lib/python3.8/runpy.py", line 87, in _run_code
+    exec(code, run_globals)
+         │     └ {'__name__': '__main__', '__doc__': 'Main entry point', '__package__': 'unittest', '__loader__': <_frozen_importlib_external....
+         └ <code object <module> at 0x7f340848e920, file "/usr/lib/python3.8/unittest/__main__.py", line 1>
+  File "/usr/lib/python3.8/unittest/__main__.py", line 18, in <module>
+    main(module=None)
+    └ <class 'unittest.main.TestProgram'>
+  File "/usr/lib/python3.8/unittest/main.py", line 101, in __init__
+    self.runTests()
+    │    └ <function TestProgram.runTests at 0x7f34083f1f70>
+    └ <unittest.main.TestProgram object at 0x7f3408b91fd0>
+  File "/usr/lib/python3.8/unittest/main.py", line 271, in runTests
+    self.result = testRunner.run(self.test)
+    │             │          │   │    └ <unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<tests.test_app_builder_ro...
+    │             │          │   └ <unittest.main.TestProgram object at 0x7f3408b91fd0>
+    │             │          └ <function TextTestRunner.run at 0x7f34083f18b0>
+    │             └ <unittest.runner.TextTestRunner object at 0x7f3408d5b4c0>
+    └ <unittest.main.TestProgram object at 0x7f3408b91fd0>
+  File "/usr/lib/python3.8/unittest/runner.py", line 176, in run
+    test(result)
+    │    └ <unittest.runner.TextTestResult run=1 errors=0 failures=0>
+    └ <unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<tests.test_app_builder_ro...
+  File "/usr/lib/python3.8/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+           │    │    │       └ {}
+           │    │    └ (<unittest.runner.TextTestResult run=1 errors=0 failures=0>,)
+           │    └ <function TestSuite.run at 0x7f3408483790>
+           └ <unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<tests.test_app_builder_ro...
+  File "/usr/lib/python3.8/unittest/suite.py", line 122, in run
+    test(result)
+    │    └ <unittest.runner.TextTestResult run=1 errors=0 failures=0>
+    └ <unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<tests.test_app_builder_routes.TestAppBuilderRoutes testMet...
+  File "/usr/lib/python3.8/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+           │    │    │       └ {}
+           │    │    └ (<unittest.runner.TextTestResult run=1 errors=0 failures=0>,)
+           │    └ <function TestSuite.run at 0x7f3408483790>
+           └ <unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<tests.test_app_builder_routes.TestAppBuilderRoutes testMet...
+  File "/usr/lib/python3.8/unittest/suite.py", line 122, in run
+    test(result)
+    │    └ <unittest.runner.TextTestResult run=1 errors=0 failures=0>
+    └ <unittest.suite.TestSuite tests=[<tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>, <tests....
+  File "/usr/lib/python3.8/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+           │    │    │       └ {}
+           │    │    └ (<unittest.runner.TextTestResult run=1 errors=0 failures=0>,)
+           │    └ <function TestSuite.run at 0x7f3408483790>
+           └ <unittest.suite.TestSuite tests=[<tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>, <tests....
+  File "/usr/lib/python3.8/unittest/suite.py", line 122, in run
+    test(result)
+    │    └ <unittest.runner.TextTestResult run=1 errors=0 failures=0>
+    └ <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>
+  File "/usr/lib/python3.8/unittest/case.py", line 736, in __call__
+    return self.run(*args, **kwds)
+           │    │    │       └ {}
+           │    │    └ (<unittest.runner.TextTestResult run=1 errors=0 failures=0>,)
+           │    └ <function TestCase.run at 0x7f340847bdc0>
+           └ <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>
+  File "/usr/lib/python3.8/unittest/case.py", line 676, in run
+    self._callTestMethod(testMethod)
+    │    │               └ <bound method TestAppBuilderRoutes.test_app_init_route of <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test...
+    │    └ <function TestCase._callTestMethod at 0x7f340847bc10>
+    └ <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>
+  File "/usr/lib/python3.8/unittest/case.py", line 633, in _callTestMethod
+    method()
+    └ <bound method TestAppBuilderRoutes.test_app_init_route of <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test...
+
+  File "/home/acmt/Documents/lware/draft-lware/tests/test_app_builder_routes.py", line 45, in test_app_init_route
+    response = self.app.get(pathto('/app/init'), headers=headers)
+               │    │   │   │                            └ {'Tenantid': 'TheTenantid', 'Authorization': 'TheAuthorization'}
+               │    │   │   └ <function <lambda> at 0x7f340841b550>
+               │    │   └ <function Client.get at 0x7f3407bcd550>
+               │    └ <FlaskClient <Flask 'main'>>
+               └ <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>
+
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/test.py", line 1006, in get
+    return self.open(*args, **kw)
+           │    │     │       └ {'headers': {'Tenantid': 'TheTenantid', 'Authorization': 'TheAuthorization'}, 'method': 'GET'}
+           │    │     └ ('/ifmp/v1/app/init',)
+           │    └ <function FlaskClient.open at 0x7f340734a820>
+           └ <FlaskClient <Flask 'main'>>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/testing.py", line 222, in open
+    return Client.open(
+           │      └ <function Client.open at 0x7f3407bcd4c0>
+           └ <class 'werkzeug.test.Client'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/test.py", line 970, in open
+    response = self.run_wsgi_app(environ.copy(), buffered=buffered)
+               │    │            │       │                └ False
+               │    │            │       └ <method 'copy' of 'dict' objects>
+               │    │            └ {'REMOTE_ADDR': '127.0.0.1', 'HTTP_USER_AGENT': 'werkzeug/1.0.1', 'REQUEST_METHOD': 'GET', 'SCRIPT_NAME': '', 'PATH_INFO': '/...
+               │    └ <function Client.run_wsgi_app at 0x7f3407bcd3a0>
+               └ <FlaskClient <Flask 'main'>>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/test.py", line 861, in run_wsgi_app
+    rv = run_wsgi_app(self.application, environ, buffered=buffered)
+         │            │    │            │                 └ False
+         │            │    │            └ {'REMOTE_ADDR': '127.0.0.1', 'HTTP_USER_AGENT': 'werkzeug/1.0.1', 'REQUEST_METHOD': 'GET', 'SCRIPT_NAME': '', 'PATH_INFO': '/...
+         │            │    └ <Flask 'main'>
+         │            └ <FlaskClient <Flask 'main'>>
+         └ <function run_wsgi_app at 0x7f3407bcda60>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/test.py", line 1096, in run_wsgi_app
+    app_rv = app(environ, start_response)
+             │   │        └ <function run_wsgi_app.<locals>.start_response at 0x7f34083f1940>
+             │   └ {'REMOTE_ADDR': '127.0.0.1', 'HTTP_USER_AGENT': 'werkzeug/1.0.1', 'REQUEST_METHOD': 'GET', 'SCRIPT_NAME': '', 'PATH_INFO': '/...
+             └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 2464, in __call__
+    return self.wsgi_app(environ, start_response)
+           │    │        │        └ <function run_wsgi_app.<locals>.start_response at 0x7f34083f1940>
+           │    │        └ {'REMOTE_ADDR': '127.0.0.1', 'HTTP_USER_AGENT': 'werkzeug/1.0.1', 'REQUEST_METHOD': 'GET', 'SCRIPT_NAME': '', 'PATH_INFO': '/...
+           │    └ <function Flask.wsgi_app at 0x7f3407ad1c10>
+           └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+               │    └ <function Flask.full_dispatch_request at 0x7f3407ad1310>
+               └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+         │    └ <function Flask.dispatch_request at 0x7f3407ad1280>
+         └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+           │    │              │    │           │   └ {}
+           │    │              │    │           └ <Request 'http://localhost/ifmp/v1/app/init' [GET]>
+           │    │              │    └ 'initialize_tenant_app'
+           │    │              └ <Rule '/ifmp/v1/app/init' (OPTIONS, HEAD, GET) -> initialize_tenant_app>
+           │    └ {'static': <bound method _PackageBoundObject.send_static_file of <Flask 'main'>>, 'specs': <function View.as_view.<locals>.vi...
+           └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask_restx/api.py", line 397, in wrapper
+    resp = resource(*args, **kwargs)
+           │         │       └ {}
+           │         └ ()
+           └ <function View.as_view.<locals>.view at 0x7f34073c8ca0>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/views.py", line 89, in view
+    return self.dispatch_request(*args, **kwargs)
+           │    │                 │       └ {}
+           │    │                 └ ()
+           │    └ <function Resource.dispatch_request at 0x7f34077f3790>
+           └ <app.licenseware.app_builder.app_activation_route.add_app_activation_route.<locals>.InitializeTenantApp object at 0x7f3407359...
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask_restx/resource.py", line 44, in dispatch_request
+    resp = meth(*args, **kwargs)
+           │     │       └ {}
+           │     └ ()
+           └ <bound method add_app_activation_route.<locals>.InitializeTenantApp.get of <app.licenseware.app_builder.app_activation_route....
+
+> File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/failsafe_decorator.py", line 32, in wrapper
+    response = f(*args, **kwargs)
+               │  │       └ {}
+               │  └ (<app.licenseware.app_builder.app_activation_route.add_app_activation_route.<locals>.InitializeTenantApp object at 0x7f340735...
+               └ <function add_app_activation_route.<locals>.InitializeTenantApp.get at 0x7f34073c8d30>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/auth_decorators/authorization_check.py", line 37, in decorated
+    return f(*args, **kwargs)
+           │  │       └ {}
+           │  └ (<app.licenseware.app_builder.app_activation_route.add_app_activation_route.<locals>.InitializeTenantApp object at 0x7f340735...
+           └ <function add_app_activation_route.<locals>.InitializeTenantApp.get at 0x7f34073c8dc0>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/app_builder/app_activation_route.py", line 21, in get
+    qmsg, _ = uploader.init_quota(tenant_id)
+              │                   └ 'TheTenantid'
+              └ <app.licenseware.uploader_builder.uploader_builder.UploaderBuilder object at 0x7f34073fc190>
+
+AttributeError: 'UploaderBuilder' object has no attribute 'init_quota'
+2021-08-13 09:26:51.923[ ERROR ]
+app.licenseware.decorators.failsafe_decorator:wrapper:37
+
+
+
+-------------Failsafe traceback:
+
+
+
+Traceback (most recent call last):
+
+  File "/usr/lib/python3.8/runpy.py", line 194, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+           │         │     └ {'__name__': '__main__', '__doc__': 'Main entry point', '__package__': 'unittest', '__loader__': <_frozen_importlib_external....
+           │         └ <code object <module> at 0x7fc8b03b3920, file "/usr/lib/python3.8/unittest/__main__.py", line 1>
+           └ <function _run_code at 0x7fc8b0ad3040>
+  File "/usr/lib/python3.8/runpy.py", line 87, in _run_code
+    exec(code, run_globals)
+         │     └ {'__name__': '__main__', '__doc__': 'Main entry point', '__package__': 'unittest', '__loader__': <_frozen_importlib_external....
+         └ <code object <module> at 0x7fc8b03b3920, file "/usr/lib/python3.8/unittest/__main__.py", line 1>
+  File "/usr/lib/python3.8/unittest/__main__.py", line 18, in <module>
+    main(module=None)
+    └ <class 'unittest.main.TestProgram'>
+  File "/usr/lib/python3.8/unittest/main.py", line 101, in __init__
+    self.runTests()
+    │    └ <function TestProgram.runTests at 0x7fc8b0316f70>
+    └ <unittest.main.TestProgram object at 0x7fc8b0ab6fd0>
+  File "/usr/lib/python3.8/unittest/main.py", line 271, in runTests
+    self.result = testRunner.run(self.test)
+    │             │          │   │    └ <unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<tests.test_app_builder_ro...
+    │             │          │   └ <unittest.main.TestProgram object at 0x7fc8b0ab6fd0>
+    │             │          └ <function TextTestRunner.run at 0x7fc8b03168b0>
+    │             └ <unittest.runner.TextTestRunner object at 0x7fc8b0c804c0>
+    └ <unittest.main.TestProgram object at 0x7fc8b0ab6fd0>
+  File "/usr/lib/python3.8/unittest/runner.py", line 176, in run
+    test(result)
+    │    └ <unittest.runner.TextTestResult run=1 errors=0 failures=0>
+    └ <unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<tests.test_app_builder_ro...
+  File "/usr/lib/python3.8/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+           │    │    │       └ {}
+           │    │    └ (<unittest.runner.TextTestResult run=1 errors=0 failures=0>,)
+           │    └ <function TestSuite.run at 0x7fc8b03a8790>
+           └ <unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<tests.test_app_builder_ro...
+  File "/usr/lib/python3.8/unittest/suite.py", line 122, in run
+    test(result)
+    │    └ <unittest.runner.TextTestResult run=1 errors=0 failures=0>
+    └ <unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<tests.test_app_builder_routes.TestAppBuilderRoutes testMet...
+  File "/usr/lib/python3.8/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+           │    │    │       └ {}
+           │    │    └ (<unittest.runner.TextTestResult run=1 errors=0 failures=0>,)
+           │    └ <function TestSuite.run at 0x7fc8b03a8790>
+           └ <unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<tests.test_app_builder_routes.TestAppBuilderRoutes testMet...
+  File "/usr/lib/python3.8/unittest/suite.py", line 122, in run
+    test(result)
+    │    └ <unittest.runner.TextTestResult run=1 errors=0 failures=0>
+    └ <unittest.suite.TestSuite tests=[<tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>, <tests....
+  File "/usr/lib/python3.8/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+           │    │    │       └ {}
+           │    │    └ (<unittest.runner.TextTestResult run=1 errors=0 failures=0>,)
+           │    └ <function TestSuite.run at 0x7fc8b03a8790>
+           └ <unittest.suite.TestSuite tests=[<tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>, <tests....
+  File "/usr/lib/python3.8/unittest/suite.py", line 122, in run
+    test(result)
+    │    └ <unittest.runner.TextTestResult run=1 errors=0 failures=0>
+    └ <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>
+  File "/usr/lib/python3.8/unittest/case.py", line 736, in __call__
+    return self.run(*args, **kwds)
+           │    │    │       └ {}
+           │    │    └ (<unittest.runner.TextTestResult run=1 errors=0 failures=0>,)
+           │    └ <function TestCase.run at 0x7fc8b03a0dc0>
+           └ <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>
+  File "/usr/lib/python3.8/unittest/case.py", line 676, in run
+    self._callTestMethod(testMethod)
+    │    │               └ <bound method TestAppBuilderRoutes.test_app_init_route of <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test...
+    │    └ <function TestCase._callTestMethod at 0x7fc8b03a0c10>
+    └ <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>
+  File "/usr/lib/python3.8/unittest/case.py", line 633, in _callTestMethod
+    method()
+    └ <bound method TestAppBuilderRoutes.test_app_init_route of <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test...
+
+  File "/home/acmt/Documents/lware/draft-lware/tests/test_app_builder_routes.py", line 45, in test_app_init_route
+    response = self.app.get(pathto('/app/init'), headers=headers)
+               │    │   │   │                            └ {'Tenantid': 'TheTenantid', 'Authorization': 'TheAuthorization'}
+               │    │   │   └ <function <lambda> at 0x7fc8b0340550>
+               │    │   └ <function Client.get at 0x7fc8afaf1550>
+               │    └ <FlaskClient <Flask 'main'>>
+               └ <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>
+
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/test.py", line 1006, in get
+    return self.open(*args, **kw)
+           │    │     │       └ {'headers': {'Tenantid': 'TheTenantid', 'Authorization': 'TheAuthorization'}, 'method': 'GET'}
+           │    │     └ ('/ifmp/v1/app/init',)
+           │    └ <function FlaskClient.open at 0x7fc8af26f820>
+           └ <FlaskClient <Flask 'main'>>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/testing.py", line 222, in open
+    return Client.open(
+           │      └ <function Client.open at 0x7fc8afaf14c0>
+           └ <class 'werkzeug.test.Client'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/test.py", line 970, in open
+    response = self.run_wsgi_app(environ.copy(), buffered=buffered)
+               │    │            │       │                └ False
+               │    │            │       └ <method 'copy' of 'dict' objects>
+               │    │            └ {'REMOTE_ADDR': '127.0.0.1', 'HTTP_USER_AGENT': 'werkzeug/1.0.1', 'REQUEST_METHOD': 'GET', 'SCRIPT_NAME': '', 'PATH_INFO': '/...
+               │    └ <function Client.run_wsgi_app at 0x7fc8afaf13a0>
+               └ <FlaskClient <Flask 'main'>>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/test.py", line 861, in run_wsgi_app
+    rv = run_wsgi_app(self.application, environ, buffered=buffered)
+         │            │    │            │                 └ False
+         │            │    │            └ {'REMOTE_ADDR': '127.0.0.1', 'HTTP_USER_AGENT': 'werkzeug/1.0.1', 'REQUEST_METHOD': 'GET', 'SCRIPT_NAME': '', 'PATH_INFO': '/...
+         │            │    └ <Flask 'main'>
+         │            └ <FlaskClient <Flask 'main'>>
+         └ <function run_wsgi_app at 0x7fc8afaf1a60>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/test.py", line 1096, in run_wsgi_app
+    app_rv = app(environ, start_response)
+             │   │        └ <function run_wsgi_app.<locals>.start_response at 0x7fc8b0316940>
+             │   └ {'REMOTE_ADDR': '127.0.0.1', 'HTTP_USER_AGENT': 'werkzeug/1.0.1', 'REQUEST_METHOD': 'GET', 'SCRIPT_NAME': '', 'PATH_INFO': '/...
+             └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 2464, in __call__
+    return self.wsgi_app(environ, start_response)
+           │    │        │        └ <function run_wsgi_app.<locals>.start_response at 0x7fc8b0316940>
+           │    │        └ {'REMOTE_ADDR': '127.0.0.1', 'HTTP_USER_AGENT': 'werkzeug/1.0.1', 'REQUEST_METHOD': 'GET', 'SCRIPT_NAME': '', 'PATH_INFO': '/...
+           │    └ <function Flask.wsgi_app at 0x7fc8af9f6c10>
+           └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+               │    └ <function Flask.full_dispatch_request at 0x7fc8af9f6310>
+               └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+         │    └ <function Flask.dispatch_request at 0x7fc8af9f6280>
+         └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+           │    │              │    │           │   └ {}
+           │    │              │    │           └ <Request 'http://localhost/ifmp/v1/app/init' [GET]>
+           │    │              │    └ 'initialize_tenant_app'
+           │    │              └ <Rule '/ifmp/v1/app/init' (HEAD, OPTIONS, GET) -> initialize_tenant_app>
+           │    └ {'static': <bound method _PackageBoundObject.send_static_file of <Flask 'main'>>, 'specs': <function View.as_view.<locals>.vi...
+           └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask_restx/api.py", line 397, in wrapper
+    resp = resource(*args, **kwargs)
+           │         │       └ {}
+           │         └ ()
+           └ <function View.as_view.<locals>.view at 0x7fc8af2edca0>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/views.py", line 89, in view
+    return self.dispatch_request(*args, **kwargs)
+           │    │                 │       └ {}
+           │    │                 └ ()
+           │    └ <function Resource.dispatch_request at 0x7fc8af717790>
+           └ <app.licenseware.app_builder.app_activation_route.add_app_activation_route.<locals>.InitializeTenantApp object at 0x7fc8af278...
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask_restx/resource.py", line 44, in dispatch_request
+    resp = meth(*args, **kwargs)
+           │     │       └ {}
+           │     └ ()
+           └ <bound method add_app_activation_route.<locals>.InitializeTenantApp.get of <app.licenseware.app_builder.app_activation_route....
+
+> File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/failsafe_decorator.py", line 32, in wrapper
+    response = f(*args, **kwargs)
+               │  │       └ {}
+               │  └ (<app.licenseware.app_builder.app_activation_route.add_app_activation_route.<locals>.InitializeTenantApp object at 0x7fc8af27...
+               └ <function add_app_activation_route.<locals>.InitializeTenantApp.get at 0x7fc8af2edd30>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/auth_decorators/authorization_check.py", line 37, in decorated
+    return f(*args, **kwargs)
+           │  │       └ {}
+           │  └ (<app.licenseware.app_builder.app_activation_route.add_app_activation_route.<locals>.InitializeTenantApp object at 0x7fc8af27...
+           └ <function add_app_activation_route.<locals>.InitializeTenantApp.get at 0x7fc8af2eddc0>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/app_builder/app_activation_route.py", line 21, in get
+    qmsg, _ = uploader.init_quota(tenant_id)
+              │                   └ 'TheTenantid'
+              └ <app.licenseware.uploader_builder.uploader_builder.UploaderBuilder object at 0x7fc8af3211c0>
+
+AttributeError: 'UploaderBuilder' object has no attribute 'init_quota'
+2021-08-13 09:29:12.327[ ERROR ]
+app.licenseware.decorators.failsafe_decorator:wrapper:37
+
+
+
+-------------Failsafe traceback:
+
+
+
+Traceback (most recent call last):
+
+  File "/usr/lib/python3.8/runpy.py", line 194, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+           │         │     └ {'__name__': '__main__', '__doc__': 'Main entry point', '__package__': 'unittest', '__loader__': <_frozen_importlib_external....
+           │         └ <code object <module> at 0x7fda319a3920, file "/usr/lib/python3.8/unittest/__main__.py", line 1>
+           └ <function _run_code at 0x7fda320b7040>
+  File "/usr/lib/python3.8/runpy.py", line 87, in _run_code
+    exec(code, run_globals)
+         │     └ {'__name__': '__main__', '__doc__': 'Main entry point', '__package__': 'unittest', '__loader__': <_frozen_importlib_external....
+         └ <code object <module> at 0x7fda319a3920, file "/usr/lib/python3.8/unittest/__main__.py", line 1>
+  File "/usr/lib/python3.8/unittest/__main__.py", line 18, in <module>
+    main(module=None)
+    └ <class 'unittest.main.TestProgram'>
+  File "/usr/lib/python3.8/unittest/main.py", line 101, in __init__
+    self.runTests()
+    │    └ <function TestProgram.runTests at 0x7fda31905f70>
+    └ <unittest.main.TestProgram object at 0x7fda320a4fd0>
+  File "/usr/lib/python3.8/unittest/main.py", line 271, in runTests
+    self.result = testRunner.run(self.test)
+    │             │          │   │    └ <unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<tests.test_app_builder_ro...
+    │             │          │   └ <unittest.main.TestProgram object at 0x7fda320a4fd0>
+    │             │          └ <function TextTestRunner.run at 0x7fda319058b0>
+    │             └ <unittest.runner.TextTestRunner object at 0x7fda3226f4c0>
+    └ <unittest.main.TestProgram object at 0x7fda320a4fd0>
+  File "/usr/lib/python3.8/unittest/runner.py", line 176, in run
+    test(result)
+    │    └ <unittest.runner.TextTestResult run=1 errors=0 failures=0>
+    └ <unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<tests.test_app_builder_ro...
+  File "/usr/lib/python3.8/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+           │    │    │       └ {}
+           │    │    └ (<unittest.runner.TextTestResult run=1 errors=0 failures=0>,)
+           │    └ <function TestSuite.run at 0x7fda31997790>
+           └ <unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<tests.test_app_builder_ro...
+  File "/usr/lib/python3.8/unittest/suite.py", line 122, in run
+    test(result)
+    │    └ <unittest.runner.TextTestResult run=1 errors=0 failures=0>
+    └ <unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<tests.test_app_builder_routes.TestAppBuilderRoutes testMet...
+  File "/usr/lib/python3.8/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+           │    │    │       └ {}
+           │    │    └ (<unittest.runner.TextTestResult run=1 errors=0 failures=0>,)
+           │    └ <function TestSuite.run at 0x7fda31997790>
+           └ <unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<tests.test_app_builder_routes.TestAppBuilderRoutes testMet...
+  File "/usr/lib/python3.8/unittest/suite.py", line 122, in run
+    test(result)
+    │    └ <unittest.runner.TextTestResult run=1 errors=0 failures=0>
+    └ <unittest.suite.TestSuite tests=[<tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>, <tests....
+  File "/usr/lib/python3.8/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+           │    │    │       └ {}
+           │    │    └ (<unittest.runner.TextTestResult run=1 errors=0 failures=0>,)
+           │    └ <function TestSuite.run at 0x7fda31997790>
+           └ <unittest.suite.TestSuite tests=[<tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>, <tests....
+  File "/usr/lib/python3.8/unittest/suite.py", line 122, in run
+    test(result)
+    │    └ <unittest.runner.TextTestResult run=1 errors=0 failures=0>
+    └ <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>
+  File "/usr/lib/python3.8/unittest/case.py", line 736, in __call__
+    return self.run(*args, **kwds)
+           │    │    │       └ {}
+           │    │    └ (<unittest.runner.TextTestResult run=1 errors=0 failures=0>,)
+           │    └ <function TestCase.run at 0x7fda3198fdc0>
+           └ <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>
+  File "/usr/lib/python3.8/unittest/case.py", line 676, in run
+    self._callTestMethod(testMethod)
+    │    │               └ <bound method TestAppBuilderRoutes.test_app_init_route of <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test...
+    │    └ <function TestCase._callTestMethod at 0x7fda3198fc10>
+    └ <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>
+  File "/usr/lib/python3.8/unittest/case.py", line 633, in _callTestMethod
+    method()
+    └ <bound method TestAppBuilderRoutes.test_app_init_route of <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test...
+
+  File "/home/acmt/Documents/lware/draft-lware/tests/test_app_builder_routes.py", line 45, in test_app_init_route
+    response = self.app.get(pathto('/app/init'), headers=headers)
+               │    │   │   │                            └ {'Tenantid': 'TheTenantid', 'Authorization': 'TheAuthorization'}
+               │    │   │   └ <function <lambda> at 0x7fda3192f550>
+               │    │   └ <function Client.get at 0x7fda310e0550>
+               │    └ <FlaskClient <Flask 'main'>>
+               └ <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>
+
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/test.py", line 1006, in get
+    return self.open(*args, **kw)
+           │    │     │       └ {'headers': {'Tenantid': 'TheTenantid', 'Authorization': 'TheAuthorization'}, 'method': 'GET'}
+           │    │     └ ('/ifmp/v1/app/init',)
+           │    └ <function FlaskClient.open at 0x7fda3085e820>
+           └ <FlaskClient <Flask 'main'>>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/testing.py", line 222, in open
+    return Client.open(
+           │      └ <function Client.open at 0x7fda310e04c0>
+           └ <class 'werkzeug.test.Client'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/test.py", line 970, in open
+    response = self.run_wsgi_app(environ.copy(), buffered=buffered)
+               │    │            │       │                └ False
+               │    │            │       └ <method 'copy' of 'dict' objects>
+               │    │            └ {'REMOTE_ADDR': '127.0.0.1', 'HTTP_USER_AGENT': 'werkzeug/1.0.1', 'REQUEST_METHOD': 'GET', 'SCRIPT_NAME': '', 'PATH_INFO': '/...
+               │    └ <function Client.run_wsgi_app at 0x7fda310e03a0>
+               └ <FlaskClient <Flask 'main'>>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/test.py", line 861, in run_wsgi_app
+    rv = run_wsgi_app(self.application, environ, buffered=buffered)
+         │            │    │            │                 └ False
+         │            │    │            └ {'REMOTE_ADDR': '127.0.0.1', 'HTTP_USER_AGENT': 'werkzeug/1.0.1', 'REQUEST_METHOD': 'GET', 'SCRIPT_NAME': '', 'PATH_INFO': '/...
+         │            │    └ <Flask 'main'>
+         │            └ <FlaskClient <Flask 'main'>>
+         └ <function run_wsgi_app at 0x7fda310e0a60>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/test.py", line 1096, in run_wsgi_app
+    app_rv = app(environ, start_response)
+             │   │        └ <function run_wsgi_app.<locals>.start_response at 0x7fda31905940>
+             │   └ {'REMOTE_ADDR': '127.0.0.1', 'HTTP_USER_AGENT': 'werkzeug/1.0.1', 'REQUEST_METHOD': 'GET', 'SCRIPT_NAME': '', 'PATH_INFO': '/...
+             └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 2464, in __call__
+    return self.wsgi_app(environ, start_response)
+           │    │        │        └ <function run_wsgi_app.<locals>.start_response at 0x7fda31905940>
+           │    │        └ {'REMOTE_ADDR': '127.0.0.1', 'HTTP_USER_AGENT': 'werkzeug/1.0.1', 'REQUEST_METHOD': 'GET', 'SCRIPT_NAME': '', 'PATH_INFO': '/...
+           │    └ <function Flask.wsgi_app at 0x7fda30fe5c10>
+           └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+               │    └ <function Flask.full_dispatch_request at 0x7fda30fe5310>
+               └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+         │    └ <function Flask.dispatch_request at 0x7fda30fe5280>
+         └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+           │    │              │    │           │   └ {}
+           │    │              │    │           └ <Request 'http://localhost/ifmp/v1/app/init' [GET]>
+           │    │              │    └ 'initialize_tenant_app'
+           │    │              └ <Rule '/ifmp/v1/app/init' (HEAD, OPTIONS, GET) -> initialize_tenant_app>
+           │    └ {'static': <bound method _PackageBoundObject.send_static_file of <Flask 'main'>>, 'specs': <function View.as_view.<locals>.vi...
+           └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask_restx/api.py", line 397, in wrapper
+    resp = resource(*args, **kwargs)
+           │         │       └ {}
+           │         └ ()
+           └ <function View.as_view.<locals>.view at 0x7fda308dcca0>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/views.py", line 89, in view
+    return self.dispatch_request(*args, **kwargs)
+           │    │                 │       └ {}
+           │    │                 └ ()
+           │    └ <function Resource.dispatch_request at 0x7fda30d06790>
+           └ <app.licenseware.app_builder.app_activation_route.add_app_activation_route.<locals>.InitializeTenantApp object at 0x7fda30859...
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask_restx/resource.py", line 44, in dispatch_request
+    resp = meth(*args, **kwargs)
+           │     │       └ {}
+           │     └ ()
+           └ <bound method add_app_activation_route.<locals>.InitializeTenantApp.get of <app.licenseware.app_builder.app_activation_route....
+
+> File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/failsafe_decorator.py", line 32, in wrapper
+    response = f(*args, **kwargs)
+               │  │       └ {}
+               │  └ (<app.licenseware.app_builder.app_activation_route.add_app_activation_route.<locals>.InitializeTenantApp object at 0x7fda3085...
+               └ <function add_app_activation_route.<locals>.InitializeTenantApp.get at 0x7fda308dcd30>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/auth_decorators/authorization_check.py", line 37, in decorated
+    return f(*args, **kwargs)
+           │  │       └ {}
+           │  └ (<app.licenseware.app_builder.app_activation_route.add_app_activation_route.<locals>.InitializeTenantApp object at 0x7fda3085...
+           └ <function add_app_activation_route.<locals>.InitializeTenantApp.get at 0x7fda308dcdc0>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/app_builder/app_activation_route.py", line 21, in get
+    qmsg, _ = uploader.init_quota(tenant_id)
+              │                   └ 'TheTenantid'
+              └ <app.licenseware.uploader_builder.uploader_builder.UploaderBuilder object at 0x7fda30910100>
+
+AttributeError: 'UploaderBuilder' object has no attribute 'init_quota'
+2021-08-13 09:49:47.495[ ERROR ]
+app.licenseware.decorators.failsafe_decorator:wrapper:37
+
+
+
+-------------Failsafe traceback:
+
+
+
+Traceback (most recent call last):
+
+  File "/usr/lib/python3.8/runpy.py", line 194, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+           │         │     └ {'__name__': '__main__', '__doc__': 'Main entry point', '__package__': 'unittest', '__loader__': <_frozen_importlib_external....
+           │         └ <code object <module> at 0x7f290a3cb920, file "/usr/lib/python3.8/unittest/__main__.py", line 1>
+           └ <function _run_code at 0x7f290aaeb040>
+  File "/usr/lib/python3.8/runpy.py", line 87, in _run_code
+    exec(code, run_globals)
+         │     └ {'__name__': '__main__', '__doc__': 'Main entry point', '__package__': 'unittest', '__loader__': <_frozen_importlib_external....
+         └ <code object <module> at 0x7f290a3cb920, file "/usr/lib/python3.8/unittest/__main__.py", line 1>
+  File "/usr/lib/python3.8/unittest/__main__.py", line 18, in <module>
+    main(module=None)
+    └ <class 'unittest.main.TestProgram'>
+  File "/usr/lib/python3.8/unittest/main.py", line 101, in __init__
+    self.runTests()
+    │    └ <function TestProgram.runTests at 0x7f290a32ff70>
+    └ <unittest.main.TestProgram object at 0x7f290aacefd0>
+  File "/usr/lib/python3.8/unittest/main.py", line 271, in runTests
+    self.result = testRunner.run(self.test)
+    │             │          │   │    └ <unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<tests.test_app_builder_ro...
+    │             │          │   └ <unittest.main.TestProgram object at 0x7f290aacefd0>
+    │             │          └ <function TextTestRunner.run at 0x7f290a32f8b0>
+    │             └ <unittest.runner.TextTestRunner object at 0x7f290ac984c0>
+    └ <unittest.main.TestProgram object at 0x7f290aacefd0>
+  File "/usr/lib/python3.8/unittest/runner.py", line 176, in run
+    test(result)
+    │    └ <unittest.runner.TextTestResult run=1 errors=0 failures=0>
+    └ <unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<tests.test_app_builder_ro...
+  File "/usr/lib/python3.8/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+           │    │    │       └ {}
+           │    │    └ (<unittest.runner.TextTestResult run=1 errors=0 failures=0>,)
+           │    └ <function TestSuite.run at 0x7f290a3c0790>
+           └ <unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<tests.test_app_builder_ro...
+  File "/usr/lib/python3.8/unittest/suite.py", line 122, in run
+    test(result)
+    │    └ <unittest.runner.TextTestResult run=1 errors=0 failures=0>
+    └ <unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<tests.test_app_builder_routes.TestAppBuilderRoutes testMet...
+  File "/usr/lib/python3.8/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+           │    │    │       └ {}
+           │    │    └ (<unittest.runner.TextTestResult run=1 errors=0 failures=0>,)
+           │    └ <function TestSuite.run at 0x7f290a3c0790>
+           └ <unittest.suite.TestSuite tests=[<unittest.suite.TestSuite tests=[<tests.test_app_builder_routes.TestAppBuilderRoutes testMet...
+  File "/usr/lib/python3.8/unittest/suite.py", line 122, in run
+    test(result)
+    │    └ <unittest.runner.TextTestResult run=1 errors=0 failures=0>
+    └ <unittest.suite.TestSuite tests=[<tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>, <tests....
+  File "/usr/lib/python3.8/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+           │    │    │       └ {}
+           │    │    └ (<unittest.runner.TextTestResult run=1 errors=0 failures=0>,)
+           │    └ <function TestSuite.run at 0x7f290a3c0790>
+           └ <unittest.suite.TestSuite tests=[<tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>, <tests....
+  File "/usr/lib/python3.8/unittest/suite.py", line 122, in run
+    test(result)
+    │    └ <unittest.runner.TextTestResult run=1 errors=0 failures=0>
+    └ <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>
+  File "/usr/lib/python3.8/unittest/case.py", line 736, in __call__
+    return self.run(*args, **kwds)
+           │    │    │       └ {}
+           │    │    └ (<unittest.runner.TextTestResult run=1 errors=0 failures=0>,)
+           │    └ <function TestCase.run at 0x7f290a3b8dc0>
+           └ <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>
+  File "/usr/lib/python3.8/unittest/case.py", line 676, in run
+    self._callTestMethod(testMethod)
+    │    │               └ <bound method TestAppBuilderRoutes.test_app_init_route of <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test...
+    │    └ <function TestCase._callTestMethod at 0x7f290a3b8c10>
+    └ <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>
+  File "/usr/lib/python3.8/unittest/case.py", line 633, in _callTestMethod
+    method()
+    └ <bound method TestAppBuilderRoutes.test_app_init_route of <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test...
+
+  File "/home/acmt/Documents/lware/draft-lware/tests/test_app_builder_routes.py", line 45, in test_app_init_route
+    response = self.app.get(pathto('/app/init'), headers=headers)
+               │    │   │   │                            └ {'Tenantid': 'TheTenantid', 'Authorization': 'TheAuthorization'}
+               │    │   │   └ <function <lambda> at 0x7f290a358550>
+               │    │   └ <function Client.get at 0x7f2909b09550>
+               │    └ <FlaskClient <Flask 'main'>>
+               └ <tests.test_app_builder_routes.TestAppBuilderRoutes testMethod=test_app_init_route>
+
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/test.py", line 1006, in get
+    return self.open(*args, **kw)
+           │    │     │       └ {'headers': {'Tenantid': 'TheTenantid', 'Authorization': 'TheAuthorization'}, 'method': 'GET'}
+           │    │     └ ('/ifmp/v1/app/init',)
+           │    └ <function FlaskClient.open at 0x7f290928a8b0>
+           └ <FlaskClient <Flask 'main'>>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/testing.py", line 222, in open
+    return Client.open(
+           │      └ <function Client.open at 0x7f2909b094c0>
+           └ <class 'werkzeug.test.Client'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/test.py", line 970, in open
+    response = self.run_wsgi_app(environ.copy(), buffered=buffered)
+               │    │            │       │                └ False
+               │    │            │       └ <method 'copy' of 'dict' objects>
+               │    │            └ {'REMOTE_ADDR': '127.0.0.1', 'HTTP_USER_AGENT': 'werkzeug/1.0.1', 'REQUEST_METHOD': 'GET', 'SCRIPT_NAME': '', 'PATH_INFO': '/...
+               │    └ <function Client.run_wsgi_app at 0x7f2909b093a0>
+               └ <FlaskClient <Flask 'main'>>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/test.py", line 861, in run_wsgi_app
+    rv = run_wsgi_app(self.application, environ, buffered=buffered)
+         │            │    │            │                 └ False
+         │            │    │            └ {'REMOTE_ADDR': '127.0.0.1', 'HTTP_USER_AGENT': 'werkzeug/1.0.1', 'REQUEST_METHOD': 'GET', 'SCRIPT_NAME': '', 'PATH_INFO': '/...
+         │            │    └ <Flask 'main'>
+         │            └ <FlaskClient <Flask 'main'>>
+         └ <function run_wsgi_app at 0x7f2909b09a60>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/test.py", line 1096, in run_wsgi_app
+    app_rv = app(environ, start_response)
+             │   │        └ <function run_wsgi_app.<locals>.start_response at 0x7f290a32f940>
+             │   └ {'REMOTE_ADDR': '127.0.0.1', 'HTTP_USER_AGENT': 'werkzeug/1.0.1', 'REQUEST_METHOD': 'GET', 'SCRIPT_NAME': '', 'PATH_INFO': '/...
+             └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 2464, in __call__
+    return self.wsgi_app(environ, start_response)
+           │    │        │        └ <function run_wsgi_app.<locals>.start_response at 0x7f290a32f940>
+           │    │        └ {'REMOTE_ADDR': '127.0.0.1', 'HTTP_USER_AGENT': 'werkzeug/1.0.1', 'REQUEST_METHOD': 'GET', 'SCRIPT_NAME': '', 'PATH_INFO': '/...
+           │    └ <function Flask.wsgi_app at 0x7f2909a0ec10>
+           └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+               │    └ <function Flask.full_dispatch_request at 0x7f2909a0e310>
+               └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+         │    └ <function Flask.dispatch_request at 0x7f2909a0e280>
+         └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+           │    │              │    │           │   └ {}
+           │    │              │    │           └ <Request 'http://localhost/ifmp/v1/app/init' [GET]>
+           │    │              │    └ 'initialize_tenant_app'
+           │    │              └ <Rule '/ifmp/v1/app/init' (GET, HEAD, OPTIONS) -> initialize_tenant_app>
+           │    └ {'static': <bound method _PackageBoundObject.send_static_file of <Flask 'main'>>, 'specs': <function View.as_view.<locals>.vi...
+           └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask_restx/api.py", line 397, in wrapper
+    resp = resource(*args, **kwargs)
+           │         │       └ {}
+           │         └ ()
+           └ <function View.as_view.<locals>.view at 0x7f29092fdd30>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/views.py", line 89, in view
+    return self.dispatch_request(*args, **kwargs)
+           │    │                 │       └ {}
+           │    │                 └ ()
+           │    └ <function Resource.dispatch_request at 0x7f290972f790>
+           └ <app.licenseware.app_builder.app_activation_route.add_app_activation_route.<locals>.InitializeTenantApp object at 0x7f2909298...
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask_restx/resource.py", line 44, in dispatch_request
+    resp = meth(*args, **kwargs)
+           │     │       └ {}
+           │     └ ()
+           └ <bound method add_app_activation_route.<locals>.InitializeTenantApp.get of <app.licenseware.app_builder.app_activation_route....
+
+> File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/failsafe_decorator.py", line 32, in wrapper
+    response = f(*args, **kwargs)
+               │  │       └ {}
+               │  └ (<app.licenseware.app_builder.app_activation_route.add_app_activation_route.<locals>.InitializeTenantApp object at 0x7f290929...
+               └ <function add_app_activation_route.<locals>.InitializeTenantApp.get at 0x7f29092fddc0>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/auth_decorators/authorization_check.py", line 37, in decorated
+    return f(*args, **kwargs)
+           │  │       └ {}
+           │  └ (<app.licenseware.app_builder.app_activation_route.add_app_activation_route.<locals>.InitializeTenantApp object at 0x7f290929...
+           └ <function add_app_activation_route.<locals>.InitializeTenantApp.get at 0x7f29092fde50>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/app_builder/app_activation_route.py", line 21, in get
+    qmsg, _ = uploader.init_quota(tenant_id)
+              │        │          └ 'TheTenantid'
+              │        └ <function UploaderBuilder.init_quota at 0x7f29093361f0>
+              └ <app.licenseware.uploader_builder.uploader_builder.UploaderBuilder object at 0x7f2909339610>
+
+TypeError: init_quota() missing 1 required positional argument: 'uploader_id'
+2021-08-13 10:06:24.838[ WARNING ]
+app.licenseware.app_builder.app_builder:add_default_routes:147
+No uploaders provided
+
+2021-08-13 10:06:27.984[ WARNING ]
+app.licenseware.app_builder.app_builder:add_default_routes:147
+No reports provided
+
+2021-08-13 10:06:30.757[ WARNING ]
+app.licenseware.app_builder.app_builder:add_default_routes:147
+No reports provided
+
+2021-08-13 10:06:41.899[ WARNING ]
+app.licenseware.app_builder.app_builder:add_default_routes:147
+No reports provided
+
+2021-08-13 10:06:48.851[ WARNING ]
+app.licenseware.app_builder.app_builder:add_default_routes:144
+No reports provided
+
+2021-08-13 10:06:51.956[ WARNING ]
+app.licenseware.app_builder.app_builder:add_default_routes:144
+No reports provided
+
+2021-08-13 10:07:15.208[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:115
+No reports provided
+
+2021-08-13 10:07:18.342[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:115
+No reports provided
+
+2021-08-13 10:07:20.887[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:115
+No reports provided
+
+2021-08-13 10:07:23.571[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:115
+No reports provided
+
+2021-08-13 10:08:39.274[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:115
+No reports provided
+
+2021-08-13 10:08:42.202[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:115
+No reports provided
+
+2021-08-13 10:08:57.878[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:115
+No reports provided
+
+2021-08-13 10:09:12.736[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:115
+No reports provided
+
+2021-08-13 10:09:15.268[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:115
+No reports provided
+
+2021-08-13 10:10:10.739[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:118
+No reports provided
+
+2021-08-13 10:10:15.130[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:118
+No reports provided
+
+2021-08-13 10:10:29.606[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:120
+No reports provided
+
+2021-08-13 10:10:31.762[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:119
+No reports provided
+
+2021-08-13 10:11:20.874[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:119
+No reports provided
+
+2021-08-13 10:11:35.249[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:119
+No reports provided
+
+2021-08-13 10:11:37.123[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:119
+No reports provided
+
+2021-08-13 10:11:39.782[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:119
+No reports provided
+
+2021-08-13 10:11:53.217[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:119
+No reports provided
+
+2021-08-13 10:11:55.520[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:119
+No reports provided
+
+2021-08-13 10:12:01.621[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:119
+No reports provided
+
+2021-08-13 10:12:06.433[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:119
+No reports provided
+
+2021-08-13 10:12:32.356[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:119
+No reports provided
+
+2021-08-13 10:12:38.106[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:121
+No reports provided
+
+2021-08-13 10:16:49.319[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-13 10:16:49.692[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-13 10:17:05.777[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-13 10:17:07.359[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-13 10:17:14.064[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-13 10:19:22.986[ ERROR ]
+app.licenseware.decorators.failsafe_decorator:wrapper:37
+
+
+
+-------------Failsafe traceback:
+
+
+
+Traceback (most recent call last):
+
+  File "/usr/lib/python3.8/threading.py", line 890, in _bootstrap
+    self._bootstrap_inner()
+    │    └ <function Thread._bootstrap_inner at 0x7f52173fe430>
+    └ <Thread(Thread-23, started daemon 139989736212224)>
+  File "/usr/lib/python3.8/threading.py", line 932, in _bootstrap_inner
+    self.run()
+    │    └ <function Thread.run at 0x7f52173fe160>
+    └ <Thread(Thread-23, started daemon 139989736212224)>
+  File "/usr/lib/python3.8/threading.py", line 870, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Thread(Thread-23, started daemon 139989736212224)>
+    │    │        │    └ (<socket.socket fd=12, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 4000), raddr=(...
+    │    │        └ <Thread(Thread-23, started daemon 139989736212224)>
+    │    └ <bound method ThreadingMixIn.process_request_thread of <werkzeug.serving.ThreadedWSGIServer object at 0x7f5215c83130>>
+    └ <Thread(Thread-23, started daemon 139989736212224)>
+  File "/usr/lib/python3.8/socketserver.py", line 683, in process_request_thread
+    self.finish_request(request, client_address)
+    │    │              │        └ ('127.0.0.1', 34022)
+    │    │              └ <socket.socket fd=12, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 4000), raddr=('...
+    │    └ <function BaseServer.finish_request at 0x7f5216add4c0>
+    └ <werkzeug.serving.ThreadedWSGIServer object at 0x7f5215c83130>
+  File "/usr/lib/python3.8/socketserver.py", line 360, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    │    │                   │        │               └ <werkzeug.serving.ThreadedWSGIServer object at 0x7f5215c83130>
+    │    │                   │        └ ('127.0.0.1', 34022)
+    │    │                   └ <socket.socket fd=12, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 4000), raddr=('...
+    │    └ <class 'werkzeug.serving.WSGIRequestHandler'>
+    └ <werkzeug.serving.ThreadedWSGIServer object at 0x7f5215c83130>
+  File "/usr/lib/python3.8/socketserver.py", line 747, in __init__
+    self.handle()
+    │    └ <function WSGIRequestHandler.handle at 0x7f521680c040>
+    └ <werkzeug.serving.WSGIRequestHandler object at 0x7f5214318280>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 345, in handle
+    BaseHTTPRequestHandler.handle(self)
+    │                      │      └ <werkzeug.serving.WSGIRequestHandler object at 0x7f5214318280>
+    │                      └ <function BaseHTTPRequestHandler.handle at 0x7f5216889940>
+    └ <class 'http.server.BaseHTTPRequestHandler'>
+  File "/usr/lib/python3.8/http/server.py", line 427, in handle
+    self.handle_one_request()
+    │    └ <function WSGIRequestHandler.handle_one_request at 0x7f521680c1f0>
+    └ <werkzeug.serving.WSGIRequestHandler object at 0x7f5214318280>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 379, in handle_one_request
+    return self.run_wsgi()
+           │    └ <function WSGIRequestHandler.run_wsgi at 0x7f5216808f70>
+           └ <werkzeug.serving.WSGIRequestHandler object at 0x7f5214318280>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 323, in run_wsgi
+    execute(self.server.app)
+    │       │    │      └ <werkzeug.debug.DebuggedApplication object at 0x7f5215d16eb0>
+    │       │    └ <werkzeug.serving.ThreadedWSGIServer object at 0x7f5215c83130>
+    │       └ <werkzeug.serving.WSGIRequestHandler object at 0x7f5214318280>
+    └ <function WSGIRequestHandler.run_wsgi.<locals>.execute at 0x7f5214319160>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 314, in execute
+    for data in application_iter:
+                └ <generator object DebuggedApplication.debug_application at 0x7f52143bec80>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/debug/__init__.py", line 304, in debug_application
+    app_iter = self.app(environ, start_response)
+               │    │   │        └ <function WSGIRequestHandler.run_wsgi.<locals>.start_response at 0x7f52143190d0>
+               │    │   └ {'wsgi.version': (1, 0), 'wsgi.url_scheme': 'http', 'wsgi.input': <_io.BufferedReader name=12>, 'wsgi.errors': <_io.TextIOWra...
+               │    └ <Flask 'main'>
+               └ <werkzeug.debug.DebuggedApplication object at 0x7f5215d16eb0>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 2464, in __call__
+    return self.wsgi_app(environ, start_response)
+           │    │        │        └ <function WSGIRequestHandler.run_wsgi.<locals>.start_response at 0x7f52143190d0>
+           │    │        └ {'wsgi.version': (1, 0), 'wsgi.url_scheme': 'http', 'wsgi.input': <_io.BufferedReader name=12>, 'wsgi.errors': <_io.TextIOWra...
+           │    └ <function Flask.wsgi_app at 0x7f5216560c10>
+           └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+               │    └ <function Flask.full_dispatch_request at 0x7f5216560310>
+               └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+         │    └ <function Flask.dispatch_request at 0x7f5216560280>
+         └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+           │    │              │    │           │   └ {}
+           │    │              │    │           └ <Request 'http://localhost:4000/ifmp/v1/uploads/quota/rv_tools' [GET]>
+           │    │              │    └ 'uploader_quota'
+           │    │              └ <Rule '/ifmp/v1/uploads/quota/rv_tools' (OPTIONS, GET, HEAD) -> uploader_quota>
+           │    └ {'static': <bound method _PackageBoundObject.send_static_file of <Flask 'main'>>, 'specs': <function View.as_view.<locals>.vi...
+           └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask_restx/api.py", line 397, in wrapper
+    resp = resource(*args, **kwargs)
+           │         │       └ {}
+           │         └ ()
+           └ <function View.as_view.<locals>.view at 0x7f5215d15820>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/views.py", line 89, in view
+    return self.dispatch_request(*args, **kwargs)
+           │    │                 │       └ {}
+           │    │                 └ ()
+           │    └ <function Resource.dispatch_request at 0x7f5216300940>
+           └ <app.licenseware.app_builder.uploads_quota_routes.add_uploads_quota_routes.<locals>.UploaderQuota object at 0x7f52143185e0>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask_restx/resource.py", line 44, in dispatch_request
+    resp = meth(*args, **kwargs)
+           │     │       └ {}
+           │     └ ()
+           └ <bound method add_uploads_quota_routes.<locals>.UploaderQuota.get of <app.licenseware.app_builder.uploads_quota_routes.add_up...
+
+> File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/failsafe_decorator.py", line 32, in wrapper
+    response = f(*args, **kwargs)
+               │  │       └ {}
+               │  └ (<app.licenseware.app_builder.uploads_quota_routes.add_uploads_quota_routes.<locals>.UploaderQuota object at 0x7f52143185e0>,)
+               └ <function add_uploads_quota_routes.<locals>.UploaderQuota.get at 0x7f5215d158b0>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/auth_decorators/authorization_check.py", line 37, in decorated
+    return f(*args, **kwargs)
+           │  │       └ {}
+           │  └ (<app.licenseware.app_builder.uploads_quota_routes.add_uploads_quota_routes.<locals>.UploaderQuota object at 0x7f52143185e0>,)
+           └ <function add_uploads_quota_routes.<locals>.UploaderQuota.get at 0x7f5215d15940>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/app_builder/uploads_quota_routes.py", line 19, in get
+    return uploader.check_tenant_quota(request.headers.get("TenantId"))
+           │                           └ <Request 'http://localhost:4000/ifmp/v1/uploads/quota/rv_tools' [GET]>
+           └ <app.licenseware.uploader_builder.uploader_builder.UploaderBuilder object at 0x7f52162e7940>
+
+AttributeError: 'UploaderBuilder' object has no attribute 'check_tenant_quota'
+2021-08-13 10:19:39.993[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-13 10:19:47.993[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-13 10:19:52.975[ ERROR ]
+app.licenseware.decorators.failsafe_decorator:wrapper:37
+
+
+
+-------------Failsafe traceback:
+
+
+
+Traceback (most recent call last):
+
+  File "/usr/lib/python3.8/threading.py", line 890, in _bootstrap
+    self._bootstrap_inner()
+    │    └ <function Thread._bootstrap_inner at 0x7fcaf0e53430>
+    └ <Thread(Thread-15, started daemon 140509133641472)>
+  File "/usr/lib/python3.8/threading.py", line 932, in _bootstrap_inner
+    self.run()
+    │    └ <function Thread.run at 0x7fcaf0e53160>
+    └ <Thread(Thread-15, started daemon 140509133641472)>
+  File "/usr/lib/python3.8/threading.py", line 870, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Thread(Thread-15, started daemon 140509133641472)>
+    │    │        │    └ (<socket.socket fd=12, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 4000), raddr=(...
+    │    │        └ <Thread(Thread-15, started daemon 140509133641472)>
+    │    └ <bound method ThreadingMixIn.process_request_thread of <werkzeug.serving.ThreadedWSGIServer object at 0x7fcaef6d9100>>
+    └ <Thread(Thread-15, started daemon 140509133641472)>
+  File "/usr/lib/python3.8/socketserver.py", line 683, in process_request_thread
+    self.finish_request(request, client_address)
+    │    │              │        └ ('127.0.0.1', 34070)
+    │    │              └ <socket.socket fd=12, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 4000), raddr=('...
+    │    └ <function BaseServer.finish_request at 0x7fcaf05324c0>
+    └ <werkzeug.serving.ThreadedWSGIServer object at 0x7fcaef6d9100>
+  File "/usr/lib/python3.8/socketserver.py", line 360, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    │    │                   │        │               └ <werkzeug.serving.ThreadedWSGIServer object at 0x7fcaef6d9100>
+    │    │                   │        └ ('127.0.0.1', 34070)
+    │    │                   └ <socket.socket fd=12, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 4000), raddr=('...
+    │    └ <class 'werkzeug.serving.WSGIRequestHandler'>
+    └ <werkzeug.serving.ThreadedWSGIServer object at 0x7fcaef6d9100>
+  File "/usr/lib/python3.8/socketserver.py", line 747, in __init__
+    self.handle()
+    │    └ <function WSGIRequestHandler.handle at 0x7fcaf0261040>
+    └ <werkzeug.serving.WSGIRequestHandler object at 0x7fcaec64c3d0>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 345, in handle
+    BaseHTTPRequestHandler.handle(self)
+    │                      │      └ <werkzeug.serving.WSGIRequestHandler object at 0x7fcaec64c3d0>
+    │                      └ <function BaseHTTPRequestHandler.handle at 0x7fcaf02de940>
+    └ <class 'http.server.BaseHTTPRequestHandler'>
+  File "/usr/lib/python3.8/http/server.py", line 427, in handle
+    self.handle_one_request()
+    │    └ <function WSGIRequestHandler.handle_one_request at 0x7fcaf02611f0>
+    └ <werkzeug.serving.WSGIRequestHandler object at 0x7fcaec64c3d0>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 379, in handle_one_request
+    return self.run_wsgi()
+           │    └ <function WSGIRequestHandler.run_wsgi at 0x7fcaf025ef70>
+           └ <werkzeug.serving.WSGIRequestHandler object at 0x7fcaec64c3d0>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 323, in run_wsgi
+    execute(self.server.app)
+    │       │    │      └ <werkzeug.debug.DebuggedApplication object at 0x7fcaef76bcd0>
+    │       │    └ <werkzeug.serving.ThreadedWSGIServer object at 0x7fcaef6d9100>
+    │       └ <werkzeug.serving.WSGIRequestHandler object at 0x7fcaec64c3d0>
+    └ <function WSGIRequestHandler.run_wsgi.<locals>.execute at 0x7fcaed6758b0>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 314, in execute
+    for data in application_iter:
+                └ <generator object DebuggedApplication.debug_application at 0x7fcaef79ac10>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/debug/__init__.py", line 304, in debug_application
+    app_iter = self.app(environ, start_response)
+               │    │   │        └ <function WSGIRequestHandler.run_wsgi.<locals>.start_response at 0x7fcaed675820>
+               │    │   └ {'wsgi.version': (1, 0), 'wsgi.url_scheme': 'http', 'wsgi.input': <_io.BufferedReader name=12>, 'wsgi.errors': <_io.TextIOWra...
+               │    └ <Flask 'main'>
+               └ <werkzeug.debug.DebuggedApplication object at 0x7fcaef76bcd0>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 2464, in __call__
+    return self.wsgi_app(environ, start_response)
+           │    │        │        └ <function WSGIRequestHandler.run_wsgi.<locals>.start_response at 0x7fcaed675820>
+           │    │        └ {'wsgi.version': (1, 0), 'wsgi.url_scheme': 'http', 'wsgi.input': <_io.BufferedReader name=12>, 'wsgi.errors': <_io.TextIOWra...
+           │    └ <function Flask.wsgi_app at 0x7fcaeffb5c10>
+           └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+               │    └ <function Flask.full_dispatch_request at 0x7fcaeffb5310>
+               └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+         │    └ <function Flask.dispatch_request at 0x7fcaeffb5280>
+         └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+           │    │              │    │           │   └ {}
+           │    │              │    │           └ <Request 'http://localhost:4000/ifmp/v1/uploads/quota/rv_tools' [GET]>
+           │    │              │    └ 'uploader_quota'
+           │    │              └ <Rule '/ifmp/v1/uploads/quota/rv_tools' (GET, HEAD, OPTIONS) -> uploader_quota>
+           │    └ {'static': <bound method _PackageBoundObject.send_static_file of <Flask 'main'>>, 'specs': <function View.as_view.<locals>.vi...
+           └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask_restx/api.py", line 397, in wrapper
+    resp = resource(*args, **kwargs)
+           │         │       └ {}
+           │         └ ()
+           └ <function View.as_view.<locals>.view at 0x7fcaef769820>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/views.py", line 89, in view
+    return self.dispatch_request(*args, **kwargs)
+           │    │                 │       └ {}
+           │    │                 └ ()
+           │    └ <function Resource.dispatch_request at 0x7fcaefd55940>
+           └ <app.licenseware.app_builder.uploads_quota_routes.add_uploads_quota_routes.<locals>.UploaderQuota object at 0x7fcaec64c820>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask_restx/resource.py", line 44, in dispatch_request
+    resp = meth(*args, **kwargs)
+           │     │       └ {}
+           │     └ ()
+           └ <bound method add_uploads_quota_routes.<locals>.UploaderQuota.get of <app.licenseware.app_builder.uploads_quota_routes.add_up...
+
+> File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/failsafe_decorator.py", line 32, in wrapper
+    response = f(*args, **kwargs)
+               │  │       └ {}
+               │  └ (<app.licenseware.app_builder.uploads_quota_routes.add_uploads_quota_routes.<locals>.UploaderQuota object at 0x7fcaec64c820>,)
+               └ <function add_uploads_quota_routes.<locals>.UploaderQuota.get at 0x7fcaef7698b0>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/auth_decorators/authorization_check.py", line 37, in decorated
+    return f(*args, **kwargs)
+           │  │       └ {}
+           │  └ (<app.licenseware.app_builder.uploads_quota_routes.add_uploads_quota_routes.<locals>.UploaderQuota object at 0x7fcaec64c820>,)
+           └ <function add_uploads_quota_routes.<locals>.UploaderQuota.get at 0x7fcaef769940>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/app_builder/uploads_quota_routes.py", line 19, in get
+    return uploader.chec_quota(request.headers.get("TenantId"))
+           │                   └ <Request 'http://localhost:4000/ifmp/v1/uploads/quota/rv_tools' [GET]>
+           └ <app.licenseware.uploader_builder.uploader_builder.UploaderBuilder object at 0x7fcaefd5e850>
+
+AttributeError: 'UploaderBuilder' object has no attribute 'chec_quota'
+2021-08-13 10:20:04.692[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-13 10:20:11.504[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-13 10:20:17.802[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-13 10:20:20.238[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-13 10:20:25.870[ ERROR ]
+app.licenseware.decorators.failsafe_decorator:wrapper:37
+
+
+
+-------------Failsafe traceback:
+
+
+
+Traceback (most recent call last):
+
+  File "/usr/lib/python3.8/threading.py", line 890, in _bootstrap
+    self._bootstrap_inner()
+    │    └ <function Thread._bootstrap_inner at 0x7fda145e2430>
+    └ <Thread(Thread-15, started daemon 140573675616000)>
+  File "/usr/lib/python3.8/threading.py", line 932, in _bootstrap_inner
+    self.run()
+    │    └ <function Thread.run at 0x7fda145e2160>
+    └ <Thread(Thread-15, started daemon 140573675616000)>
+  File "/usr/lib/python3.8/threading.py", line 870, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Thread(Thread-15, started daemon 140573675616000)>
+    │    │        │    └ (<socket.socket fd=12, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 4000), raddr=(...
+    │    │        └ <Thread(Thread-15, started daemon 140573675616000)>
+    │    └ <bound method ThreadingMixIn.process_request_thread of <werkzeug.serving.ThreadedWSGIServer object at 0x7fda12e68160>>
+    └ <Thread(Thread-15, started daemon 140573675616000)>
+  File "/usr/lib/python3.8/socketserver.py", line 683, in process_request_thread
+    self.finish_request(request, client_address)
+    │    │              │        └ ('127.0.0.1', 34142)
+    │    │              └ <socket.socket fd=12, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 4000), raddr=('...
+    │    └ <function BaseServer.finish_request at 0x7fda13cc04c0>
+    └ <werkzeug.serving.ThreadedWSGIServer object at 0x7fda12e68160>
+  File "/usr/lib/python3.8/socketserver.py", line 360, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    │    │                   │        │               └ <werkzeug.serving.ThreadedWSGIServer object at 0x7fda12e68160>
+    │    │                   │        └ ('127.0.0.1', 34142)
+    │    │                   └ <socket.socket fd=12, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 4000), raddr=('...
+    │    └ <class 'werkzeug.serving.WSGIRequestHandler'>
+    └ <werkzeug.serving.ThreadedWSGIServer object at 0x7fda12e68160>
+  File "/usr/lib/python3.8/socketserver.py", line 747, in __init__
+    self.handle()
+    │    └ <function WSGIRequestHandler.handle at 0x7fda139f0040>
+    └ <werkzeug.serving.WSGIRequestHandler object at 0x7fda10daa910>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 345, in handle
+    BaseHTTPRequestHandler.handle(self)
+    │                      │      └ <werkzeug.serving.WSGIRequestHandler object at 0x7fda10daa910>
+    │                      └ <function BaseHTTPRequestHandler.handle at 0x7fda13a6d940>
+    └ <class 'http.server.BaseHTTPRequestHandler'>
+  File "/usr/lib/python3.8/http/server.py", line 427, in handle
+    self.handle_one_request()
+    │    └ <function WSGIRequestHandler.handle_one_request at 0x7fda139f01f0>
+    └ <werkzeug.serving.WSGIRequestHandler object at 0x7fda10daa910>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 379, in handle_one_request
+    return self.run_wsgi()
+           │    └ <function WSGIRequestHandler.run_wsgi at 0x7fda139edf70>
+           └ <werkzeug.serving.WSGIRequestHandler object at 0x7fda10daa910>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 323, in run_wsgi
+    execute(self.server.app)
+    │       │    │      └ <werkzeug.debug.DebuggedApplication object at 0x7fda12ef9df0>
+    │       │    └ <werkzeug.serving.ThreadedWSGIServer object at 0x7fda12e68160>
+    │       └ <werkzeug.serving.WSGIRequestHandler object at 0x7fda10daa910>
+    └ <function WSGIRequestHandler.run_wsgi.<locals>.execute at 0x7fda10daf5e0>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 314, in execute
+    for data in application_iter:
+                └ <generator object DebuggedApplication.debug_application at 0x7fda10da7430>
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/debug/__init__.py", line 304, in debug_application
+    app_iter = self.app(environ, start_response)
+               │    │   │        └ <function WSGIRequestHandler.run_wsgi.<locals>.start_response at 0x7fda10daf550>
+               │    │   └ {'wsgi.version': (1, 0), 'wsgi.url_scheme': 'http', 'wsgi.input': <_io.BufferedReader name=12>, 'wsgi.errors': <_io.TextIOWra...
+               │    └ <Flask 'main'>
+               └ <werkzeug.debug.DebuggedApplication object at 0x7fda12ef9df0>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 2464, in __call__
+    return self.wsgi_app(environ, start_response)
+           │    │        │        └ <function WSGIRequestHandler.run_wsgi.<locals>.start_response at 0x7fda10daf550>
+           │    │        └ {'wsgi.version': (1, 0), 'wsgi.url_scheme': 'http', 'wsgi.input': <_io.BufferedReader name=12>, 'wsgi.errors': <_io.TextIOWra...
+           │    └ <function Flask.wsgi_app at 0x7fda13744c10>
+           └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+               │    └ <function Flask.full_dispatch_request at 0x7fda13744310>
+               └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+         │    └ <function Flask.dispatch_request at 0x7fda13744280>
+         └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+           │    │              │    │           │   └ {}
+           │    │              │    │           └ <Request 'http://localhost:4000/ifmp/v1/uploads/quota/rv_tools' [GET]>
+           │    │              │    └ 'uploader_quota'
+           │    │              └ <Rule '/ifmp/v1/uploads/quota/rv_tools' (HEAD, GET, OPTIONS) -> uploader_quota>
+           │    └ {'static': <bound method _PackageBoundObject.send_static_file of <Flask 'main'>>, 'specs': <function View.as_view.<locals>.vi...
+           └ <Flask 'main'>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask_restx/api.py", line 397, in wrapper
+    resp = resource(*args, **kwargs)
+           │         │       └ {}
+           │         └ ()
+           └ <function View.as_view.<locals>.view at 0x7fda12ef6820>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask/views.py", line 89, in view
+    return self.dispatch_request(*args, **kwargs)
+           │    │                 │       └ {}
+           │    │                 └ ()
+           │    └ <function Resource.dispatch_request at 0x7fda134e4940>
+           └ <app.licenseware.app_builder.uploads_quota_routes.add_uploads_quota_routes.<locals>.UploaderQuota object at 0x7fda10daaca0>
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask_restx/resource.py", line 44, in dispatch_request
+    resp = meth(*args, **kwargs)
+           │     │       └ {}
+           │     └ ()
+           └ <bound method add_uploads_quota_routes.<locals>.UploaderQuota.get of <app.licenseware.app_builder.uploads_quota_routes.add_up...
+
+> File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/failsafe_decorator.py", line 32, in wrapper
+    response = f(*args, **kwargs)
+               │  │       └ {}
+               │  └ (<app.licenseware.app_builder.uploads_quota_routes.add_uploads_quota_routes.<locals>.UploaderQuota object at 0x7fda10daaca0>,)
+               └ <function add_uploads_quota_routes.<locals>.UploaderQuota.get at 0x7fda12ef68b0>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/auth_decorators/authorization_check.py", line 37, in decorated
+    return f(*args, **kwargs)
+           │  │       └ {}
+           │  └ (<app.licenseware.app_builder.uploads_quota_routes.add_uploads_quota_routes.<locals>.UploaderQuota object at 0x7fda10daaca0>,)
+           └ <function add_uploads_quota_routes.<locals>.UploaderQuota.get at 0x7fda12ef6940>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/app_builder/uploads_quota_routes.py", line 18, in get
+    return uploader.check_quota(request.headers.get("TenantId"))
+           │        │           └ <Request 'http://localhost:4000/ifmp/v1/uploads/quota/rv_tools' [GET]>
+           │        └ <function UploaderBuilder.check_quota at 0x7fda12fbedc0>
+           └ <app.licenseware.uploader_builder.uploader_builder.UploaderBuilder object at 0x7fda134ed8b0>
+
+TypeError: check_quota() missing 1 required positional argument: 'uploader_id'
+2021-08-13 10:20:44.191[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-13 10:21:17.600[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-13 10:21:25.001[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-13 10:21:27.067[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-13 10:21:36.526[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-13 10:21:43.652[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-13 10:21:48.151[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-13 10:21:59.569[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-13 10:22:01.544[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-13 10:22:27.520[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-13 10:22:33.843[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-13 10:22:40.474[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-13 10:22:43.207[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-13 10:22:45.133[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-13 10:23:25.810[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-13 10:23:33.942[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-13 10:23:55.719[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-13 10:24:46.544[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-13 10:24:57.935[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-13 10:25:01.193[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-13 10:25:47.771[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-13 10:25:50.302[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-13 10:25:56.862[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-13 10:26:56.088[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+

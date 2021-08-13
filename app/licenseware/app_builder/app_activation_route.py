@@ -16,9 +16,13 @@ def add_app_activation_route(api: Api, app_vars:dict, uploaders:list):
         def get(self):
             
             tenant_id = request.headers.get("TenantId")
+            
+            if not tenant_id: 
+                return {'status': 'fail', 'message': 'Tenantid not provided'}, 403
 
             for uploader in uploaders:
-                qmsg, _ = uploader.init_quota(tenant_id)
+                qmsg, _ = uploader.init_tenant_quota(tenant_id)
+                
                 if qmsg['status'] != 'success':
                     return {'status': 'fail', 'message': 'App failed to install'}, 500
             

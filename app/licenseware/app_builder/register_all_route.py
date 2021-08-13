@@ -6,12 +6,12 @@ from app.licenseware.decorators import failsafe
 
 
 
-def add_register_all_route(api, uploaders, reports):
+def add_register_all_route(api, reports, uploaders):
     
     @api.route('/register_all')
     class RegisterAll(Resource):
+        @failsafe(fail_code=500)
         @machine_check
-        @failsafe
         @api.doc("Register all reports and uploaders")
         def get(self):
             

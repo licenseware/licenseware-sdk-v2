@@ -90,9 +90,8 @@ class Authenticator:
 
         response = requests.post(self.auth_create_url, json=payload)
         
-        
         if response.status_code == 201:
-            return response.json(), 201
+            return response.json(), 200
 
         return {
                    "status": "fail",

@@ -6,9 +6,9 @@ from app.licenseware.tenants import  get_activated_tenants, get_tenants_with_dat
 
 
 
-def add_tenant_registration_route(api: Api):
+def add_tenant_registration_route(api: Api, app_vars:dict):
 
-
+    @api.route(app_vars['tenant_registration_path'])
     class TenantRegistration(Resource): 
         @failsafe(fail_code=500)
         @machine_check
@@ -21,27 +21,15 @@ def add_tenant_registration_route(api: Api):
             if tenant_id:
                 
                 return {
-                    "app_activated": bool(tenant_utils.get_tenants_with_data(tenant_id)),
-                    "data_available": bool(tenant_utils.get_activated_tenants(tenant_id))
-                }
+                    "app_activated": bool(get_tenants_with_data(tenant_id)),
+                    "data_available": bool(get_activated_tenants(tenant_id))
+                }, 200
 
-            return {'status': 'fail', 'message': 'Query parameter `tenant_id` not provided'}
+            return {
+                'status': 'fail', 
+                'message': 'Query parameter `tenant_id` not provided'
+            }, 403
     
-    self.ns.add_resource(TenantRegistration, self.app_definition.tenant_registration_url)
-
-
-
-
-def add_uploads_status_routes(api: Api, uploaders:list):
-        
-    for uploader in uploaders:
-                
-        @api.route("/uploads" + uploader.status_check_path)
-        class UploaderStatus(Resource): 
-            @failsafe(fail_code=500)
-            @authorization_check
-            @api.doc('Get processing status of files uploaded') 
-            def get(self):
-                return get_processing_status(request.headers.get("TenantId")) 
-            
+    
     return api
+
