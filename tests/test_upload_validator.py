@@ -46,7 +46,7 @@ class flask_request:
         
         @classmethod
         def get(cls, tenant_id):
-            return "uuid4_tenant_id"
+            return '3d1fdc6b-04bc-44c8-ae7c-5fa5b9122f1a'
             
          
 # python3 -m unittest tests/test_upload_validator.py
@@ -73,13 +73,22 @@ class TestUploadValidator(unittest.TestCase):
             ]
         )
         
-            
+        # alt + z to wrap text
         response, status_code = rv_tools_validator.get_filenames_response(flask_request)
-        print(response)   
+        # print(response)   
         self.assertEqual(status_code, 200)
+        filenames_response = {'status': 'success', 'message': 'Filenames are valid', 'validation': [{'status': 'success', 'filename': 'rvtools.xlsx', 'message': 'Filename is valid'}, {'status': 'success', 'filename': 'rv_tools.xlsx', 'message': 'Filename is valid'}, {'status': 'fail', 'filename': 'randomfile.pdf', 'message': 'File must contain at least one of the following keywords: RV, Tools'}, {'status': 'ignored', 'filename': 'skip_this_file.csv', 'message': 'Filename is ignored'}], 'quota': {'status': 'success', 'message': 'Quota within limits'}}
+        self.assertDictEqual(response, filenames_response)
     
         response, status_code = rv_tools_validator.get_file_objects_response(flask_request)
         self.assertEqual(status_code, 200)
-        print(response)   
+        # print(response)  
+        file_objects_response = {'status': 'success', 'message': 'Files are valid', 'validation': [{'status': 'success', 'filename': 'rvtools.xlsx', 'filepath': '/tmp/lware/3d1fdc6b-04bc-44c8-ae7c-5fa5b9122f1a/rvtools.xlsx', 'message': 'Filename is valid'}, {'status': 'success', 'filename': 'rv_tools.xlsx', 'filepath': '/tmp/lware/3d1fdc6b-04bc-44c8-ae7c-5fa5b9122f1a/rv_tools.xlsx', 'message': 'Filename is valid'}], 'quota': {'status': 'success', 'message': 'Quota within limits'}}
+        self.assertDictEqual(response, file_objects_response)
+        
+        file_paths = rv_tools_validator.get_filepaths_from_objects_response(file_objects_response)
+        
+        [self.assertEqual(os.path.exists(fp), True) for fp in file_paths]
+         
         
     

@@ -71,6 +71,16 @@ class UploadValidator(FileNameValidator, FileContentValidator):
         
         super().__init__(**vars(self))
         
+        
+    def get_filepaths_from_objects_response(self, file_objects_response):
+        
+        files_paths = [
+            res['filepath'] 
+            for res in file_objects_response['validation']
+        ]
+            
+        return files_paths
+    
     
     def calculate_quota(self, flask_request: Any, files: Any, uploader_id:str) -> Tuple[dict, int]:
         """
