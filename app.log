@@ -8,3 +8,243 @@ app.licenseware.common.validators.schema_validator:schema_validator:20
 Validation failed 
  {'data': {0: {'_schema': ['Invalid input type.']}, 1: {'_schema': ['Invalid input type.']}, 2: {'_schema': ['Invalid input type.']}}}
 
+2021-08-16 13:46:28.547[ ERROR ]
+__main__:validate_file_objects:203
+unhashable type: 'list'
+
+Traceback (most recent call last):
+
+  File "/home/acmt/Documents/lware/draft-lware/draft.py", line 259, in <module>
+    response, status_code = ValidateRVTools.get_file_objects_response(flask_request)
+                            │               │                         └ <class '__main__.flask_request'>
+                            │               └ <classmethod object at 0x7f358a927340>
+                            └ <class '__main__.ValidateRVTools'>
+
+  File "/home/acmt/Documents/lware/draft-lware/draft.py", line 212, in get_file_objects_response
+    validation_response = cls().validate_file_objects(file_objects)
+                          │                           └ [<FileStorage: 'rvtools.xlsx' ('application/*')>, <FileStorage: 'rv_tools.xlsx' ('application/*')>, <FileStorage: 'randomfile...
+                          └ <class '__main__.ValidateRVTools'>
+
+> File "/home/acmt/Documents/lware/draft-lware/draft.py", line 190, in validate_file_objects
+    GeneralValidator(
+    └ <class 'app.licenseware.common.validators.file_validators.GeneralValidator'>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/common/validators/file_validators.py", line 198, in __init__
+    self.validate()
+    │    └ <function GeneralValidator.validate at 0x7f3576c58940>
+    └ <app.licenseware.common.validators.file_validators.GeneralValidator object at 0x7f35767753d0>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/common/validators/file_validators.py", line 325, in validate
+    validate_sheets(self.input_object, self.required_sheets)
+    │               │    │             │    └ (['tabvInfo', 'tabvCPU', 'tabvHost', 'tabvCluster'],)
+    │               │    │             └ <app.licenseware.common.validators.file_validators.GeneralValidator object at 0x7f35767753d0>
+    │               │    └ <FileStorage: 'rvtools.xlsx' ('application/*')>
+    │               └ <app.licenseware.common.validators.file_validators.GeneralValidator object at 0x7f35767753d0>
+    └ <function validate_sheets at 0x7f3576c58430>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/common/validators/file_validators.py", line 146, in validate_sheets
+    common_sheets = list(set.intersection(set(sheets), set(required_sheets)))
+                                              │            └ (['tabvInfo', 'tabvCPU', 'tabvHost', 'tabvCluster'],)
+                                              └ ['tabvInfo', 'tabvCPU', 'tabvMemory', 'tabvDisk', 'tabvPartition', 'tabvNetwork', 'tabvFloppy', 'tabvCD', 'tabvSnapshot', 'ta...
+
+TypeError: unhashable type: 'list'
+2021-08-16 13:46:29.040[ ERROR ]
+__main__:validate_file_objects:203
+unhashable type: 'list'
+
+Traceback (most recent call last):
+
+  File "/home/acmt/Documents/lware/draft-lware/draft.py", line 259, in <module>
+    response, status_code = ValidateRVTools.get_file_objects_response(flask_request)
+                            │               │                         └ <class '__main__.flask_request'>
+                            │               └ <classmethod object at 0x7f358a927340>
+                            └ <class '__main__.ValidateRVTools'>
+
+  File "/home/acmt/Documents/lware/draft-lware/draft.py", line 212, in get_file_objects_response
+    validation_response = cls().validate_file_objects(file_objects)
+                          │                           └ [<FileStorage: 'rvtools.xlsx' ('application/*')>, <FileStorage: 'rv_tools.xlsx' ('application/*')>, <FileStorage: 'randomfile...
+                          └ <class '__main__.ValidateRVTools'>
+
+> File "/home/acmt/Documents/lware/draft-lware/draft.py", line 190, in validate_file_objects
+    GeneralValidator(
+    └ <class 'app.licenseware.common.validators.file_validators.GeneralValidator'>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/common/validators/file_validators.py", line 198, in __init__
+    self.validate()
+    │    └ <function GeneralValidator.validate at 0x7f3576c58940>
+    └ <app.licenseware.common.validators.file_validators.GeneralValidator object at 0x7f357698a3a0>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/common/validators/file_validators.py", line 325, in validate
+    validate_sheets(self.input_object, self.required_sheets)
+    │               │    │             │    └ (['tabvInfo', 'tabvCPU', 'tabvHost', 'tabvCluster'],)
+    │               │    │             └ <app.licenseware.common.validators.file_validators.GeneralValidator object at 0x7f357698a3a0>
+    │               │    └ <FileStorage: 'rv_tools.xlsx' ('application/*')>
+    │               └ <app.licenseware.common.validators.file_validators.GeneralValidator object at 0x7f357698a3a0>
+    └ <function validate_sheets at 0x7f3576c58430>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/common/validators/file_validators.py", line 146, in validate_sheets
+    common_sheets = list(set.intersection(set(sheets), set(required_sheets)))
+                                              │            └ (['tabvInfo', 'tabvCPU', 'tabvHost', 'tabvCluster'],)
+                                              └ ['tabvInfo', 'tabvCPU', 'tabvMemory', 'tabvDisk', 'tabvPartition', 'tabvNetwork', 'tabvFloppy', 'tabvCD', 'tabvSnapshot', 'ta...
+
+TypeError: unhashable type: 'list'
+2021-08-16 13:48:45.412[ ERROR ]
+__main__:validate_file_objects:215
+unhashable type: 'list'
+
+Traceback (most recent call last):
+
+  File "/home/acmt/Documents/lware/draft-lware/draft.py", line 271, in <module>
+    response, status_code = ValidateRVTools.get_file_objects_response(flask_request)
+                            │               │                         └ <class '__main__.flask_request'>
+                            │               └ <classmethod object at 0x7f30703b8340>
+                            └ <class '__main__.ValidateRVTools'>
+
+  File "/home/acmt/Documents/lware/draft-lware/draft.py", line 224, in get_file_objects_response
+    validation_response = cls().validate_file_objects(file_objects)
+                          │                           └ [<FileStorage: 'rvtools.xlsx' ('application/*')>, <FileStorage: 'rv_tools.xlsx' ('application/*')>, <FileStorage: 'randomfile...
+                          └ <class '__main__.ValidateRVTools'>
+
+> File "/home/acmt/Documents/lware/draft-lware/draft.py", line 202, in validate_file_objects
+    GeneralValidator(
+    └ <class 'app.licenseware.common.validators.file_validators.GeneralValidator'>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/common/validators/file_validators.py", line 198, in __init__
+    self.validate()
+    │    └ <function GeneralValidator.validate at 0x7f305c6e8940>
+    └ <app.licenseware.common.validators.file_validators.GeneralValidator object at 0x7f305c2043d0>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/common/validators/file_validators.py", line 325, in validate
+    validate_sheets(self.input_object, self.required_sheets)
+    │               │    │             │    └ (['tabvInfo', 'tabvCPU', 'tabvHost', 'tabvCluster'],)
+    │               │    │             └ <app.licenseware.common.validators.file_validators.GeneralValidator object at 0x7f305c2043d0>
+    │               │    └ <FileStorage: 'rvtools.xlsx' ('application/*')>
+    │               └ <app.licenseware.common.validators.file_validators.GeneralValidator object at 0x7f305c2043d0>
+    └ <function validate_sheets at 0x7f305c6e8430>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/common/validators/file_validators.py", line 146, in validate_sheets
+    common_sheets = list(set.intersection(set(sheets), set(required_sheets)))
+                                              │            └ (['tabvInfo', 'tabvCPU', 'tabvHost', 'tabvCluster'],)
+                                              └ ['tabvInfo', 'tabvCPU', 'tabvMemory', 'tabvDisk', 'tabvPartition', 'tabvNetwork', 'tabvFloppy', 'tabvCD', 'tabvSnapshot', 'ta...
+
+TypeError: unhashable type: 'list'
+2021-08-16 13:48:45.827[ ERROR ]
+__main__:validate_file_objects:215
+unhashable type: 'list'
+
+Traceback (most recent call last):
+
+  File "/home/acmt/Documents/lware/draft-lware/draft.py", line 271, in <module>
+    response, status_code = ValidateRVTools.get_file_objects_response(flask_request)
+                            │               │                         └ <class '__main__.flask_request'>
+                            │               └ <classmethod object at 0x7f30703b8340>
+                            └ <class '__main__.ValidateRVTools'>
+
+  File "/home/acmt/Documents/lware/draft-lware/draft.py", line 224, in get_file_objects_response
+    validation_response = cls().validate_file_objects(file_objects)
+                          │                           └ [<FileStorage: 'rvtools.xlsx' ('application/*')>, <FileStorage: 'rv_tools.xlsx' ('application/*')>, <FileStorage: 'randomfile...
+                          └ <class '__main__.ValidateRVTools'>
+
+> File "/home/acmt/Documents/lware/draft-lware/draft.py", line 202, in validate_file_objects
+    GeneralValidator(
+    └ <class 'app.licenseware.common.validators.file_validators.GeneralValidator'>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/common/validators/file_validators.py", line 198, in __init__
+    self.validate()
+    │    └ <function GeneralValidator.validate at 0x7f305c6e8940>
+    └ <app.licenseware.common.validators.file_validators.GeneralValidator object at 0x7f305c41b3a0>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/common/validators/file_validators.py", line 325, in validate
+    validate_sheets(self.input_object, self.required_sheets)
+    │               │    │             │    └ (['tabvInfo', 'tabvCPU', 'tabvHost', 'tabvCluster'],)
+    │               │    │             └ <app.licenseware.common.validators.file_validators.GeneralValidator object at 0x7f305c41b3a0>
+    │               │    └ <FileStorage: 'rv_tools.xlsx' ('application/*')>
+    │               └ <app.licenseware.common.validators.file_validators.GeneralValidator object at 0x7f305c41b3a0>
+    └ <function validate_sheets at 0x7f305c6e8430>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/common/validators/file_validators.py", line 146, in validate_sheets
+    common_sheets = list(set.intersection(set(sheets), set(required_sheets)))
+                                              │            └ (['tabvInfo', 'tabvCPU', 'tabvHost', 'tabvCluster'],)
+                                              └ ['tabvInfo', 'tabvCPU', 'tabvMemory', 'tabvDisk', 'tabvPartition', 'tabvNetwork', 'tabvFloppy', 'tabvCD', 'tabvSnapshot', 'ta...
+
+TypeError: unhashable type: 'list'
+2021-08-16 13:49:10.424[ ERROR ]
+__main__:validate_file_objects:216
+unhashable type: 'list'
+
+Traceback (most recent call last):
+
+  File "/home/acmt/Documents/lware/draft-lware/draft.py", line 272, in <module>
+    response, status_code = ValidateRVTools.get_file_objects_response(flask_request)
+                            │               │                         └ <class '__main__.flask_request'>
+                            │               └ <classmethod object at 0x7f0bbd0c5340>
+                            └ <class '__main__.ValidateRVTools'>
+
+  File "/home/acmt/Documents/lware/draft-lware/draft.py", line 225, in get_file_objects_response
+    validation_response = cls().validate_file_objects(file_objects)
+                          │                           └ [<FileStorage: 'rvtools.xlsx' ('application/*')>, <FileStorage: 'rv_tools.xlsx' ('application/*')>, <FileStorage: 'randomfile...
+                          └ <class '__main__.ValidateRVTools'>
+
+> File "/home/acmt/Documents/lware/draft-lware/draft.py", line 203, in validate_file_objects
+    GeneralValidator(
+    └ <class 'app.licenseware.common.validators.file_validators.GeneralValidator'>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/common/validators/file_validators.py", line 198, in __init__
+    self.validate()
+    │    └ <function GeneralValidator.validate at 0x7f0ba93f5940>
+    └ <app.licenseware.common.validators.file_validators.GeneralValidator object at 0x7f0ba8f123d0>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/common/validators/file_validators.py", line 325, in validate
+    validate_sheets(self.input_object, self.required_sheets)
+    │               │    │             │    └ (['tabvInfo', 'tabvCPU', 'tabvHost', 'tabvCluster'],)
+    │               │    │             └ <app.licenseware.common.validators.file_validators.GeneralValidator object at 0x7f0ba8f123d0>
+    │               │    └ <FileStorage: 'rvtools.xlsx' ('application/*')>
+    │               └ <app.licenseware.common.validators.file_validators.GeneralValidator object at 0x7f0ba8f123d0>
+    └ <function validate_sheets at 0x7f0ba93f5430>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/common/validators/file_validators.py", line 146, in validate_sheets
+    common_sheets = list(set.intersection(set(sheets), set(required_sheets)))
+                                              │            └ (['tabvInfo', 'tabvCPU', 'tabvHost', 'tabvCluster'],)
+                                              └ ['tabvInfo', 'tabvCPU', 'tabvMemory', 'tabvDisk', 'tabvPartition', 'tabvNetwork', 'tabvFloppy', 'tabvCD', 'tabvSnapshot', 'ta...
+
+TypeError: unhashable type: 'list'
+2021-08-16 13:49:10.835[ ERROR ]
+__main__:validate_file_objects:216
+unhashable type: 'list'
+
+Traceback (most recent call last):
+
+  File "/home/acmt/Documents/lware/draft-lware/draft.py", line 272, in <module>
+    response, status_code = ValidateRVTools.get_file_objects_response(flask_request)
+                            │               │                         └ <class '__main__.flask_request'>
+                            │               └ <classmethod object at 0x7f0bbd0c5340>
+                            └ <class '__main__.ValidateRVTools'>
+
+  File "/home/acmt/Documents/lware/draft-lware/draft.py", line 225, in get_file_objects_response
+    validation_response = cls().validate_file_objects(file_objects)
+                          │                           └ [<FileStorage: 'rvtools.xlsx' ('application/*')>, <FileStorage: 'rv_tools.xlsx' ('application/*')>, <FileStorage: 'randomfile...
+                          └ <class '__main__.ValidateRVTools'>
+
+> File "/home/acmt/Documents/lware/draft-lware/draft.py", line 203, in validate_file_objects
+    GeneralValidator(
+    └ <class 'app.licenseware.common.validators.file_validators.GeneralValidator'>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/common/validators/file_validators.py", line 198, in __init__
+    self.validate()
+    │    └ <function GeneralValidator.validate at 0x7f0ba93f5940>
+    └ <app.licenseware.common.validators.file_validators.GeneralValidator object at 0x7f0ba91283a0>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/common/validators/file_validators.py", line 325, in validate
+    validate_sheets(self.input_object, self.required_sheets)
+    │               │    │             │    └ (['tabvInfo', 'tabvCPU', 'tabvHost', 'tabvCluster'],)
+    │               │    │             └ <app.licenseware.common.validators.file_validators.GeneralValidator object at 0x7f0ba91283a0>
+    │               │    └ <FileStorage: 'rv_tools.xlsx' ('application/*')>
+    │               └ <app.licenseware.common.validators.file_validators.GeneralValidator object at 0x7f0ba91283a0>
+    └ <function validate_sheets at 0x7f0ba93f5430>
+
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/common/validators/file_validators.py", line 146, in validate_sheets
+    common_sheets = list(set.intersection(set(sheets), set(required_sheets)))
+                                              │            └ (['tabvInfo', 'tabvCPU', 'tabvHost', 'tabvCluster'],)
+                                              └ ['tabvInfo', 'tabvCPU', 'tabvMemory', 'tabvDisk', 'tabvPartition', 'tabvNetwork', 'tabvFloppy', 'tabvCD', 'tabvSnapshot', 'ta...
+
+TypeError: unhashable type: 'list'

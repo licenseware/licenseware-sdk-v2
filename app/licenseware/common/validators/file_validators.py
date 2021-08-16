@@ -325,3 +325,4 @@ class GeneralValidator:
         validate_sheets(self.input_object, self.required_sheets)
         validate_columns(data, self.required_columns, self.required_sheets)
         validate_rows_number(data, self.min_rows_number, self.required_sheets)
+    
