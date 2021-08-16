@@ -8,11 +8,11 @@ class UploaderBuilder:
     
     def __init__(
         self, 
+        uploader_id:str,
         name:str, 
         description:str, 
         accepted_file_types:list, 
         validator_class: Type, 
-        uploader_id:str = None,
         flags:list = [],
         status:str = states.IDLE,
         icon:str = "default.png",
@@ -27,16 +27,7 @@ class UploaderBuilder:
         self.accepted_file_types = accepted_file_types
         self.validator_class = validator_class
         self.app_id = envs.APP_ID
-        
-        if not uploader_id:
-            
-            if not validator_class.__name__.startswith('validate_'):
-                raise ValueError("All validator classes must start with 'Validate' prefix \
-                                 and must be followed by the 'uploader_id' (ex: ValidateRVTools)"
-                            )
-            
-            uploader_id = validator_class.__name__.replace('Validate', '').lower()
-        
+
         self.uploader_id = uploader_id
         self.flags = flags
         self.status = status

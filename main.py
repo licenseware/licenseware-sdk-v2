@@ -3,11 +3,14 @@ load_dotenv()
     
     
 from flask import Flask
-
-from app.licenseware.app_builder import AppBuilder
-from app.licenseware.uploader_builder import UploaderBuilder
 from app.licenseware.common.constants import flags
 from app.licenseware.utils.logger import log
+
+from app.licenseware.app_builder import AppBuilder
+
+from app.licenseware.uploader_builder import UploaderBuilder
+from app.licenseware.upload_validator import UploadValidator
+
 
 
 app = Flask(__name__)
@@ -22,60 +25,33 @@ ifmp_app = AppBuilder(
 
 # UPLOADERS
 
+# You can inherit from UploadValidator and overwrite default function
+class OverwriteUploadValidator(UploadValidator):
+    pass
 
-#TODO add quota for free plan to class
-class ValidateRVTOOLS:
-    
-    class Meta:
-        quota = 1
-        uploader_id = "rv_tools" # or class name
-        filename_success_message = "Filename is valid"
-        filename_failed_message  =  "Filename is not valid"
-    
-    def calculate_quota(self):
-        # TODO
-        pass
-      
-      
-    def validate_filenames(self, flask_request):
-        
-        filenames = flask_request.json
-        
-        return {
-            'status': 'success'
-        }
-        
-        
-    def upload_files(self, flask_request):
-        
-        filenames = flask_request.json
-        
-        return {
-            'status': 'success'
-        }
-        
 
-        
-    
-    #quota based on plan type
-    #free plan quota limited
-    #paid unlimited/per-use
-    #check AnalysisStats
-    
-
-# rv_tools will be the uploader_id
-def validate_rv_tools(request_obj): 
-    
-    log.debug(request_obj)
-    
-    return True
+# This is the default way you can create a file validator
+rv_tools_validator = UploadValidator(
+    uploader_id = 'rv_tools',
+    filename_contains = ['RV', 'Tools'],
+    filename_endswith = ['.xls', '.xlsx'],
+    ignore_filenames  = ['skip_this_file.csv'],
+    required_input_type = "excel",
+    min_rows_number = 1,
+    required_sheets = ['tabvInfo', 'tabvCPU', 'tabvHost', 'tabvCluster'],
+    required_columns = [
+        'VM', 'Host', 'OS', 'Sockets', 'CPUs', 'Model', 'CPU Model',
+        'Cluster', '# CPU', '# Cores', 'ESX Version', 'HT Active',
+        'Name', 'NumCpuThreads', 'NumCpuCores'
+    ]
+)
 
 
 rv_tools_uploader = UploaderBuilder(
     name="RVTools", 
     description="XLSX export from RVTools after scanning your Vmware infrastructure.", 
     accepted_file_types=['.xls', '.xlsx'],
-    validator_class=validate_rv_tools
+    validator_class=rv_tools_validator
 )
 
 
