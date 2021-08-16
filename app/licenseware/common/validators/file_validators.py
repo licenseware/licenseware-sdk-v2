@@ -2,11 +2,7 @@
 
 Validator for streams of files and files.
 
-from licenseware import GeneralValidator, validate_filename
-
-or 
-
-from licenseware.file_validators import GeneralValidator, validate_filename
+from licenseware.common.validators.file_validators import GeneralValidator, validate_filename
 
 
 A class that validates files and text
@@ -38,6 +34,17 @@ if res['status'] == 'success':
     return res['message']
 elif res['status'] == 'fail':
     return res['message']
+    
+    
+    
+You can import individually these function validators
+
+
+validate_text_contains_all(data, text_contains_all_list)
+validate_text_contains_any(data, text_contains_any_list)
+validate_sheets(input_object, required_sheets)
+validate_columns(data, required_columns_list, required_sheets_list)
+validate_rows_number(data, min_rows_number, required_sheets_list)
 
 
 """
@@ -66,7 +73,7 @@ def validate_text_contains_all(text, text_contains_all):
                 matches.append(match[0])
 
     if sorted(matches) != sorted(text_contains_all):
-        raise Exception(f'File must contain the all following keywords: {", ".join(text_contains_all)}')
+        raise ValueError(f'File must contain the all following keywords: {", ".join(text_contains_all)}')
     
 
 def validate_text_contains_any(text, text_contains_any):
@@ -85,7 +92,7 @@ def validate_text_contains_any(text, text_contains_any):
                 matches.append(match.group(0))
 
     if not matches:
-        raise Exception(f'File must contain at least one of the following keywords: {", ".join(text_contains_any)}')
+        raise ValueError(f'File must contain at least one of the following keywords: {", ".join(text_contains_any)}')
 
 
 def validate_columns(df, required_columns, required_sheets=[]):
@@ -107,7 +114,7 @@ def validate_columns(df, required_columns, required_sheets=[]):
     commun_cols = list(set.intersection(set(required_columns), set(given_columns)))
     if sorted(required_columns) != sorted(commun_cols):
         missing_cols = set.difference(set(required_columns), set(given_columns))
-        raise Exception(f'Table has the following columns missing: {missing_cols}')
+        raise ValueError(f'Table has the following columns missing: {missing_cols}')
 
 
 def validate_rows_number(df, min_rows_number, required_sheets=[]):
@@ -121,10 +128,10 @@ def validate_rows_number(df, min_rows_number, required_sheets=[]):
         for sheet, table in df.items():
             if sheet not in required_sheets: continue
             if table.shape[0] < min_rows_number:
-                raise Exception(f'Expected {sheet} to have at least {min_rows_number} row(s)')
+                raise ValueError(f'Expected {sheet} to have at least {min_rows_number} row(s)')
     else:
         if df.shape[0] < min_rows_number:
-            raise Exception(f'Expected table to have at least {min_rows_number} row(s)')
+            raise ValueError(f'Expected table to have at least {min_rows_number} row(s)')
 
 
 def validate_sheets(file, required_sheets):
@@ -140,25 +147,24 @@ def validate_sheets(file, required_sheets):
 
     if sorted(required_sheets) != sorted(common_sheets):
         missing_sheets = set.difference(set(required_sheets), set(sheets))
-        raise Exception(f"File doesn't contain the following needed sheets: {missing_sheets}")
+        raise ValueError(f"File doesn't contain the following needed sheets: {missing_sheets}")
 
 
-def validate_filename(fname, fname_contains=[], fname_endswith=[]):
+def validate_filename(filename:str, contains:list, endswith:list = []):
     """
         Check if filename contains all needed keywords and all accepted file types
     """
 
-    if not isinstance(fname, str): raise ValueError("fname must be a string")
+    if not isinstance(filename, str): 
+        raise ValueError("filename must be a string")
 
-    try:
-        validate_text_contains_any(fname, fname_contains)
-    except:
-        return False
+    validate_text_contains_any(filename, contains)
+    
+    if endswith:
+        for file_type in endswith:
+            if filename.lower().endswith(file_type): return
 
-    for file_type in fname_endswith:
-        if fname.lower().endswith(file_type): return True
-
-    return False
+        raise ValueError(f"Filename doesn't end with any of the specified values: {', '.join(endswith)}")
 
 
 class GeneralValidator:
@@ -187,6 +193,10 @@ class GeneralValidator:
         self.skip_validate_type = False
         # Making sure we don't miss characters
         self.buffer = buffer + sum([len(c) for c in required_columns]) + len(text_contains_all) + len(text_contains_any)
+        
+        # Calling validation on init, raise Exception if something is wrong
+        self.validate()
+        
 
     def _validate_type(self):
         """
@@ -227,7 +237,7 @@ class GeneralValidator:
         allowed_input_types = ['excel', 'csv', 'txt', 'string', 'stream', 'excel-stream']
         if not self.required_input_type: return
         if self.required_input_type not in allowed_input_types:
-            raise Exception('Only ".xlsx", ".xls", ".csv", ".txt" files types are accepted!')
+            raise ValueError('Only ".xlsx", ".xls", ".csv", ".txt" files types are accepted!')
 
     def _parse_excel_stream(self):
         
@@ -298,32 +308,20 @@ class GeneralValidator:
             return self.input_object.stream.read(self.buffer).decode('utf8', 'ignore')
 
         else:
-            raise Exception("File contents are badly formated and cannot be read!")
+            raise ValueError("File contents are badly formated and cannot be read!")
 
-    def validate(self, show_reason=False):
+    def validate(self):
         """ 
             param: show_reason - if true will return a dict with status and message 
         """
 
-        try:
+        self._check_required_input_type()
+        self._validate_type()
 
-            self._check_required_input_type()
-            self._validate_type()
+        data = self._parse_data()
 
-            data = self._parse_data()
-
-            validate_text_contains_all(data, self.text_contains_all)
-            validate_text_contains_any(data, self.text_contains_any)
-            validate_sheets(self.input_object, self.required_sheets)
-            validate_columns(data, self.required_columns, self.required_sheets)
-            validate_rows_number(data, self.min_rows_number, self.required_sheets)
-
-            res = {"status": "success", "message": "File validation succeded"}
-            return res if show_reason else True
-
-        except Exception as e:
-            # log.warning(e)
-            # import traceback
-            # print(traceback.format_exc())
-            res = {"status": "fail", "message": str(e)}
-            return res if show_reason else False
+        validate_text_contains_all(data, self.text_contains_all)
+        validate_text_contains_any(data, self.text_contains_any)
+        validate_sheets(self.input_object, self.required_sheets)
+        validate_columns(data, self.required_columns, self.required_sheets)
+        validate_rows_number(data, self.min_rows_number, self.required_sheets)
