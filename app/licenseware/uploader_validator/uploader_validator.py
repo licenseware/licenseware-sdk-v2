@@ -98,17 +98,6 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         
         super().__init__(**vars(self))
      
-        
-    @classmethod
-    def get_filepaths_from_objects_response(cls, file_objects_response):
-        
-        files_paths = [
-            res['filepath'] 
-            for res in file_objects_response['validation']
-        ]
-            
-        return files_paths
-    
     
     def calculate_quota(self, flask_request) -> Tuple[dict, int]:
         """
@@ -124,4 +113,17 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         # return {'status': 'fail', 'message': 'Quota exceeded'}, 402
         return {'status': 'success', 'message': 'Quota within limits'}, 200
 
+        
+    @classmethod
+    def get_filepaths_from_objects_response(cls, file_objects_response):
+        
+        files_paths = [
+            res['filepath'] 
+            for res in file_objects_response['validation']
+        ]
+            
+        return files_paths
+    
+    
+    
 

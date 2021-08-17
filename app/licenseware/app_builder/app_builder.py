@@ -169,10 +169,14 @@ class AppBuilder:
         if status_code not in {200, 201}:
             raise Exception("App failed to register!")
             
-            
-    def register_uploader(self, uploader):
         
-        self.uploaders.append(uploader)
+    def register_uploader(self, uploader_instance):
+        
+        for uploader in self.uploaders:
+            if uploader.uploader_id == uploader_instance.uploader_id:
+                raise Exception(f"Uploader id '{uploader_instance.uploader_id}' was already declared")
+        
+        self.uploaders.append(uploader_instance)
         
         response, status_code = uploader.register_uploader()
         if status_code not in {200, 201}:

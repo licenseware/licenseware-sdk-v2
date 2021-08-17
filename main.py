@@ -1,19 +1,20 @@
 from dotenv import load_dotenv
 load_dotenv()  
-    
-    
+
+from typing import Tuple
+
 from flask import Flask
 from app.licenseware.common.constants import flags
 from app.licenseware.utils.logger import log
 
 from app.licenseware.app_builder import AppBuilder
-
 from app.licenseware.uploader_builder import UploaderBuilder
 from app.licenseware.uploader_validator import UploaderValidator
 
 
 app = Flask(__name__)
 
+# APP
 
 ifmp_app = AppBuilder(
     name = 'Infrastructure Mapper',
@@ -22,15 +23,36 @@ ifmp_app = AppBuilder(
 )
 
 
+
 # UPLOADERS
 
-# You can inherit from UploadValidator and overwrite defaults 
-class OverwriteUploaderValidator(UploaderValidator):
-    pass
 
+# Here we are defining the validation required for each upload
 
-# This is the default way you can create a file validator
-rv_tools_validator = UploaderValidator(
+class RVToolsUploaderValidator(UploaderValidator):
+    
+    def calculate_quota(self, flask_request) -> Tuple[dict, int]:
+        
+        file_objects = flask_request.files.getlist("files[]")
+        # each set of files have a different way of calculating quota
+        
+        return {'status': 'success', 'message': 'Quota within limits'}, 200
+    
+    # If necessary you can overwrite the way 
+    # validation of filenames and file binary it's done
+    # Bellow functions are available for overwrite
+
+    # def get_filenames_response(self, flask_request): 
+    # responsible for validating filenames and returning a json reponse, status code
+    # ...
+    
+    # def get_file_objects_response(self, flask_request): 
+    #   responsible for validating filenames, their contents and returning a json reponse, status code
+    # ...
+    
+    
+
+rv_tools_validator = RVToolsUploaderValidator(
     uploader_id = 'rv_tools',
     filename_contains = ['RV', 'Tools'],
     filename_endswith = ['.xls', '.xlsx'],
@@ -45,6 +67,8 @@ rv_tools_validator = UploaderValidator(
     ]
 )
 
+# Here we are creating the uploader 
+# Notice we are providing the the validator created up to `validator_class` parameter
 
 rv_tools_uploader = UploaderBuilder(
     name="RVTools", 
@@ -53,12 +77,23 @@ rv_tools_uploader = UploaderBuilder(
     validator_class=rv_tools_validator
 )
 
-
+# Here we are:
+# - adding the uploader to the main app (uploaders list)
+# - sending uploader information to registry-service
 ifmp_app.register_uploader(rv_tools_uploader)
 
 
+
+
+
+
+
+
+
+
+
 # Invoke the init_app after registering uploaders/reports/namespaces 
-ifmp_app.register_app()
+# ifmp_app.register_app()
 ifmp_app.init_app(app, register=True)
 
 
