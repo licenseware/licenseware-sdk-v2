@@ -1,9 +1,9 @@
-# from .mongodata import (
-from .mock_mongodata import (
-    delete, 
+from .mongodata import (
+    insert, 
     fetch, 
-    update, 
-    document_count, 
+    update,
+    delete, 
+    count_documents, 
     delete_collection, 
     aggregate
 ) 

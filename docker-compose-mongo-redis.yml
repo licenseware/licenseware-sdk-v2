@@ -15,7 +15,10 @@ services:
     restart: unless-stopped
     ports:
       - '27017:27017'
-      
+    environment:
+      - 'MONGO_DATABASE_NAME=${MONGO_DATABASE_NAME}'
+      - 'MONGO_CONNECTION_STRING=mongodb://${MONGO_ROOT_USERNAME}:${MONGO_ROOT_PASSWORD}@${MONGO_HOSTNAME}:${MONGO_PORT}'
+
   mongo_express_sdk:
     container_name: mongo_express_sdk
     image: mongo-express

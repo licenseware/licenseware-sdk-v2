@@ -25,17 +25,20 @@ Needs the following environment variables:
 """
 
 import os
+import json
 from uuid import UUID
 from pymongo import MongoClient
 from pymongo.collection import Collection
-from licenseware.decorators.failsafe_decorator import failsafe
 from bson.json_util import dumps
 from bson.objectid import ObjectId
-import json
-from .utils import log, log_dict
 from pymongo.write_concern import WriteConcern
 from pymongo.read_concern import ReadConcern
 from pymongo.errors import DuplicateKeyError
+
+from app.licenseware.utils.logger import log
+from app.licenseware.decorators.failsafe_decorator import failsafe
+
+
 
 
 @failsafe
@@ -154,8 +157,7 @@ def get_collection(collection, db_name=None):
         If something fails will return a string with the error message.
     """
 
-    default_db = os.getenv("MONGO_DB_NAME") or os.getenv(
-        "MONGO_DATABASE_NAME") or "db"
+    default_db = os.getenv("MONGO_DATABASE_NAME") or "db"
     default_collection = os.getenv("MONGO_COLLECTION_NAME") or "Data"
 
     with Connect.get_connection() as mongo_connection:
@@ -232,6 +234,8 @@ def fetch(match, collection, as_list=True, db_name=None):
     """
 
     match = parse_match(match)
+    
+    log.info(match)
 
     db_name = return_db(db_name)
     collection_name = return_collection_name(collection)
@@ -256,6 +260,7 @@ def fetch(match, collection, as_list=True, db_name=None):
             found_docs = collection.with_options(
                 read_concern=ReadConcern("majority")).find(*match['query_tuple'])
         else:
+            log.debug("yuhuu")
             found_docs = collection.with_options(
                 read_concern=ReadConcern("majority")).find(match['query'])
 
@@ -418,9 +423,9 @@ def delete_collection(collection, db_name=None):
 
 
 @failsafe
-def document_count(match, collection, db_name=None):
+def count_documents(match, collection, db_name=None):
     """
-        Delete a collection from the database.
+        Count documents for the given match
     """
     db_name = return_db(db_name)
     collection_name = return_collection_name(collection)

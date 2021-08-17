@@ -1,430 +1,52 @@
-2021-08-13 15:39:46.439[ ERROR ]
-app.licenseware.common.validators.schema_validator:schema_validator:20
-Validation failed 
- {'data': ['Shorter than minimum length 5.']}
-
-2021-08-13 15:48:09.822[ ERROR ]
-app.licenseware.common.validators.schema_validator:schema_validator:20
-Validation failed 
- {'data': {0: {'_schema': ['Invalid input type.']}, 1: {'_schema': ['Invalid input type.']}, 2: {'_schema': ['Invalid input type.']}}}
-
-2021-08-16 13:46:28.547[ ERROR ]
-__main__:validate_file_objects:203
-unhashable type: 'list'
-
-Traceback (most recent call last):
-
-  File "/home/acmt/Documents/lware/draft-lware/draft.py", line 259, in <module>
-    response, status_code = ValidateRVTools.get_file_objects_response(flask_request)
-                            │               │                         └ <class '__main__.flask_request'>
-                            │               └ <classmethod object at 0x7f358a927340>
-                            └ <class '__main__.ValidateRVTools'>
-
-  File "/home/acmt/Documents/lware/draft-lware/draft.py", line 212, in get_file_objects_response
-    validation_response = cls().validate_file_objects(file_objects)
-                          │                           └ [<FileStorage: 'rvtools.xlsx' ('application/*')>, <FileStorage: 'rv_tools.xlsx' ('application/*')>, <FileStorage: 'randomfile...
-                          └ <class '__main__.ValidateRVTools'>
-
-> File "/home/acmt/Documents/lware/draft-lware/draft.py", line 190, in validate_file_objects
-    GeneralValidator(
-    └ <class 'app.licenseware.common.validators.file_validators.GeneralValidator'>
-
-  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/common/validators/file_validators.py", line 198, in __init__
-    self.validate()
-    │    └ <function GeneralValidator.validate at 0x7f3576c58940>
-    └ <app.licenseware.common.validators.file_validators.GeneralValidator object at 0x7f35767753d0>
-
-  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/common/validators/file_validators.py", line 325, in validate
-    validate_sheets(self.input_object, self.required_sheets)
-    │               │    │             │    └ (['tabvInfo', 'tabvCPU', 'tabvHost', 'tabvCluster'],)
-    │               │    │             └ <app.licenseware.common.validators.file_validators.GeneralValidator object at 0x7f35767753d0>
-    │               │    └ <FileStorage: 'rvtools.xlsx' ('application/*')>
-    │               └ <app.licenseware.common.validators.file_validators.GeneralValidator object at 0x7f35767753d0>
-    └ <function validate_sheets at 0x7f3576c58430>
-
-  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/common/validators/file_validators.py", line 146, in validate_sheets
-    common_sheets = list(set.intersection(set(sheets), set(required_sheets)))
-                                              │            └ (['tabvInfo', 'tabvCPU', 'tabvHost', 'tabvCluster'],)
-                                              └ ['tabvInfo', 'tabvCPU', 'tabvMemory', 'tabvDisk', 'tabvPartition', 'tabvNetwork', 'tabvFloppy', 'tabvCD', 'tabvSnapshot', 'ta...
-
-TypeError: unhashable type: 'list'
-2021-08-16 13:46:29.040[ ERROR ]
-__main__:validate_file_objects:203
-unhashable type: 'list'
-
-Traceback (most recent call last):
-
-  File "/home/acmt/Documents/lware/draft-lware/draft.py", line 259, in <module>
-    response, status_code = ValidateRVTools.get_file_objects_response(flask_request)
-                            │               │                         └ <class '__main__.flask_request'>
-                            │               └ <classmethod object at 0x7f358a927340>
-                            └ <class '__main__.ValidateRVTools'>
-
-  File "/home/acmt/Documents/lware/draft-lware/draft.py", line 212, in get_file_objects_response
-    validation_response = cls().validate_file_objects(file_objects)
-                          │                           └ [<FileStorage: 'rvtools.xlsx' ('application/*')>, <FileStorage: 'rv_tools.xlsx' ('application/*')>, <FileStorage: 'randomfile...
-                          └ <class '__main__.ValidateRVTools'>
-
-> File "/home/acmt/Documents/lware/draft-lware/draft.py", line 190, in validate_file_objects
-    GeneralValidator(
-    └ <class 'app.licenseware.common.validators.file_validators.GeneralValidator'>
-
-  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/common/validators/file_validators.py", line 198, in __init__
-    self.validate()
-    │    └ <function GeneralValidator.validate at 0x7f3576c58940>
-    └ <app.licenseware.common.validators.file_validators.GeneralValidator object at 0x7f357698a3a0>
-
-  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/common/validators/file_validators.py", line 325, in validate
-    validate_sheets(self.input_object, self.required_sheets)
-    │               │    │             │    └ (['tabvInfo', 'tabvCPU', 'tabvHost', 'tabvCluster'],)
-    │               │    │             └ <app.licenseware.common.validators.file_validators.GeneralValidator object at 0x7f357698a3a0>
-    │               │    └ <FileStorage: 'rv_tools.xlsx' ('application/*')>
-    │               └ <app.licenseware.common.validators.file_validators.GeneralValidator object at 0x7f357698a3a0>
-    └ <function validate_sheets at 0x7f3576c58430>
-
-  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/common/validators/file_validators.py", line 146, in validate_sheets
-    common_sheets = list(set.intersection(set(sheets), set(required_sheets)))
-                                              │            └ (['tabvInfo', 'tabvCPU', 'tabvHost', 'tabvCluster'],)
-                                              └ ['tabvInfo', 'tabvCPU', 'tabvMemory', 'tabvDisk', 'tabvPartition', 'tabvNetwork', 'tabvFloppy', 'tabvCD', 'tabvSnapshot', 'ta...
-
-TypeError: unhashable type: 'list'
-2021-08-16 13:48:45.412[ ERROR ]
-__main__:validate_file_objects:215
-unhashable type: 'list'
-
-Traceback (most recent call last):
-
-  File "/home/acmt/Documents/lware/draft-lware/draft.py", line 271, in <module>
-    response, status_code = ValidateRVTools.get_file_objects_response(flask_request)
-                            │               │                         └ <class '__main__.flask_request'>
-                            │               └ <classmethod object at 0x7f30703b8340>
-                            └ <class '__main__.ValidateRVTools'>
-
-  File "/home/acmt/Documents/lware/draft-lware/draft.py", line 224, in get_file_objects_response
-    validation_response = cls().validate_file_objects(file_objects)
-                          │                           └ [<FileStorage: 'rvtools.xlsx' ('application/*')>, <FileStorage: 'rv_tools.xlsx' ('application/*')>, <FileStorage: 'randomfile...
-                          └ <class '__main__.ValidateRVTools'>
-
-> File "/home/acmt/Documents/lware/draft-lware/draft.py", line 202, in validate_file_objects
-    GeneralValidator(
-    └ <class 'app.licenseware.common.validators.file_validators.GeneralValidator'>
-
-  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/common/validators/file_validators.py", line 198, in __init__
-    self.validate()
-    │    └ <function GeneralValidator.validate at 0x7f305c6e8940>
-    └ <app.licenseware.common.validators.file_validators.GeneralValidator object at 0x7f305c2043d0>
-
-  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/common/validators/file_validators.py", line 325, in validate
-    validate_sheets(self.input_object, self.required_sheets)
-    │               │    │             │    └ (['tabvInfo', 'tabvCPU', 'tabvHost', 'tabvCluster'],)
-    │               │    │             └ <app.licenseware.common.validators.file_validators.GeneralValidator object at 0x7f305c2043d0>
-    │               │    └ <FileStorage: 'rvtools.xlsx' ('application/*')>
-    │               └ <app.licenseware.common.validators.file_validators.GeneralValidator object at 0x7f305c2043d0>
-    └ <function validate_sheets at 0x7f305c6e8430>
-
-  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/common/validators/file_validators.py", line 146, in validate_sheets
-    common_sheets = list(set.intersection(set(sheets), set(required_sheets)))
-                                              │            └ (['tabvInfo', 'tabvCPU', 'tabvHost', 'tabvCluster'],)
-                                              └ ['tabvInfo', 'tabvCPU', 'tabvMemory', 'tabvDisk', 'tabvPartition', 'tabvNetwork', 'tabvFloppy', 'tabvCD', 'tabvSnapshot', 'ta...
-
-TypeError: unhashable type: 'list'
-2021-08-16 13:48:45.827[ ERROR ]
-__main__:validate_file_objects:215
-unhashable type: 'list'
-
-Traceback (most recent call last):
-
-  File "/home/acmt/Documents/lware/draft-lware/draft.py", line 271, in <module>
-    response, status_code = ValidateRVTools.get_file_objects_response(flask_request)
-                            │               │                         └ <class '__main__.flask_request'>
-                            │               └ <classmethod object at 0x7f30703b8340>
-                            └ <class '__main__.ValidateRVTools'>
-
-  File "/home/acmt/Documents/lware/draft-lware/draft.py", line 224, in get_file_objects_response
-    validation_response = cls().validate_file_objects(file_objects)
-                          │                           └ [<FileStorage: 'rvtools.xlsx' ('application/*')>, <FileStorage: 'rv_tools.xlsx' ('application/*')>, <FileStorage: 'randomfile...
-                          └ <class '__main__.ValidateRVTools'>
-
-> File "/home/acmt/Documents/lware/draft-lware/draft.py", line 202, in validate_file_objects
-    GeneralValidator(
-    └ <class 'app.licenseware.common.validators.file_validators.GeneralValidator'>
-
-  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/common/validators/file_validators.py", line 198, in __init__
-    self.validate()
-    │    └ <function GeneralValidator.validate at 0x7f305c6e8940>
-    └ <app.licenseware.common.validators.file_validators.GeneralValidator object at 0x7f305c41b3a0>
-
-  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/common/validators/file_validators.py", line 325, in validate
-    validate_sheets(self.input_object, self.required_sheets)
-    │               │    │             │    └ (['tabvInfo', 'tabvCPU', 'tabvHost', 'tabvCluster'],)
-    │               │    │             └ <app.licenseware.common.validators.file_validators.GeneralValidator object at 0x7f305c41b3a0>
-    │               │    └ <FileStorage: 'rv_tools.xlsx' ('application/*')>
-    │               └ <app.licenseware.common.validators.file_validators.GeneralValidator object at 0x7f305c41b3a0>
-    └ <function validate_sheets at 0x7f305c6e8430>
-
-  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/common/validators/file_validators.py", line 146, in validate_sheets
-    common_sheets = list(set.intersection(set(sheets), set(required_sheets)))
-                                              │            └ (['tabvInfo', 'tabvCPU', 'tabvHost', 'tabvCluster'],)
-                                              └ ['tabvInfo', 'tabvCPU', 'tabvMemory', 'tabvDisk', 'tabvPartition', 'tabvNetwork', 'tabvFloppy', 'tabvCD', 'tabvSnapshot', 'ta...
-
-TypeError: unhashable type: 'list'
-2021-08-16 13:49:10.424[ ERROR ]
-__main__:validate_file_objects:216
-unhashable type: 'list'
-
-Traceback (most recent call last):
-
-  File "/home/acmt/Documents/lware/draft-lware/draft.py", line 272, in <module>
-    response, status_code = ValidateRVTools.get_file_objects_response(flask_request)
-                            │               │                         └ <class '__main__.flask_request'>
-                            │               └ <classmethod object at 0x7f0bbd0c5340>
-                            └ <class '__main__.ValidateRVTools'>
-
-  File "/home/acmt/Documents/lware/draft-lware/draft.py", line 225, in get_file_objects_response
-    validation_response = cls().validate_file_objects(file_objects)
-                          │                           └ [<FileStorage: 'rvtools.xlsx' ('application/*')>, <FileStorage: 'rv_tools.xlsx' ('application/*')>, <FileStorage: 'randomfile...
-                          └ <class '__main__.ValidateRVTools'>
-
-> File "/home/acmt/Documents/lware/draft-lware/draft.py", line 203, in validate_file_objects
-    GeneralValidator(
-    └ <class 'app.licenseware.common.validators.file_validators.GeneralValidator'>
-
-  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/common/validators/file_validators.py", line 198, in __init__
-    self.validate()
-    │    └ <function GeneralValidator.validate at 0x7f0ba93f5940>
-    └ <app.licenseware.common.validators.file_validators.GeneralValidator object at 0x7f0ba8f123d0>
-
-  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/common/validators/file_validators.py", line 325, in validate
-    validate_sheets(self.input_object, self.required_sheets)
-    │               │    │             │    └ (['tabvInfo', 'tabvCPU', 'tabvHost', 'tabvCluster'],)
-    │               │    │             └ <app.licenseware.common.validators.file_validators.GeneralValidator object at 0x7f0ba8f123d0>
-    │               │    └ <FileStorage: 'rvtools.xlsx' ('application/*')>
-    │               └ <app.licenseware.common.validators.file_validators.GeneralValidator object at 0x7f0ba8f123d0>
-    └ <function validate_sheets at 0x7f0ba93f5430>
-
-  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/common/validators/file_validators.py", line 146, in validate_sheets
-    common_sheets = list(set.intersection(set(sheets), set(required_sheets)))
-                                              │            └ (['tabvInfo', 'tabvCPU', 'tabvHost', 'tabvCluster'],)
-                                              └ ['tabvInfo', 'tabvCPU', 'tabvMemory', 'tabvDisk', 'tabvPartition', 'tabvNetwork', 'tabvFloppy', 'tabvCD', 'tabvSnapshot', 'ta...
-
-TypeError: unhashable type: 'list'
-2021-08-16 13:49:10.835[ ERROR ]
-__main__:validate_file_objects:216
-unhashable type: 'list'
-
-Traceback (most recent call last):
-
-  File "/home/acmt/Documents/lware/draft-lware/draft.py", line 272, in <module>
-    response, status_code = ValidateRVTools.get_file_objects_response(flask_request)
-                            │               │                         └ <class '__main__.flask_request'>
-                            │               └ <classmethod object at 0x7f0bbd0c5340>
-                            └ <class '__main__.ValidateRVTools'>
-
-  File "/home/acmt/Documents/lware/draft-lware/draft.py", line 225, in get_file_objects_response
-    validation_response = cls().validate_file_objects(file_objects)
-                          │                           └ [<FileStorage: 'rvtools.xlsx' ('application/*')>, <FileStorage: 'rv_tools.xlsx' ('application/*')>, <FileStorage: 'randomfile...
-                          └ <class '__main__.ValidateRVTools'>
-
-> File "/home/acmt/Documents/lware/draft-lware/draft.py", line 203, in validate_file_objects
-    GeneralValidator(
-    └ <class 'app.licenseware.common.validators.file_validators.GeneralValidator'>
-
-  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/common/validators/file_validators.py", line 198, in __init__
-    self.validate()
-    │    └ <function GeneralValidator.validate at 0x7f0ba93f5940>
-    └ <app.licenseware.common.validators.file_validators.GeneralValidator object at 0x7f0ba91283a0>
-
-  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/common/validators/file_validators.py", line 325, in validate
-    validate_sheets(self.input_object, self.required_sheets)
-    │               │    │             │    └ (['tabvInfo', 'tabvCPU', 'tabvHost', 'tabvCluster'],)
-    │               │    │             └ <app.licenseware.common.validators.file_validators.GeneralValidator object at 0x7f0ba91283a0>
-    │               │    └ <FileStorage: 'rv_tools.xlsx' ('application/*')>
-    │               └ <app.licenseware.common.validators.file_validators.GeneralValidator object at 0x7f0ba91283a0>
-    └ <function validate_sheets at 0x7f0ba93f5430>
-
-  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/common/validators/file_validators.py", line 146, in validate_sheets
-    common_sheets = list(set.intersection(set(sheets), set(required_sheets)))
-                                              │            └ (['tabvInfo', 'tabvCPU', 'tabvHost', 'tabvCluster'],)
-                                              └ ['tabvInfo', 'tabvCPU', 'tabvMemory', 'tabvDisk', 'tabvPartition', 'tabvNetwork', 'tabvFloppy', 'tabvCD', 'tabvSnapshot', 'ta...
-
-TypeError: unhashable type: 'list'
-2021-08-17 07:22:15.959[ WARNING ]
+2021-08-17 08:15:22.851[ WARNING ]
 app.licenseware.app_builder.app_builder:init_app:117
 No reports provided
 
-2021-08-17 07:22:16.894[ WARNING ]
+2021-08-17 08:16:54.539[ WARNING ]
 app.licenseware.app_builder.app_builder:init_app:117
 No reports provided
 
-2021-08-17 07:22:41.716[ WARNING ]
+2021-08-17 08:16:57.014[ WARNING ]
 app.licenseware.app_builder.app_builder:init_app:117
 No reports provided
 
-2021-08-17 07:22:47.196[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-17 07:24:31.231[ ERROR ]
+2021-08-17 08:36:02.642[ ERROR ]
 app.licenseware.decorators.failsafe_decorator:wrapper:54
 Traceback (most recent call last):
   File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/failsafe_decorator.py", line 49, in wrapper
     response = f(*args, **kwargs)
-  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/auth_decorators/authorization_check.py", line 37, in decorated
-    return f(*args, **kwargs)
-  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/app_builder/uploads_filenames_validation_routes.py", line 20, in post
-    uploader.validate_filenames(request)
-  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/uploader_builder/uploader_builder.py", line 58, in validate_filenames
-    response = self.validator_class.validate_filenames(flask_request)
-  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/uploader_validator/filename_validator.py", line 61, in validate_filenames
-    for filename in filenames:
-  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/local.py", line 378, in <lambda>
-    __iter__ = lambda x: iter(x._get_current_object())
-TypeError: 'Request' object is not iterable
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/mongodata/mongodata.py", line 249, in fetch
+    doc = list(found_docs)[0]
+IndexError: list index out of range
 
 
-2021-08-17 07:28:19.497[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-17 07:28:19.661[ ERROR ]
+2021-08-17 08:37:34.904[ ERROR ]
 app.licenseware.decorators.failsafe_decorator:wrapper:54
 Traceback (most recent call last):
   File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/failsafe_decorator.py", line 49, in wrapper
     response = f(*args, **kwargs)
-  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/auth_decorators/authorization_check.py", line 37, in decorated
-    return f(*args, **kwargs)
-  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/app_builder/uploads_filenames_validation_routes.py", line 20, in post
-    uploader.validate_filenames(request)
-  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/uploader_builder/uploader_builder.py", line 58, in validate_filenames
-    response = self.validator_class.validate_filenames(flask_request)
-  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/uploader_validator/filename_validator.py", line 61, in validate_filenames
-    for filename in filenames:
-  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/local.py", line 378, in <lambda>
-    __iter__ = lambda x: iter(x._get_current_object())
-TypeError: 'Request' object is not iterable
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/mongodata/mongodata.py", line 249, in fetch
+    doc = list(found_docs)[0]
+IndexError: list index out of range
 
 
-2021-08-17 07:28:20.933[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
+2021-08-17 08:38:06.698[ ERROR ]
+app.licenseware.decorators.failsafe_decorator:wrapper:54
+Traceback (most recent call last):
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/failsafe_decorator.py", line 49, in wrapper
+    response = f(*args, **kwargs)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/mongodata/mongodata.py", line 249, in fetch
+    doc = list(found_docs)[0]
+IndexError: list index out of range
 
-2021-08-17 07:30:03.811[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
 
-2021-08-17 07:30:51.239[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
+2021-08-17 08:43:05.665[ ERROR ]
+app.licenseware.decorators.failsafe_decorator:wrapper:54
+Traceback (most recent call last):
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/failsafe_decorator.py", line 49, in wrapper
+    response = f(*args, **kwargs)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/mongodata/mongodata.py", line 249, in fetch
+    doc = list(found_docs)[0]
+IndexError: list index out of range
 
-2021-08-17 07:30:53.976[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-17 07:31:04.886[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-17 07:31:07.182[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-17 07:31:22.199[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-17 07:32:50.790[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-17 07:33:27.061[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-17 07:33:30.218[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-17 07:33:35.613[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-17 07:33:47.162[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-17 07:33:52.410[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-17 07:34:12.252[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-17 07:35:24.858[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-17 07:35:30.509[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-17 07:35:33.349[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-17 07:35:35.246[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-17 07:40:39.202[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-17 07:40:40.016[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-17 07:40:44.871[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-17 07:43:27.870[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-17 07:44:00.053[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-17 07:44:19.666[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-17 07:44:22.212[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-17 07:44:35.310[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-17 07:44:49.277[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-17 07:45:04.085[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-17 07:45:04.119[ WARNING ]
-app.licenseware.app_builder.app_activation_route:get:26
-TODO - Initialize quota for tenant_id
-
-2021-08-17 07:45:45.906[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-17 07:45:45.940[ WARNING ]
-app.licenseware.app_builder.app_activation_route:get:26
-TODO - Initialize quota for tenant_id
 
