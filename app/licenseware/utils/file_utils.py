@@ -43,6 +43,7 @@ def save_file(file, tenant_id=None, path=None):
     file.seek(0)  # move cursor to 0 (stream left it on last read)
     file_path = os.path.join(save_path, filename)
     file.save(file_path)
+    file.close()
     
     return file_path
 

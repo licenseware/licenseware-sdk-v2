@@ -1,6 +1,8 @@
 from typing import List
 from app.licenseware.common.validators.file_validators import GeneralValidator
 from app.licenseware.utils.file_utils import save_file
+from app.licenseware.utils.logger import log
+
 
 
 class FileContentValidator:
@@ -33,8 +35,14 @@ class FileContentValidator:
     def get_file_objects_from_request(self, flask_request):
         
         file_objects = flask_request.files.getlist("files[]")
-        if not isinstance(file_objects, list) and file_objects:
-            return {"status": "fail", "message": "key needs to be files[]"}
+        
+        bad_request = {
+            "status": "fail", 
+            "message": "File list is empty or files are not on 'files[]' key"
+        }, 400
+        
+        if not isinstance(file_objects, list): return bad_request
+        if file_objects == []: return bad_request
         
         return file_objects
     
@@ -53,7 +61,9 @@ class FileContentValidator:
         for file in file_objects:
             if file.filename in valid_filenames: 
                 validation_file_objects.append(file)
-           
+            else:
+                file.close()
+                
         return validation_file_objects
         
 
@@ -99,6 +109,12 @@ class FileContentValidator:
 
         
     def get_file_objects_response(self, flask_request):
+        """
+            receive flask_request 
+            validate file names and file contents
+            save to disk valid files
+            create json response
+        """
         
         tenant_id = flask_request.headers.get("TenantId")
     
@@ -106,16 +122,10 @@ class FileContentValidator:
         if not isinstance(file_objects, list): return file_objects
         validation_response = self.validate_file_objects(file_objects, tenant_id)
         
-        response, status_code = self.calculate_quota(flask_request, file_objects, self.uploader_id)
-
-        if response['status'] == 'fail':
-            return response, status_code
-        
         return {
             'status': 'success', 
             'message': 'Files are valid',
-            'validation': validation_response,
-            'quota': response
+            'validation': validation_response
         }, 200
             
             

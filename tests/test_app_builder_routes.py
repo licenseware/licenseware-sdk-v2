@@ -1,4 +1,5 @@
 import unittest
+from app.licenseware.utils.logger import log
 from main import app
  
  
@@ -11,14 +12,6 @@ headers = {
 
 prefix = '/ifmp/v1'
 pathto = lambda route: prefix + route
-
-uploader_id = 'rv_tools'
-
-upload_validation_path = f"/uploads/{uploader_id}/validation"
-upload_path = f"/uploads/{uploader_id}/files"
-quota_validation_path = f"/uploads/quota/{uploader_id}"
-status_check_path = f"/uploads/{uploader_id}/status"
-
 
 
 #TODO check the altered data by the endpoints
@@ -56,16 +49,6 @@ class TestAppBuilderRoutes(unittest.TestCase):
         response = self.app.get(pathto('/editable_tables'), headers=headers)
         self.assertEqual(response.status_code, 200)
         
-    def test_uploads_filenames_validation_route(self):
         
-        url = pathto(upload_validation_path)
         
-        response = self.app.post(
-            url, 
-            headers=headers,
-            json=['rvtools.xlsx', "rv_tools.xlsx", 'randomfile.pdf']
-        )
-        
-        self.assertEqual(response.status_code, 200)
-    
  

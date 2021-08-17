@@ -1,5 +1,7 @@
 from typing import List
+from app.licenseware.utils.logger import log
 from app.licenseware.common.validators.file_validators import validate_filename
+
 
 
 class FileNameValidator:
@@ -35,14 +37,17 @@ class FileNameValidator:
             validate request received
             filename validation request should be a list of filenames
         """
-    
+        
         filenames = flask_request.json
-
-        if not isinstance(filenames, list):
-            return {'status': 'fail', 'message': 'Filenames sent for validation must be in a list of strings format'}
-            
-        if len(filenames) == 0:
-            return {'status': 'fail', 'message': 'Filenames sent for validation must be in a list of strings format'}
+        
+        bad_request = {
+            'status': 'fail', 
+            'message': 'Filenames sent for validation must be in a list of strings format'
+        }, 400
+        
+        if filenames == None: return bad_request
+        if not isinstance(filenames, list): return bad_request
+        if len(filenames) == 0: return bad_request
 
         return filenames
     
@@ -93,22 +98,17 @@ class FileNameValidator:
 
     def get_filenames_response(self, flask_request):
         """
-            receive flask_request request start validation process,
-            calculate quota and create the validation response 
+            receive flask_request 
+            validate filenames
+            create json response 
         """
-    
-        filenames = self.get_filenames_from_request(flask_request)
-        if not isinstance(filenames, list): return filenames
-        validation_response = self.validate_filenames(filenames)
-    
-        response, status_code = self.calculate_quota(flask_request, filenames, self.uploader_id)
         
-        if response['status'] == 'fail':
-            return response, status_code
+        filenames = self.get_filenames_from_request(flask_request)
+        if isinstance(filenames, tuple): return filenames
+        validation_response = self.validate_filenames(filenames)
         
         return {
             'status': 'success', 
             'message': 'Filenames are valid',
-            'validation': validation_response,
-            'quota': response
+            'validation': validation_response
         }, 200

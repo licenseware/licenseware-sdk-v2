@@ -49,25 +49,28 @@ class UploaderBuilder:
         self.uploader_vars = vars(self)
         
         
-        
     def register_uploader(self):
         return register_uploader(**self.uploader_vars)
 
 
     def validate_filenames(self, flask_request):
         
-        response, status_code = self.validator_class.get_filenames_response(flask_request)
-        log.info(response)
-    
-        return response, status_code
+        response, status_code = self.validator_class.calculate_quota(flask_request)
+        if response['status'] == 'fail': return response, status_code
         
+        response, status_code = self.validator_class.get_filenames_response(flask_request)
+        return response, status_code
+    
         
     def upload_files(self, flask_request):
-        #TODO
-        return {'status': 'TODO'}, 200
+        
+        response, status_code = self.validator_class.calculate_quota(flask_request)
+        if response['status'] == 'fail': return response, status_code
+        
+        response, status_code = self.validator_class.get_file_objects_response(flask_request)
+        return response, status_code
     
-
-
+    
     def init_tenant_quota(self, tenant_id:str):
         #TODO
         return {'status': 'TODO'}, 200
