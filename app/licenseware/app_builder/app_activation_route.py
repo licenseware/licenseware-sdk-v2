@@ -3,6 +3,8 @@ from flask_restx import Api, Resource
 from app.licenseware.decorators.auth_decorators import authorization_check
 from app.licenseware.decorators import failsafe
 from app.licenseware.registry_service import register_app
+from app.licenseware.utils.logger import log
+
 
 
 
@@ -15,16 +17,17 @@ def add_app_activation_route(api: Api, app_vars:dict, uploaders:list):
         @api.doc("Initialize app for tenant_id")
         def get(self):
             
-            tenant_id = request.headers.get("TenantId")
+            tenant_id = request.headers.get("Tenantid")
             
             if not tenant_id: 
                 return {'status': 'fail', 'message': 'Tenantid not provided'}, 403
 
             for uploader in uploaders:
-                qmsg, _ = uploader.init_tenant_quota(tenant_id)
+                log.warning("TODO - Initialize quota for tenant_id")
+                # qmsg, _ = uploader.init_tenant_quota(tenant_id)
                 
-                if qmsg['status'] != 'success':
-                    return {'status': 'fail', 'message': 'App failed to install'}, 500
+                # if qmsg['status'] != 'success':
+                #     return {'status': 'fail', 'message': 'App failed to install'}, 500
             
             dmsg, _ = register_app(**app_vars)
             

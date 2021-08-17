@@ -1,6 +1,6 @@
 import unittest
 
-from app.licenseware.upload_validator import UploadValidator
+from app.licenseware.uploader_validator import UploaderValidator
 
 
 # Mock objects
@@ -49,7 +49,7 @@ class flask_request:
             return '3d1fdc6b-04bc-44c8-ae7c-5fa5b9122f1a'
             
          
-# python3 -m unittest tests/test_upload_validator.py
+# python3 -m unittest tests/test_uploader_validator.py
             
 class TestUploadValidator(unittest.TestCase):
     
@@ -58,7 +58,7 @@ class TestUploadValidator(unittest.TestCase):
     
     def test_validate_filenames(self):
         
-        rv_tools_validator = UploadValidator(
+        rv_tools_validator = UploaderValidator(
             uploader_id = 'rv_tools',
             filename_contains = ['RV', 'Tools'],
             filename_endswith = ['.xls', '.xlsx'],
@@ -87,6 +87,7 @@ class TestUploadValidator(unittest.TestCase):
         self.assertDictEqual(response, file_objects_response)
         
         file_paths = rv_tools_validator.get_filepaths_from_objects_response(file_objects_response)
+        # print(file_paths)
         
         [self.assertEqual(os.path.exists(fp), True) for fp in file_paths]
          

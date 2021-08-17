@@ -248,3 +248,183 @@ Traceback (most recent call last):
                                               └ ['tabvInfo', 'tabvCPU', 'tabvMemory', 'tabvDisk', 'tabvPartition', 'tabvNetwork', 'tabvFloppy', 'tabvCD', 'tabvSnapshot', 'ta...
 
 TypeError: unhashable type: 'list'
+2021-08-17 07:22:15.959[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-17 07:22:16.894[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-17 07:22:41.716[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-17 07:22:47.196[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-17 07:24:31.231[ ERROR ]
+app.licenseware.decorators.failsafe_decorator:wrapper:54
+Traceback (most recent call last):
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/failsafe_decorator.py", line 49, in wrapper
+    response = f(*args, **kwargs)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/auth_decorators/authorization_check.py", line 37, in decorated
+    return f(*args, **kwargs)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/app_builder/uploads_filenames_validation_routes.py", line 20, in post
+    uploader.validate_filenames(request)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/uploader_builder/uploader_builder.py", line 58, in validate_filenames
+    response = self.validator_class.validate_filenames(flask_request)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/uploader_validator/filename_validator.py", line 61, in validate_filenames
+    for filename in filenames:
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/local.py", line 378, in <lambda>
+    __iter__ = lambda x: iter(x._get_current_object())
+TypeError: 'Request' object is not iterable
+
+
+2021-08-17 07:28:19.497[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-17 07:28:19.661[ ERROR ]
+app.licenseware.decorators.failsafe_decorator:wrapper:54
+Traceback (most recent call last):
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/failsafe_decorator.py", line 49, in wrapper
+    response = f(*args, **kwargs)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/auth_decorators/authorization_check.py", line 37, in decorated
+    return f(*args, **kwargs)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/app_builder/uploads_filenames_validation_routes.py", line 20, in post
+    uploader.validate_filenames(request)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/uploader_builder/uploader_builder.py", line 58, in validate_filenames
+    response = self.validator_class.validate_filenames(flask_request)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/uploader_validator/filename_validator.py", line 61, in validate_filenames
+    for filename in filenames:
+  File "/home/acmt/.local/lib/python3.8/site-packages/werkzeug/local.py", line 378, in <lambda>
+    __iter__ = lambda x: iter(x._get_current_object())
+TypeError: 'Request' object is not iterable
+
+
+2021-08-17 07:28:20.933[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-17 07:30:03.811[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-17 07:30:51.239[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-17 07:30:53.976[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-17 07:31:04.886[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-17 07:31:07.182[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-17 07:31:22.199[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-17 07:32:50.790[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-17 07:33:27.061[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-17 07:33:30.218[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-17 07:33:35.613[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-17 07:33:47.162[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-17 07:33:52.410[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-17 07:34:12.252[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-17 07:35:24.858[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-17 07:35:30.509[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-17 07:35:33.349[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-17 07:35:35.246[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-17 07:40:39.202[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-17 07:40:40.016[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-17 07:40:44.871[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-17 07:43:27.870[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-17 07:44:00.053[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-17 07:44:19.666[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-17 07:44:22.212[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-17 07:44:35.310[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-17 07:44:49.277[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-17 07:45:04.085[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-17 07:45:04.119[ WARNING ]
+app.licenseware.app_builder.app_activation_route:get:26
+TODO - Initialize quota for tenant_id
+
+2021-08-17 07:45:45.906[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-17 07:45:45.940[ WARNING ]
+app.licenseware.app_builder.app_activation_route:get:26
+TODO - Initialize quota for tenant_id
+

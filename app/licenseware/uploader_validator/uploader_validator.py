@@ -4,11 +4,13 @@ from .file_content_validator import FileContentValidator
 
 
 
-class UploadValidator(FileNameValidator, FileContentValidator):
+class UploaderValidator(FileNameValidator, FileContentValidator):
     
     """
-
-    rv_tools_validator = UploadValidator(
+    
+    Default way of using UploaderValidator, just specify paramters for validation
+    
+    rv_tools_validator = UploaderValidator(
         uploader_id = 'rv_tools',
         filename_contains = ['RV', 'Tools'],
         filename_endswith = ['.xls', '.xlsx'],
@@ -30,7 +32,30 @@ class UploadValidator(FileNameValidator, FileContentValidator):
 
     response, status_code = rv_tools_validator.get_file_objects_response(flask_request)
     log.debug(response)
-    {'status': 'success', 'message': 'Files are valid', 'validation': [{'status': 'success', 'filename': 'rvtools.xlsx', 'message': 'Filename is valid'}, {'status': 'success', 'filename': 'rv_tools.xlsx', 'message': 'Filename is valid'}], 'quota': {'status': 'success', 'message': 'Quota within limits'}}
+    {'status': 'success', 'message': 'Files are valid', 'validation': [{'status': 'success', 'filename': 'rvtools.xlsx', 'filepath': '/tmp/lware/3d1fdc6b-04bc-44c8-ae7c-5fa5b9122f1a/rvtools.xlsx', 'message': 'Filename is valid'}, {'status': 'success', 'filename': 'rv_tools.xlsx', 'filepath': '/tmp/lware/3d1fdc6b-04bc-44c8-ae7c-5fa5b9122f1a/rv_tools.xlsx', 'message': 'Filename is valid'}], 'quota': {'status': 'success', 'message': 'Quota within limits'}}
+    
+    file_paths = rv_tools_validator.get_filepaths_from_objects_response(file_objects_response)
+    ['/tmp/lware/3d1fdc6b-04bc-44c8-ae7c-5fa5b9122f1a/rvtools.xlsx', '/tmp/lware/3d1fdc6b-04bc-44c8-ae7c-5fa5b9122f1a/rv_tools.xlsx']
+    
+    
+    You can also overwrite UploaderValidator class:
+    
+    class MyCustomValidator(UploaderValidator):
+        
+        def get_filenames_response(self, flask_request):
+            custom way of handling validating filenames from a flask request object
+            return filenames
+    
+        def get_file_objects_response(self, flask_request):
+            custom way of handling validating filenames and contents from a flask request object
+            return fileobjects
+    
+        def get_filepaths_from_objects_response(file_objects_response):
+            Ideally file_objects_response has a validation field 
+            which contains a list of dicts like bellow:
+            'validation': [{'status': 'success', 'filename': 'rvtools.xlsx', 'filepath': '/tmp/lware/3d1fdc6b-04bc-44c8-ae7c-5fa5b9122f1a/rvtools.xlsx', 'message': 'Filename is valid'}, {'status': 'success', 'filename': 'rv_tools.xlsx', 'filepath': '/tmp/lware/3d1fdc6b-04bc-44c8-ae7c-5fa5b9122f1a/rv_tools.xlsx', 'message': 'Filename is valid'}]
+
+            get_filepaths_from_objects_response gets the 'filepath' in a list
     
     """
     

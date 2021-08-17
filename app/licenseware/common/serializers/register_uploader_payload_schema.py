@@ -19,7 +19,7 @@ class UploaderInfoSchema(Schema):
     # TODO change it to name in registry service
     # name = fields.Str(required=True, validate=validate.Length(min=3))  
     description = fields.Str(required=True, validate=validate.Length(min=10))
-    flags = fields.List(fields.Str, required=False, validate=validate.OneOf(flags.BETA, flags.SOON))
+    flags = fields.List(fields.Str, required=False) #validate=validate.OneOf(flags.BETA, flags.SOON), allow_none=True)
     accepted_file_types = fields.List(fields.Str, required=True)
     upload_url = fields.Str(required=True, validate=validate_route)
     upload_validation_url = fields.Str(required=True, validate=validate_route)

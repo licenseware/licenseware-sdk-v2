@@ -9,8 +9,7 @@ from app.licenseware.utils.logger import log
 from app.licenseware.app_builder import AppBuilder
 
 from app.licenseware.uploader_builder import UploaderBuilder
-from app.licenseware.upload_validator import UploadValidator
-
+from app.licenseware.uploader_validator import UploaderValidator
 
 
 app = Flask(__name__)
@@ -25,13 +24,13 @@ ifmp_app = AppBuilder(
 
 # UPLOADERS
 
-# You can inherit from UploadValidator and overwrite default function
-class OverwriteUploadValidator(UploadValidator):
+# You can inherit from UploadValidator and overwrite defaults 
+class OverwriteUploaderValidator(UploaderValidator):
     pass
 
 
 # This is the default way you can create a file validator
-rv_tools_validator = UploadValidator(
+rv_tools_validator = UploaderValidator(
     uploader_id = 'rv_tools',
     filename_contains = ['RV', 'Tools'],
     filename_endswith = ['.xls', '.xlsx'],

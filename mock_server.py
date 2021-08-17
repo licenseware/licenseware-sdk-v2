@@ -8,8 +8,26 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     return 'Auth service mock server'
-        
-        
+  
+       
+@app.route('/ifmp/v1/app', methods=['GET'])
+def ifmp_app():
+    return {
+        'status': 'success', 
+        'Authorization': 'long_auth_token',
+        'TenantId': 'uuid4_tenant_id',
+    }, 200
+
+
+@app.route('/ifmp/v1/app/init', methods=['GET'])
+def app_init():
+    return {
+        'status': 'success', 
+        'Authorization': 'long_auth_token',
+        'TenantId': 'uuid4_tenant_id',
+    }, 200
+      
+      
 @app.route('/auth/users/login', methods=['POST'])
 def login_user():
     return {

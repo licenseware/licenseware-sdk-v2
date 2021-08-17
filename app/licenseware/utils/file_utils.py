@@ -1,7 +1,13 @@
 import os, re
+import string, random
 import shutil
 from werkzeug.utils import secure_filename as werkzeug_secure_filename
 from app.licenseware.common.constants import envs
+
+
+
+generate_dir_id = lambda : "".join([random.choice(list(string.digits)) for _ in range(6)])
+
 
 
 def secure_filename(fname):
@@ -30,7 +36,8 @@ def save_file(file, tenant_id=None, path=None):
     
     filename = secure_filename(file.filename)
 
-    save_path = path or os.path.join(envs.FILE_UPLOAD_PATH, tenant_id)
+    dir_id = generate_dir_id() # doing this to avoid overwriting already uploaded files 
+    save_path = path or os.path.join(envs.FILE_UPLOAD_PATH, tenant_id, dir_id)
     if not os.path.exists(save_path): os.makedirs(save_path) 
     
     file.seek(0)  # move cursor to 0 (stream left it on last read)
