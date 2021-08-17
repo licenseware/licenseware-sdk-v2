@@ -178,7 +178,7 @@ class AppBuilder:
         
         self.uploaders.append(uploader_instance)
         
-        response, status_code = uploader.register_uploader()
+        response, status_code = uploader_instance.register_uploader()
         if status_code not in {200, 201}:
             raise Exception("Uploader failed to register!")
 
