@@ -12,27 +12,8 @@ from app.licenseware.app_builder import AppBuilder
 from app.licenseware.uploader_builder import UploaderBuilder
 from app.licenseware.uploader_validator import UploaderValidator
 
-from flask_dramatiq import Dramatiq
-
-
 
 app = Flask(__name__)
-
-broker = Dramatiq(broker_cls='dramatiq.brokers.redis:RedisBroker')
-
-@broker.actor()
-def my_actor():
-    log.warning("helloo from dramatiq")
-
-@app.route("/dramatiq")
-def myhandler():
-    my_actor.send()
-    return "task sent to dramatiq"
-
-
-broker.init_app(app) 
-
-# flask worker -p4
 
 
 

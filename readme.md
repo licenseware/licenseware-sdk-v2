@@ -117,11 +117,54 @@ if __name__ == "__main__":
 ```
 
 
+# Basic flask_dramatiq setup 
+
+```py
+
+from flask_dramatiq import Dramatiq
+
+broker = Dramatiq(broker_cls='dramatiq.brokers.redis:RedisBroker')
+
+@broker.actor(max_retries=3, actor_name='rv_tools', queue_name='ifmp')
+def rv_tools_worker(data):
+    log.warning("helloo from dramatiq")
+
+
+@app.route("/dramatiq")
+def myhandler():
+    rv_tools_worker.send()
+    # broker.actors[actor_name].send(event)
+    return "task sent to dramatiq"
+
+
+event = {
+    "tenant_id": request_obj.headers.get("TenantId"),
+    "files": ",".join(saved_files)
+}
+
+
+# .
+# .
+# .
+
+app = Flask(__name__)
+
+broker.init_app(app) 
+
+
+# Needs FLASK_APP env set to attach dramatiq worker cli
+# FLASK_APP=main:app
+# flask worker -p4
+
+
+```
 
 
 
 
 # OLD
+
+
 
 # Conventions over configuration
 

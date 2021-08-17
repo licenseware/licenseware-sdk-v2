@@ -1,4 +1,5 @@
-from typing import Any, Tuple
+import os
+from typing import Tuple
 from .filename_validator import FileNameValidator
 from .file_content_validator import FileContentValidator
 
@@ -117,13 +118,23 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
     @classmethod
     def get_filepaths_from_objects_response(cls, file_objects_response):
         
-        files_paths = [
+        file_paths = [
             res['filepath'] 
             for res in file_objects_response['validation']
         ]
             
-        return files_paths
+        return file_paths
     
     
+    @classmethod
+    def get_only_valid_filepaths_from_objects_response(cls, file_objects_response):
+        
+        file_paths = [
+            res['filepath'] 
+            for res in file_objects_response['validation']
+            if res['filepath'] != 'File not saved' and os.path.exists(res['filepath'])
+        ]
+            
+        return file_paths
     
 

@@ -7,7 +7,7 @@ from app.licenseware.registry_service import register_app
 from app.licenseware.tenants import get_activated_tenants, get_tenants_with_data
 from app.licenseware.utils.logger import log
 from app.licenseware.auth import Authenticator
-
+from app.licenseware.utils.dramatiq_redis_broker import broker
 
 from .register_all_route import add_register_all_route
 from .editable_tables_route import add_editable_tables_route
@@ -18,7 +18,6 @@ from .uploads_filestream_validation_routes import add_uploads_filestream_validat
 from .uploads_status_routes import add_uploads_status_routes
 from .uploads_quota_routes import add_uploads_quota_routes
 from .tenant_registration_route import add_tenant_registration_route
-
 
 
 # TODO TenantId is not posible 
@@ -120,6 +119,14 @@ class AppBuilder:
         self.init_api()
         self.add_default_routes()
         if register: self.register_app()
+        self.init_dramatiq_broker()
+        
+        
+    def init_dramatiq_broker(self):
+        # Add middleware if needed
+        broker.init_app(self.app)
+        
+        
         
    
     def authenticate_app(self):

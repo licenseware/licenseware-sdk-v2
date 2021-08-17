@@ -1,7 +1,9 @@
 from typing import Type
 from app.licenseware.common.constants import envs, states
 from app.licenseware.registry_service.register_uploader import register_uploader
+from app.licenseware.utils.dramatiq_redis_broker import broker
 from app.licenseware.utils.logger import log 
+
 
 
 class UploaderBuilder:
@@ -50,7 +52,9 @@ class UploaderBuilder:
         
         
     def register_uploader(self):
-        return register_uploader(**self.uploader_vars)
+        response, status_code = register_uploader(**self.uploader_vars)
+        if status_code != 200:
+            raise Exception("Uploader can't register to registry service")
 
 
     def validate_filenames(self, flask_request):
@@ -64,10 +68,20 @@ class UploaderBuilder:
         
     def upload_files(self, flask_request):
         
-        response, status_code = self.validator_class.calculate_quota(flask_request)
-        if response['status'] == 'fail': return response, status_code
+        quota_response, status_code = self.validator_class.calculate_quota(flask_request)
+        if quota_response['status'] == 'fail': return quota_response, status_code
         
         response, status_code = self.validator_class.get_file_objects_response(flask_request)
+        
+        #TODO send event data to worker function
+        event_data = {
+            'tenant_id': flask_request.headers.get("TenantId"),
+            'filepaths': self.validator_class.get_only_valid_filepaths_from_objects_response(response),
+            'flask_request':  flask_request
+        }
+        
+        (event_data)
+        
         return response, status_code
     
     

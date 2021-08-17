@@ -123,6 +123,7 @@ class FileContentValidator:
         validation_response = self.validate_file_objects(file_objects, tenant_id)
         
         return {
+            'tenant_id': tenant_id, 
             'status': 'success', 
             'message': 'Files are valid',
             'validation': validation_response
