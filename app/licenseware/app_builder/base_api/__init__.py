@@ -1,1 +1,0 @@
-from .editable_tables_route import add_editable_tables_route

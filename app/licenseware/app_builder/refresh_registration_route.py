@@ -5,20 +5,26 @@ from app.licenseware.decorators import failsafe
 
 
 
-
-def add_register_all_route(api:Api, selfapp: Type, reports:list, uploaders:list):
+def add_refresh_registration_route(api:Api, appvars:dict):
     
-    @api.route('/register_all')
-    class RegisterAll(Resource):
+    @api.route(appvars['refresh_registration_path'])
+    class RefreshRegistration(Resource):
         @failsafe(fail_code=500)
         @machine_check
-        @api.doc("Register all reports and uploaders")
+        @api.doc(
+            id="Register all reports and uploaders",
+            responses={
+                200 : 'TODO - add doc',
+                403 : "Missing `Authorization` information",
+                500 : 'Something went wrong while handling the request' 
+            },
+        )
         def get(self):
             
             response_ok = register_all(
-                app = vars(selfapp),
-                reports = reports, 
-                uploaders = uploaders
+                app = appvars,
+                reports = appvars['reports'], 
+                uploaders = appvars['uploaders']
             )
             
             if response_ok:

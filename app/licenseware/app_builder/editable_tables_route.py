@@ -4,9 +4,10 @@ from app.licenseware.decorators import failsafe
 from app.licenseware.editable_tables import editable_tables_from_schemas
 
 
-def add_editable_tables_route(api:Api, editable_tables_schemas:list):
+
+def add_editable_tables_route(api:Api, appvars:dict):
     
-    @api.route('/editable_tables')
+    @api.route(appvars['editable_tables_path'])
     class EditableTables(Resource):
         @failsafe(fail_code=500)
         @authorization_check
@@ -20,7 +21,7 @@ def add_editable_tables_route(api:Api, editable_tables_schemas:list):
         )
         def get(self):
             return editable_tables_from_schemas(
-                editable_tables_schemas
+                appvars['editable_tables_schemas']
             )
     
     return api

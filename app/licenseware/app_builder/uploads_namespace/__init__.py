@@ -11,6 +11,6 @@ from .status_namespace import get_status_namespace
 # Here we are defining the uploads namespace which will be imported in app_builder
 uploads_namespace = Namespace(
     name="File Uploads",
-    description="Routes available for file handling operations",
+    description="Routes available for file processing operations",
     path="/uploads"
 )

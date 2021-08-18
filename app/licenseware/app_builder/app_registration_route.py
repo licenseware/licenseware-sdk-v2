@@ -1,17 +1,16 @@
-from flask_restx import Namespace, Resource
+from flask_restx import Api, Resource
 from app.licenseware.decorators.auth_decorators import machine_check
 from app.licenseware.decorators import failsafe
 from app.licenseware.registry_service import register_app
-from typing import Type
 
 
-def get_app_registration_namespace(ns: Namespace, selfapp:Type):
+def add_app_registration_route(api: Api, appvars:dict):
     
-    @ns.route(selfapp.register_app_path)
+    @api.route(appvars['register_app_path'])
     class AppRegistration(Resource):
         @failsafe(fail_code=500)
         @machine_check
-        @ns.doc(
+        @api.doc(
             id="Register app to registry-service",
             responses={
                 200 : 'Registration successful',
@@ -20,8 +19,8 @@ def get_app_registration_namespace(ns: Namespace, selfapp:Type):
             },
         )
         def get(self):
-            return register_app(**vars(selfapp)) 
+            return register_app(**appvars) 
     
-    return ns
+    return api
         
               

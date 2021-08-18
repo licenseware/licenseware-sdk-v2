@@ -9,11 +9,11 @@ from app.licenseware.utils.logger import log
 from app.licenseware.auth import Authenticator
 from app.licenseware.utils.dramatiq_redis_broker import broker
 
-from .register_all_route import add_register_all_route
+from .refresh_registration_route import add_refresh_registration_route
 from .editable_tables_route import add_editable_tables_route
-from .app_route import add_app_route
-from .app_activation_route import add_app_activation_route
 from .tenant_registration_route import add_tenant_registration_route
+from .app_activation_route import add_app_activation_route
+from .app_registration_route import add_app_registration_route
 
 
 from .uploads_namespace import uploads_namespace
@@ -114,6 +114,8 @@ class AppBuilder:
         self.reports = []
         self.uploaders = []
         self.custom_namespaces = []
+        
+        self.appvars = vars(self)
     
     
     
@@ -165,19 +167,24 @@ class AppBuilder:
     def add_default_routes(self):
         
         # Here we are adding the routes available for each app
-        # Api must be passed from route function back to this context
-    
-        self.api = add_app_route(self.api, self.app_vars)
-        self.api = add_app_activation_route(self.api, self.app_vars, self.uploaders)
-        self.api = add_register_all_route(self.api, self.reports, self.uploaders)
-        self.api = add_editable_tables_route(self.api, self.editable_tables_schemas)
-        self.api = add_tenant_registration_route(self.api, self.app_vars)
+        # Api must be passed from route function back to this context 
+        api_funcs = [
+            add_refresh_registration_route,
+            add_editable_tables_route,
+            add_tenant_registration_route,
+            add_app_activation_route,
+            add_app_registration_route
+        ]
         
+        for func in api_funcs:
+            self.api = func(self.api, self.appvars)
+        
+        
+        # Another way is to group routes in namespaces 
+        # This way the url prefix is specified only in the namespace
         self.add_uploads_routes()
         
-        
-        # TODO Reports should be on the Reports Namespace with /reports prefix
-        
+    
     
     def add_uploads_routes(self):
         

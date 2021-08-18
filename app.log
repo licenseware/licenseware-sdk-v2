@@ -402,3 +402,95 @@ No reports provided
 app.licenseware.app_builder.app_builder:init_app:122
 No reports provided
 
+2021-08-18 13:16:20.846[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:127
+No reports provided
+
+2021-08-18 13:18:37.142[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:127
+No reports provided
+
+2021-08-18 13:19:20.204[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:127
+No reports provided
+
+2021-08-18 13:19:57.003[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:127
+No reports provided
+
+2021-08-18 13:19:57.952[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:127
+No reports provided
+
+2021-08-18 13:20:35.367[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:127
+No reports provided
+
+2021-08-18 13:21:01.329[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:127
+No reports provided
+
+2021-08-18 13:21:03.675[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:127
+No reports provided
+
+2021-08-18 13:21:15.449[ WARNING ]
+app.licenseware.decorators.auth_decorators.authorization_check:decorated:24
+Missing Tenant or Authorization information
+
+2021-08-18 13:21:22.246[ WARNING ]
+app.licenseware.decorators.auth_decorators.machine_check:decorated:21
+Missing Authorization information
+
+2021-08-18 13:21:36.041[ WARNING ]
+app.licenseware.app_builder.app_namespace.app_activation_namespace:get:35
+TODO - Initialize quota for tenant_id
+
+2021-08-18 13:21:55.522[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:127
+No reports provided
+
+2021-08-18 13:22:44.366[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:127
+No reports provided
+
+2021-08-18 13:30:10.932[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:129
+No reports provided
+
+2021-08-18 13:30:11.765[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:129
+No reports provided
+
+2021-08-18 13:31:24.334[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:129
+No reports provided
+
+2021-08-18 13:32:39.408[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:129
+No reports provided
+
+2021-08-18 13:33:18.282[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:129
+No reports provided
+
+2021-08-18 13:33:19.193[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:129
+No reports provided
+
+2021-08-18 13:43:30.659[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:125
+No reports provided
+
+2021-08-18 13:43:47.348[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:125
+No reports provided
+
+2021-08-18 13:43:48.226[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:125
+No reports provided
+
+2021-08-18 13:44:32.017[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:125
+No reports provided
+
