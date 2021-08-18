@@ -14,3 +14,19 @@ No reports provided
 app.licenseware.uploader_builder.uploader_builder:upload_files:85
 Sending event data
 
+2021-08-18 08:24:57.771[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 08:25:29.312[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 08:25:29.359[ WARNING ]
+app.licenseware.app_builder.app_activation_route:get:26
+TODO - Initialize quota for tenant_id
+
+2021-08-18 08:25:31.350[ WARNING ]
+app.licenseware.uploader_builder.uploader_builder:upload_files:85
+Sending event data
+

@@ -7,7 +7,10 @@ down:
 	$(docker_command) down
 
 
-run-main:	
+run-prod:	
+	uwsgi --http 0.0.0.0:4000 -w main:app --processes 4
+
+run-dev:
 	python3 main.py
 	
 run-mock:
