@@ -6,7 +6,7 @@ from app.licenseware.decorators import failsafe
 
 
 
-def add_register_all_route(api, reports, uploaders):
+def add_register_all_route(api:Api, selfapp: Type, reports:list, uploaders:list):
     
     @api.route('/register_all')
     class RegisterAll(Resource):
@@ -16,6 +16,7 @@ def add_register_all_route(api, reports, uploaders):
         def get(self):
             
             response_ok = register_all(
+                app = vars(selfapp),
                 reports = reports, 
                 uploaders = uploaders
             )

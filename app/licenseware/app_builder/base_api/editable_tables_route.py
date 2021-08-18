@@ -4,13 +4,20 @@ from app.licenseware.decorators import failsafe
 from app.licenseware.editable_tables import editable_tables_from_schemas
 
 
-def add_editable_tables_route(api, editable_tables_schemas:list):
+def add_editable_tables_route(api:Api, editable_tables_schemas:list):
     
     @api.route('/editable_tables')
     class EditableTables(Resource):
         @failsafe(fail_code=500)
         @authorization_check
-        @api.doc("Get editable tables metadata")
+        @api.doc(
+            id="Get editable tables metadata",
+            responses={
+                200 : 'TODO - add doc',
+                403 : "Missing `Tenant` or `Authorization` information",
+                500 : 'Something went wrong while handling the request' 
+            },
+        )
         def get(self):
             return editable_tables_from_schemas(
                 editable_tables_schemas

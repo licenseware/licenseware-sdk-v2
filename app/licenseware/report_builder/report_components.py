@@ -37,6 +37,14 @@ history_overview_data = {
 # - register components to registry service : component_id, description, name, available types (ui shape in which data is shown)
 
 
+report_components = ['PieChart',
+ 'Table',
+ 'Summary',
+ 'BarChart',
+ 'DetailSummary']
+
+
+
 class flags(Enum):
     BETA = "beta"
 

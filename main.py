@@ -62,16 +62,14 @@ class RVToolsUploaderValidator(UploaderValidator):
         
         return {'status': 'success', 'message': 'Quota within limits'}, 200
     
-    # If necessary you can overwrite the way 
-    # validation of filenames and file binary it's done
-    # Bellow functions are available for overwrite
-
+    # If necessary you can overwrite the way validation of filenames and file binary it's done
+    
     # def get_filenames_response(self, flask_request): 
-    # responsible for validating filenames and returning a json reponse, status code
+    # responsible for validating filenames and returning a json response, status code
     # ...
     
     # def get_file_objects_response(self, flask_request): 
-    #   responsible for validating filenames, their contents and returning a json reponse, status code
+    #   responsible for validating filenames, their contents and returning a json response, status code
     # ...
     
     
@@ -119,10 +117,17 @@ ifmp_app.register_uploader(rv_tools_uploader)
 
 
 
+
+
+
+
 # CUSTOM RESTX NAMESPACES
 # We can add also custom namespaces to main IFMP Api
 
-custom_ns = Namespace("custom")
+custom_ns = Namespace(
+    name="Custom", 
+    description="This is a custom namespace with the app prefix"
+)
 
 @custom_ns.route("/custom-api-route")
 class CustomApiRoute(Resource):    
@@ -134,7 +139,8 @@ class CustomApiRoute(Resource):
 # it will have the same namespace prefix /ifmp/v1/ + ns-prefix/custom-api-route
 ifmp_app.add_namespace(custom_ns, path='/ns-prefix')
 
-
+# If the namespace defined up it's used on all apps 
+# add it to licenseware sdk in app_builder default routes
 
 
 
