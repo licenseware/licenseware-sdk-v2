@@ -74,7 +74,6 @@ class RVToolsUploaderValidator(UploaderValidator):
     
 
 rv_tools_validator = RVToolsUploaderValidator(
-    uploader_id = 'rv_tools',
     filename_contains = ['RV', 'Tools'],
     filename_endswith = ['.xls', '.xlsx'],
     ignore_filenames  = ['skip_this_file.csv'],
@@ -93,6 +92,7 @@ rv_tools_validator = RVToolsUploaderValidator(
 
 rv_tools_uploader = UploaderBuilder(
     name="RVTools", 
+    uploader_id = 'rv_tools',
     description="XLSX export from RVTools after scanning your Vmware infrastructure.", 
     accepted_file_types=['.xls', '.xlsx'],
     validator_class=rv_tools_validator,

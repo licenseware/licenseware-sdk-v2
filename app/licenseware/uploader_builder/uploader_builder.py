@@ -11,6 +11,7 @@ class UploaderBuilder:
     def __init__(
         self, 
         name:str, 
+        uploader_id:str,
         description:str, 
         accepted_file_types:list, 
         validator_class: Type, 
@@ -24,8 +25,11 @@ class UploaderBuilder:
         status_check_path:str = None,
         **kwargs
     ):
+        
+        validator_class.uploader_id = uploader_id
+        
+        self.uploader_id = uploader_id
         self.name = name
-        self.uploader_id = validator_class.uploader_id
         self.description = description
         self.validator_class = validator_class
         self.app_id = envs.APP_ID
