@@ -494,3 +494,35 @@ No reports provided
 app.licenseware.app_builder.app_builder:init_app:125
 No reports provided
 
+2021-08-18 13:45:32.103[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:125
+No reports provided
+
+2021-08-18 13:45:34.402[ WARNING ]
+app.licenseware.uploader_builder.uploader_builder:upload_files:89
+Sending event data
+
+2021-08-18 13:54:36.440[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:138
+No reports provided
+
+2021-08-18 13:54:36.513[ WARNING ]
+app.licenseware.app_builder.app_activation_route:get:34
+TODO - Initialize quota for tenant_id
+
+2021-08-18 13:54:36.554[ ERROR ]
+app.licenseware.decorators.failsafe_decorator:wrapper:54
+Traceback (most recent call last):
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/failsafe_decorator.py", line 49, in wrapper
+    response = f(*args, **kwargs)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/auth_decorators/machine_check.py", line 30, in decorated
+    return f(*args, **kwargs)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/app_builder/refresh_registration_route.py", line 24, in get
+    response_ok = register_all(
+TypeError: register_all() got an unexpected keyword argument 'app'
+
+
+2021-08-18 13:54:38.409[ WARNING ]
+app.licenseware.uploader_builder.uploader_builder:upload_files:89
+Sending event data
+

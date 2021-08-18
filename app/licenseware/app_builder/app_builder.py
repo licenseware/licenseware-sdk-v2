@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from flask_restx.resource import Resource
 from app.licenseware.common.constants.envs import envs
 from typing import Callable
@@ -44,6 +45,18 @@ authorizations = {
 }
 
 
+@dataclass
+class base_paths:
+    app_activation_path: str ='/activate_app'
+    register_app_path: str = '/register_app'
+    refresh_registration_path: str ='/refresh_registration'
+    editable_tables_path: str ='/editable_tables'
+    history_report_path: str ='/reports/history_report'
+    tenant_registration_path: str ='/register_tenant'
+
+
+
+
 class AppBuilder:
     
     def __init__(
@@ -55,12 +68,12 @@ class AppBuilder:
         editable_tables_schemas:list = [],
         activated_tenants_func: Callable = get_activated_tenants, 
         tenants_with_data_func: Callable = get_tenants_with_data,
-        app_activation_path: str ='/activate_app',
-        register_app_path: str = '/register_app',
-        refresh_registration_path: str ='/refresh_registration',
-        editable_tables_path: str ='/editable_tables',
-        history_report_path: str ='/reports/history_report',
-        tenant_registration_path: str ='/register_tenant',
+        app_activation_path: str = None,
+        register_app_path: str = None,
+        refresh_registration_path: str = None,
+        editable_tables_path: str = None,
+        history_report_path: str = None,
+        tenant_registration_path: str = None,
         icon: str ="default.png",
         doc_authorizations: dict = authorizations,
         api_decorators: list = None,
@@ -88,18 +101,18 @@ class AppBuilder:
         if self.tenants_with_data_func:
             self.tenants_with_data = self.tenants_with_data_func()
             
-        self.app_activation_path = app_activation_path
-        self.register_app_path = register_app_path
-        self.refresh_registration_path = refresh_registration_path
-        self.editable_tables_path = editable_tables_path
-        self.history_report_path = history_report_path
-        self.tenant_registration_path = tenant_registration_path
+        self.app_activation_path = app_activation_path or base_paths.app_activation_path
+        self.register_app_path = register_app_path or base_paths.register_app_path
+        self.refresh_registration_path = refresh_registration_path or base_paths.refresh_registration_path
+        self.editable_tables_path = editable_tables_path or base_paths.editable_tables_path
+        self.history_report_path = history_report_path or base_paths.history_report_path
+        self.tenant_registration_path = tenant_registration_path or base_paths.tenant_registration_path
         
-        self.app_activation_url = envs.BASE_URL + app_activation_path
-        self.refresh_registration_url = envs.BASE_URL + refresh_registration_path
-        self.editable_tables_url = envs.BASE_URL + editable_tables_path
-        self.history_report_url = envs.BASE_URL + history_report_path
-        self.tenant_registration_url = envs.BASE_URL + tenant_registration_path
+        self.app_activation_url = envs.BASE_URL + self.app_activation_path
+        self.refresh_registration_url = envs.BASE_URL + self.refresh_registration_path
+        self.editable_tables_url = envs.BASE_URL + self.editable_tables_path
+        self.history_report_url = envs.BASE_URL + self.history_report_path
+        self.tenant_registration_url = envs.BASE_URL + self.tenant_registration_path
 
         self.authorizations = doc_authorizations
         self.decorators = api_decorators

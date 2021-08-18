@@ -1,5 +1,6 @@
 import unittest
 from app.licenseware.utils.logger import log
+from app.licenseware.app_builder.app_builder import base_paths
 from main import app
  
  
@@ -14,9 +15,7 @@ prefix = '/ifmp/v1'
 pathto = lambda route: prefix + route
 
 
-#TODO check the altered data by the endpoints
 
- 
 class TestAppBuilderRoutes(unittest.TestCase):
     
     def setUp(self):
@@ -33,21 +32,24 @@ class TestAppBuilderRoutes(unittest.TestCase):
         response = self.app.get('/')
         self.assertEqual(response.status_code, 200)
         
+        
     def test_app_route(self):
-        response = self.app.get(pathto('/app'), headers=headers)
+        response = self.app.get(pathto(base_paths.app_activation_path), headers=headers)
         self.assertEqual(response.status_code, 200)
         
     def test_app_init_route(self):
-        response = self.app.get(pathto('/app/init'), headers=headers)
+        response = self.app.get(pathto(base_paths.register_app_path), headers=headers)
         self.assertEqual(response.status_code, 200)
         
     def test_register_all_route(self):
-        response = self.app.get(pathto('/register_all'), headers=headers)
+        response = self.app.get(pathto(base_paths.refresh_registration_path), headers=headers)
         self.assertEqual(response.status_code, 200)
     
     def test_editable_tables_route(self):
-        response = self.app.get(pathto('/editable_tables'), headers=headers)
+        response = self.app.get(pathto(base_paths.editable_tables_path), headers=headers)
         self.assertEqual(response.status_code, 200)
+        
+        
         
         
         
