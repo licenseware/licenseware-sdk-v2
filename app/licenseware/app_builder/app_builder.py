@@ -170,9 +170,13 @@ class AppBuilder:
                     
                     
     def register_app(self):
+        
         response, status_code = register_app(**self.app_vars)
+        
         if status_code not in {200, 201}:
             raise Exception("App failed to register!")
+        
+        return response, status_code
             
         
     def register_uploader(self, uploader_instance):
@@ -184,8 +188,11 @@ class AppBuilder:
         self.uploaders.append(uploader_instance)
         
         response, status_code = uploader_instance.register_uploader()
+        
         if status_code not in {200, 201}:
             raise Exception("Uploader failed to register!")
+        
+        return response, status_code
 
 
 

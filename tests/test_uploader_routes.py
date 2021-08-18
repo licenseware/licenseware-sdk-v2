@@ -21,7 +21,7 @@ uploader_id = 'rv_tools'
 
 upload_validation_path = f"/uploads/{uploader_id}/validation"
 upload_path = f"/uploads/{uploader_id}/files"
-quota_validation_path = f"/uploads/quota/{uploader_id}"
+quota_validation_path = f"/uploads/{uploader_id}/quota"
 status_check_path = f"/uploads/{uploader_id}/status"
 
 

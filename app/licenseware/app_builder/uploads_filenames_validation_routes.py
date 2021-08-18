@@ -18,7 +18,9 @@ def add_uploads_filenames_validation_routes(api: Api, uploaders:list):
                 responses={
                     200 : 'Filenames are valid', 
                     400 : 'Filenames sent for validation must be in a list of strings format',
-                    402 : 'Quota exceeded'
+                    402 : 'Quota exceeded',
+                    403 : "Missing `Tenant` or `Authorization` information",
+                    500 : 'Something went wrong while handling the request' 
                 }
             )
             def post(self):

@@ -12,8 +12,16 @@ def add_tenant_registration_route(api: Api, app_vars:dict):
     class TenantRegistration(Resource): 
         @failsafe(fail_code=500)
         @machine_check
-        @api.doc('Get `app_activated` and `data_available` boleans for tenant_id')
-        @api.doc(params={'tenant_id': 'Tenant ID for which the info is requested'})
+        @api.doc(
+            id='Get `app_activated` and `data_available` boleans for tenant_id', 
+            params={'tenant_id': 'Tenant ID for which the info is requested'},
+            responses={
+                200 : 'Json with `app_activated`, `data_available` for `tenant_id`', 
+                400 : 'Query parameter `tenant_id` not provided',
+                403 : "Missing `Tenant` or `Authorization` information",
+                500 : 'Something went wrong while handling the request' 
+            }
+        )
         def get(self):
             
             tenant_id = request.args.get('tenant_id')
@@ -28,7 +36,7 @@ def add_tenant_registration_route(api: Api, app_vars:dict):
             return {
                 'status': 'fail', 
                 'message': 'Query parameter `tenant_id` not provided'
-            }, 403
+            }, 400
     
     
     return api

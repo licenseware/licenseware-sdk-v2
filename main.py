@@ -1,5 +1,4 @@
 from dotenv import load_dotenv
-import dramatiq
 load_dotenv()  
 
 from typing import Tuple

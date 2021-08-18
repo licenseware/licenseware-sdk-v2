@@ -33,7 +33,7 @@ def add_uploads_filestream_validation_routes(api: Api, uploaders:list):
                     200 : 'Files are valid',
                     400 : "File list is empty or files are not on 'files[]' key",
                     402 : 'Quota exceeded',
-                    403 : "Missing Tenant or Authorization information",
+                    403 : "Missing `Tenant` or `Authorization` information",
                     500 : 'Something went wrong while handling the request' 
                 },
             )
