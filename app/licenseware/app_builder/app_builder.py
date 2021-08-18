@@ -104,6 +104,7 @@ class AppBuilder:
         self.ns  = None
         self.reports = []
         self.uploaders = []
+        self.custom_namespaces = []
         
         self.app_vars = vars(self)
     
@@ -117,6 +118,7 @@ class AppBuilder:
         if not self.reports  : log.warning("No reports provided")
          
         self.init_api()
+        self.init_namespaces()
         self.add_default_routes()
         self.init_dramatiq_broker()
         if register: self.register_app()
@@ -131,6 +133,7 @@ class AppBuilder:
         response, status_code = Authenticator.connect()
         if status_code != 200:
             raise Exception("App failed to authenticate!")
+        return response, status_code
     
     
     def init_api(self):
@@ -197,7 +200,12 @@ class AppBuilder:
 
 
     def add_namespace(self, ns:Namespace, path:str = None):
-        self.api.add_namespace(ns, path=path)
+        self.custom_namespaces.append((ns, path))
+
+    def init_namespaces(self):
+        for namespace in self.custom_namespaces:
+            self.api.add_namespace(*namespace)
+        
         
     def add_resource(self, resource:Resource, path:str):
         self.api.add_resource(resource, path)
