@@ -111,24 +111,22 @@ class AppBuilder:
     def init_app(self, app: Flask, register:bool =True):
         
         self.app = app
+        self.authenticate_app()
         
         if not self.uploaders: log.warning("No uploaders provided")
         if not self.reports  : log.warning("No reports provided")
          
-        self.authenticate_app()
         self.init_api()
         self.add_default_routes()
-        if register: self.register_app()
         self.init_dramatiq_broker()
+        if register: self.register_app()
         
         
     def init_dramatiq_broker(self):
         # Add middleware if needed
         broker.init_app(self.app)
         
-        
-        
-   
+    
     def authenticate_app(self):
         response, status_code = Authenticator.connect()
         if status_code != 200:

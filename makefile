@@ -12,6 +12,9 @@ run-main:
 	
 run-mock:
 	python3 mock_server.py
+
+run-worker:
+	flask worker -p4
 	
 run-tests:
 	rm -rf tests/__pycache__

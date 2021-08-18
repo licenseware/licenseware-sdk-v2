@@ -386,3 +386,283 @@ No reports provided
 app.licenseware.app_builder.app_builder:init_app:117
 No reports provided
 
+2021-08-18 07:26:57.986[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:26:58.937[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:27:19.008[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:27:27.649[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:27:29.206[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:27:39.946[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:29:07.217[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:29:12.783[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:30:01.012[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:30:02.820[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:38:17.838[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:38:22.392[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:38:28.300[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:38:50.254[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:40:23.064[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:40:45.633[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:41:03.666[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:41:06.017[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:41:25.838[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:42:00.159[ WARNING ]
+app.licenseware.decorators.auth_decorators.authorization_check:decorated:24
+Missing Tenant or Authorization information
+
+2021-08-18 07:42:33.067[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:42:49.488[ WARNING ]
+app.licenseware.decorators.auth_decorators.authorization_check:decorated:24
+Missing Tenant or Authorization information
+
+2021-08-18 07:43:08.328[ WARNING ]
+app.licenseware.uploader_builder.uploader_builder:upload_files:84
+Sending event data
+
+2021-08-18 07:43:08.333[ ERROR ]
+app.licenseware.decorators.failsafe_decorator:wrapper:54
+Traceback (most recent call last):
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/failsafe_decorator.py", line 49, in wrapper
+    response = f(*args, **kwargs)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/auth_decorators/authorization_check.py", line 37, in decorated
+    return f(*args, **kwargs)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/app_builder/uploads_filestream_validation_routes.py", line 46, in post
+    return uploader.upload_files(request)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/uploader_builder/uploader_builder.py", line 86, in upload_files
+    self.worker.send(event_data)
+  File "/home/acmt/.local/lib/python3.8/site-packages/flask_dramatiq.py", line 173, in send
+    return self.actor.send(*a, **kw)
+  File "/home/acmt/.local/lib/python3.8/site-packages/dramatiq/actor.py", line 111, in send
+    return self.send_with_options(args=args, kwargs=kwargs)
+  File "/home/acmt/.local/lib/python3.8/site-packages/dramatiq/actor.py", line 130, in send_with_options
+    return self.broker.enqueue(message, delay=delay)
+  File "/home/acmt/.local/lib/python3.8/site-packages/dramatiq/brokers/redis.py", line 182, in enqueue
+    self.do_enqueue(queue_name, message.options["redis_message_id"], message.encode())
+  File "/home/acmt/.local/lib/python3.8/site-packages/dramatiq/message.py", line 109, in encode
+    return global_encoder.encode(self._asdict())
+  File "/home/acmt/.local/lib/python3.8/site-packages/dramatiq/encoder.py", line 51, in encode
+    return json.dumps(data, separators=(",", ":")).encode("utf-8")
+  File "/usr/lib/python3.8/json/__init__.py", line 234, in dumps
+    return cls(
+  File "/usr/lib/python3.8/json/encoder.py", line 199, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/usr/lib/python3.8/json/encoder.py", line 257, in iterencode
+    return _iterencode(o, 0)
+  File "/usr/lib/python3.8/json/encoder.py", line 179, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type LocalProxy is not JSON serializable
+
+
+2021-08-18 07:47:27.573[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:47:36.927[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:47:43.035[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:47:52.473[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:48:31.518[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:49:05.160[ ERROR ]
+app.licenseware.decorators.failsafe_decorator:wrapper:54
+Traceback (most recent call last):
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/failsafe_decorator.py", line 49, in wrapper
+    response = f(*args, **kwargs)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/auth_decorators/authorization_check.py", line 37, in decorated
+    return f(*args, **kwargs)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/app_builder/uploads_filestream_validation_routes.py", line 46, in post
+    return uploader.upload_files(request)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/uploader_builder/uploader_builder.py", line 82, in upload_files
+    'json':  dict(flask_request.json),
+TypeError: 'NoneType' object is not iterable
+
+
+2021-08-18 07:49:58.789[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:50:02.173[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:51:05.069[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:51:07.828[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:51:23.270[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:51:25.848[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:51:30.157[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:51:30.996[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:51:53.758[ WARNING ]
+app.licenseware.uploader_builder.uploader_builder:upload_files:85
+Sending event data
+
+2021-08-18 07:51:54.014[ WARNING ]
+main:rv_tools_worker:37
+{'tenant_id': 'asdasd', 'filepaths': ['/tmp/lware/asdasd/675403/RVTools.xlsx'], 'headers': {'Host': 'localhost:4000', 'Connection': 'keep-alive', 'Content-Length': '646986', 'Sec-Ch-Ua': '"Chromium";v="92", " Not A;Brand";v="99", "Google Chrome";v="92"', 'Accept': 'application/json', 'Authorization': 'asdasd', 'Sec-Ch-Ua-Mobile': '?0', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36', 'Tenantid': 'asdasd', 'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundaryAfU2i0bQYYyC8jCy', 'Origin': 'http://localhost:4000', 'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Dest': 'empty', 'Referer': 'http://localhost:4000/', 'Accept-Encoding': 'gzip, deflate, br', 'Accept-Language': 'en-US,en;q=0.9,ro;q=0.8,it;q=0.7,fr;q=0.6', 'Cookie': 'PGADMIN_LANGUAGE=en; _pk_id.1.1fff=bfb8897db39018e5.1619065408.; cookie-alert=true; a_session_console_legacy=eyJpZCI6IjYwY2Y0Y2NhODU3MTQiLCJzZWNyZXQiOiI0OTdmOGIxODUyZDcxNjIwMzNmNjhhOTEyOGM2YjAxYmZhZDVkYmNkNDVlNGVhMjQyNTVmNDE3YTM4MmU3YmE0OWYwNTFhOGNlZWNlZWZmYTZhNWRmNDdkMTM5N2UyMmFmYjZlYTRiY2QwM2ZmZmUzNTYyNWFiMmNlZWIzYWZhY2IxYjE1NDQyYTgyOGIwMWIzY2VkOWNhYjJiMGQ2OWQ3ZWZlMTg4YmU5YzExZjc3YWRkZjY4MDk5NjgxZGJmMTFmYjU2MDA0M2JmOTJmZDBjNWJmODRlOWM2Y2NlNjBmMDRjZWM5ZTY2YjJkNjE5ZGVlYTI2N2M3YmM1MGEyMWQ2In0%3D; a_session_60cf4cdb1f0f8_legacy=eyJpZCI6IjYwZDc3YjI3MGE2NWMiLCJzZWNyZXQiOiI2Y2I5YmQ3ZTNjNzYwMWVlODI5OWJiNTY3Zjk0MDdhMGJlOTExNGVlYjFjYzFmMDllMTUzMWYwYjc1ZjQzZGRmNDRiNzAzMjkyYTA1ZDNiYTQwZDM2N2RhZTc1NDdkODgyMWUzM2M1NWQwZmJkNzRkNjVjMzkzMWEwNzVjOGYwMzZlZWUxNDdhNDIxMWExZGI2YzNiZGRjMWFlZWIxMmJjZjRjZTNlMDdhMmU2YzI5MjRhNTZjY2JkYjUxZmFiYTg2Y2VmMzM4MDZjOTRmZDZjYjQzMGExNmQzMDk4NzFhYjc2MTM4NGFjZDg0MjRkMjE1NTkzMmYzZjU1NWRhNTQwIn0%3D; username-localhost-8889="2|1:0|10:1627035657|23:username-localhost-8889|44:MzIxNjdiNGY2MmI0NDkyYzk1NjRlNzAzNDc0ODJkMjc=|5a15f9fab97a410c1df759b6a8b742878d1b943d490114d17512a3dec8be12e5"; _xsrf=2|82439523|fc3256a0bd14c724fb13f47eb9daea3b|1627814976; username-localhost-8888="2|1:0|10:1629092408|23:username-localhost-8888|44:NzZkMjdiZWNhMmY1NDc4M2FjOWNjNjMzYzBjZGI2ZjY=|95f6933cedb61b6c8e975d3b7c39fbcf2fcbcca28a470a45df0f7dedea02c70f"; mongo-express=s%3A-GYH74F9ihNQCXNAImvRXaWRXJkEWazH.OStFawBsBBG%2FK%2Bj94YJpJSNZsGZOjkXiMdutXCAh%2Ba4'}, 'json': {}}
+
+2021-08-18 07:52:27.353[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:52:33.098[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:52:55.883[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:53:09.090[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:53:36.549[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:53:51.468[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:53:58.597[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:54:11.328[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:54:16.165[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:54:26.026[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:54:45.311[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:54:49.521[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:55:10.789[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:55:18.920[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:55:22.949[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:55:36.462[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:56:13.197[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:56:26.184[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:56:27.656[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:117
+No reports provided
+
+2021-08-18 07:56:55.765[ WARNING ]
+app.licenseware.uploader_builder.uploader_builder:upload_files:85
+Sending event data
+

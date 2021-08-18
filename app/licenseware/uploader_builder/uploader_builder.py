@@ -1,4 +1,4 @@
-from typing import Type
+from typing import Callable, Type
 from app.licenseware.common.constants import envs, states
 from app.licenseware.registry_service.register_uploader import register_uploader
 from app.licenseware.utils.dramatiq_redis_broker import broker
@@ -14,6 +14,7 @@ class UploaderBuilder:
         description:str, 
         accepted_file_types:list, 
         validator_class: Type, 
+        worker_function: Callable,
         flags:list = [],
         status:str = states.IDLE,
         icon:str = "default.png",
@@ -24,12 +25,12 @@ class UploaderBuilder:
         **kwargs
     ):
         self.name = name
+        self.uploader_id = validator_class.uploader_id
         self.description = description
-        self.accepted_file_types = accepted_file_types
         self.validator_class = validator_class
         self.app_id = envs.APP_ID
-
-        self.uploader_id = validator_class.uploader_id
+        self.worker = broker.actor(worker_function, max_retries=3, actor_name=self.uploader_id, queue_name=envs.APP_ID)
+        self.accepted_file_types = accepted_file_types
         self.flags = flags
         self.status = status
         self.icon = icon
@@ -37,7 +38,7 @@ class UploaderBuilder:
         # Paths for internal usage
         self.upload_path = upload_path or f"/{self.uploader_id}/files"
         self.upload_validation_path = upload_validation_path or f"/{self.uploader_id}/validation"
-        self.quota_validation_path = quota_validation_path or f"/quota/{self.uploader_id}"
+        self.quota_validation_path = quota_validation_path or f"/{self.uploader_id}/quota"
         self.status_check_path = status_check_path or f"/{self.uploader_id}/status"
         
         # Urls for registry service
@@ -55,6 +56,7 @@ class UploaderBuilder:
         response, status_code = register_uploader(**self.uploader_vars)
         if status_code != 200:
             raise Exception("Uploader can't register to registry service")
+        return response, status_code
 
 
     def validate_filenames(self, flask_request):
@@ -73,14 +75,16 @@ class UploaderBuilder:
         
         response, status_code = self.validator_class.get_file_objects_response(flask_request)
         
-        #TODO send event data to worker function
         event_data = {
             'tenant_id': flask_request.headers.get("TenantId"),
             'filepaths': self.validator_class.get_only_valid_filepaths_from_objects_response(response),
-            'flask_request':  flask_request
+            'headers':  dict(flask_request.headers) if flask_request.headers else {},
+            'json':  dict(flask_request.json) if flask_request.json else {},
         }
         
-        (event_data)
+        log.warning("Sending event data")
+        
+        self.worker.send(event_data)
         
         return response, status_code
     

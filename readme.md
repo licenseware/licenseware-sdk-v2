@@ -7,6 +7,8 @@ Each APP has:
 
 Each UPLOADER has:
 - one file validator class
+- one file processing function
+
 
 Each REPORT has:
 - one or more report components

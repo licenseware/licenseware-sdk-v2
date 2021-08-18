@@ -30,6 +30,25 @@ ifmp_app = AppBuilder(
 # UPLOADERS
 
 
+# Here is the worker function 
+# which will process the files in the background
+def rv_tools_worker(event_data):
+    
+    # Event data will contain the following information
+    # event_data = {
+    #     'tenant_id': 'the tenant_id from request',
+    #     'filepaths': 'absolute file paths to the files uploaded',
+    #     'headers':  'flask request headers',
+    #     'json':  'flask request json data',
+    # }
+    
+    log.info("Starting working")
+    log.debug(event_data)
+    log.info("Finished working")
+    
+
+
+
 # Here we are defining the validation required for each upload
 
 class RVToolsUploaderValidator(UploaderValidator):
@@ -77,7 +96,8 @@ rv_tools_uploader = UploaderBuilder(
     name="RVTools", 
     description="XLSX export from RVTools after scanning your Vmware infrastructure.", 
     accepted_file_types=['.xls', '.xlsx'],
-    validator_class=rv_tools_validator
+    validator_class=rv_tools_validator,
+    worker_function=rv_tools_worker
 )
 
 # Here we are:
