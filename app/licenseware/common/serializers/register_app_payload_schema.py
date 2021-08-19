@@ -6,7 +6,7 @@ from marshmallow import (
 )
 
 from app.licenseware.common.constants import flags
-from app.licenseware.common.validators import validate_route, validate_icon
+from app.licenseware.common.validators import validate_icon
 
 
 class AppActivatedTenantsSchema(Schema): ... #TODO
@@ -22,11 +22,11 @@ class AppInfoSchema(Schema):
     description = fields.Str(required=True, validate=validate.Length(min=10))
     flags = fields.List(fields.Str, required=False)#, validate=validate.OneOf(flags.BETA, flags.SOON))
     icon = fields.Str(required=False, validate=validate_icon)
-    refresh_registration_url = fields.Str(required=True, validate=validate_route)
-    app_activation_url = fields.Str(required=True, validate=validate_route)
-    editable_tables_url = fields.Str(required=True, validate=validate_route)
-    history_report_url = fields.Str(required=True, validate=validate_route)
-    tenant_registration_url = fields.Str(required=True, validate=validate_route)
+    refresh_registration_url = fields.Url(required=True)
+    app_activation_url = fields.Url(required=True)
+    editable_tables_url = fields.Url(required=True)
+    history_report_url = fields.Url(required=True)
+    tenant_registration_url = fields.Url(required=True)
 
     
 

@@ -1,6 +1,4 @@
 import unittest
-import uuid
-import datetime as dt
 
 from app.licenseware.utils.logger import log
 from marshmallow import Schema, fields

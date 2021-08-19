@@ -59,6 +59,7 @@ class envs:
     REGISTER_APP_URL:str = os.environ['REGISTRY_SERVICE_URL'] + '/apps'
     REGISTER_UPLOADER_URL:str = os.environ['REGISTRY_SERVICE_URL'] + '/uploaders'
     REGISTER_UPLOADER_STATUS_URL:str = os.environ['REGISTRY_SERVICE_URL'] + '/uploaders/status'
+    REGISTER_REPORT_URL:str = os.environ['REGISTRY_SERVICE_URL'] + '/reports'
     
     BASE_URL:str = os.environ['APP_HOST'] + "/" + os.environ["APP_ID"]
     UPLOAD_URL:str = os.environ['APP_HOST'] + "/" + os.environ["APP_ID"] + '/uploads'

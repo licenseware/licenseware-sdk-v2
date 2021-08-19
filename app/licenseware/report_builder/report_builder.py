@@ -3,10 +3,19 @@
 
 
 class ReportBuilder:
-    #  id = 'history_report',
-    # name = 'History Report',
-    # description = 'History of actions made on ifmp app',
-    # connected_apps = ['odb'],
-    # flags = ['beta'],
     
-    # assert flags 'beta'
+    def __init__(
+        self,
+        name:str,
+        report_id:str,
+        description:str,
+         
+    ):
+        pass
+        
+        
+    def register_component(self, report_component):
+        pass
+    
+    def register_report(self):
+        pass

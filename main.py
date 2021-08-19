@@ -10,8 +10,20 @@ from app.licenseware.utils.logger import log
 from flask_restx import Namespace, Resource
 
 from app.licenseware.app_builder import AppBuilder
+
 from app.licenseware.uploader_builder import UploaderBuilder
 from app.licenseware.uploader_validator import UploaderValidator
+
+from app.licenseware.report_builder import ReportBuilder
+from app.licenseware.report_components import (
+    Summary,
+    DetailedSummary,
+    PieChart,
+    BarChart,
+    Table
+)
+
+
 
 
 
@@ -111,10 +123,20 @@ ifmp_app.register_uploader(rv_tools_uploader)
 
 # REPORTS
 
+virtualization_details_report = ReportBuilder(
+    name="Virtualization Details",
+    report_id="virtualization_details",
+    description="This report gives you a detailed view of your virtual infrastructure. Deep dive into the infrastructure topology, identify devices with missing host details and capping rules for licensing.",
+    
+)
 
+virtualization_details_report
 
-
-
+Summary,
+DetailedSummary,
+PieChart,
+BarChart,
+Table
 
 
 
