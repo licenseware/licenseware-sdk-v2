@@ -240,6 +240,21 @@ class AppBuilder:
         return response, status_code
 
 
+    def register_report(self, report_instance):
+        
+        for report in self.reports:
+            if report.report_id == report_instance.report_id:
+                raise Exception(f"Report id '{report_instance.report_id}' was already declared")
+        
+        self.reports.append(report_instance)
+        
+        response, status_code = report_instance.register_report()
+        
+        if status_code not in {200, 201}:
+            raise Exception("Report failed to register!")
+        
+        return response, status_code
+
 
     def add_namespace(self, ns:Namespace, path:str = None):
         self.custom_namespaces.append((ns, path))
@@ -247,7 +262,6 @@ class AppBuilder:
     def init_namespaces(self):
         for namespace in self.custom_namespaces:
             self.api.add_namespace(*namespace)
-        
         
     def add_resource(self, resource:Resource, path:str):
         self.api.add_resource(resource, path)

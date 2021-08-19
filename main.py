@@ -14,13 +14,14 @@ from app.licenseware.app_builder import AppBuilder
 from app.licenseware.uploader_builder import UploaderBuilder
 from app.licenseware.uploader_validator import UploaderValidator
 
-from app.licenseware.report_builder import ReportBuilder
+from app.licenseware.report_builder import ReportBuilder, report_components
 from app.licenseware.report_components import (
-    Summary,
-    DetailedSummary,
-    PieChart,
-    BarChart,
-    Table
+    SummaryReportComponent,
+    DetailedSummaryReportComponent,
+    PieChartReportComponent,
+    BarChartReportComponent,
+    TableReportComponent,
+    style_props
 )
 
 
@@ -121,22 +122,46 @@ ifmp_app.register_uploader(rv_tools_uploader)
 
 
 
+
 # REPORTS
+
+
+def get_virtual_overview_component_data(tenant_id, filters=None):
+    pipeline = ["mongo db aggregation pipeline"]
+    data = pipeline
+    return data
+    
+
+
+summary_virtual_overview = SummaryReportComponent(
+    title="Overview",
+    component_id="virtual_overview",
+    fetch_function=get_virtual_overview_component_data,
+    style_props=[style_props.WIDTH_ONE_THIRD],
+    data_props=[]
+)
+
 
 virtualization_details_report = ReportBuilder(
     name="Virtualization Details",
     report_id="virtualization_details",
     description="This report gives you a detailed view of your virtual infrastructure. Deep dive into the infrastructure topology, identify devices with missing host details and capping rules for licensing.",
-    
 )
 
-virtualization_details_report
 
-Summary,
-DetailedSummary,
-PieChart,
-BarChart,
-Table
+virtualization_details_report.register_component(summary_virtual_overview)
+
+
+ifmp_app.register_report(virtualization_details_report)
+
+# SummaryReportComponent,
+# DetailedSummaryReportComponent,
+# PieChartReportComponent,
+# BarChartReportComponent,
+# TableReportComponent
+
+
+
 
 
 

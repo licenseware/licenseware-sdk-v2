@@ -1,7 +1,29 @@
 from enum import Enum
 from marshmallow import Schema, fields
 
-from some_module import fetch_summary_data
+
+from dataclasses import dataclass, field
+
+@dataclass
+class style_props:
+    WIDTH_ONE_THIRD:dict = field(default_factory = lambda:{'width': '1/3'}) 
+    WIDTH_FULL:dict = field(default_factory = lambda:{'width': 'full'})
+    HEIGHT_FULL:dict = field(default_factory = lambda:{'height': '100vh'})
+    HEIGHT_HALF:dict = field(default_factory = lambda:{'height': '50vh'})
+    
+        
+style_props = style_props()
+
+style_props_list = [style_props.WIDTH_FULL, style_props.HEIGHT_FULL]
+style_props_dict = {k: v for dict_ in style_props_list for k, v in dict_.items()}
+
+
+print(style_props_list)
+print(style_props_dict)
+
+# [{'width': 'full'}, {'height': '100vh'}]
+# {'width': 'full', 'height': '100vh'}
+
 
 # create a schema for each component for validation
 
@@ -142,3 +164,4 @@ history_overview_data = {
     "title": "Overview",
     "type": "summary",
 }
+
