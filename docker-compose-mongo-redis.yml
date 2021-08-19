@@ -13,11 +13,14 @@ services:
     container_name: mongo_db_sdk
     image: mongo:4.2-bionic
     restart: unless-stopped
+    volumes:
+      - 'mongodata:/data/database'  
     ports:
       - '27017:27017'
     environment:
       - 'MONGO_DATABASE_NAME=${MONGO_DATABASE_NAME}'
-      - 'MONGO_CONNECTION_STRING=mongodb://${MONGO_ROOT_USERNAME}:${MONGO_ROOT_PASSWORD}@${MONGO_HOSTNAME}:${MONGO_PORT}'
+      - 'MONGO_CONNECTION_STRING=${MONGO_CONNECTION_STRING}'
+  
 
   mongo_express_sdk:
     container_name: mongo_express_sdk
@@ -29,4 +32,8 @@ services:
       ME_CONFIG_MONGODB_SERVER: mongo_db_sdk
     depends_on: 
       - mongo_db_sdk
-    
+
+
+
+volumes:
+  mongodata: null

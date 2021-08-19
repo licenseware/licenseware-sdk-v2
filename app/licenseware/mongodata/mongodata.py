@@ -201,8 +201,9 @@ def insert(schema, collection, data, db_name=None):
         try:
 
             if isinstance(data, dict):
-                _oid_inserted = collection.with_options(
-                    write_concern=WriteConcern("majority")).insert_one(data).inserted_id
+                # _oid_inserted = collection.with_options(
+                #     write_concern=WriteConcern("majority")).insert_one(data).inserted_id
+                _oid_inserted = collection.insert_one(data).inserted_id
                 inserted_id = parse_oid(_oid_inserted)
                 return [inserted_id]
 
@@ -261,8 +262,12 @@ def fetch(match, collection, as_list=True, db_name=None):
                 read_concern=ReadConcern("majority")).find(*match['query_tuple'])
         else:
             log.debug("yuhuu")
-            found_docs = collection.with_options(
-                read_concern=ReadConcern("majority")).find(match['query'])
+            found_docs = collection.find(match['query'])
+            log.debug(match['query'])
+            log.debug(list(found_docs))
+            
+            # found_docs = collection.with_options(
+            #     read_concern=ReadConcern("majority")).find(match['query'])
 
         if as_list:
             return [parse_doc(doc) for doc in found_docs]

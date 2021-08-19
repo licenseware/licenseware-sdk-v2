@@ -1,85 +1,90 @@
 import unittest
 import uuid
 import datetime as dt
+
 from app.licenseware.utils.logger import log
-import app.licenseware.mongodata as m
 from marshmallow import Schema, fields
+
+from app.licenseware.common.constants import envs
+from app.licenseware.mongodata.mongo_connection import db
+from app.licenseware import mongodata as m
 
 
 # python3 -m unittest tests/test_mongodata.py
 
 
-class DummySchema(Schema):
-    _id = fields.Str(required=False)
-    name = fields.Str(required=True)
-    files = fields.List(fields.Str, required=False)
-    age = fields.Integer(required=True, error_messages={"required": "Age is required."})
-    birthdate = fields.DateTime(default=dt.datetime(2017, 9, 29))
-
-
-
-class AnotherDummySchema(Schema):
-    _id = fields.Str(required=False)
-    name = fields.Str(required=True)
-    test_list = fields.List(fields.Raw, required=False)
-    test_list2 = fields.List(fields.Raw, required=False)
-    test_dict = fields.Dict(fields.Raw, required=False)
-    test_list_of_dict = fields.List(fields.Dict, required=False)
-    some_field = fields.Str(required=False)
-
-
-
-sort_dict = lambda data: {k:data[k] for k in sorted(data)}
-
-
-# Id to be used by test funcs
-custom_id = str(uuid.uuid4())
-custom_existing_id = str(uuid.uuid4())
-
-
-dummy_data = \
-{
-    "name": "John",
-    "files": ["f1", "f2"],
-    "age": 20,
-    "birthdate": dt.datetime(2021, 9, 29).strftime( '%Y-%m-%d %H:%M:%S' )
-}
-
-
 class TestMongoData(unittest.TestCase):
+    
+    def test_simple_insert_one(self):
         
-    def test_insert_one(self):
+        doc = {
+            'name': 'John',
+            'occupation': 'dev'
+        }
         
-        id_list = m.insert(
-            schema=DummySchema, 
-            collection="TestCollection", 
-            data={
-                "_id": custom_id,
-                "name": "John Show",
-                "files": ["f1", "f2"],
-                "age": "20",
-                "birthdate": dt.datetime(2021, 9, 29).strftime( '%Y-%m-%d %H:%M:%S' )
-            }
+        data_collection = db[envs.MONGO_COLLECTION_DATA_NAME]
+        
+        response = data_collection.insert_one(doc)
+        
+        query = {'_id': response.inserted_id}
+        
+        response = data_collection.find_one(query)
+        data = dict(response)
+        
+        self.assertEqual(data['name'], 'John')
+        self.assertEqual(data['occupation'], 'dev')
+        
+        response = data_collection.delete_one(query)
+        
+        self.assertEqual(response.deleted_count, 1)
+        
+        
+        
+    def test_mongodata_insert(self):
+        
+        class MySchema(Schema):
+            name = fields.Str(required=True)
+            occupation = fields.Str(required=True)
+            
+        doc = {
+            'name': 'John',
+            'occupation': 'dev'
+        }
+        
+        response = m.insert(
+            schema=MySchema, 
+            data=doc,
+            collection=envs.MONGO_COLLECTION_DATA_NAME
         )
+        
+        self.assertEqual(len(response), 1)
+        
+        query = {'_id': response[0]}
+        
+        response = m.fetch(
+            match=query,
+            collection=envs.MONGO_COLLECTION_DATA_NAME
+        )
+        
+        log.debug(response)
+        
+        self.assertEqual(len(response), 1)
+        
+        data = response[0]
+        
+        self.assertEqual(data['name'], 'John')
+        self.assertEqual(data['occupation'], 'dev')
+        
+        
+        
+        
+        
+        
     
-        self.assertIsInstance(id_list, list)
-        self.assertEqual(len(id_list), 1)
+        
+        
     
-    
-    def test_fetch_one_with_id(self):
 
-        data = m.fetch(
-            match = {'_id': custom_id},
-            collection="TestCollection"
-        )
-        
-        log.debug(data)
-        
-        self.assertEqual(len(data), 1)
-        
-        
-    
-        
 
 
 

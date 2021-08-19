@@ -1,528 +1,140 @@
-2021-08-18 08:21:05.980[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-18 08:21:06.039[ WARNING ]
-app.licenseware.app_builder.app_activation_route:get:26
-TODO - Initialize quota for tenant_id
-
-2021-08-18 08:21:07.515[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-18 08:21:08.664[ WARNING ]
-app.licenseware.uploader_builder.uploader_builder:upload_files:85
-Sending event data
-
-2021-08-18 08:24:57.771[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-18 08:25:29.312[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-18 08:25:29.359[ WARNING ]
-app.licenseware.app_builder.app_activation_route:get:26
-TODO - Initialize quota for tenant_id
-
-2021-08-18 08:25:31.350[ WARNING ]
-app.licenseware.uploader_builder.uploader_builder:upload_files:85
-Sending event data
-
-2021-08-18 08:36:57.935[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-18 08:36:58.805[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-18 08:37:22.034[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-18 08:37:22.082[ WARNING ]
-app.licenseware.app_builder.app_activation_route:get:26
-TODO - Initialize quota for tenant_id
-
-2021-08-18 08:37:23.526[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-18 08:37:24.406[ WARNING ]
-app.licenseware.uploader_builder.uploader_builder:upload_files:89
-Sending event data
-
-2021-08-18 08:37:37.620[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-18 08:38:00.095[ WARNING ]
-app.licenseware.uploader_builder.uploader_builder:upload_files:89
-Sending event data
-
-2021-08-18 08:38:09.060[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-18 08:38:50.981[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-18 08:39:39.424[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-18 08:39:51.885[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-18 08:39:54.507[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-18 08:40:00.153[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:117
-No reports provided
-
-2021-08-18 08:53:40.834[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 08:53:41.805[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 08:54:24.966[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 08:57:31.793[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 08:57:48.958[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 08:58:10.072[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 08:58:12.902[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 08:58:20.195[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 08:58:38.919[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 08:58:43.878[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 08:58:54.898[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 08:59:49.077[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 09:01:36.326[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 09:03:27.146[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 09:04:52.875[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 09:05:05.439[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 09:05:10.544[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 09:05:33.224[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 09:05:39.900[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 09:12:16.965[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 09:12:33.659[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 09:12:43.192[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 09:12:49.075[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 09:12:53.285[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 09:13:18.766[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 09:13:22.007[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 09:13:38.405[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 09:13:43.641[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 09:14:23.521[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 09:15:31.831[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 09:15:46.783[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 09:16:21.009[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 10:02:56.036[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 10:03:04.064[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 10:03:14.697[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 10:03:21.752[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 10:03:40.724[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 10:03:47.559[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 10:03:51.049[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 10:04:05.442[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 10:04:24.717[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 10:04:27.883[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 10:04:30.381[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 10:07:06.926[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 10:07:13.046[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 10:07:20.052[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 10:08:27.353[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 10:23:16.306[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 11:11:33.125[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:121
-No reports provided
-
-2021-08-18 11:11:34.238[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:121
-No reports provided
-
-2021-08-18 11:12:34.032[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 11:12:41.918[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 11:12:46.237[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 11:14:26.725[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:119
-No reports provided
-
-2021-08-18 11:14:31.281[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 11:15:48.918[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 11:16:22.743[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 11:16:40.875[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 11:16:44.653[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 11:17:39.421[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:118
-No reports provided
-
-2021-08-18 11:33:11.494[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:123
-No reports provided
-
-2021-08-18 11:33:12.397[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:123
-No reports provided
-
-2021-08-18 11:39:14.185[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:122
-No reports provided
-
-2021-08-18 11:39:38.924[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:122
-No reports provided
-
-2021-08-18 11:39:39.809[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:122
-No reports provided
-
-2021-08-18 11:51:02.528[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:122
-No reports provided
-
-2021-08-18 11:51:03.575[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:122
-No reports provided
-
-2021-08-18 11:51:27.105[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:122
-No reports provided
-
-2021-08-18 11:51:39.487[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:122
-No reports provided
-
-2021-08-18 11:52:13.197[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:122
-No reports provided
-
-2021-08-18 11:52:33.312[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:122
-No reports provided
-
-2021-08-18 11:54:02.732[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:122
-No reports provided
-
-2021-08-18 11:54:07.926[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:122
-No reports provided
-
-2021-08-18 11:54:26.195[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:122
-No reports provided
-
-2021-08-18 11:54:29.095[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:122
-No reports provided
-
-2021-08-18 11:54:50.172[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:122
-No reports provided
-
-2021-08-18 11:57:20.121[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:122
-No reports provided
-
-2021-08-18 11:57:40.181[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:122
-No reports provided
-
-2021-08-18 11:59:13.506[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:122
-No reports provided
-
-2021-08-18 13:16:20.846[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:127
-No reports provided
-
-2021-08-18 13:18:37.142[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:127
-No reports provided
-
-2021-08-18 13:19:20.204[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:127
-No reports provided
-
-2021-08-18 13:19:57.003[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:127
-No reports provided
-
-2021-08-18 13:19:57.952[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:127
-No reports provided
-
-2021-08-18 13:20:35.367[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:127
-No reports provided
-
-2021-08-18 13:21:01.329[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:127
-No reports provided
-
-2021-08-18 13:21:03.675[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:127
-No reports provided
-
-2021-08-18 13:21:15.449[ WARNING ]
-app.licenseware.decorators.auth_decorators.authorization_check:decorated:24
-Missing Tenant or Authorization information
-
-2021-08-18 13:21:22.246[ WARNING ]
-app.licenseware.decorators.auth_decorators.machine_check:decorated:21
-Missing Authorization information
-
-2021-08-18 13:21:36.041[ WARNING ]
-app.licenseware.app_builder.app_namespace.app_activation_namespace:get:35
-TODO - Initialize quota for tenant_id
-
-2021-08-18 13:21:55.522[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:127
-No reports provided
-
-2021-08-18 13:22:44.366[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:127
-No reports provided
-
-2021-08-18 13:30:10.932[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:129
-No reports provided
-
-2021-08-18 13:30:11.765[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:129
-No reports provided
-
-2021-08-18 13:31:24.334[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:129
-No reports provided
-
-2021-08-18 13:32:39.408[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:129
-No reports provided
-
-2021-08-18 13:33:18.282[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:129
-No reports provided
-
-2021-08-18 13:33:19.193[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:129
-No reports provided
-
-2021-08-18 13:43:30.659[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:125
-No reports provided
-
-2021-08-18 13:43:47.348[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:125
-No reports provided
-
-2021-08-18 13:43:48.226[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:125
-No reports provided
-
-2021-08-18 13:44:32.017[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:125
-No reports provided
-
-2021-08-18 13:45:32.103[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:125
-No reports provided
-
-2021-08-18 13:45:34.402[ WARNING ]
-app.licenseware.uploader_builder.uploader_builder:upload_files:89
-Sending event data
-
-2021-08-18 13:54:36.440[ WARNING ]
+2021-08-18 13:58:30.477[ WARNING ]
 app.licenseware.app_builder.app_builder:init_app:138
 No reports provided
 
-2021-08-18 13:54:36.513[ WARNING ]
-app.licenseware.app_builder.app_activation_route:get:34
-TODO - Initialize quota for tenant_id
+2021-08-18 13:58:36.462[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:138
+No reports provided
 
-2021-08-18 13:54:36.554[ ERROR ]
-app.licenseware.decorators.failsafe_decorator:wrapper:54
-Traceback (most recent call last):
-  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/failsafe_decorator.py", line 49, in wrapper
-    response = f(*args, **kwargs)
-  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/auth_decorators/machine_check.py", line 30, in decorated
-    return f(*args, **kwargs)
-  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/app_builder/refresh_registration_route.py", line 24, in get
-    response_ok = register_all(
-TypeError: register_all() got an unexpected keyword argument 'app'
+2021-08-18 14:07:49.121[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:138
+No reports provided
 
+2021-08-18 14:08:30.325[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:138
+No reports provided
 
-2021-08-18 13:54:38.409[ WARNING ]
-app.licenseware.uploader_builder.uploader_builder:upload_files:89
-Sending event data
+2021-08-18 14:08:36.601[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:138
+No reports provided
+
+2021-08-18 14:09:01.055[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:138
+No reports provided
+
+2021-08-18 14:11:36.332[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:138
+No reports provided
+
+2021-08-18 14:12:36.597[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:138
+No reports provided
+
+2021-08-18 14:12:49.812[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:138
+No reports provided
+
+2021-08-18 14:13:16.202[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:138
+No reports provided
+
+2021-08-18 14:13:20.489[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:138
+No reports provided
+
+2021-08-18 14:13:24.142[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:138
+No reports provided
+
+2021-08-18 14:13:56.009[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:138
+No reports provided
+
+2021-08-18 14:14:01.176[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:138
+No reports provided
+
+2021-08-18 14:14:40.215[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:138
+No reports provided
+
+2021-08-18 14:14:47.153[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:138
+No reports provided
+
+2021-08-18 14:14:52.466[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:138
+No reports provided
+
+2021-08-18 14:16:14.734[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:138
+No reports provided
+
+2021-08-18 14:16:21.384[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:138
+No reports provided
+
+2021-08-18 14:16:26.680[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:138
+No reports provided
+
+2021-08-18 14:16:33.495[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:138
+No reports provided
+
+2021-08-18 14:16:36.802[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:138
+No reports provided
+
+2021-08-18 14:17:04.300[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:138
+No reports provided
+
+2021-08-18 14:17:10.771[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:138
+No reports provided
+
+2021-08-18 14:17:15.674[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:138
+No reports provided
+
+2021-08-18 14:17:30.033[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:138
+No reports provided
+
+2021-08-18 14:17:40.969[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:138
+No reports provided
+
+2021-08-18 14:17:51.083[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:138
+No reports provided
+
+2021-08-18 14:17:54.407[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:138
+No reports provided
+
+2021-08-18 14:19:13.986[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:138
+No reports provided
+
+2021-08-18 14:20:22.210[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:138
+No reports provided
+
+2021-08-18 14:20:32.877[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:138
+No reports provided
+
+2021-08-18 14:20:47.765[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:138
+No reports provided
+
+2021-08-18 14:35:56.526[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:138
+No reports provided
+
+2021-08-18 14:56:25.853[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:138
+No reports provided
 

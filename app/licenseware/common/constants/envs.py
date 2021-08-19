@@ -68,6 +68,14 @@ class envs:
     MONGO_COLLECTION_DATA_NAME:str = os.environ["APP_ID"].upper() + "Data" 
     MONGO_COLLECTION_UTILIZATION_NAME:str = os.environ["APP_ID"].upper() + "Utilization"
     MONGO_COLLECTION_ANALYSIS_NAME:str = os.environ["APP_ID"].upper() + "Analysis"
+    
+    # Mongo connection data
+    MONGO_ROOT_USERNAME:str = os.environ["MONGO_ROOT_USERNAME"]
+    MONGO_ROOT_PASSWORD:str = os.environ["MONGO_ROOT_PASSWORD"]
+    MONGO_DATABASE_NAME:str = os.environ["MONGO_DATABASE_NAME"]
+    MONGO_HOSTNAME:str = os.environ["MONGO_HOSTNAME"]
+    MONGO_PORT:str = os.environ["MONGO_PORT"] 
+    MONGO_CONNECTION_STRING:str = os.environ['MONGO_CONNECTION_STRING']
 
     
     # Environment variables added later by the app
