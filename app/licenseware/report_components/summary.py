@@ -10,13 +10,12 @@ class SummaryReportComponent:
         title:str,
         component_id:str,
         fetch_function:Callable,
+        icon:str, 
         path:str = None,
         order:int = None,
         style_props:list = None,
         data_props:list = None,
         component_type:str = 'summary',
-        icon:str = icons.SERVERS
-        
     ):
         self.title = title
         self.fetch_function = fetch_function

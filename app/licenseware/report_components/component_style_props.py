@@ -19,5 +19,5 @@ class Styles:
     WIDTH_FULL:dict = field(default_factory=lambda:{'width': 'full'})
     
         
-style_props = Styles()
+style_props = Styles() # default_factory needs instantiation
 

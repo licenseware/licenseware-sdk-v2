@@ -19,12 +19,12 @@ from app.licenseware.report_components import (
     SummaryReportComponent,
     DetailedSummaryReportComponent,
     PieChartReportComponent,
-    BarChartReportComponent,
+    BarVerticalChartReportComponent,
     TableReportComponent,
     style_props
 )
 
-
+from app.licenseware.common.constants import icons
 
 
 
@@ -138,7 +138,8 @@ summary_virtual_overview = SummaryReportComponent(
     component_id="virtual_overview",
     fetch_function=get_virtual_overview_component_data,
     style_props=[style_props.WIDTH_ONE_THIRD],
-    data_props=[]
+    data_props=[],
+    icon=icons.SERVERS
 )
 
 
@@ -157,7 +158,7 @@ ifmp_app.register_report(virtualization_details_report)
 # SummaryReportComponent,
 # DetailedSummaryReportComponent,
 # PieChartReportComponent,
-# BarChartReportComponent,
+# BarVerticalChartReportComponent,
 # TableReportComponent
 
 

@@ -7,4 +7,5 @@ class icons:
     SERVERS:str = "ServersIcon"
     FEATURES:str = "FeaturesIcon"
     CPU:str = "CpuIcon"
+    DATABASE_ROUNDED:str = "DatabaseIconRounded"
     
