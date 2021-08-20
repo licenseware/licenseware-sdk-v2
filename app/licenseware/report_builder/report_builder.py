@@ -1,28 +1,71 @@
+from app.licenseware.common.constants.envs import envs
+from app.licenseware.registry_service import register_report
+from app.licenseware.utils.logger import log
 
 
 
 
 class ReportBuilder:
+    """
+    
+    :name - report name
+    :report_id - report id (will be used to construct path/route)
+    :description - report data description
+    :report_components - instantiated class objects from report_components
+    :report_path - the endpoint/route on which this report is found
+    :connected_apps - related apps which are needed to build this report
+    :flags - use flags dataclass from licenseware.commun.constants
+    
+
+    """
     
     def __init__(
         self,
         name:str,
         report_id:str,
         description:str,
+        report_components:list,
         report_path:str = None,
+        connected_apps:list = [],
+        flags:list = []
          
     ):
         self.name = name
         self.report_id = report_id
         self.description = description
+        self.components = report_components
         self.report_path = report_path or '/' + report_id 
-        # When report path(url) is accesed get a list of component metadata
-        # Component metadata holds the ui component type and a route which when accessed fills that ui component with data
-        # An ui component can be reprezented in the front-end as a Pie Chart, Bar Chart a Table or other custom ui element
+        self.connected_apps = connected_apps
+        self.app_id = envs.APP_ID
+        self.flags = flags
+        self.report_url = envs.REGISTER_REPORT_URL  + self.report_path
         
+        # Needed to overwrite report_components
+        self.report_components = []
+        self.register_components()
         
-    def register_component(self, report_component):
-        pass
-    
+        self.reportvars = vars(self)
+        
+
     def register_report(self):
-        pass
+        return register_report(**self.reportvars)
+    
+    
+    def register_components(self):
+        
+        for order, component in enumerate(self.components):
+            
+            metadata = component.get_component_metadata()
+            
+            json_metadata = {
+                'title': metadata['title'],
+                'order': metadata['order'] or order + 1,
+                'url': self.report_url + metadata.pop('path'),
+                'component_id': metadata['component_id'],
+                'icon': metadata['main_icon'],
+                'type': metadata['component_type'],
+                'style_attributes': metadata['style_props'],
+                'attributes': metadata['data_props'],
+            }
+            
+            self.report_components.append(json_metadata)

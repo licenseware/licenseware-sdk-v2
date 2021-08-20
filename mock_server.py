@@ -90,6 +90,9 @@ def register_app():
 def register_uploader():
     return {'status': 'success'}, 200
 
+@app.route('/registry-service/reports', methods=['POST'])
+def register_report():
+    return {'status': 'success'}, 200
 
 
 

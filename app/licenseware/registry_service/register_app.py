@@ -23,7 +23,7 @@ def register_app(**kwargs):
     
     payload = {
         'data': [{
-            "app_id": kwargs['app_id'],
+            "app_id": envs.APP_ID,
             "name": kwargs['name'],
             "tenants_with_app_activated": kwargs['activated_tenants'],
             "tenants_with_data_available": kwargs['tenants_with_data'],
@@ -38,7 +38,7 @@ def register_app(**kwargs):
         }]
     }
     
-    # log.info(payload)    
+    log.info(payload)    
     validate_register_app_payload(payload)
 
     headers = {"Authorization": envs.get_auth_token()}

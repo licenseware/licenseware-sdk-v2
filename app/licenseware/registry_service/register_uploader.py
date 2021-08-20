@@ -23,10 +23,10 @@ def register_uploader(**kwargs):
         
     payload = {
         'data': [{
+            "app_id": envs.APP_ID,
             "upload_name": kwargs['name'],
             "description": kwargs['description'],
             "accepted_file_types": kwargs['accepted_file_types'],
-            "app_id": kwargs['app_id'],
             "upload_id": kwargs['uploader_id'],
             "flags": kwargs['flags'],
             "status": kwargs['status'],
@@ -38,7 +38,7 @@ def register_uploader(**kwargs):
         }]
     }
 
-    # log.info(payload)
+    log.info(payload)
     validate_register_uploader_payload(payload)
     
     headers = {"Authorization": envs.get_auth_token()}

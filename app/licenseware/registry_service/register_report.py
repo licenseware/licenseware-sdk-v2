@@ -2,7 +2,7 @@ import requests
 from app.licenseware.utils.logger import log
 from app.licenseware.common.constants import envs
 from app.licenseware.decorators.auth_decorators import authenticated_machine
-# TODO from app.licenseware.common.validators.registry_payload_validators import validate_register_app_payload
+from app.licenseware.common.validators.registry_payload_validators import validate_register_report_payload
 
 
 
@@ -21,19 +21,19 @@ def register_report(**kwargs):
     payload = {
         'data': [{
             "app_id": envs.APP_ID,
-            "report_id": kwargs['id'],
+            "report_id": kwargs['report_id'],
             "report_name": kwargs['name'],
             "description": kwargs['description'],
             "flags": kwargs['flags'],
-            "url": kwargs['url'], #TODO f'{os.getenv("APP_BASE_PATH")}{os.getenv("APP_URL_PREFIX")}/reports{self.url}',
-            "refresh_registry_url": kwargs['refresh_registry_url'],
+            "url": kwargs['report_url'],
+            "report_components":  kwargs['report_components'],
             "connected_apps": kwargs['connected_apps']
         }]
     }
     
     
-    # log.info(payload)    
-    # TODO validate_register_app_payload(payload)
+    log.info(payload)    
+    validate_register_report_payload(payload)
 
     headers = {"Authorization": envs.get_auth_token()}
     registration = requests.post(url=envs.REGISTER_REPORT_URL, json=payload, headers=headers)

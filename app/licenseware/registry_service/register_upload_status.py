@@ -22,6 +22,7 @@ def register_upload_status(tenant_id:str, status:str, uploader_id:str):
         ]
     }
     
+    log.info(payload)
     validate_register_uploader_status_payload(payload)
     
     response = requests.post(

@@ -133,18 +133,18 @@ def get_virtual_overview_component_data(tenant_id, filters=None):
     return data
     
 
-
 summary_virtual_overview = SummaryReportComponent(
     title="Overview",
     component_id="virtual_overview",
     fetch_function=get_virtual_overview_component_data,
+    machine_names_icons = [
+        ("number_of_devices", "ServersIcon"), 
+        ("number_of_databases", "DatabaseIconRounded")
+    ],
     style_props=[
         style_props.WIDTH_ONE_THIRD
     ],
-    data_props=[
-        data_props.summary_props()
-    ],
-    icon=icons.SERVERS
+    main_icon=icons.SERVERS
 )
 
 
@@ -152,13 +152,15 @@ virtualization_details_report = ReportBuilder(
     name="Virtualization Details",
     report_id="virtualization_details",
     description="This report gives you a detailed view of your virtual infrastructure. Deep dive into the infrastructure topology, identify devices with missing host details and capping rules for licensing.",
+    connected_apps=['ifmp-service'],
+    report_components=[
+        summary_virtual_overview        
+    ]
 )
 
 
-virtualization_details_report.register_component(summary_virtual_overview)
-
-
 ifmp_app.register_report(virtualization_details_report)
+
 
 # SummaryReportComponent,
 # DetailedSummaryReportComponent,

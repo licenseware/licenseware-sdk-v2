@@ -1,45 +1,70 @@
-from typing import Callable
-from app.licenseware.common.constants import icons
+from typing import Callable, List
+from app.licenseware.report_components.data_props import summary_props
+
+
+def flat_dict(li: List[dict]) -> dict:
+    return {k: v for dict_ in li for k, v in dict_.items()}  
+
 
 
 class SummaryReportComponent:
+    """
+    
+    Description of parameters
+    
+    :title - title of the ui component
+    :component_id - string lowercase with underscores like `overview_id`  
+    :fetch_function - the function reponsible for getting data from database
+    :machine_names_icons - needs to be filled with a list of tuples like [("number_of_devices", "ServersIcon")] (machine_name and it's corespondent icon)  
+    :main_icon - main icon to be used in front-end use licenseware.common.constants.icons dataclass
+    :path - endpoint which when it's called will trigger fetch_function
+    :order - the index where this component will be stacked/rendered in the report
+    :style_props - css attributes/properties that will be applied to this component. Use report_components.style_props dataclass
+    :data_props - properties which will be used in front-end show text data
+    :component_type - the type of this component which coresponds in front-end to an ui component type
+    
+    """
     
     def __init__(
         self,
         title:str,
         component_id:str,
         fetch_function:Callable,
-        icon:str, 
+        main_icon:str, 
+        machine_names_icons:List[tuple] = None,
+        data_props:list = None,
+        style_props:list = None,
         path:str = None,
         order:int = None,
-        style_props:list = None,
-        data_props:list = None,
         component_type:str = 'summary',
     ):
         self.title = title
         self.fetch_function = fetch_function
         self.component_id = component_id
         self.path = path or '/' + component_id 
-        # When path is called is here data required to fill the front-end ui component is gathered
         self.order = order
-        # order - tells front-end where this component is stacked in the ui (1 place it first in the report, 2 second and so on)
-        self.style_props = {k: v for dict_ in style_props for k, v in dict_.items()}  # convert list of dicts to dict
-        # style_props - holds a dictionary with custom ui properties (like width size, color, height etc)
-        self.data_props = {k: v for dict_ in data_props for k, v in dict_.items()} 
-        # data_props - tells front-end where in this component to place the data fetched
+        
+        self.style_props = flat_dict(style_props)
+        
+        if machine_names_icons is None and data_props is None:
+            raise Exception("Please fill `machine_names_icons` or `data_props` parameter")
+        
+        self.data_props = summary_props(machine_names_icons) or flat_dict(data_props) 
         self.component_type = component_type
-        self.icon = icon
+        self.main_icon = main_icon
+        
+        self.componentvars = vars(self)
         
         
     def get_component_data(self, *args, **kwargs):
-        # Usually data method receives a tenant_id and a custom filter
         data = self.fetch_function(*args, **kwargs)
-        #TODO check first item in the list to see if data is in the proper summary report component format
         return data
-        
-        
-   
-   
+    
+    
+    def get_component_metadata(self):
+        return self.componentvars
+    
+
     
     
 

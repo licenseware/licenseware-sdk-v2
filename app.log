@@ -1,140 +1,56 @@
-2021-08-18 13:58:30.477[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:138
-No reports provided
+2021-08-20 14:25:30.477[ WARNING ]
+app.licenseware.report_builder.report_builder:register_components:50
+Registering components
 
-2021-08-18 13:58:36.462[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:138
-No reports provided
+2021-08-20 14:26:17.415[ WARNING ]
+app.licenseware.report_builder.report_builder:register_components:51
+Registering components
 
-2021-08-18 14:07:49.121[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:138
-No reports provided
+2021-08-20 14:27:38.886[ WARNING ]
+app.licenseware.report_builder.report_builder:register_components:51
+Registering components
 
-2021-08-18 14:08:30.325[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:138
-No reports provided
+2021-08-20 14:29:13.361[ WARNING ]
+app.licenseware.report_builder.report_builder:register_components:51
+Registering components
 
-2021-08-18 14:08:36.601[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:138
-No reports provided
+2021-08-20 14:30:33.152[ WARNING ]
+app.licenseware.report_builder.report_builder:register_components:51
+Registering components
 
-2021-08-18 14:09:01.055[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:138
-No reports provided
+2021-08-20 14:31:31.358[ WARNING ]
+app.licenseware.report_builder.report_builder:register_components:51
+Registering components
 
-2021-08-18 14:11:36.332[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:138
-No reports provided
+2021-08-20 14:31:32.297[ WARNING ]
+app.licenseware.report_builder.report_builder:register_components:51
+Registering components
 
-2021-08-18 14:12:36.597[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:138
-No reports provided
+2021-08-20 14:31:50.718[ WARNING ]
+app.licenseware.report_builder.report_builder:register_components:51
+Registering components
 
-2021-08-18 14:12:49.812[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:138
-No reports provided
+2021-08-20 14:32:13.282[ WARNING ]
+app.licenseware.report_builder.report_builder:register_components:51
+Registering components
 
-2021-08-18 14:13:16.202[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:138
-No reports provided
+2021-08-20 14:32:19.969[ WARNING ]
+app.licenseware.report_builder.report_builder:register_components:51
+Registering components
 
-2021-08-18 14:13:20.489[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:138
-No reports provided
+2021-08-20 14:32:20.855[ WARNING ]
+app.licenseware.report_builder.report_builder:register_components:51
+Registering components
 
-2021-08-18 14:13:24.142[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:138
-No reports provided
+2021-08-20 14:32:44.923[ WARNING ]
+app.licenseware.report_builder.report_builder:register_components:51
+Registering components
 
-2021-08-18 14:13:56.009[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:138
-No reports provided
+2021-08-20 14:32:55.077[ WARNING ]
+app.licenseware.report_builder.report_builder:register_components:52
+Registering components
 
-2021-08-18 14:14:01.176[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:138
-No reports provided
-
-2021-08-18 14:14:40.215[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:138
-No reports provided
-
-2021-08-18 14:14:47.153[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:138
-No reports provided
-
-2021-08-18 14:14:52.466[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:138
-No reports provided
-
-2021-08-18 14:16:14.734[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:138
-No reports provided
-
-2021-08-18 14:16:21.384[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:138
-No reports provided
-
-2021-08-18 14:16:26.680[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:138
-No reports provided
-
-2021-08-18 14:16:33.495[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:138
-No reports provided
-
-2021-08-18 14:16:36.802[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:138
-No reports provided
-
-2021-08-18 14:17:04.300[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:138
-No reports provided
-
-2021-08-18 14:17:10.771[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:138
-No reports provided
-
-2021-08-18 14:17:15.674[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:138
-No reports provided
-
-2021-08-18 14:17:30.033[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:138
-No reports provided
-
-2021-08-18 14:17:40.969[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:138
-No reports provided
-
-2021-08-18 14:17:51.083[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:138
-No reports provided
-
-2021-08-18 14:17:54.407[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:138
-No reports provided
-
-2021-08-18 14:19:13.986[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:138
-No reports provided
-
-2021-08-18 14:20:22.210[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:138
-No reports provided
-
-2021-08-18 14:20:32.877[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:138
-No reports provided
-
-2021-08-18 14:20:47.765[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:138
-No reports provided
-
-2021-08-18 14:35:56.526[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:138
-No reports provided
-
-2021-08-18 14:56:25.853[ WARNING ]
-app.licenseware.app_builder.app_builder:init_app:138
-No reports provided
+2021-08-20 14:33:00.375[ WARNING ]
+app.licenseware.report_builder.report_builder:register_components:52
+Registering components
 

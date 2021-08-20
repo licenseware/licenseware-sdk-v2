@@ -13,3 +13,4 @@ from .register_app_payload_schema import RegisterAppPayloadSchema
 from .register_uploader_payload_schema import RegisterUploaderPayloadSchema
 from .file_upload_validation_schema import FileUploadValidationSchema
 from .register_uploader_status_payload_schema import RegisterUploaderStatusPayloadSchema
+from .register_report_payload_schema import RegisterReportPayloadSchema
