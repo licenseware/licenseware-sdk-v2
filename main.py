@@ -14,14 +14,15 @@ from app.licenseware.app_builder import AppBuilder
 from app.licenseware.uploader_builder import UploaderBuilder
 from app.licenseware.uploader_validator import UploaderValidator
 
-from app.licenseware.report_builder import ReportBuilder, report_components
+from app.licenseware.report_builder import ReportBuilder
 from app.licenseware.report_components import (
     SummaryReportComponent,
     DetailedSummaryReportComponent,
     PieChartReportComponent,
     BarVerticalChartReportComponent,
     TableReportComponent,
-    style_props
+    style_props,
+    data_props
 )
 
 from app.licenseware.common.constants import icons
@@ -137,8 +138,12 @@ summary_virtual_overview = SummaryReportComponent(
     title="Overview",
     component_id="virtual_overview",
     fetch_function=get_virtual_overview_component_data,
-    style_props=[style_props.WIDTH_ONE_THIRD],
-    data_props=[],
+    style_props=[
+        style_props.WIDTH_ONE_THIRD
+    ],
+    data_props=[
+        data_props.summary_props()
+    ],
     icon=icons.SERVERS
 )
 

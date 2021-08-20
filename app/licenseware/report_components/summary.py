@@ -2,7 +2,6 @@ from typing import Callable
 from app.licenseware.common.constants import icons
 
 
-
 class SummaryReportComponent:
     
     def __init__(
@@ -24,10 +23,10 @@ class SummaryReportComponent:
         # When path is called is here data required to fill the front-end ui component is gathered
         self.order = order
         # order - tells front-end where this component is stacked in the ui (1 place it first in the report, 2 second and so on)
-        self.style_props = style_props
-        # style - holds a dictionary with custom ui properties (like width size, color, height etc)
-        self.data_props = data_props
-        # attributes - tells front-end where in this component to place the data fetched
+        self.style_props = {k: v for dict_ in style_props for k, v in dict_.items()}  # convert list of dicts to dict
+        # style_props - holds a dictionary with custom ui properties (like width size, color, height etc)
+        self.data_props = {k: v for dict_ in data_props for k, v in dict_.items()} 
+        # data_props - tells front-end where in this component to place the data fetched
         self.component_type = component_type
         self.icon = icon
         
