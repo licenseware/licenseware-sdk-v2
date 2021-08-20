@@ -27,7 +27,8 @@ class ReportBuilder:
         report_components:list,
         report_path:str = None,
         connected_apps:list = [],
-        flags:list = []
+        flags:list = [],
+        filters:list = []
          
     ):
         self.name = name
@@ -35,22 +36,43 @@ class ReportBuilder:
         self.description = description
         self.components = report_components
         self.report_path = report_path or '/' + report_id 
+        self.register_report_path = self.report_path + '/register'
         self.connected_apps = connected_apps
         self.app_id = envs.APP_ID
         self.flags = flags
+        self.filters = filters
         self.report_url = envs.REGISTER_REPORT_URL  + self.report_path
         
         # Needed to overwrite report_components
+        self.component_ids = set([c.component_id for c in self.components])
+        
+        if len(self.component_ids) in len(self.components):
+            raise Exception("Component ids should be unique whithin this report.")
+            
         self.report_components = []
         self.register_components()
         
         self.reportvars = vars(self)
-        
-
+     
+     
+    def return_json_payload(self):
+        payload = {
+            "app_id": self.app_id,
+            "report_id": self.report_id,
+            "report_name": self.name,
+            "description": self.description,
+            "flags": self.flags,
+            "report_components": self.report_components,
+            "filters": self.filters,
+            "url": self.report_url,
+            "connected_apps": self.connected_apps
+        }
+        return payload, 200
+    
+    
     def register_report(self):
         return register_report(**self.reportvars)
-    
-    
+
     def register_components(self):
         
         for order, component in enumerate(self.components):
@@ -60,7 +82,7 @@ class ReportBuilder:
             json_metadata = {
                 'title': metadata['title'],
                 'order': metadata['order'] or order + 1,
-                'url': self.report_url + metadata.pop('path'),
+                'url': self.report_url + metadata['path'],
                 'component_id': metadata['component_id'],
                 'icon': metadata['main_icon'],
                 'type': metadata['component_type'],
@@ -69,3 +91,5 @@ class ReportBuilder:
             }
             
             self.report_components.append(json_metadata)
+            
+        

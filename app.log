@@ -54,3 +54,7 @@ Registering components
 app.licenseware.report_builder.report_builder:register_components:52
 Registering components
 
+2021-08-20 15:26:48.958[ WARNING ]
+app.licenseware.decorators.auth_decorators.machine_check:decorated:21
+Missing Authorization information
+

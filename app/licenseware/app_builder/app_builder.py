@@ -26,6 +26,13 @@ from .uploads_namespace import (
 )
 
 
+from .reports_namespace import reports_namespace
+from .reports_namespace import (
+    get_report_register_namespace,
+    get_report_metadata_namespace,
+    get_report_components_namespace
+)
+
 
 
 # TODO TenantId is not posible 
@@ -143,7 +150,7 @@ class AppBuilder:
         if register: self.register_app()
         
         self.init_api()
-        self.add_default_routes()
+        self.init_routes()
         self.init_namespaces()
         
         
@@ -177,7 +184,7 @@ class AppBuilder:
         
         
     
-    def add_default_routes(self):
+    def init_routes(self):
         
         # Here we are adding the routes available for each app
         # Api must be passed from route function back to this context 
@@ -196,6 +203,7 @@ class AppBuilder:
         # Another way is to group routes in namespaces 
         # This way the url prefix is specified only in the namespace
         self.add_uploads_routes()
+        self.add_reports_routes()
         
     
     
@@ -211,6 +219,20 @@ class AppBuilder:
         for func in ns_funcs:
             self.add_namespace(
                 func(ns=uploads_namespace, uploaders=self.uploaders)
+            )
+            
+            
+    def add_reports_routes(self):
+        
+        ns_funcs = [
+            get_report_register_namespace,
+            get_report_metadata_namespace,
+            get_report_components_namespace
+        ]
+        
+        for func in ns_funcs:
+            self.add_namespace(
+                func(ns=reports_namespace, reports=self.reports)
             )
         
                     
