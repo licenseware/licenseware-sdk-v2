@@ -71,7 +71,6 @@ class AppBuilder:
         name: str, 
         description: str,
         flags: list = [],
-        version:int = 1, 
         editable_tables_schemas:list = [],
         activated_tenants_func: Callable = get_activated_tenants, 
         tenants_with_data_func: Callable = get_tenants_with_data,
@@ -90,7 +89,6 @@ class AppBuilder:
         self.app_id = envs.APP_ID 
         self.name = name
         self.description = description
-        self.version = str(version)
         self.flags = flags
         self.icon = icon
         self.editable_tables_schemas = editable_tables_schemas
@@ -127,7 +125,8 @@ class AppBuilder:
         # otherwise added them to kwargs until apps are actualized
         self.kwargs = kwargs    
         
-        self.prefix = '/' + self.app_id + '/v' + self.version
+        # TODO version needs to be added to all urls + '/v' + self.version
+        self.prefix = '/' + self.app_id 
         self.app = None
         self.api = None
         self.ns  = None
@@ -171,7 +170,6 @@ class AppBuilder:
         self.api = Api(
             app=self.app,
             title=self.name,
-            version=self.version,
             description=self.description,
             prefix=self.prefix,
             default=self.name,

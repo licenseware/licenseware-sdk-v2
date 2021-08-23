@@ -11,7 +11,7 @@ headers = {
     'Authorization': 'TheAuthorization' 
 }
 
-prefix = '/ifmp/v1'
+prefix = '/ifmp'
 pathto = lambda route: prefix + route
 
 

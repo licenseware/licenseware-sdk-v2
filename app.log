@@ -58,3 +58,209 @@ Registering components
 app.licenseware.decorators.auth_decorators.machine_check:decorated:21
 Missing Authorization information
 
+2021-08-23 07:38:35.940[ WARNING ]
+app.licenseware.app_builder.app_activation_route:get:34
+TODO - Initialize quota for tenant_id
+
+2021-08-23 07:38:36.022[ ERROR ]
+app.licenseware.decorators.failsafe_decorator:wrapper:54
+Traceback (most recent call last):
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/failsafe_decorator.py", line 49, in wrapper
+    response = f(*args, **kwargs)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/auth_decorators/machine_check.py", line 30, in decorated
+    return f(*args, **kwargs)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/app_builder/refresh_registration_route.py", line 24, in get
+    response_ok = register_all(
+TypeError: register_all() got an unexpected keyword argument 'app'
+
+
+2021-08-23 07:38:38.877[ WARNING ]
+app.licenseware.uploader_builder.uploader_builder:upload_files:89
+Sending event data
+
+2021-08-23 07:40:01.899[ WARNING ]
+app.licenseware.app_builder.app_activation_route:get:34
+TODO - Initialize quota for tenant_id
+
+2021-08-23 07:40:01.963[ ERROR ]
+app.licenseware.decorators.failsafe_decorator:wrapper:54
+Traceback (most recent call last):
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/failsafe_decorator.py", line 49, in wrapper
+    response = f(*args, **kwargs)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/auth_decorators/machine_check.py", line 30, in decorated
+    return f(*args, **kwargs)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/app_builder/refresh_registration_route.py", line 24, in get
+    response_ok = register_all(
+TypeError: register_all() got an unexpected keyword argument 'app'
+
+
+2021-08-23 07:40:04.590[ WARNING ]
+app.licenseware.uploader_builder.uploader_builder:upload_files:89
+Sending event data
+
+2021-08-23 07:41:39.724[ WARNING ]
+app.licenseware.decorators.auth_decorators.machine_check:decorated:21
+Missing Authorization information
+
+2021-08-23 07:42:38.953[ WARNING ]
+app.licenseware.app_builder.app_activation_route:get:34
+TODO - Initialize quota for tenant_id
+
+2021-08-23 07:42:39.035[ ERROR ]
+app.licenseware.decorators.failsafe_decorator:wrapper:54
+Traceback (most recent call last):
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/failsafe_decorator.py", line 49, in wrapper
+    response = f(*args, **kwargs)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/auth_decorators/machine_check.py", line 30, in decorated
+    return f(*args, **kwargs)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/app_builder/refresh_registration_route.py", line 24, in get
+    response_ok = register_all(
+TypeError: register_all() got an unexpected keyword argument 'app'
+
+
+2021-08-23 07:42:41.856[ WARNING ]
+app.licenseware.uploader_builder.uploader_builder:upload_files:89
+Sending event data
+
+2021-08-23 07:44:05.963[ WARNING ]
+app.licenseware.app_builder.app_activation_route:get:34
+TODO - Initialize quota for tenant_id
+
+2021-08-23 07:44:08.646[ WARNING ]
+app.licenseware.uploader_builder.uploader_builder:upload_files:89
+Sending event data
+
+2021-08-23 07:55:27.818[ WARNING ]
+app.licenseware.app_builder.app_activation_route:get:34
+TODO - Initialize quota for tenant_id
+
+2021-08-23 07:55:27.899[ ERROR ]
+app.licenseware.decorators.failsafe_decorator:wrapper:54
+Traceback (most recent call last):
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/failsafe_decorator.py", line 49, in wrapper
+    response = f(*args, **kwargs)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/auth_decorators/machine_check.py", line 30, in decorated
+    return f(*args, **kwargs)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/app_builder/refresh_registration_route.py", line 24, in get
+    response_ok = register_all(
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/registry_service/register_all.py", line 16, in register_all
+    _, status_code = register_report(**report)
+TypeError: register_report() argument after ** must be a mapping, not ReportBuilder
+
+
+2021-08-23 07:55:29.890[ WARNING ]
+app.licenseware.uploader_builder.uploader_builder:upload_files:89
+Sending event data
+
+2021-08-23 07:56:50.928[ WARNING ]
+app.licenseware.app_builder.app_activation_route:get:34
+TODO - Initialize quota for tenant_id
+
+2021-08-23 07:56:51.029[ ERROR ]
+app.licenseware.decorators.failsafe_decorator:wrapper:54
+Traceback (most recent call last):
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/failsafe_decorator.py", line 49, in wrapper
+    response = f(*args, **kwargs)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/auth_decorators/machine_check.py", line 30, in decorated
+    return f(*args, **kwargs)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/app_builder/refresh_registration_route.py", line 24, in get
+    response, status_code = register_all(
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/registry_service/register_all.py", line 16, in register_all
+    _, status_code = register_report(**report)
+TypeError: register_report() argument after ** must be a mapping, not ReportBuilder
+
+
+2021-08-23 07:56:53.080[ WARNING ]
+app.licenseware.uploader_builder.uploader_builder:upload_files:89
+Sending event data
+
+2021-08-23 07:57:32.699[ WARNING ]
+app.licenseware.app_builder.app_activation_route:get:34
+TODO - Initialize quota for tenant_id
+
+2021-08-23 07:57:32.776[ ERROR ]
+app.licenseware.decorators.failsafe_decorator:wrapper:54
+Traceback (most recent call last):
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/failsafe_decorator.py", line 49, in wrapper
+    response = f(*args, **kwargs)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/auth_decorators/machine_check.py", line 30, in decorated
+    return f(*args, **kwargs)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/app_builder/refresh_registration_route.py", line 24, in get
+    response, status_code = register_all(
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/registry_service/register_all.py", line 16, in register_all
+    _, status_code = register_report(**report)
+TypeError: register_report() argument after ** must be a mapping, not ReportBuilder
+
+
+2021-08-23 07:57:35.118[ WARNING ]
+app.licenseware.uploader_builder.uploader_builder:upload_files:89
+Sending event data
+
+2021-08-23 07:57:40.270[ WARNING ]
+app.licenseware.app_builder.app_activation_route:get:34
+TODO - Initialize quota for tenant_id
+
+2021-08-23 07:57:40.332[ ERROR ]
+app.licenseware.decorators.failsafe_decorator:wrapper:54
+Traceback (most recent call last):
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/failsafe_decorator.py", line 49, in wrapper
+    response = f(*args, **kwargs)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/auth_decorators/machine_check.py", line 30, in decorated
+    return f(*args, **kwargs)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/app_builder/refresh_registration_route.py", line 24, in get
+    response, status_code = register_all(
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/registry_service/register_all.py", line 16, in register_all
+    _, status_code = register_report(**report)
+TypeError: register_report() argument after ** must be a mapping, not ReportBuilder
+
+
+2021-08-23 07:59:11.283[ WARNING ]
+app.licenseware.app_builder.app_activation_route:get:34
+TODO - Initialize quota for tenant_id
+
+2021-08-23 07:59:11.339[ ERROR ]
+app.licenseware.decorators.failsafe_decorator:wrapper:54
+Traceback (most recent call last):
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/failsafe_decorator.py", line 49, in wrapper
+    response = f(*args, **kwargs)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/auth_decorators/machine_check.py", line 30, in decorated
+    return f(*args, **kwargs)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/app_builder/refresh_registration_route.py", line 26, in get
+    reports = vars(appvars['reports']),
+TypeError: vars() argument must have __dict__ attribute
+
+
+2021-08-23 08:02:59.271[ WARNING ]
+app.licenseware.app_builder.app_activation_route:get:34
+TODO - Initialize quota for tenant_id
+
+2021-08-23 08:02:59.353[ ERROR ]
+app.licenseware.decorators.failsafe_decorator:wrapper:54
+Traceback (most recent call last):
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/failsafe_decorator.py", line 49, in wrapper
+    response = f(*args, **kwargs)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/auth_decorators/machine_check.py", line 30, in decorated
+    return f(*args, **kwargs)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/app_builder/refresh_registration_route.py", line 25, in get
+    response, status_code = register_all(
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/registry_service/register_all.py", line 19, in register_all
+    _, status_code = register_report(**report)
+TypeError: register_report() argument after ** must be a mapping, not ReportBuilder
+
+
+2021-08-23 08:04:00.827[ WARNING ]
+app.licenseware.app_builder.app_activation_route:get:34
+TODO - Initialize quota for tenant_id
+
+2021-08-23 08:05:40.630[ WARNING ]
+app.licenseware.app_builder.app_activation_route:get:34
+TODO - Initialize quota for tenant_id
+
+2021-08-23 08:07:29.540[ WARNING ]
+app.licenseware.app_builder.app_activation_route:get:34
+TODO - Initialize quota for tenant_id
+
+2021-08-23 08:07:31.880[ WARNING ]
+app.licenseware.uploader_builder.uploader_builder:upload_files:89
+Sending event data
+

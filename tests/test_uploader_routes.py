@@ -14,7 +14,7 @@ headers = {
     'Authorization': 'TheAuthorization' 
 }
 
-prefix = '/ifmp/v1'
+prefix = '/ifmp'
 pathto = lambda route: prefix + route
 
 uploader_id = 'rv_tools'

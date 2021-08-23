@@ -2,7 +2,7 @@ from flask_restx import Api, Resource
 from app.licenseware.decorators.auth_decorators import machine_check
 from app.licenseware.registry_service import register_all
 from app.licenseware.decorators import failsafe
-
+from app.licenseware.utils.logger import log
 
 
 def add_refresh_registration_route(api:Api, appvars:dict):
@@ -14,29 +14,27 @@ def add_refresh_registration_route(api:Api, appvars:dict):
         @api.doc(
             id="Register all reports and uploaders",
             responses={
-                200 : 'TODO - add doc',
+                200 : 'Registering process was successful',
                 403 : "Missing `Authorization` information",
-                500 : 'Something went wrong while handling the request' 
+                500 : 'Registering process was unsuccessful' 
             },
         )
         def get(self):
             
-            response_ok = register_all(
+            # Converting from objects to dictionaries
+            reports   = [vars(r) for r in appvars['reports']]
+            uploaders = [vars(u) for u in appvars['uploaders']]
+            
+            response, status_code = register_all(
                 app = appvars,
-                reports = appvars['reports'], 
-                uploaders = appvars['uploaders']
+                reports = reports, 
+                uploaders = uploaders
             )
             
-            if response_ok:
-                return {
-                        "status": "success",
-                        "message": "Reports and uploaders registered successfully"
-                    }, 200
-            else:
-                return {
-                        "status": "fail",
-                        "message": "Reports and uploaders registering failed"
-                    }, 500
-                
+            log.debug(response)
+            
+            return response, status_code
+            
+            
     return api
                 

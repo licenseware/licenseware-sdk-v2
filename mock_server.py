@@ -10,7 +10,7 @@ def index():
     return 'Auth service mock server'
   
        
-@app.route('/ifmp/v1/app', methods=['GET'])
+@app.route('/ifmp/app', methods=['GET'])
 def ifmp_app():
     return {
         'status': 'success', 
@@ -19,7 +19,7 @@ def ifmp_app():
     }, 200
 
 
-@app.route('/ifmp/v1/app/init', methods=['GET'])
+@app.route('/ifmp/app/init', methods=['GET'])
 def app_init():
     return {
         'status': 'success', 
@@ -27,6 +27,16 @@ def app_init():
         'TenantId': 'uuid4_tenant_id',
     }, 200
       
+
+@app.route('/ifmp/refresh_registration', methods=['GET'])
+def refresh_registration():
+    return {
+        'status': 'success', 
+        'Authorization': 'long_auth_token',
+        'TenantId': 'uuid4_tenant_id',
+    }, 200
+      
+
       
 @app.route('/auth/users/login', methods=['POST'])
 def login_user():
@@ -93,7 +103,6 @@ def register_uploader():
 @app.route('/registry-service/reports', methods=['POST'])
 def register_report():
     return {'status': 'success'}, 200
-
 
 
 

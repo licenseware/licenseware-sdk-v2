@@ -44,11 +44,6 @@ class ReportBuilder:
         self.report_url = envs.REGISTER_REPORT_URL  + self.report_path
         
         # Needed to overwrite report_components
-        self.component_ids = set([c.component_id for c in self.components])
-        
-        if len(self.component_ids) in len(self.components):
-            raise Exception("Component ids should be unique whithin this report.")
-            
         self.report_components = []
         self.register_components()
         
@@ -76,6 +71,10 @@ class ReportBuilder:
     def register_components(self):
         
         for order, component in enumerate(self.components):
+            # Making sure there are no duplicate components
+            for registered_component in self.report_components:
+                if registered_component.component_id == component.component_id:
+                    raise Exception(f"Component id '{component.component_id}' was already declared")
             
             metadata = component.get_component_metadata()
             

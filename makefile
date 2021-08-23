@@ -7,18 +7,18 @@ down:
 	$(docker_command) down
 
 
-run-prod:	
+prod:	
 	uwsgi --http 0.0.0.0:4000 -w main:app --processes 4
 
-run-dev:
+dev:
 	python3 main.py
 	
-run-mock:
+mock:
 	python3 mock_server.py
 
-run-worker:
+worker:
 	flask worker -p4
 	
-run-tests:
+test:
 	rm -rf tests/__pycache__
 	python3 -m unittest tests/*
