@@ -56,8 +56,8 @@ class SummaryReportComponent:
         self.componentvars = vars(self)
         
         
-    def get_component_data(self, *args, **kwargs):
-        data = self.fetch_function(*args, **kwargs)
+    def get_component_data(self, tenant_id, filters=None):
+        data = self.fetch_function(tenant_id, filters)
         return data
     
     
@@ -65,8 +65,11 @@ class SummaryReportComponent:
         return self.componentvars
     
 
-    
-    
+{'data': [{'app_id': 'ifmp', 'report_id': 'virtualization_details', 'report_name': 'Virtualization Details', 'description': 'This report gives you a detailed view of your virtual infrastructure. Deep dive into the infrastructure topology, identify devices with missing host details and capping rules for licensing.', 'flags': [], 'url': 'http://localhost:5000/ifmp/reports/virtualization_details', 'report_components': [{'title': 'Overview', 'order': 1, 'url': 'http://localhost:5000/ifmp/reports/virtualization_details/virtual_overview', 'component_id': 'virtual_overview', 'icon': 'ServersIcon', 'type': 'summary', 'style_attributes': {'width': '1/3'}, 'attributes': {'series': [{'name': 'Number of devices', 'machine_name': 'number_of_devices', 'icon': 'ServersIcon'}, {'name': 'Number of databases', 'machine_name': 'number_of_databases', 'icon': 'DatabaseIconRounded'}]}}], 'connected_apps': ['ifmp-service']}]}
+
+
+
+
 
 """
 VirtualizationReport.register_component(StandardReportComponent(

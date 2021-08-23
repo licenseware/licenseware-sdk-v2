@@ -48,13 +48,14 @@ def register_uploader(**kwargs):
     if registration.status_code == 200:
         return {
             "status": "success",
-            "message": f"Uploader '{kwargs['uploader_id']}' register successfully"
+            "message": f"Uploader '{kwargs['uploader_id']}' register successfully",
+            "content": payload
         }, 200
 
 
     nokmsg = f"Could not register uploader '{kwargs['uploader_id']}'"
     log.error(nokmsg)
-    return {"status": "fail", "message": nokmsg}, 400
+    return {"status": "fail", "message": nokmsg, "content": payload}, 400
 
 
 

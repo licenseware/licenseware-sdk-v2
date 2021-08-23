@@ -1,6 +1,6 @@
 import unittest
 from app.licenseware.registry_service import register_app
-
+from app.licenseware.utils.logger import log
 
 # python3 -m unittest tests/test_register_app.py 
 
@@ -11,7 +11,12 @@ payload = {'app_id': 'ifmp', 'name': 'Infrastructure Mapper', 'activated_tenants
 
 class TestRegisterApp(unittest.TestCase):
     
+    
     def test_register_app(self):
+        
         response, status_code = register_app(**payload)
+        
         self.assertEqual(status_code, 200)
         self.assertEqual(response['status'], "success")
+        self.assertIn("ifmp/", str(response))
+        

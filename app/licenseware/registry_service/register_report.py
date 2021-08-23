@@ -41,11 +41,12 @@ def register_report(**kwargs):
     if registration.status_code != 200:
         nokmsg = f"Could not register report {kwargs['name']}"
         log.error(nokmsg)
-        return { "status": "fail", "message": nokmsg }, 500
+        return { "status": "fail", "message": nokmsg, "content": payload }, 500
     
     return {
         "status": "success",
-        "message": f"Report {kwargs['name']} registered successfully"
+        "message": f"Report {kwargs['name']} registered successfully",
+        "content": payload
     }, 200
 
     

@@ -3,7 +3,7 @@ from .mongodata import (
     fetch, 
     update,
     delete, 
-    count_documents, 
+    document_count, 
     delete_collection, 
     aggregate,
     get_collection

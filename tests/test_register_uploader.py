@@ -2,7 +2,7 @@ import unittest
 from app.licenseware.registry_service import register_uploader
 
 
-# python3 -m unittest tests/test_register_uploader.py 
+# python3 -m unittest tests/test_register_uploader.py
 
 
 payload = {'name': 'RVTools', 
@@ -25,3 +25,4 @@ class TestRegisterUploader(unittest.TestCase):
         response, status_code = register_uploader(**payload)
         self.assertEqual(status_code, 200)
         self.assertEqual(response['status'], "success")
+        self.assertIn("ifmp/", str(response))

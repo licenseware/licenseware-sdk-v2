@@ -1,4 +1,5 @@
 from flask_restx import Namespace
+from app.licenseware.common.constants import envs
 
 # Here we are importing the route creation functions 
 # Each function will receive the `uploads_namespace` as a first parameter followed by other parameters if needed
@@ -12,5 +13,5 @@ from .status_namespace import get_status_namespace
 uploads_namespace = Namespace(
     name="File Uploads",
     description="Routes available for file processing operations",
-    path="/uploads"
+    path=envs.UPLOAD_PATH
 )

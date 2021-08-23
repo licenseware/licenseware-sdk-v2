@@ -44,6 +44,7 @@ class envs:
     # Environment variables available at startup
     
     APP_ID:str = os.environ["APP_ID"]
+    APP_HOST:str = os.environ['APP_HOST']
     LWARE_USER:str = os.environ['LWARE_IDENTITY_USER']
     LWARE_PASSWORD:str = os.environ['LWARE_IDENTITY_PASSWORD']
     
@@ -56,13 +57,16 @@ class envs:
     AUTH_USER_CHECK_URL:str = os.environ['AUTH_SERVICE_URL'] + '/verify'
     
     REGISTRY_SERVICE_URL:str = os.environ['REGISTRY_SERVICE_URL']
-    REGISTER_APP_URL:str = os.environ['REGISTRY_SERVICE_URL'] + '/apps'
-    REGISTER_UPLOADER_URL:str = os.environ['REGISTRY_SERVICE_URL'] + '/uploaders'
-    REGISTER_UPLOADER_STATUS_URL:str = os.environ['REGISTRY_SERVICE_URL'] + '/uploaders/status'
-    REGISTER_REPORT_URL:str = os.environ['REGISTRY_SERVICE_URL'] + '/reports'
+    REGISTER_APP_URL:str = REGISTRY_SERVICE_URL + '/apps'
+    REGISTER_UPLOADER_URL:str = REGISTRY_SERVICE_URL + '/uploaders'
+    REGISTER_UPLOADER_STATUS_URL:str = REGISTRY_SERVICE_URL + '/uploaders/status'
+    REGISTER_REPORT_URL:str = REGISTRY_SERVICE_URL + '/reports'
     
-    BASE_URL:str = os.environ['APP_HOST'] + "/" + os.environ["APP_ID"]
-    UPLOAD_URL:str = os.environ['APP_HOST'] + "/" + os.environ["APP_ID"] + '/uploads'
+    BASE_URL:str = APP_HOST + "/" + APP_ID
+    UPLOAD_PATH:str = '/uploads'
+    REPORT_PATH:str = '/reports'
+    UPLOAD_URL:str = BASE_URL + UPLOAD_PATH
+    REPORT_URL:str = BASE_URL + REPORT_PATH
     FILE_UPLOAD_PATH:str = os.getenv("FILE_UPLOAD_PATH", 'tmp/lware')
     
     # Base mongo collection names

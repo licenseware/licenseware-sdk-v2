@@ -47,9 +47,10 @@ def register_app(**kwargs):
     if registration.status_code != 200:
         nokmsg = f"Could not register app {kwargs['name']}"
         log.error(nokmsg)
-        return { "status": "fail", "message": nokmsg }, 500
+        return { "status": "fail", "message": nokmsg, "content": payload }, 500
     
     return {
         "status": "success",
-        "message": f"App {kwargs['name']} registered successfully"
+        "message": f"App {kwargs['name']} registered successfully",
+        "content": payload
     }, 200

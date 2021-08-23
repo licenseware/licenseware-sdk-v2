@@ -33,7 +33,7 @@ def register_upload_status(tenant_id:str, status:str, uploader_id:str):
     
     if response.status_code == 200:
         log.info("Notification registry service success!")
-        return {"status": "success", "message": payload}, 200
+        return {"status": "success", "message": payload, "content": payload}, 200
     
     log.error("Notification registry service failed!")
-    return {"status": "fail", "message": payload}, 500
+    return {"status": "fail", "message": payload, "content": payload}, 500

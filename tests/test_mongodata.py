@@ -64,7 +64,7 @@ class TestMongoData(unittest.TestCase):
             collection=envs.MONGO_COLLECTION_DATA_NAME
         )
         
-        log.debug(response)
+        # log.debug(response)
         
         self.assertEqual(len(response), 1)
         
@@ -74,14 +74,88 @@ class TestMongoData(unittest.TestCase):
         self.assertEqual(data['occupation'], 'dev')
         
         
+    def test_insert_many(self):
+        
+        class MySchema(Schema):
+            name = fields.Str(required=True)
+            occupation = fields.Str(required=True)
+            
+        doclist = [
+            {
+                'name': 'John',
+                'occupation': 'dev'
+            },
+            {
+                'name': 'Steve',
+                'occupation': 'dev'
+            },
+            {
+                'name': 'Bob',
+                'occupation': 'dev'
+            },
+            {
+                'name': 'Jim',
+                'occupation': 'dev'
+            },
+        ]
+        
+        inserted_id_list = m.insert(
+            schema=MySchema, 
+            data=doclist,
+            collection=envs.MONGO_COLLECTION_DATA_NAME
+        )
+        
+        self.assertEqual(len(inserted_id_list), len(doclist))
+        
+        for inserted_id in inserted_id_list:
+            
+            response = m.fetch(
+                match={'_id': inserted_id},
+                collection=envs.MONGO_COLLECTION_DATA_NAME
+            )
+            
+            name_added = False
+            for doc in doclist:
+                if response[0]['name'] == doc['name']:
+                    name_added = True
+                    
+            self.assertTrue(name_added)
+                
+                
+    def test_fetch_with_query(self):
+        
+        response = m.fetch(
+            match={'occupation': 'dev'},
+            collection=envs.MONGO_COLLECTION_DATA_NAME
+        )
+        
+        self.assertTrue(len(response) > 4)
         
         
-        
-        
+    def test_update(self):
     
+        class MySchema(Schema):
+            name = fields.Str(required=True)
+            occupation = fields.Str(required=True)
         
+        doc = {
+            'name': 'John',
+            'occupation': 'dev'
+        }
         
-    
+        response = m.insert(
+            schema=MySchema, 
+            data=doc,
+            collection=envs.MONGO_COLLECTION_DATA_NAME
+        )
+        
+        self.assertEqual(len(response), 1)
+        
+        # response = 
+
+
+
+
 
 
 
@@ -89,40 +163,6 @@ class TestMongoData(unittest.TestCase):
 
 """
 
-
-
-def test_insert_many():
-    
-    id_list = m.insert(
-        schema=DummySchema, 
-        collection="TestCollection",
-        data=[
-            dummy_data, 
-            dummy_data,
-            dict(dummy_data, **{"_id": str(uuid.uuid4())})
-        ]
-    )
-    
-    #print("\ntest_insert_many:: id_list", id_list)
-
-    assert_that(id_list).is_not_none().is_length(3)
-
-
-
-def test_fetch_all_with_match():
-
-    datagen = m.fetch(
-        match = {'name': 'John Show'},
-        collection="TestCollection",
-        
-    )
-    
-    # print("\ntest_fetch_all_with_match:: datagen", datagen, type(datagen))
-
-    assert_that(len(list(datagen))).is_greater_than_or_equal_to(1)
-
-
-# pytest -s tests/test_mongodata.py::test_update_list_with_append
 
 def test_update_list_with_append():
     

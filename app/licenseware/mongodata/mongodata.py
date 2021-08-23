@@ -25,20 +25,17 @@ Needs the following environment variables:
 """
 
 import os
-import json
 from uuid import UUID
 from pymongo import MongoClient
 from pymongo.collection import Collection
+from app.licenseware.decorators import failsafe
 from bson.json_util import dumps
 from bson.objectid import ObjectId
+import json
+from app.licenseware.utils.logger import log
 from pymongo.write_concern import WriteConcern
 from pymongo.read_concern import ReadConcern
 from pymongo.errors import DuplicateKeyError
-
-from app.licenseware.utils.logger import log
-from app.licenseware.decorators.failsafe_decorator import failsafe
-
-
 
 
 @failsafe
@@ -128,6 +125,10 @@ def parse_match(match):
     return categ
 
 
+# sort_dict = lambda data: {k:data[k] for k in sorted(data)}
+mongo_connection = None
+
+
 def return_db(db_name):
     if db_name:
         return db_name
@@ -157,7 +158,8 @@ def get_collection(collection, db_name=None):
         If something fails will return a string with the error message.
     """
 
-    default_db = os.getenv("MONGO_DATABASE_NAME") or "db"
+    default_db = os.getenv("MONGO_DB_NAME") or os.getenv(
+        "MONGO_DATABASE_NAME") or "db"
     default_collection = os.getenv("MONGO_COLLECTION_NAME") or "Data"
 
     with Connect.get_connection() as mongo_connection:
@@ -198,23 +200,18 @@ def insert(schema, collection, data, db_name=None):
         if isinstance(data, str):
             return data
 
-        try:
+        if isinstance(data, dict):
+            _oid_inserted = collection.with_options(
+                write_concern=WriteConcern("majority")).insert_one(data).inserted_id
+            inserted_id = parse_oid(_oid_inserted)
+            return [inserted_id]
 
-            if isinstance(data, dict):
-                # _oid_inserted = collection.with_options(
-                #     write_concern=WriteConcern("majority")).insert_one(data).inserted_id
-                _oid_inserted = collection.insert_one(data).inserted_id
-                inserted_id = parse_oid(_oid_inserted)
-                return [inserted_id]
+        if isinstance(data, list):
+            inserted_ids = collection.with_options(
+                write_concern=WriteConcern("majority")).insert_many(data).inserted_ids
+            return [parse_oid(oid) for oid in inserted_ids]
 
-            if isinstance(data, list):
-                inserted_ids = collection.with_options(
-                    write_concern=WriteConcern("majority")).insert_many(data).inserted_ids
-                return [parse_oid(oid) for oid in inserted_ids]
-
-            raise Exception(f"Can't interpret validated data: {data}")
-        except DuplicateKeyError:
-            raise Exception(f"Key already exists")
+        raise Exception(f"Can't interpret validated data: {data}")
 
 
 @failsafe
@@ -235,8 +232,6 @@ def fetch(match, collection, as_list=True, db_name=None):
     """
 
     match = parse_match(match)
-    
-    log.info(match)
 
     db_name = return_db(db_name)
     collection_name = return_collection_name(collection)
@@ -261,13 +256,8 @@ def fetch(match, collection, as_list=True, db_name=None):
             found_docs = collection.with_options(
                 read_concern=ReadConcern("majority")).find(*match['query_tuple'])
         else:
-            log.debug("yuhuu")
-            found_docs = collection.find(match['query'])
-            log.debug(match['query'])
-            log.debug(list(found_docs))
-            
-            # found_docs = collection.with_options(
-            #     read_concern=ReadConcern("majority")).find(match['query'])
+            found_docs = collection.with_options(
+                read_concern=ReadConcern("majority")).find(match['query'])
 
         if as_list:
             return [parse_doc(doc) for doc in found_docs]
@@ -428,9 +418,9 @@ def delete_collection(collection, db_name=None):
 
 
 @failsafe
-def count_documents(match, collection, db_name=None):
+def document_count(match, collection, db_name=None):
     """
-        Count documents for the given match
+        Delete a collection from the database.
     """
     db_name = return_db(db_name)
     collection_name = return_collection_name(collection)

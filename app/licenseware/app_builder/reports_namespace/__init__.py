@@ -1,4 +1,6 @@
 from flask_restx import Namespace
+from app.licenseware.common.constants import envs
+
 
 # Here we are importing the route creation functions 
 # Each function will receive the `uploads_namespace` as a first parameter followed by other parameters if needed
@@ -11,5 +13,5 @@ from .report_components_namespace import get_report_components_namespace
 reports_namespace = Namespace(
     name="Reports",
     description="Routes available for reports",
-    path="/reports"
+    path=envs.REPORT_PATH
 )

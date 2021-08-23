@@ -264,3 +264,293 @@ TODO - Initialize quota for tenant_id
 app.licenseware.uploader_builder.uploader_builder:upload_files:89
 Sending event data
 
+2021-08-23 08:26:15.120[ WARNING ]
+app.licenseware.app_builder.app_activation_route:get:34
+TODO - Initialize quota for tenant_id
+
+2021-08-23 08:26:17.511[ WARNING ]
+app.licenseware.uploader_builder.uploader_builder:upload_files:89
+Sending event data
+
+2021-08-23 08:34:08.563[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 08:34:40.250[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 08:36:17.075[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 08:36:31.345[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 08:37:52.904[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 08:38:27.677[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 08:39:17.934[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 08:40:37.284[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 08:40:47.111[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 08:41:08.361[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 08:41:25.204[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 08:42:39.172[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 08:43:06.115[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 08:43:51.305[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 08:44:06.127[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 08:47:53.102[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 08:48:50.425[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 08:49:10.085[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 08:50:32.721[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 08:51:13.781[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 08:52:14.036[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 08:53:18.086[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 08:58:41.272[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 08:58:41.328[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 08:59:06.441[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 08:59:06.481[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 08:59:20.351[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 08:59:20.405[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 09:00:00.237[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 09:00:00.290[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 09:00:36.606[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 09:00:36.653[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 09:01:18.369[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 09:01:18.377[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 09:07:34.641[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 09:07:34.647[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 09:08:31.242[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 09:08:31.294[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 09:14:54.272[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 09:14:54.279[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 09:15:25.300[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 09:15:25.307[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 09:20:09.386[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 09:20:09.393[ ERROR ]
+app.licenseware.app_builder.app_builder:init_dramatiq_broker:161
+'FlaskClient' object has no attribute 'extensions'
+
+2021-08-23 09:20:09.409[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 09:20:09.415[ ERROR ]
+app.licenseware.app_builder.app_builder:init_dramatiq_broker:161
+'FlaskClient' object has no attribute 'extensions'
+
+2021-08-23 09:21:10.024[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 09:21:10.070[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 09:21:38.147[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 09:21:38.200[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 09:21:56.196[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 09:21:56.249[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 09:22:57.726[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 09:22:57.775[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 09:25:05.896[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 09:26:21.162[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 09:27:35.563[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 09:27:52.875[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 09:28:03.168[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 09:28:37.341[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 09:42:44.983[ WARNING ]
+app.licenseware.app_builder.app_builder:init_app:143
+No uploaders provided
+
+2021-08-23 09:42:45.135[ WARNING ]
+app.licenseware.app_builder.app_activation_route:get:34
+TODO - Initialize quota for tenant_id
+
+2021-08-23 09:42:47.753[ WARNING ]
+app.licenseware.uploader_builder.uploader_builder:upload_files:89
+Sending event data
+
+2021-08-23 09:44:55.688[ WARNING ]
+app.licenseware.app_builder.app_activation_route:get:34
+TODO - Initialize quota for tenant_id
+
+2021-08-23 09:44:58.324[ WARNING ]
+app.licenseware.uploader_builder.uploader_builder:upload_files:89
+Sending event data
+
+2021-08-23 10:25:17.839[ WARNING ]
+app.licenseware.decorators.auth_decorators.authorization_check:decorated:24
+Missing Tenant or Authorization information
+
+2021-08-23 11:00:27.876[ ERROR ]
+app.licenseware.decorators.failsafe_decorator:wrapper:54
+Traceback (most recent call last):
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/failsafe_decorator.py", line 49, in wrapper
+    response = f(*args, **kwargs)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/decorators/auth_decorators/authorization_check.py", line 37, in decorated
+    return f(*args, **kwargs)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/app_builder/reports_namespace/report_components_namespace.py", line 53, in post
+    filters = build_match_expression(request.json)
+  File "/home/acmt/Documents/lware/draft-lware/app/licenseware/report_components/build_match_expression.py", line 61, in build_match_expression
+    for filter_section in filter_payload:
+TypeError: 'NoneType' object is not iterable
+
+
+2021-08-23 11:06:38.514[ WARNING ]
+app.licenseware.decorators.auth_decorators.authorization_check:decorated:24
+Missing Tenant or Authorization information
+

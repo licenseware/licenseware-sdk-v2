@@ -16,9 +16,9 @@ def get_report_register_namespace(ns: Namespace, reports:list):
             @ns.doc(
                 id=f"Register {report.name} report",
                 responses={
-                    200 : 'Report registered',
+                    200 : "Report registered successfully",
                     403 : "Missing `Authorization` information",
-                    500 : 'Something went wrong while handling the request' 
+                    500 : "Could not register report" 
                 },
             )
             def get(self):

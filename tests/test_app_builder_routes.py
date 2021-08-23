@@ -41,7 +41,7 @@ class TestAppBuilderRoutes(unittest.TestCase):
         response = self.app.get(pathto(base_paths.register_app_path), headers=headers)
         self.assertEqual(response.status_code, 200)
         
-    def test_register_all_route(self):
+    def test_refresh_registration_route(self):
         response = self.app.get(pathto(base_paths.refresh_registration_path), headers=headers)
         self.assertEqual(response.status_code, 200)
     
