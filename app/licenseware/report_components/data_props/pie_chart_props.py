@@ -1,11 +1,11 @@
 import re
 
 
-def pie_chart_props(machine_names:list):
+def pie_chart_props(slug_names:list):
     """
     
     From this input:
-    machine_names = ["device_type", "number_of_devices"]
+    slug_names = ["device_type", "number_of_devices"]
     
     Will return this output:
     {'series': [
@@ -17,7 +17,7 @@ def pie_chart_props(machine_names:list):
     
     props_series = {'series': []}
     
-    for mn in machine_names:
+    for mn in slug_names:
         props_series['series'].append({
             'name': re.sub('_', ' ', mn).capitalize(),
             'machine_name': mn

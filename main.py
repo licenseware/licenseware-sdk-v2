@@ -135,7 +135,7 @@ def get_virtual_overview_component_data(tenant_id, filters=None):
 # TODO make component independent from report (has it's own url)
 # inherit from BaseReportComponent
 # register component to register service
-# 
+# independent url for component
 
 summary_virtual_overview = SummaryReportComponent(
     title="Overview",
