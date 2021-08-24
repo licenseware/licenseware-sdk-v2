@@ -1,9 +1,5 @@
 from typing import Callable, List
-from app.licenseware.report_components.data_props import summary_props
 
-
-def flat_dict(li: List[dict]) -> dict:
-    return {k: v for dict_ in li for k, v in dict_.items()}  
 
 
 

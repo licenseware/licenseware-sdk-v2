@@ -2,7 +2,7 @@ import re
 from typing import List, Tuple
 
 
-def attributes_pie_chart(label_value_key:List[Tuple]):
+def attributes_pie(label_value_key:List[Tuple]):
     """
     
     From this input:

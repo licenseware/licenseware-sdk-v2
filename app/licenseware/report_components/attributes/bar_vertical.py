@@ -2,7 +2,7 @@ import re
 from typing import List, Tuple
 
 
-def attributes_bar_vertical_chart(xy_axis_key:List[Tuple]):
+def attributes_bar_vertical(xy_axis_key:List[Tuple]):
     """
     
     From this input:

@@ -65,8 +65,10 @@ class envs:
     BASE_URL:str = APP_HOST + "/" + APP_ID
     UPLOAD_PATH:str = '/uploads'
     REPORT_PATH:str = '/reports'
+    REPORT_COMPONENT_PATH:str = '/report_components'
     UPLOAD_URL:str = BASE_URL + UPLOAD_PATH
     REPORT_URL:str = BASE_URL + REPORT_PATH
+    REPORT_COMPONENT_URL:str = BASE_URL + REPORT_COMPONENT_PATH
     FILE_UPLOAD_PATH:str = os.getenv("FILE_UPLOAD_PATH", 'tmp/lware')
     
     # Base mongo collection names

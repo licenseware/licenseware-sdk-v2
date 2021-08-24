@@ -554,3 +554,15 @@ TypeError: 'NoneType' object is not iterable
 app.licenseware.decorators.auth_decorators.authorization_check:decorated:24
 Missing Tenant or Authorization information
 
+2021-08-24 11:21:04.713[ WARNING ]
+app.licenseware.report_components.build_match_expression:build_match_expression:85
+[{'column': 'tenant_id', 'filter_type': 'equals', 'filter_value': '3d1fdc6b-04bc-44c8-ae7c-5fa5b9122f1a'}]
+
+2021-08-24 11:22:35.641[ WARNING ]
+app.licenseware.report_components.build_match_expression:build_match_expression:85
+[{'column': 'tenant_id', 'filter_type': 'equals', 'filter_value': '3d1fdc6b-04bc-44c8-ae7c-5fa5b9122f1a'}]
+
+2021-08-24 11:24:15.919[ WARNING ]
+app.licenseware.report_components.build_match_expression:build_match_expression:85
+[{'column': 'name', 'filter_type': 'equals', 'filter_value': 'the device name'}, {'column': 'tenant_id', 'filter_type': 'equals', 'filter_value': '3d1fdc6b-04bc-44c8-ae7c-5fa5b9122f1a'}]
+

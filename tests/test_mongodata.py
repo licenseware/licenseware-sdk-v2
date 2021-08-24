@@ -132,26 +132,26 @@ class TestMongoData(unittest.TestCase):
         self.assertTrue(len(response) > 4)
         
         
-    def test_update(self):
+    # def test_update(self):
     
-        class MySchema(Schema):
-            name = fields.Str(required=True)
-            occupation = fields.Str(required=True)
+    #     class MySchema(Schema):
+    #         name = fields.Str(required=True)
+    #         occupation = fields.Str(required=True)
         
-        doc = {
-            'name': 'John',
-            'occupation': 'dev'
-        }
+    #     doc = {
+    #         'name': 'John',
+    #         'occupation': 'dev'
+    #     }
         
-        response = m.insert(
-            schema=MySchema, 
-            data=doc,
-            collection=envs.MONGO_COLLECTION_DATA_NAME
-        )
+    #     response = m.insert(
+    #         schema=MySchema, 
+    #         data=doc,
+    #         collection=envs.MONGO_COLLECTION_DATA_NAME
+    #     )
         
-        self.assertEqual(len(response), 1)
+    #     self.assertEqual(len(response), 1)
         
-        # response = 
+    #     # response = 
 
 
 
