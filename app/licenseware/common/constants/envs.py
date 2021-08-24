@@ -61,6 +61,7 @@ class envs:
     REGISTER_UPLOADER_URL:str = REGISTRY_SERVICE_URL + '/uploaders'
     REGISTER_UPLOADER_STATUS_URL:str = REGISTRY_SERVICE_URL + '/uploaders/status'
     REGISTER_REPORT_URL:str = REGISTRY_SERVICE_URL + '/reports'
+    REGISTER_REPORT_COMPONENT_URL:str = REGISTER_REPORT_URL + '/components'
     
     BASE_URL:str = APP_HOST + "/" + APP_ID
     UPLOAD_PATH:str = '/uploads'

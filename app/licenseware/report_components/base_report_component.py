@@ -3,6 +3,7 @@ from app.licenseware.utils.logger import log
 from app.licenseware.common.constants import envs
 from app.licenseware.utils.miscellaneous import generate_id, flat_dict
 from app.licenseware.report_components.build_match_expression import build_match_expression
+from app.licenseware.registry_service import register_component
 from app.licenseware.report_components.attributes import (
     attributes_bar_vertical,
     attributes_pie,
@@ -64,7 +65,7 @@ class BaseReportComponent:
         return flat_dict(*args, **kwargs)
     
     
-    def get_mongo_match_filters(self, flask_request) -> tuple:
+    def get_mongo_match_filters(self, flask_request):
         """
             Create a mongo `$match` filter with tenant_id and filters sent from frontend 
         """
@@ -126,6 +127,18 @@ class BaseReportComponent:
             "title": self.title,
             "type": self.component_type
         }
+        
+        
+    def register_component(self):
+        
+        payload = self.get_registration_payload()
+        
+        response, status_code = register_component(**payload)
+        
+        if status_code not in {200, 201}:
+            raise Exception("Report Component failed to register!")
+        
+        return response, status_code
 
         
 

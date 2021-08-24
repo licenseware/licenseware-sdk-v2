@@ -105,6 +105,12 @@ def register_report():
     return {'status': 'success'}, 200
 
 
+@app.route('/registry-service/reports/components', methods=['POST'])
+def register_report_component():
+    return {'status': 'success'}, 200
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
