@@ -1,5 +1,7 @@
 import unittest
 
+from pymongo import collection
+
 from app.licenseware.utils.logger import log
 from marshmallow import Schema, fields
 
@@ -129,29 +131,39 @@ class TestMongoData(unittest.TestCase):
             collection=envs.MONGO_COLLECTION_DATA_NAME
         )
         
-        self.assertTrue(len(response) > 4)
+        self.assertTrue(len(response) > 1)
         
         
-    # def test_update(self):
+    def test_update(self):
     
-    #     class MySchema(Schema):
-    #         name = fields.Str(required=True)
-    #         occupation = fields.Str(required=True)
+        class MySchema(Schema):
+            name = fields.Str(required=False)
+            occupation = fields.Str(required=True)
         
-    #     doc = {
-    #         'name': 'John',
-    #         'occupation': 'dev'
-    #     }
+        doc = {
+            'name': 'John',
+            'occupation': 'copywriter'
+        }
         
-    #     response = m.insert(
-    #         schema=MySchema, 
-    #         data=doc,
-    #         collection=envs.MONGO_COLLECTION_DATA_NAME
-    #     )
+        response = m.insert(
+            schema=MySchema, 
+            data=doc,
+            collection=envs.MONGO_COLLECTION_DATA_NAME
+        )
         
-    #     self.assertEqual(len(response), 1)
+        self.assertEqual(len(response), 1)
         
-    #     # response = 
+        updated_docs = m.update(
+            schema=MySchema,
+            match={'occupation': 'copywriter'},
+            new_data={'occupation': 'developer'},
+            collection='IFMPData'
+        )
+        
+        self.assertEqual(updated_docs, 1)
+        
+        
+    
 
 
 
