@@ -76,19 +76,11 @@ class ReportBuilder:
                 if registered_component.component_id == component.component_id:
                     raise Exception(f"Component id '{component.component_id}' was already declared")
             
-            metadata = component.get_component_metadata()
+            metadata = component.get_registration_payload()
             
-            json_metadata = {
-                'title': metadata['title'],
-                'order': metadata['order'] or order + 1,
-                'url': self.report_url + metadata['path'],
-                'component_id': metadata['component_id'],
-                'icon': metadata['main_icon'],
-                'type': metadata['component_type'],
-                'style_attributes': metadata['style_props'],
-                'attributes': metadata['data_props'],
-            }
+            metadata['order'] = metadata['order'] or order + 1
+            metadata['url'] = self.report_url + metadata.pop('path')
+            metadata['type'] = metadata.pop('component_type') 
             
-            self.report_components.append(json_metadata)
+            self.report_components.append(metadata)
             
-        

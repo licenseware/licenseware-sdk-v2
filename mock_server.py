@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return 'Auth service mock server'
+    return 'Service mock server'
   
        
 @app.route('/ifmp/app', methods=['GET'])

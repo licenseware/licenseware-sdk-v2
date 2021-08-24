@@ -42,7 +42,8 @@ class BaseReportComponent:
         self.path = path or '/' + component_id
         # We are using `generate_small_id` func to avoid component_id conflicts
         # This `component_url` is independed from the report 
-        self.component_url = envs.REPORT_COMPONENT_URL + '/' + generate_id() + self.path
+        self.component_path = '/' + generate_id() + self.path
+        self.component_url = envs.REPORT_COMPONENT_URL + self.component_path
         self.order = order
         self.style_attributes = style_attributes
         self.attributes = attributes
@@ -118,14 +119,14 @@ class BaseReportComponent:
         if style_attributes: self.style_attributes = style_attributes
         
         return {
+            "title": self.title,
+            "order": self.order,
             "component_id": self.component_id,
             "path": self.path,
             "component_url": self.component_url,
-            "order": self.order,
             "style_attributes": self.style_attributes,
             "attributes": self.attributes,
-            "title": self.title,
-            "type": self.component_type
+            "component_type": self.component_type
         }
         
         

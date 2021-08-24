@@ -2,7 +2,7 @@ import os, re
 import shutil
 from werkzeug.utils import secure_filename as werkzeug_secure_filename
 from app.licenseware.common.constants import envs
-from .miscellaneous import generate_small_id
+from .miscellaneous import generate_id
 
 
 
@@ -33,7 +33,7 @@ def save_file(file, tenant_id=None, path=None):
     
     filename = secure_filename(file.filename)
 
-    dir_id = generate_small_id() # doing this to avoid overwriting already uploaded files 
+    dir_id = generate_id() # doing this to avoid overwriting already uploaded files 
     save_path = path or os.path.join(envs.FILE_UPLOAD_PATH, tenant_id, dir_id)
     if not os.path.exists(save_path): os.makedirs(save_path) 
     

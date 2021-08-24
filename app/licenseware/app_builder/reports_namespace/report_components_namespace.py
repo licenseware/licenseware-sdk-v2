@@ -2,7 +2,6 @@ from flask import request
 from flask_restx import Namespace, Resource
 from app.licenseware.decorators.auth_decorators import authorization_check
 from app.licenseware.decorators import failsafe
-from app.licenseware.report_components.build_match_expression import build_match_expression
 
 
 
@@ -25,9 +24,7 @@ def get_report_components_namespace(ns: Namespace, reports:list):
                     },
                 )
                 def post(self):
-                    tenant_id = request.headers.get('Tenantid')
-                    filters = build_match_expression(request.json) if request.json else None
-                    return component.get_component_data(tenant_id=tenant_id, filters=filters)
+                    return component.get_data(request)
             
     return ns
         

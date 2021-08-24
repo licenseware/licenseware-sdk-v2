@@ -34,6 +34,13 @@ from .reports_namespace import (
 )
 
 
+from .report_components_namespace import report_components_namespace
+from .report_components_namespace import (
+    get_report_individual_components_namespace
+)
+
+
+
 
 # TODO TenantId is not posible 
 # because either flask or swagger capitalizes values from headers 
@@ -131,6 +138,7 @@ class AppBuilder:
         self.api = None
         self.ns  = None
         self.reports = []
+        self.report_components = []
         self.uploaders = []
         self.custom_namespaces = []
         
@@ -202,6 +210,7 @@ class AppBuilder:
         # This way the url prefix is specified only in the namespace
         self.add_uploads_routes()
         self.add_reports_routes()
+        self.add_report_components_routes()
         
     
     
@@ -231,6 +240,18 @@ class AppBuilder:
         for func in ns_funcs:
             self.add_namespace(
                 func(ns=reports_namespace, reports=self.reports)
+            )
+        
+        
+    def add_report_components_routes(self):
+        
+        ns_funcs = [
+            get_report_individual_components_namespace
+        ]
+        
+        for func in ns_funcs:
+            self.add_namespace(
+                func(ns=report_components_namespace, report_components=self.report_components)
             )
         
                     
@@ -276,6 +297,23 @@ class AppBuilder:
         return response, status_code
 
 
+    def register_report_component(self, report_component_instance):
+        
+        for rep_component in self.report_components:
+            if rep_component.component_id == report_component_instance.component_id:
+                log.warning(f"Report component_id: '{report_component_instance.component_id}' was already declared")
+                # Not raising errors because component_ids urls have attached an id to avoid name colizions
+                
+        self.report_components.append(report_component_instance)
+        
+        response, status_code = report_component_instance.register_component()
+        
+        if status_code not in {200, 201}:
+            raise Exception("Report component failed to register!")
+        
+        return response, status_code
+        
+    
     def add_namespace(self, ns:Namespace, path:str = None):
         self.custom_namespaces.append((ns, path))
 

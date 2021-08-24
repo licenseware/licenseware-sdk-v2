@@ -132,6 +132,10 @@ class TestReportComponents(unittest.TestCase):
         self.assertEqual(registration_payload['style_attributes'], {'width': '1/3'})
         self.assertEqual(registration_payload['attributes']['series'], [{'value_description': 'Number of devices', 'value_key': 'number_of_devices', 'icon': 'ServersIcon'}, {'value_description': 'Number of databases', 'value_key': 'number_of_databases', 'icon': 'DatabaseIconRounded'}])
         
+        # register component to registry service
+        response, status_code = virtual_overview.register_component()
+        self.assertEqual(status_code, 200)
+        
     
         
         

@@ -19,31 +19,20 @@ Each REPORT has:
 from dotenv import load_dotenv
 load_dotenv()  
 
-from typing import Tuple
-
 from flask import Flask
-from app.licenseware.common.constants import flags
-from app.licenseware.utils.logger import log
-
 from flask_restx import Namespace, Resource
 
-from app.licenseware.app_builder import AppBuilder
+from app.licenseware.common.constants import flags, icons
+from app.licenseware.utils.logger import log
 
+from app.licenseware.app_builder import AppBuilder
 from app.licenseware.uploader_builder import UploaderBuilder
 from app.licenseware.uploader_validator import UploaderValidator
-
 from app.licenseware.report_builder import ReportBuilder
-from app.licenseware.report_components import (
-    SummaryReportComponent,
-    DetailedSummaryReportComponent,
-    PieChartReportComponent,
-    BarVerticalChartReportComponent,
-    TableReportComponent,
-    style_props,
-    data_props
-)
+from app.licenseware.report_components import BaseReportComponent
+from app.licenseware.report_components.style_attributes import style_attributes as styles
 
-from app.licenseware.common.constants import icons
+from typing import Tuple
 
 
 
@@ -145,49 +134,103 @@ ifmp_app.register_uploader(rv_tools_uploader)
 # REPORTS
 
 
-def get_virtual_overview_component_data(tenant_id, filters=None):
-    pipeline = ["mongo db aggregation pipeline"]
-    data = pipeline
-    return data
-    
+class VirtualOverview(BaseReportComponent):
+            
+    def __init__(
+        self, 
+        title: str, 
+        component_id: str, 
+        component_type: str
+    ):
+        self.title = title
+        self.component_id = component_id
+        self.component_type = component_type
+        
+        super().__init__(**vars(self))
+        
+        
+    def get_data(self, flask_request):
+        
+        match_filters = self.get_mongo_match_filters(flask_request)
+        
+        log.info(match_filters)
 
-summary_virtual_overview = SummaryReportComponent(
+        return ['mongo pipeline result']
+    
+    
+    def set_attributes(self):
+        
+        # Short hand based on value_key
+        # See based on component type funcs from: licenseware.report_components.attributes
+        value_key_and_icon = [
+            ("number_of_devices", icons.SERVERS), 
+            ("number_of_databases", icons.DATABASE_ROUNDED)
+        ]
+
+        # Set values straight to self.attributes
+        self.attributes = self.build_attributes(value_key_and_icon)
+        
+        
+        # Or raw dict (same results are achived using the method up)
+        
+        attributes = {'series': [
+            {
+                'value_description': 'Number of devices',
+                'value_key': 'number_of_devices',
+                'icon': 'ServersIcon'
+            },
+            {
+                'value_description': 'Number of databases',
+                'value_key': 'number_of_databases',
+                'icon': 'DatabaseIconRounded'
+            }
+        ]}
+        
+        # You can also return attributes
+        return attributes
+        
+        
+    def set_style_attributes(self):
+        
+        # You can set a dictionary directly or return a dict like bellow
+        self.style_attributes = {
+            'width': '1/3'
+        }
+        
+        # or import `style_attributes` dataclass
+        # from app.licenseware.report_components.style_attributes import style_attributes as styles
+        style_attributes = self.build_style_attributes([
+            styles.WIDTH_ONE_THIRD
+            #etc
+        ])
+        
+        return style_attributes
+        
+
+virtual_overview = VirtualOverview(
     title="Overview",
     component_id="virtual_overview",
-    fetch_function=get_virtual_overview_component_data,
-    machine_names_icons = [
-        ("number_of_devices", "ServersIcon"), 
-        ("number_of_databases", "DatabaseIconRounded")
-    ],
-    style_props=[
-        style_props.WIDTH_ONE_THIRD
-    ],
-    main_icon=icons.SERVERS
+    component_type='summary'
 )
 
 
+# Register component to registry-service (to act as a first class citizen)
+ifmp_app.register_report_component(virtual_overview)
+
+
+# Define a report wich holds one or more report components
 virtualization_details_report = ReportBuilder(
     name="Virtualization Details",
     report_id="virtualization_details",
     description="This report gives you a detailed view of your virtual infrastructure. Deep dive into the infrastructure topology, identify devices with missing host details and capping rules for licensing.",
     connected_apps=['ifmp-service'],
     report_components=[
-        summary_virtual_overview        
+        virtual_overview        
     ]
 )
 
 
 ifmp_app.register_report(virtualization_details_report)
-
-
-# SummaryReportComponent,
-# DetailedSummaryReportComponent,
-# PieChartReportComponent,
-# BarVerticalChartReportComponent,
-# TableReportComponent
-
-
-
 
 
 
@@ -217,9 +260,6 @@ ifmp_app.add_namespace(custom_ns, path='/ns-prefix')
 
 
 
-
-
-
 # Call init_app at the end
 # ifmp_app.register_app()
 ifmp_app.init_app(app, register=True)
@@ -229,6 +269,7 @@ ifmp_app.init_app(app, register=True)
 
 if __name__ == "__main__":
     app.run(port=4000, debug=True)
+
 
 
 ```
