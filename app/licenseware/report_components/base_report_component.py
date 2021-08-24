@@ -1,4 +1,4 @@
-from app.licenseware.report_components.build_match_expression import build_match_expression
+# from app.licenseware.report_components.build_match_expression import build_match_expression
 
 
 class BaseReportComponent:
@@ -7,31 +7,41 @@ class BaseReportComponent:
         self,
         title:str,
         component_id:str,
-        component_type:str
+        component_type:str,
+        path:str = None,
+        order:int = None,
+        
     ):
         
         self.title = title
         self.component_id = component_id
         self.component_type = component_type
+        self.path = path or '/' + component_id
+        self.order = order
         
-        self.componentvars = vars(self)
+        # "style_attributes": {
+        #     "width": "1/3"
+        # },
+        # "attributes": devices_by_os.attributes_pie_chart(),
+       
+       
+    def return_data(self, flask_request):
+        raise NotImplementedError("Retrival of data for this component is not implemented")
+
+    def return_attributes(self):
+        pass
+
+
+    def return_registration_payload(self):
+        pass
         
         
-    def get_component_data(self, flask_request): 
-        """ Implement here data retrival method """
-        ...
+    # def get_default_filters(self, flask_request):
         
-    
-    def get_component_metadata(self):
-        return self.componentvars
-    
-    
-    def get_default_filters(self, flask_request):
-        
-        tenant_id = flask_request.headers.get('Tenantid')
-        filters = build_match_expression(flask_request.json) if flask_request.json else None
+    #     tenant_id = flask_request.headers.get('Tenantid')
+    #     filters = build_match_expression(flask_request.json) if flask_request.json else None
      
-        self.default_filters = {'tenant_id': tenant_id, 'filters': filters}
+    #     self.default_filters = {'tenant_id': tenant_id, 'filters': filters}
         
     
     
@@ -49,8 +59,9 @@ class SummaryReportComponent(BaseReportComponent):
             title=title, component_id=component_id, component_type=component_type
         )
         
+    
         
-    def get_component_data(self, flask_request): 
+    def get_data(self, flask_request): 
         
         tenant_id, filters = (flask_request)
         #TODO insert default filters 
@@ -58,10 +69,10 @@ class SummaryReportComponent(BaseReportComponent):
         
         return pipeline
     
-    def get_component_attributes(self):
+    def get_attributes(self):
         return #TODO data_props function attributes
     
-    def get_component_style_attributes(self):
+    def get_style_attributes(self):
         return #TODO data_props function attributes
     
         
