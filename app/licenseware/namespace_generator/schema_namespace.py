@@ -5,14 +5,14 @@ from marshmallow_jsonschema import JSONSchema
 from flask_restx import Namespace, Resource
 
 from app.licenseware.decorators.auth_decorators import authorization_check
-from app.licenseware.utils.miscellaneous import swagger_authorization_header
+from app.licenseware.utils.miscellaneous import swagger_authorization_header, http_methods
 
 from .mongo_request import MongoRequest
 
 
 
 
-allowed_methods = ['GET', 'POST', 'PUT', 'DELETE']
+
 
 class SchemaNamespace(MongoRequest):
     """
@@ -30,15 +30,16 @@ class SchemaNamespace(MongoRequest):
     schema = None
     collection = None
     decorators = [authorization_check]
-    methods = allowed_methods # allowed methods(the rest will get a 405)
+    methods = http_methods # allowed methods(the rest will get a 405)
     authorizations = swagger_authorization_header 
 
     def __init__(self, 
     schema: Schema = None, 
     collection: str = None, 
-    methods: list = allowed_methods, 
+    methods: list = http_methods, 
     decorators: list = [authorization_check],
-    authorizations: dict = swagger_authorization_header
+    authorizations: dict = swagger_authorization_header,
+    namespace:Namespace = None
     ):
         self.schema = self.schema or schema
         self.collection = self.collection or collection
@@ -50,7 +51,7 @@ class SchemaNamespace(MongoRequest):
         self.name = self.schema_name.replace("Schema", "")
         self.path = "/" + self.name.lower()
         self.json_schema = None
-        self.ns = None
+        self.ns = namespace
         self.model = None
         self.resources = None
         self.http_methods = None
@@ -68,7 +69,7 @@ class SchemaNamespace(MongoRequest):
     def initialize(self) -> Namespace:
         """ Create restx api namespace from schema """
 
-        self.ns = self.create_namespace()
+        self.ns = self.ns or self.create_namespace()
         self.create_indexes()
         self.make_json_schema()
         self.model = self.ns.schema_model(self.name, self.json_schema)  
@@ -150,7 +151,7 @@ class SchemaNamespace(MongoRequest):
                 'description': f'Make a {k.upper()} request on {self.name} data.',
                 'responses':{
                     200: 'SUCCESS',
-                    500: 'INTERNAL ERROR',
+                    500: 'INTERNAL SERVER ERROR',
                     401: 'UNAUTHORIZED',
                     405: 'METHOD NOT ALLOWED',
                 },

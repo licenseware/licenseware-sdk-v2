@@ -7,20 +7,6 @@ from typing import List
 
 
 
-swagger_authorization_header = {
-    'TenantId': {
-        'type': 'apiKey',
-        'in': 'header',
-        'name': 'TenantId'
-    },
-    'Authorization': {
-        'type': 'apiKey',
-        'in': 'header',
-        'name': 'Authorization'
-    }
-}
-
-
 def generate_id(length=6):
     """ Create a random series of digits of length specified """
     return "".join([random.choice(list(string.digits)) for _ in range(length)])
@@ -47,3 +33,20 @@ def build_restx_model(ns: Namespace, schema: Schema, model_name:str = None):
     
     return restx_model
     
+
+
+http_methods = ['GET', 'POST', 'PUT', 'DELETE']
+
+
+swagger_authorization_header = {
+    'TenantId': {
+        'type': 'apiKey',
+        'in': 'header',
+        'name': 'TenantId'
+    },
+    'Authorization': {
+        'type': 'apiKey',
+        'in': 'header',
+        'name': 'Authorization'
+    }
+}

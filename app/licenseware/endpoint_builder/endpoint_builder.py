@@ -1,5 +1,12 @@
-from typing import Callable
+from os import name
+from typing import Any
 from marshmallow import Schema
+from flask import request
+from flask_restx import Namespace, Resource
+from app.licenseware.utils.miscellaneous import http_methods
+from app.licenseware.namespace_generator import SchemaNamespace
+import inspect
+
 
 
 
@@ -11,42 +18,88 @@ class EndpointBuilder:
     from app.licenseware.endpoint_builder import EndpointBuilder
     
     index_endpoint = EndpointBuilder(
-        route = "/",
-        http_method = "GET",
-        handler_method = get_some_data,
-        schema = DataSchema
-        **kwargs
+        handler = get_some_data,
+        **options
     )
     
     Params:
     
-    - route: optional, will use `handler_method` name if not present, 
-            route will be appended to app_id route ex: '/ifmp/{here}'
-             
-    - http_method: optional, will use `handler_method` prefix name if not present 
-                   (ex: get_some_data -> 'GET', post_some_data -> 'POST'),
-
-    - handler_method: required if schema not provided, will receive as parameter flask `request` object by default 
-    
-    - schema: required if handler_method not provided, will generate a CRUD api based on schema
-    
-    - kwargs: provided as a quick had for extending functionality, once one kwargs param is stable it can be added to params
+    - handler: function or schema
+    - options: provided as a quick had for extending functionality, once one options param is stable it can be added to params
     
     """
     
     def __init__(
         self, 
-        handler_method: Callable = None, 
-        schema: str = None,
-        route: str = None,
-        http_method: str = None, 
-        **kwargs
+        handler: Any, 
+        http_method:str = None,
+        http_path:str = None,
+        docid:str = None,
+        **options
     ):
         
-        assert handler_method or schema
-        
-        self.route = route
+        self.handler = handler
+        self.options = options
+    
         self.http_method = http_method
-        self.handler_method = handler_method
-        self.schema = schema
-        self.kwargs = kwargs
+        self.http_path = http_path
+        self.docid = docid or handler.__doc__ or handler.__name__.replace('_', ' ')
+        
+        self.initialize()
+        
+    
+    
+    def build_namespace(self, ns: Namespace):
+        
+        if inspect.isfunction(self.handler):
+            ns = self.add_method_to_namespace(ns)
+            return ns
+        
+        if '_Schema__apply_nested_option' in dir(self.handler):
+            schema_ns = SchemaNamespace(
+                schema = self.handler,
+                collection = self.handler.Meta.collection_name,
+                namespace = ns,
+                methods=[self.http_method]
+            ).initialize()
+            
+            return schema_ns
+        
+        raise Exception("Parameter `handler` can be only a function or a marshmellow schema")
+        
+    
+    def initialize(self):
+        self.set_http_method()
+        self.set_http_path()
+    
+    
+    def add_method_to_namespace(self, ns):
+        
+        @ns.doc(id=self.docid)
+        class BaseResource(Resource): ...
+            
+        resource = type(
+            self.handler.__name__ + self.http_method.capitalize(), 
+            (BaseResource,), 
+            {self.http_method.lower(): lambda request: self.handler(request)}
+        )
+        
+        ns.add_resource(resource, self.http_path) 
+        
+        return ns
+        
+        
+    def set_http_path(self):
+        if self.http_path: return 
+        self.http_path = '/' + self.handler.__name__.lower()
+    
+    
+    def set_http_method(self):
+        if self.http_method: return
+        handler_name = self.handler.__name__.upper()
+        for httpmethod in http_methods:
+            if handler_name.startswith(httpmethod):
+                self.http_method = httpmethod
+                break
+        
+            

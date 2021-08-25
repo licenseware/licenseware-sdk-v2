@@ -16,13 +16,16 @@ Each REPORT has:
 
 
 ```py
+from dataclasses import field
+import re
 from dotenv import load_dotenv
 load_dotenv()  
 
 from flask import Flask
 from flask_restx import Namespace, Resource
+from marshmallow import Schema, fields
 
-from app.licenseware.common.constants import flags, icons
+from app.licenseware.common.constants import flags, icons, envs
 from app.licenseware.utils.logger import log
 
 from app.licenseware.app_builder import AppBuilder
@@ -31,6 +34,7 @@ from app.licenseware.uploader_validator import UploaderValidator
 from app.licenseware.report_builder import ReportBuilder
 from app.licenseware.report_components import BaseReportComponent
 from app.licenseware.report_components.style_attributes import style_attributes as styles
+from app.licenseware.endpoint_builder import EndpointBuilder
 
 from typing import Tuple
 
@@ -83,6 +87,11 @@ class RVToolsUploaderValidator(UploaderValidator):
         
         file_objects = flask_request.files.getlist("files[]")
         # each set of files have a different way of calculating quota
+        # TODO
+        # - calculate quota based on user_id (send a get request with tenant_id query param to auth-service /user_id_from_tenant_id)
+        # - gather all docs from IFMPUtilization collection with user_id
+        # - calculate quota based on user plan (if plan free calculate quota. if plan paid do something else, probably send a default quota within limits?)
+        
         
         # After calculation return one of bellow responses:
         # return {'status': 'fail', 'message': 'Quota exceeded'}, 402
@@ -265,16 +274,54 @@ ifmp_app.add_namespace(custom_ns, path='/ns-prefix')
 
 
 
-# Call init_app at the end
-# ifmp_app.register_app()
-ifmp_app.init_app(app, register=True)
+# EndpointBuilder
+
+# Endpoints can be generated from functions or marshmellow schemas
+# add http method as a prefix to schema or function handler (get_some_data, PostDeviceDataSchema etc)
+
+# Here we are using a function to create an endpoint like /custom_endpoint/custom_data_from_mongo
+
+def get_custom_data_from_mongo(flask_request):
+    """ Custom documentation """
+    
+    # Some logic here
+
+    return "Some data"
+
+
+custom_func_endpoint = EndpointBuilder(get_custom_data_from_mongo)
+
+ifmp_app.register_endpoint(custom_func_endpoint)
+
+# Here we are using a schema to generate an endpoint
+
+class GetDeviceData(Schema):
+    
+    class Meta:
+        collection_name = envs.MONGO_COLLECTION_DATA_NAME
+    
+    tenant_id = fields.Str(required=False)
+    updated_at = fields.Str(required=False)
+    name = fields.Str(required=True)
+    occupation = fields.Str(required=False)
+    
+    
+custom_schema_endpoint = EndpointBuilder(GetDeviceData)
+
+
+ifmp_app.register_endpoint(custom_schema_endpoint)
 
 
 
 
 if __name__ == "__main__":
+    
+    # Call init_app at the end
+    # ifmp_app.register_app()
+    ifmp_app.init_app(app, register=True)
+    
+    
     app.run(port=4000, debug=True)
-
 
 
 ```

@@ -1,7 +1,7 @@
 import uuid
 import datetime
-import logging
-import licenseware.mongodata as m
+import app.licenseware.mongodata as m
+from app.licenseware.utils.logger import log
 from flask_restx import abort
 
 
@@ -48,9 +48,9 @@ class MongoCrud:
 
     @property
     def query(self):
-        tenant = {'tenant_id': self.request_obj.headers.get("TenantId")}
+        tenant = {'tenant_id': self.request_obj.headers.get("Tenantid")}
         query = {**tenant, **self.params, **self.payload}
-        logging.warning(f"CRUD Request: {query}")
+        log.warning(f"CRUD Request: {query}")
         return query
 
     def create_indexes(self):
@@ -59,13 +59,13 @@ class MongoCrud:
             for i in self.schema.Meta.simple_indexes:
                 coll.create_index(i)
         except AttributeError:
-            logging.info("No simple indexes declared")
+            log.info("No simple indexes declared")
         try:
             for ci in self.schema.Meta.compound_indexes:
                 col_list = [(ci_m, 1) for ci_m in ci]
                 coll.create_index(col_list, unique=True)
         except AttributeError:
-            logging.info("No compound indexes declared")
+            log.info("No compound indexes declared")
 
     def fetch_data(self, request_obj):
         self.request_obj = request_obj

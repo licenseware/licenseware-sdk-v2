@@ -63,4 +63,4 @@ api.add_namespace(CatNamespace(), path='/schema')
 
 """
 
-from .schema_namespace import SchemaNamespace, auth_header_doc
+from .schema_namespace import SchemaNamespace

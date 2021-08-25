@@ -17,6 +17,7 @@ from .tenant_registration_route import add_tenant_registration_route
 from .app_activation_route import add_app_activation_route
 from .app_registration_route import add_app_registration_route
 
+from .endpoint_builder_namespace import endpoint_builder_namespace
 
 from .uploads_namespace import uploads_namespace
 from .uploads_namespace import (
@@ -126,7 +127,7 @@ class AppBuilder:
         self.report_components = []
         self.uploaders = []
         self.custom_namespaces = []
-        
+    
         self.appvars = vars(self)
     
     
@@ -241,15 +242,36 @@ class AppBuilder:
         
                     
     def register_app(self):
+        """
+            Sending registration payloads to registry-service
+        """
         
+        # Register app
         response, status_code = register_app(**vars(self))
-        
         if status_code not in {200, 201}:
             raise Exception("App failed to register!")
         
-        return response, status_code
+        # Register uploaders
+        for uploader_instance in self.uploaders:
+            uploader_response, uploader_status_code = uploader_instance.register_uploader()
+            if uploader_status_code not in {200, 201}:
+                raise Exception(f"Uploader failed to register!")
             
+        # Register reports
+        for report_instance in self.reports:
+            report_response, report_status_code = report_instance.register_report()
+            if report_status_code not in {200, 201}:
+                raise Exception("Report failed to register!")
+            
+        # Register report components
+        for report_component_instance in self.report_components:
+            report_component_instance_response, report_component_instance_status_code = report_component_instance.register_component()
+            if report_component_instance_status_code not in {200, 201}:
+                raise Exception("Report component failed to register!")
+            
+        return response, status_code
         
+
     def register_uploader(self, uploader_instance):
         
         for uploader in self.uploaders:
@@ -258,14 +280,7 @@ class AppBuilder:
         
         self.uploaders.append(uploader_instance)
         
-        response, status_code = uploader_instance.register_uploader()
         
-        if status_code not in {200, 201}:
-            raise Exception("Uploader failed to register!")
-        
-        return response, status_code
-
-
     def register_report(self, report_instance):
         
         for report in self.reports:
@@ -274,12 +289,6 @@ class AppBuilder:
         
         self.reports.append(report_instance)
         
-        response, status_code = report_instance.register_report()
-        
-        if status_code not in {200, 201}:
-            raise Exception("Report failed to register!")
-        
-        return response, status_code
 
 
     def register_report_component(self, report_component_instance):
@@ -291,13 +300,11 @@ class AppBuilder:
                 
         self.report_components.append(report_component_instance)
         
-        response, status_code = report_component_instance.register_component()
         
-        if status_code not in {200, 201}:
-            raise Exception("Report component failed to register!")
-        
-        return response, status_code
-        
+    def register_endpoint(self, endpoint_instance):
+        ns = endpoint_instance.build_namespace(endpoint_builder_namespace)
+        self.add_namespace(ns)
+    
     
     def add_namespace(self, ns:Namespace, path:str = None):
         self.custom_namespaces.append((ns, path))
