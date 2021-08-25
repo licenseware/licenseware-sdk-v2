@@ -53,12 +53,8 @@ class base_paths:
 
 
 class AppBuilder:
-    
-    """
-        In this class we gather, instantiate and attach required endpoints to main Api
-         
-    """
-    
+ 
+ 
     def __init__(
         self, 
         name: str, 

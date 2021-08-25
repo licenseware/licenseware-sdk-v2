@@ -1,0 +1,1059 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>licenseware.app_builder.app_builder API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>licenseware.app_builder.app_builder</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from dataclasses import dataclass
+from flask_restx.resource import Resource
+from app.licenseware.common.constants.envs import envs
+from typing import Callable
+from flask import Flask
+from flask_restx import Api, Namespace
+from app.licenseware.registry_service import register_app
+from app.licenseware.tenants import get_activated_tenants, get_tenants_with_data
+from app.licenseware.utils.logger import log
+from app.licenseware.auth import Authenticator
+from app.licenseware.utils.dramatiq_redis_broker import broker
+from app.licenseware.utils.miscellaneous import swagger_authorization_header
+
+from .refresh_registration_route import add_refresh_registration_route
+from .editable_tables_route import add_editable_tables_route
+from .tenant_registration_route import add_tenant_registration_route
+from .app_activation_route import add_app_activation_route
+from .app_registration_route import add_app_registration_route
+
+from .endpoint_builder_namespace import endpoint_builder_namespace
+
+from .uploads_namespace import uploads_namespace
+from .uploads_namespace import (
+    get_filenames_validation_namespace,
+    get_filestream_validation_namespace,
+    get_status_namespace,
+    get_quota_namespace
+)
+
+
+from .reports_namespace import reports_namespace
+from .reports_namespace import (
+    get_report_register_namespace,
+    get_report_metadata_namespace,
+    get_report_components_namespace
+)
+
+
+from .report_components_namespace import report_components_namespace
+from .report_components_namespace import (
+    get_report_individual_components_namespace
+)
+
+
+@dataclass
+class base_paths:
+    app_activation_path: str =&#39;/activate_app&#39;
+    register_app_path: str = &#39;/register_app&#39;
+    refresh_registration_path: str =&#39;/refresh_registration&#39;
+    editable_tables_path: str =&#39;/editable_tables&#39;
+    history_report_path: str =&#39;/reports/history_report&#39;
+    tenant_registration_path: str =&#39;/register_tenant&#39;
+
+
+class AppBuilder:
+ 
+ 
+    def __init__(
+        self, 
+        name: str, 
+        description: str,
+        flags: list = [],
+        editable_tables_schemas:list = [],
+        activated_tenants_func: Callable = get_activated_tenants, 
+        tenants_with_data_func: Callable = get_tenants_with_data,
+        app_activation_path: str = None,
+        register_app_path: str = None,
+        refresh_registration_path: str = None,
+        editable_tables_path: str = None,
+        history_report_path: str = None,
+        tenant_registration_path: str = None,
+        icon: str =&#34;default.png&#34;,
+        doc_authorizations: dict = swagger_authorization_header,
+        api_decorators: list = None,
+        **kwargs
+    ):
+        
+        self.app_id = envs.APP_ID 
+        self.name = name
+        self.description = description
+        self.flags = flags
+        self.icon = icon
+        self.editable_tables_schemas = editable_tables_schemas
+        
+        # Add to self activated tenants and tenants with data
+        self.activated_tenants_func = activated_tenants_func
+        self.tenants_with_data_func = tenants_with_data_func
+        
+        self.activated_tenants = None 
+        self.tenants_with_data = None
+        
+        if self.activated_tenants_func:
+            self.activated_tenants = self.activated_tenants_func()
+        
+        if self.tenants_with_data_func:
+            self.tenants_with_data = self.tenants_with_data_func()
+            
+        self.app_activation_path = app_activation_path or base_paths.app_activation_path
+        self.register_app_path = register_app_path or base_paths.register_app_path
+        self.refresh_registration_path = refresh_registration_path or base_paths.refresh_registration_path
+        self.editable_tables_path = editable_tables_path or base_paths.editable_tables_path
+        self.history_report_path = history_report_path or base_paths.history_report_path
+        self.tenant_registration_path = tenant_registration_path or base_paths.tenant_registration_path
+        
+        self.app_activation_url = envs.BASE_URL + self.app_activation_path
+        self.refresh_registration_url = envs.BASE_URL + self.refresh_registration_path
+        self.editable_tables_url = envs.BASE_URL + self.editable_tables_path
+        self.history_report_url = envs.BASE_URL + self.history_report_path
+        self.tenant_registration_url = envs.BASE_URL + self.tenant_registration_path
+
+        self.authorizations = doc_authorizations
+        self.decorators = api_decorators
+        # parameters with default values provided can be added stright to __init__  
+        # otherwise added them to kwargs until apps are actualized
+        self.kwargs = kwargs    
+        
+        # TODO version needs to be added to all urls + &#39;/v&#39; + self.version
+        self.prefix = &#39;/&#39; + self.app_id 
+        self.app = None
+        self.api = None
+        self.ns  = None
+        self.reports = []
+        self.report_components = []
+        self.uploaders = []
+        self.custom_namespaces = []
+    
+        self.appvars = vars(self)
+    
+    
+    
+    def init_app(self, app: Flask, register:bool =True):
+        
+        if not self.uploaders: log.warning(&#34;No uploaders provided&#34;)
+        if not self.reports  : log.warning(&#34;No reports provided&#34;)
+         
+        self.app = app
+        self.authenticate_app()
+        self.init_dramatiq_broker()
+        if register: self.register_app()
+        
+        self.init_api()
+        self.init_routes()
+        self.init_namespaces()
+        
+        
+    def init_dramatiq_broker(self):
+        # Add middleware if needed
+        broker.init_app(self.app)
+        
+    
+    def authenticate_app(self):
+        response, status_code = Authenticator.connect()
+        if status_code != 200:
+            raise Exception(&#34;App failed to authenticate!&#34;)
+        return response, status_code
+    
+    
+    def init_api(self):
+        
+        self.api = Api(
+            app=self.app,
+            title=self.name,
+            description=self.description,
+            prefix=self.prefix,
+            default=self.name,
+            default_label=self.description,
+            decorators = self.decorators,
+            authorizations = self.authorizations,
+            security = list(self.authorizations.keys()),
+            doc=&#39;/&#39;
+        )
+        
+        
+    
+    def init_routes(self):
+        
+        # Here we are adding the routes available for each app
+        # Api must be passed from route function back to this context 
+        api_funcs = [
+            add_refresh_registration_route,
+            add_editable_tables_route,
+            add_tenant_registration_route,
+            add_app_activation_route,
+            add_app_registration_route
+        ]
+        
+        for func in api_funcs:
+            self.api = func(self.api, self.appvars)
+        
+        
+        # Another way is to group routes in namespaces 
+        # This way the url prefix is specified only in the namespace
+        self.add_uploads_routes()
+        self.add_reports_routes()
+        self.add_report_components_routes()
+        
+    
+    
+    def add_uploads_routes(self):
+        
+        ns_funcs = [
+            get_filenames_validation_namespace,
+            get_filestream_validation_namespace,
+            get_status_namespace,
+            get_quota_namespace    
+        ]
+        
+        for func in ns_funcs:
+            self.add_namespace(
+                func(ns=uploads_namespace, uploaders=self.uploaders)
+            )
+            
+            
+    def add_reports_routes(self):
+        
+        ns_funcs = [
+            get_report_register_namespace,
+            get_report_metadata_namespace,
+            get_report_components_namespace
+        ]
+        
+        for func in ns_funcs:
+            self.add_namespace(
+                func(ns=reports_namespace, reports=self.reports)
+            )
+        
+        
+    def add_report_components_routes(self):
+        
+        ns_funcs = [
+            get_report_individual_components_namespace
+        ]
+        
+        for func in ns_funcs:
+            self.add_namespace(
+                func(ns=report_components_namespace, report_components=self.report_components)
+            )
+        
+                    
+    def register_app(self):
+        &#34;&#34;&#34;
+            Sending registration payloads to registry-service
+        &#34;&#34;&#34;
+        
+        # Register app
+        response, status_code = register_app(**vars(self))
+        if status_code not in {200, 201}:
+            raise Exception(&#34;App failed to register!&#34;)
+        
+        # Register uploaders
+        for uploader_instance in self.uploaders:
+            uploader_response, uploader_status_code = uploader_instance.register_uploader()
+            if uploader_status_code not in {200, 201}:
+                raise Exception(f&#34;Uploader failed to register!&#34;)
+            
+        # Register reports
+        for report_instance in self.reports:
+            report_response, report_status_code = report_instance.register_report()
+            if report_status_code not in {200, 201}:
+                raise Exception(&#34;Report failed to register!&#34;)
+            
+        # Register report components
+        for report_component_instance in self.report_components:
+            report_component_instance_response, report_component_instance_status_code = report_component_instance.register_component()
+            if report_component_instance_status_code not in {200, 201}:
+                raise Exception(&#34;Report component failed to register!&#34;)
+            
+        return response, status_code
+        
+
+    def register_uploader(self, uploader_instance):
+        
+        for uploader in self.uploaders:
+            if uploader.uploader_id == uploader_instance.uploader_id:
+                raise Exception(f&#34;Uploader id &#39;{uploader_instance.uploader_id}&#39; was already declared&#34;)
+        
+        self.uploaders.append(uploader_instance)
+        
+        
+    def register_report(self, report_instance):
+        
+        for report in self.reports:
+            if report.report_id == report_instance.report_id:
+                raise Exception(f&#34;Report id &#39;{report_instance.report_id}&#39; was already declared&#34;)
+        
+        self.reports.append(report_instance)
+        
+
+
+    def register_report_component(self, report_component_instance):
+        
+        for rep_component in self.report_components:
+            if rep_component.component_id == report_component_instance.component_id:
+                log.warning(f&#34;Report component_id: &#39;{report_component_instance.component_id}&#39; was already declared&#34;)
+                # Not raising errors because component_ids urls have attached an id to avoid name colizions
+                
+        self.report_components.append(report_component_instance)
+        
+        
+    def register_endpoint(self, endpoint_instance):
+        ns = endpoint_instance.build_namespace(endpoint_builder_namespace)
+        self.add_namespace(ns)
+    
+    
+    def add_namespace(self, ns:Namespace, path:str = None):
+        self.custom_namespaces.append((ns, path))
+
+    def init_namespaces(self):
+        for namespace in self.custom_namespaces:
+            self.api.add_namespace(*namespace)
+        
+    def add_resource(self, resource:Resource, path:str):
+        self.api.add_resource(resource, path)
+    </code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="licenseware.app_builder.app_builder.AppBuilder"><code class="flex name class">
+<span>class <span class="ident">AppBuilder</span></span>
+<span>(</span><span>name: str, description: str, flags: list = [], editable_tables_schemas: list = [], activated_tenants_func: Callable = &lt;function get_activated_tenants&gt;, tenants_with_data_func: Callable = &lt;function get_tenants_with_data&gt;, app_activation_path: str = None, register_app_path: str = None, refresh_registration_path: str = None, editable_tables_path: str = None, history_report_path: str = None, tenant_registration_path: str = None, icon: str = 'default.png', doc_authorizations: dict = {'TenantId': {'type': 'apiKey', 'in': 'header', 'name': 'TenantId'}, 'Authorization': {'type': 'apiKey', 'in': 'header', 'name': 'Authorization'}}, api_decorators: list = None, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class AppBuilder:
+ 
+ 
+    def __init__(
+        self, 
+        name: str, 
+        description: str,
+        flags: list = [],
+        editable_tables_schemas:list = [],
+        activated_tenants_func: Callable = get_activated_tenants, 
+        tenants_with_data_func: Callable = get_tenants_with_data,
+        app_activation_path: str = None,
+        register_app_path: str = None,
+        refresh_registration_path: str = None,
+        editable_tables_path: str = None,
+        history_report_path: str = None,
+        tenant_registration_path: str = None,
+        icon: str =&#34;default.png&#34;,
+        doc_authorizations: dict = swagger_authorization_header,
+        api_decorators: list = None,
+        **kwargs
+    ):
+        
+        self.app_id = envs.APP_ID 
+        self.name = name
+        self.description = description
+        self.flags = flags
+        self.icon = icon
+        self.editable_tables_schemas = editable_tables_schemas
+        
+        # Add to self activated tenants and tenants with data
+        self.activated_tenants_func = activated_tenants_func
+        self.tenants_with_data_func = tenants_with_data_func
+        
+        self.activated_tenants = None 
+        self.tenants_with_data = None
+        
+        if self.activated_tenants_func:
+            self.activated_tenants = self.activated_tenants_func()
+        
+        if self.tenants_with_data_func:
+            self.tenants_with_data = self.tenants_with_data_func()
+            
+        self.app_activation_path = app_activation_path or base_paths.app_activation_path
+        self.register_app_path = register_app_path or base_paths.register_app_path
+        self.refresh_registration_path = refresh_registration_path or base_paths.refresh_registration_path
+        self.editable_tables_path = editable_tables_path or base_paths.editable_tables_path
+        self.history_report_path = history_report_path or base_paths.history_report_path
+        self.tenant_registration_path = tenant_registration_path or base_paths.tenant_registration_path
+        
+        self.app_activation_url = envs.BASE_URL + self.app_activation_path
+        self.refresh_registration_url = envs.BASE_URL + self.refresh_registration_path
+        self.editable_tables_url = envs.BASE_URL + self.editable_tables_path
+        self.history_report_url = envs.BASE_URL + self.history_report_path
+        self.tenant_registration_url = envs.BASE_URL + self.tenant_registration_path
+
+        self.authorizations = doc_authorizations
+        self.decorators = api_decorators
+        # parameters with default values provided can be added stright to __init__  
+        # otherwise added them to kwargs until apps are actualized
+        self.kwargs = kwargs    
+        
+        # TODO version needs to be added to all urls + &#39;/v&#39; + self.version
+        self.prefix = &#39;/&#39; + self.app_id 
+        self.app = None
+        self.api = None
+        self.ns  = None
+        self.reports = []
+        self.report_components = []
+        self.uploaders = []
+        self.custom_namespaces = []
+    
+        self.appvars = vars(self)
+    
+    
+    
+    def init_app(self, app: Flask, register:bool =True):
+        
+        if not self.uploaders: log.warning(&#34;No uploaders provided&#34;)
+        if not self.reports  : log.warning(&#34;No reports provided&#34;)
+         
+        self.app = app
+        self.authenticate_app()
+        self.init_dramatiq_broker()
+        if register: self.register_app()
+        
+        self.init_api()
+        self.init_routes()
+        self.init_namespaces()
+        
+        
+    def init_dramatiq_broker(self):
+        # Add middleware if needed
+        broker.init_app(self.app)
+        
+    
+    def authenticate_app(self):
+        response, status_code = Authenticator.connect()
+        if status_code != 200:
+            raise Exception(&#34;App failed to authenticate!&#34;)
+        return response, status_code
+    
+    
+    def init_api(self):
+        
+        self.api = Api(
+            app=self.app,
+            title=self.name,
+            description=self.description,
+            prefix=self.prefix,
+            default=self.name,
+            default_label=self.description,
+            decorators = self.decorators,
+            authorizations = self.authorizations,
+            security = list(self.authorizations.keys()),
+            doc=&#39;/&#39;
+        )
+        
+        
+    
+    def init_routes(self):
+        
+        # Here we are adding the routes available for each app
+        # Api must be passed from route function back to this context 
+        api_funcs = [
+            add_refresh_registration_route,
+            add_editable_tables_route,
+            add_tenant_registration_route,
+            add_app_activation_route,
+            add_app_registration_route
+        ]
+        
+        for func in api_funcs:
+            self.api = func(self.api, self.appvars)
+        
+        
+        # Another way is to group routes in namespaces 
+        # This way the url prefix is specified only in the namespace
+        self.add_uploads_routes()
+        self.add_reports_routes()
+        self.add_report_components_routes()
+        
+    
+    
+    def add_uploads_routes(self):
+        
+        ns_funcs = [
+            get_filenames_validation_namespace,
+            get_filestream_validation_namespace,
+            get_status_namespace,
+            get_quota_namespace    
+        ]
+        
+        for func in ns_funcs:
+            self.add_namespace(
+                func(ns=uploads_namespace, uploaders=self.uploaders)
+            )
+            
+            
+    def add_reports_routes(self):
+        
+        ns_funcs = [
+            get_report_register_namespace,
+            get_report_metadata_namespace,
+            get_report_components_namespace
+        ]
+        
+        for func in ns_funcs:
+            self.add_namespace(
+                func(ns=reports_namespace, reports=self.reports)
+            )
+        
+        
+    def add_report_components_routes(self):
+        
+        ns_funcs = [
+            get_report_individual_components_namespace
+        ]
+        
+        for func in ns_funcs:
+            self.add_namespace(
+                func(ns=report_components_namespace, report_components=self.report_components)
+            )
+        
+                    
+    def register_app(self):
+        &#34;&#34;&#34;
+            Sending registration payloads to registry-service
+        &#34;&#34;&#34;
+        
+        # Register app
+        response, status_code = register_app(**vars(self))
+        if status_code not in {200, 201}:
+            raise Exception(&#34;App failed to register!&#34;)
+        
+        # Register uploaders
+        for uploader_instance in self.uploaders:
+            uploader_response, uploader_status_code = uploader_instance.register_uploader()
+            if uploader_status_code not in {200, 201}:
+                raise Exception(f&#34;Uploader failed to register!&#34;)
+            
+        # Register reports
+        for report_instance in self.reports:
+            report_response, report_status_code = report_instance.register_report()
+            if report_status_code not in {200, 201}:
+                raise Exception(&#34;Report failed to register!&#34;)
+            
+        # Register report components
+        for report_component_instance in self.report_components:
+            report_component_instance_response, report_component_instance_status_code = report_component_instance.register_component()
+            if report_component_instance_status_code not in {200, 201}:
+                raise Exception(&#34;Report component failed to register!&#34;)
+            
+        return response, status_code
+        
+
+    def register_uploader(self, uploader_instance):
+        
+        for uploader in self.uploaders:
+            if uploader.uploader_id == uploader_instance.uploader_id:
+                raise Exception(f&#34;Uploader id &#39;{uploader_instance.uploader_id}&#39; was already declared&#34;)
+        
+        self.uploaders.append(uploader_instance)
+        
+        
+    def register_report(self, report_instance):
+        
+        for report in self.reports:
+            if report.report_id == report_instance.report_id:
+                raise Exception(f&#34;Report id &#39;{report_instance.report_id}&#39; was already declared&#34;)
+        
+        self.reports.append(report_instance)
+        
+
+
+    def register_report_component(self, report_component_instance):
+        
+        for rep_component in self.report_components:
+            if rep_component.component_id == report_component_instance.component_id:
+                log.warning(f&#34;Report component_id: &#39;{report_component_instance.component_id}&#39; was already declared&#34;)
+                # Not raising errors because component_ids urls have attached an id to avoid name colizions
+                
+        self.report_components.append(report_component_instance)
+        
+        
+    def register_endpoint(self, endpoint_instance):
+        ns = endpoint_instance.build_namespace(endpoint_builder_namespace)
+        self.add_namespace(ns)
+    
+    
+    def add_namespace(self, ns:Namespace, path:str = None):
+        self.custom_namespaces.append((ns, path))
+
+    def init_namespaces(self):
+        for namespace in self.custom_namespaces:
+            self.api.add_namespace(*namespace)
+        
+    def add_resource(self, resource:Resource, path:str):
+        self.api.add_resource(resource, path)</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="licenseware.app_builder.app_builder.AppBuilder.add_namespace"><code class="name flex">
+<span>def <span class="ident">add_namespace</span></span>(<span>self, ns: flask_restx.namespace.Namespace, path: str = None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_namespace(self, ns:Namespace, path:str = None):
+    self.custom_namespaces.append((ns, path))</code></pre>
+</details>
+</dd>
+<dt id="licenseware.app_builder.app_builder.AppBuilder.add_report_components_routes"><code class="name flex">
+<span>def <span class="ident">add_report_components_routes</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_report_components_routes(self):
+    
+    ns_funcs = [
+        get_report_individual_components_namespace
+    ]
+    
+    for func in ns_funcs:
+        self.add_namespace(
+            func(ns=report_components_namespace, report_components=self.report_components)
+        )</code></pre>
+</details>
+</dd>
+<dt id="licenseware.app_builder.app_builder.AppBuilder.add_reports_routes"><code class="name flex">
+<span>def <span class="ident">add_reports_routes</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_reports_routes(self):
+    
+    ns_funcs = [
+        get_report_register_namespace,
+        get_report_metadata_namespace,
+        get_report_components_namespace
+    ]
+    
+    for func in ns_funcs:
+        self.add_namespace(
+            func(ns=reports_namespace, reports=self.reports)
+        )</code></pre>
+</details>
+</dd>
+<dt id="licenseware.app_builder.app_builder.AppBuilder.add_resource"><code class="name flex">
+<span>def <span class="ident">add_resource</span></span>(<span>self, resource: flask_restx.resource.Resource, path: str)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_resource(self, resource:Resource, path:str):
+    self.api.add_resource(resource, path)</code></pre>
+</details>
+</dd>
+<dt id="licenseware.app_builder.app_builder.AppBuilder.add_uploads_routes"><code class="name flex">
+<span>def <span class="ident">add_uploads_routes</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_uploads_routes(self):
+    
+    ns_funcs = [
+        get_filenames_validation_namespace,
+        get_filestream_validation_namespace,
+        get_status_namespace,
+        get_quota_namespace    
+    ]
+    
+    for func in ns_funcs:
+        self.add_namespace(
+            func(ns=uploads_namespace, uploaders=self.uploaders)
+        )</code></pre>
+</details>
+</dd>
+<dt id="licenseware.app_builder.app_builder.AppBuilder.authenticate_app"><code class="name flex">
+<span>def <span class="ident">authenticate_app</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def authenticate_app(self):
+    response, status_code = Authenticator.connect()
+    if status_code != 200:
+        raise Exception(&#34;App failed to authenticate!&#34;)
+    return response, status_code</code></pre>
+</details>
+</dd>
+<dt id="licenseware.app_builder.app_builder.AppBuilder.init_api"><code class="name flex">
+<span>def <span class="ident">init_api</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def init_api(self):
+    
+    self.api = Api(
+        app=self.app,
+        title=self.name,
+        description=self.description,
+        prefix=self.prefix,
+        default=self.name,
+        default_label=self.description,
+        decorators = self.decorators,
+        authorizations = self.authorizations,
+        security = list(self.authorizations.keys()),
+        doc=&#39;/&#39;
+    )</code></pre>
+</details>
+</dd>
+<dt id="licenseware.app_builder.app_builder.AppBuilder.init_app"><code class="name flex">
+<span>def <span class="ident">init_app</span></span>(<span>self, app: flask.app.Flask, register: bool = True)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def init_app(self, app: Flask, register:bool =True):
+    
+    if not self.uploaders: log.warning(&#34;No uploaders provided&#34;)
+    if not self.reports  : log.warning(&#34;No reports provided&#34;)
+     
+    self.app = app
+    self.authenticate_app()
+    self.init_dramatiq_broker()
+    if register: self.register_app()
+    
+    self.init_api()
+    self.init_routes()
+    self.init_namespaces()</code></pre>
+</details>
+</dd>
+<dt id="licenseware.app_builder.app_builder.AppBuilder.init_dramatiq_broker"><code class="name flex">
+<span>def <span class="ident">init_dramatiq_broker</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def init_dramatiq_broker(self):
+    # Add middleware if needed
+    broker.init_app(self.app)</code></pre>
+</details>
+</dd>
+<dt id="licenseware.app_builder.app_builder.AppBuilder.init_namespaces"><code class="name flex">
+<span>def <span class="ident">init_namespaces</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def init_namespaces(self):
+    for namespace in self.custom_namespaces:
+        self.api.add_namespace(*namespace)</code></pre>
+</details>
+</dd>
+<dt id="licenseware.app_builder.app_builder.AppBuilder.init_routes"><code class="name flex">
+<span>def <span class="ident">init_routes</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def init_routes(self):
+    
+    # Here we are adding the routes available for each app
+    # Api must be passed from route function back to this context 
+    api_funcs = [
+        add_refresh_registration_route,
+        add_editable_tables_route,
+        add_tenant_registration_route,
+        add_app_activation_route,
+        add_app_registration_route
+    ]
+    
+    for func in api_funcs:
+        self.api = func(self.api, self.appvars)
+    
+    
+    # Another way is to group routes in namespaces 
+    # This way the url prefix is specified only in the namespace
+    self.add_uploads_routes()
+    self.add_reports_routes()
+    self.add_report_components_routes()</code></pre>
+</details>
+</dd>
+<dt id="licenseware.app_builder.app_builder.AppBuilder.register_app"><code class="name flex">
+<span>def <span class="ident">register_app</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sending registration payloads to registry-service</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def register_app(self):
+    &#34;&#34;&#34;
+        Sending registration payloads to registry-service
+    &#34;&#34;&#34;
+    
+    # Register app
+    response, status_code = register_app(**vars(self))
+    if status_code not in {200, 201}:
+        raise Exception(&#34;App failed to register!&#34;)
+    
+    # Register uploaders
+    for uploader_instance in self.uploaders:
+        uploader_response, uploader_status_code = uploader_instance.register_uploader()
+        if uploader_status_code not in {200, 201}:
+            raise Exception(f&#34;Uploader failed to register!&#34;)
+        
+    # Register reports
+    for report_instance in self.reports:
+        report_response, report_status_code = report_instance.register_report()
+        if report_status_code not in {200, 201}:
+            raise Exception(&#34;Report failed to register!&#34;)
+        
+    # Register report components
+    for report_component_instance in self.report_components:
+        report_component_instance_response, report_component_instance_status_code = report_component_instance.register_component()
+        if report_component_instance_status_code not in {200, 201}:
+            raise Exception(&#34;Report component failed to register!&#34;)
+        
+    return response, status_code</code></pre>
+</details>
+</dd>
+<dt id="licenseware.app_builder.app_builder.AppBuilder.register_endpoint"><code class="name flex">
+<span>def <span class="ident">register_endpoint</span></span>(<span>self, endpoint_instance)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def register_endpoint(self, endpoint_instance):
+    ns = endpoint_instance.build_namespace(endpoint_builder_namespace)
+    self.add_namespace(ns)</code></pre>
+</details>
+</dd>
+<dt id="licenseware.app_builder.app_builder.AppBuilder.register_report"><code class="name flex">
+<span>def <span class="ident">register_report</span></span>(<span>self, report_instance)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def register_report(self, report_instance):
+    
+    for report in self.reports:
+        if report.report_id == report_instance.report_id:
+            raise Exception(f&#34;Report id &#39;{report_instance.report_id}&#39; was already declared&#34;)
+    
+    self.reports.append(report_instance)</code></pre>
+</details>
+</dd>
+<dt id="licenseware.app_builder.app_builder.AppBuilder.register_report_component"><code class="name flex">
+<span>def <span class="ident">register_report_component</span></span>(<span>self, report_component_instance)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def register_report_component(self, report_component_instance):
+    
+    for rep_component in self.report_components:
+        if rep_component.component_id == report_component_instance.component_id:
+            log.warning(f&#34;Report component_id: &#39;{report_component_instance.component_id}&#39; was already declared&#34;)
+            # Not raising errors because component_ids urls have attached an id to avoid name colizions
+            
+    self.report_components.append(report_component_instance)</code></pre>
+</details>
+</dd>
+<dt id="licenseware.app_builder.app_builder.AppBuilder.register_uploader"><code class="name flex">
+<span>def <span class="ident">register_uploader</span></span>(<span>self, uploader_instance)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def register_uploader(self, uploader_instance):
+    
+    for uploader in self.uploaders:
+        if uploader.uploader_id == uploader_instance.uploader_id:
+            raise Exception(f&#34;Uploader id &#39;{uploader_instance.uploader_id}&#39; was already declared&#34;)
+    
+    self.uploaders.append(uploader_instance)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="licenseware.app_builder.app_builder.base_paths"><code class="flex name class">
+<span>class <span class="ident">base_paths</span></span>
+<span>(</span><span>app_activation_path: str = '/activate_app', register_app_path: str = '/register_app', refresh_registration_path: str = '/refresh_registration', editable_tables_path: str = '/editable_tables', history_report_path: str = '/reports/history_report', tenant_registration_path: str = '/register_tenant')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>base_paths(app_activation_path: str = '/activate_app', register_app_path: str = '/register_app', refresh_registration_path: str = '/refresh_registration', editable_tables_path: str = '/editable_tables', history_report_path: str = '/reports/history_report', tenant_registration_path: str = '/register_tenant')</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class base_paths:
+    app_activation_path: str =&#39;/activate_app&#39;
+    register_app_path: str = &#39;/register_app&#39;
+    refresh_registration_path: str =&#39;/refresh_registration&#39;
+    editable_tables_path: str =&#39;/editable_tables&#39;
+    history_report_path: str =&#39;/reports/history_report&#39;
+    tenant_registration_path: str =&#39;/register_tenant&#39;</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="licenseware.app_builder.app_builder.base_paths.app_activation_path"><code class="name">var <span class="ident">app_activation_path</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="licenseware.app_builder.app_builder.base_paths.editable_tables_path"><code class="name">var <span class="ident">editable_tables_path</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="licenseware.app_builder.app_builder.base_paths.history_report_path"><code class="name">var <span class="ident">history_report_path</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="licenseware.app_builder.app_builder.base_paths.refresh_registration_path"><code class="name">var <span class="ident">refresh_registration_path</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="licenseware.app_builder.app_builder.base_paths.register_app_path"><code class="name">var <span class="ident">register_app_path</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="licenseware.app_builder.app_builder.base_paths.tenant_registration_path"><code class="name">var <span class="ident">tenant_registration_path</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="licenseware.app_builder" href="index.html">licenseware.app_builder</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="licenseware.app_builder.app_builder.AppBuilder" href="#licenseware.app_builder.app_builder.AppBuilder">AppBuilder</a></code></h4>
+<ul class="">
+<li><code><a title="licenseware.app_builder.app_builder.AppBuilder.add_namespace" href="#licenseware.app_builder.app_builder.AppBuilder.add_namespace">add_namespace</a></code></li>
+<li><code><a title="licenseware.app_builder.app_builder.AppBuilder.add_report_components_routes" href="#licenseware.app_builder.app_builder.AppBuilder.add_report_components_routes">add_report_components_routes</a></code></li>
+<li><code><a title="licenseware.app_builder.app_builder.AppBuilder.add_reports_routes" href="#licenseware.app_builder.app_builder.AppBuilder.add_reports_routes">add_reports_routes</a></code></li>
+<li><code><a title="licenseware.app_builder.app_builder.AppBuilder.add_resource" href="#licenseware.app_builder.app_builder.AppBuilder.add_resource">add_resource</a></code></li>
+<li><code><a title="licenseware.app_builder.app_builder.AppBuilder.add_uploads_routes" href="#licenseware.app_builder.app_builder.AppBuilder.add_uploads_routes">add_uploads_routes</a></code></li>
+<li><code><a title="licenseware.app_builder.app_builder.AppBuilder.authenticate_app" href="#licenseware.app_builder.app_builder.AppBuilder.authenticate_app">authenticate_app</a></code></li>
+<li><code><a title="licenseware.app_builder.app_builder.AppBuilder.init_api" href="#licenseware.app_builder.app_builder.AppBuilder.init_api">init_api</a></code></li>
+<li><code><a title="licenseware.app_builder.app_builder.AppBuilder.init_app" href="#licenseware.app_builder.app_builder.AppBuilder.init_app">init_app</a></code></li>
+<li><code><a title="licenseware.app_builder.app_builder.AppBuilder.init_dramatiq_broker" href="#licenseware.app_builder.app_builder.AppBuilder.init_dramatiq_broker">init_dramatiq_broker</a></code></li>
+<li><code><a title="licenseware.app_builder.app_builder.AppBuilder.init_namespaces" href="#licenseware.app_builder.app_builder.AppBuilder.init_namespaces">init_namespaces</a></code></li>
+<li><code><a title="licenseware.app_builder.app_builder.AppBuilder.init_routes" href="#licenseware.app_builder.app_builder.AppBuilder.init_routes">init_routes</a></code></li>
+<li><code><a title="licenseware.app_builder.app_builder.AppBuilder.register_app" href="#licenseware.app_builder.app_builder.AppBuilder.register_app">register_app</a></code></li>
+<li><code><a title="licenseware.app_builder.app_builder.AppBuilder.register_endpoint" href="#licenseware.app_builder.app_builder.AppBuilder.register_endpoint">register_endpoint</a></code></li>
+<li><code><a title="licenseware.app_builder.app_builder.AppBuilder.register_report" href="#licenseware.app_builder.app_builder.AppBuilder.register_report">register_report</a></code></li>
+<li><code><a title="licenseware.app_builder.app_builder.AppBuilder.register_report_component" href="#licenseware.app_builder.app_builder.AppBuilder.register_report_component">register_report_component</a></code></li>
+<li><code><a title="licenseware.app_builder.app_builder.AppBuilder.register_uploader" href="#licenseware.app_builder.app_builder.AppBuilder.register_uploader">register_uploader</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="licenseware.app_builder.app_builder.base_paths" href="#licenseware.app_builder.app_builder.base_paths">base_paths</a></code></h4>
+<ul class="">
+<li><code><a title="licenseware.app_builder.app_builder.base_paths.app_activation_path" href="#licenseware.app_builder.app_builder.base_paths.app_activation_path">app_activation_path</a></code></li>
+<li><code><a title="licenseware.app_builder.app_builder.base_paths.editable_tables_path" href="#licenseware.app_builder.app_builder.base_paths.editable_tables_path">editable_tables_path</a></code></li>
+<li><code><a title="licenseware.app_builder.app_builder.base_paths.history_report_path" href="#licenseware.app_builder.app_builder.base_paths.history_report_path">history_report_path</a></code></li>
+<li><code><a title="licenseware.app_builder.app_builder.base_paths.refresh_registration_path" href="#licenseware.app_builder.app_builder.base_paths.refresh_registration_path">refresh_registration_path</a></code></li>
+<li><code><a title="licenseware.app_builder.app_builder.base_paths.register_app_path" href="#licenseware.app_builder.app_builder.base_paths.register_app_path">register_app_path</a></code></li>
+<li><code><a title="licenseware.app_builder.app_builder.base_paths.tenant_registration_path" href="#licenseware.app_builder.app_builder.base_paths.tenant_registration_path">tenant_registration_path</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

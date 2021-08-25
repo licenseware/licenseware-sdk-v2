@@ -64,7 +64,11 @@ _log_format = """<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green>[ <level>{level}</
 <level>{message}</level>
 """
 
-log.remove(0)
+try:
+    log.remove(0)
+except:
+    pass#No default logger
+
 
 log.add(
     "app.log", 

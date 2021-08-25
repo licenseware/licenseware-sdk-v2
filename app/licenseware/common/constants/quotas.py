@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-
+#TODO
 
 @dataclass
 class quotas:
@@ -35,7 +35,7 @@ QUOTA = {
 }
 
 
-if os.getenv('DEBUG') == 'true':
-    QUOTA = dict(
-        zip(QUOTA.keys(), [sys.maxsize]*len(QUOTA.keys()))
-    )
+# if os.getenv('DEBUG') == 'true':
+#     QUOTA = dict(
+#         zip(QUOTA.keys(), [sys.maxsize]*len(QUOTA.keys()))
+#     )

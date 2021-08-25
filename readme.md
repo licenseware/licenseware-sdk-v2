@@ -12,6 +12,8 @@ Each UPLOADER has:
 
 Each REPORT has:
 - one or more report components
+- report components can be attached either to app builder instance or to report builder instance
+
 
 
 
@@ -325,3 +327,42 @@ if __name__ == "__main__":
 
 
 ```
+
+Required environment variables
+
+```bash
+
+FLASK_APP=main:app
+
+APP_ID=ifmp
+APP_HOST=http://localhost:5000
+
+LWARE_IDENTITY_USER=John
+LWARE_IDENTITY_PASSWORD=secret
+
+AUTH_SERVICE_URL=http://localhost:5000/auth
+AUTH_SERVICE_USERS_URL_PATH=/users
+AUTH_SERVICE_MACHINES_URL_PATH=/machines
+
+REGISTRY_SERVICE_URL=http://localhost:5000/registry-service
+
+FILE_UPLOAD_PATH=/tmp/lware
+
+MONGO_ROOT_USERNAME=John
+MONGO_ROOT_PASSWORD=secret
+MONGO_HOSTNAME=localhost
+MONGO_PORT=27017
+MONGO_DATABASE_NAME=db
+MONGO_CONNECTION_STRING=mongodb://${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DATABASE_NAME}
+
+
+REDIS_HOST=redis_db_sdk
+REDIS_PORT=6379
+
+```
+
+
+Documentation automatically generated with [`pdoc3`](https://pdoc3.github.io/pdoc/).
+
+
+`http://localhost:8080/app/licenseware/`

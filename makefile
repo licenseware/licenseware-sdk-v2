@@ -22,3 +22,9 @@ worker:
 test:
 	rm -rf tests/__pycache__
 	python3 -m unittest tests/*
+
+dev-docs:
+	pdoc --http : app
+
+docs:
+	pdoc --html --output-dir docs app/licenseware
