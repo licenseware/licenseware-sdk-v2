@@ -9,6 +9,10 @@ from app.licenseware.utils.logger import log
 
 class UploaderValidator(FileNameValidator, FileContentValidator):
     
+    """
+
+    """
+    
     def __init__(
         self,
         uploader_id:str = None,
@@ -51,16 +55,9 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         """
             receive flask_request, extract tenantid and files, calculate quota
             - quota will be different for each uploader_id
-            - TODO determine a default quota calculation
-            
         """
-        log.warning("TODO - add calculate quota function")
-        
-        #TODO
-        # raise Exception("Please overwrite `calculate_quota` function")
-        # return {'status': 'fail', 'message': 'Quota exceeded'}, 402
-        return {'status': 'success', 'message': 'Quota within limits'}, 200
-
+        raise NotImplementedError("Overwrite `calculate_quota` func")
+    
         
     @classmethod
     def get_filepaths_from_objects_response(cls, file_objects_response):

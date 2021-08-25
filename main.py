@@ -21,6 +21,9 @@ from typing import Tuple
 
 app = Flask(__name__)
 
+# This hides flask_restx `X-fields` from swagger headers  
+app.config['RESTX_MASK_SWAGGER'] = False
+
 
 
 # APP
@@ -63,6 +66,8 @@ class RVToolsUploaderValidator(UploaderValidator):
         file_objects = flask_request.files.getlist("files[]")
         # each set of files have a different way of calculating quota
         
+        # After calculation return one of bellow responses:
+        # return {'status': 'fail', 'message': 'Quota exceeded'}, 402
         return {'status': 'success', 'message': 'Quota within limits'}, 200
     
     # If necessary you can overwrite the way validation of filenames and file binary it's done

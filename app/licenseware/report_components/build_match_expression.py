@@ -86,7 +86,7 @@ def build_match_expression(filter_payload: List[dict]) -> dict:
     for filter_section in filter_payload:
         parsed_filter.update(
             condition_switcher[filter_section["filter_type"]](
-                filter_section["field_name"], filter_section["filter_value"]
+                filter_section["field_name"], filter_section["filter_value"] # TODO is filter value a list? if yes rename it to `filter_values`
             )
         )
         

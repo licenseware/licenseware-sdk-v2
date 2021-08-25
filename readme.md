@@ -39,6 +39,9 @@ from typing import Tuple
 
 app = Flask(__name__)
 
+# This hides flask_restx `X-fields` from swagger headers  
+app.config['RESTX_MASK_SWAGGER'] = False
+
 
 
 # APP
@@ -81,6 +84,8 @@ class RVToolsUploaderValidator(UploaderValidator):
         file_objects = flask_request.files.getlist("files[]")
         # each set of files have a different way of calculating quota
         
+        # After calculation return one of bellow responses:
+        # return {'status': 'fail', 'message': 'Quota exceeded'}, 402
         return {'status': 'success', 'message': 'Quota within limits'}, 200
     
     # If necessary you can overwrite the way validation of filenames and file binary it's done
@@ -270,62 +275,6 @@ ifmp_app.init_app(app, register=True)
 if __name__ == "__main__":
     app.run(port=4000, debug=True)
 
-
-
-```
-
-
-
-
-
-
-
-
-
-
-
-# REPORTS
-
-
-history_report = ReportBuilder(
-    id = 'history_report',
-    name = 'History Report',
-    description = 'History of actions made on ifmp app',
-    connected_apps = ['odb'],
-    flags = ['Beta'],
-    # + other params
-)
-
-
-summary_component = ReportComponents.SummaryComponent(
-    # we can generate component id from title (urls are namespaced)
-    title = "Overview",  
-    # will generate atributes + series
-    attributes = [
-        {"name": "Devices Analyzed", "icon": icons.device_icon},
-        {"name": "Files Analyzed", "icon": icons.file_icon}, 
-    ],
-    data_method=fetch_summary_data
-)
-
-table_component = "similar to SummaryComponent"
-
-#Single component
-history_report.register_component(summary_component)
-#Multiple components order defined by their positions
-history_report.register_components(summary_component, table_component)
- 
-
-
-ifmp_app.register_report(history_report)
-
-
-
-# CLI TOOL for generating boilerplate code
-
-# > licenseware new uploader uploader_name (will generate boilerplate code for an uploader)
-# > licenseware new report report_name (will generate boilerplate code for a report)
-# > licenseware new endpoint endpoint_name (will generate boilerplate code for an endpoint)
 
 
 ```

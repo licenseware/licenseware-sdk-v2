@@ -9,6 +9,7 @@ from app.licenseware.tenants import get_activated_tenants, get_tenants_with_data
 from app.licenseware.utils.logger import log
 from app.licenseware.auth import Authenticator
 from app.licenseware.utils.dramatiq_redis_broker import broker
+from app.licenseware.utils.miscellaneous import swagger_authorization_header
 
 from .refresh_registration_route import add_refresh_registration_route
 from .editable_tables_route import add_editable_tables_route
@@ -40,25 +41,6 @@ from .report_components_namespace import (
 )
 
 
-
-
-# TODO TenantId is not posible 
-# because either flask or swagger capitalizes values from headers 
-
-authorizations = {
-    'Tenantid': {
-        'type': 'apiKey',
-        'in': 'header',
-        'name': 'Tenantid'   #TenantId
-    },
-    'Authorization': {
-        'type': 'apiKey',
-        'in': 'header',
-        'name': 'Authorization'
-    }
-}
-
-
 @dataclass
 class base_paths:
     app_activation_path: str ='/activate_app'
@@ -69,9 +51,12 @@ class base_paths:
     tenant_registration_path: str ='/register_tenant'
 
 
-
-
 class AppBuilder:
+    
+    """
+        In this class we gather, instantiate and attach required endpoints to main Api
+         
+    """
     
     def __init__(
         self, 
@@ -88,7 +73,7 @@ class AppBuilder:
         history_report_path: str = None,
         tenant_registration_path: str = None,
         icon: str ="default.png",
-        doc_authorizations: dict = authorizations,
+        doc_authorizations: dict = swagger_authorization_header,
         api_decorators: list = None,
         **kwargs
     ):

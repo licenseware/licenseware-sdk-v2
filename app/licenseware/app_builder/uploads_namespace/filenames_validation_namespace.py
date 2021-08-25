@@ -1,12 +1,21 @@
 from flask import request
 from flask_restx import Namespace, Resource
+from marshmallow import Schema, fields
 
 from app.licenseware.decorators.auth_decorators import authorization_check
 from app.licenseware.decorators import failsafe
 from app.licenseware.utils.logger import log
+from app.licenseware.utils.miscellaneous import build_restx_model
 
+
+class FilenamesValidationSchema(Schema):
+    filenames = fields.List(fields.Str, required=True)
+    
+    
 
 def get_filenames_validation_namespace(ns: Namespace, uploaders:list):
+    
+    restx_model = build_restx_model(ns, FilenamesValidationSchema)
     
     for uploader in uploaders:
                 
@@ -22,8 +31,10 @@ def get_filenames_validation_namespace(ns: Namespace, uploaders:list):
                     402 : 'Quota exceeded',
                     403 : "Missing `Tenant` or `Authorization` information",
                     500 : 'Something went wrong while handling the request' 
-                }
+                },
+                body=restx_model
             )
+            @ns.marshal_with(restx_model)
             def post(self):
                 return uploader.validate_filenames(request)
 
