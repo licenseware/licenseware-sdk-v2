@@ -142,10 +142,13 @@ class AppBuilder:
     
     def init_app(self, app: Flask, register:bool =True):
         
+        # This hides flask_restx `X-fields` from swagger headers  
+        app.config['RESTX_MASK_SWAGGER'] = False
+        self.app = app
+        
         if not self.uploaders: log.warning("No uploaders provided")
         if not self.reports  : log.warning("No reports provided")
          
-        self.app = app
         self.authenticate_app()
         self.init_dramatiq_broker()
         if register: self.register_app()

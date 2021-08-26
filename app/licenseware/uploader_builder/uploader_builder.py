@@ -17,6 +17,7 @@ class UploaderBuilder:
         accepted_file_types:list, 
         validator_class: Type, 
         worker_function: Callable,
+        quota_units:int,
         flags:list = [],
         status:str = states.IDLE,
         icon:str = "default.png",
@@ -27,9 +28,12 @@ class UploaderBuilder:
         **kwargs
     ):
         
+        #Passing variables to validator class
         validator_class.uploader_id = uploader_id
+        validator_class.quota_units = quota_units
         
         self.uploader_id = uploader_id
+        self.quota_units = quota_units
         self.name = name
         self.description = description
         self.validator_class = validator_class

@@ -1,5 +1,3 @@
-from dataclasses import field
-import re
 from dotenv import load_dotenv
 load_dotenv()  
 
@@ -24,10 +22,6 @@ from typing import Tuple
 
 
 app = Flask(__name__)
-
-# This hides flask_restx `X-fields` from swagger headers  
-app.config['RESTX_MASK_SWAGGER'] = False
-
 
 
 # APP
@@ -66,23 +60,28 @@ def rv_tools_worker(event_data):
 class RVToolsUploaderValidator(UploaderValidator):
     
     def calculate_quota(self, flask_request) -> Tuple[dict, int]:
+        """
+            Each set of files have a different way of calculating quota
+            TODO
+            - calculate quota based on user_id (send a get request with tenant_id query param to auth-service /user_id_from_tenant_id)
+            - gather all docs from IFMPUtilization collection with user_id
+            - calculate quota based on user plan (if plan free calculate quota. if plan paid do something else, probably send a default quota within limits?)
+            
+        """
         
         file_objects = flask_request.files.getlist("files[]")
         
         
         
+        if len(file_objects) > self.quota_units:
+            return {'status': 'fail', 'message': 'Quota exceeded'}, 402
+        else:
+            return {'status': 'success', 'message': 'Quota within limits'}, 200
+            
         
-        # each set of files have a different way of calculating quota
-        # TODO
-        # - calculate quota based on user_id (send a get request with tenant_id query param to auth-service /user_id_from_tenant_id)
-        # - gather all docs from IFMPUtilization collection with user_id
-        # - calculate quota based on user plan (if plan free calculate quota. if plan paid do something else, probably send a default quota within limits?)
         
         
-        # After calculation return one of bellow responses:
-        # return {'status': 'fail', 'message': 'Quota exceeded'}, 402
-        return {'status': 'success', 'message': 'Quota within limits'}, 200
-    
+        
     # If necessary you can overwrite the way validation of filenames and file binary it's done
     
     # def get_filenames_response(self, flask_request): 

@@ -15,7 +15,6 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
     
     def __init__(
         self,
-        uploader_id:str = None,
         filename_contains:list = [],
         filename_endswith:list = [],
         ignore_filenames:list = [],
@@ -29,9 +28,11 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         buffer:int = 9000,
         filename_valid_message = "Filename is valid",
         filename_invalid_message =  None,
-        filename_ignored_message =  "Filename is ignored"
+        filename_ignored_message =  "Filename is ignored",
+        uploader_id:str = None,
+        quota_units:int = None, 
     ):
-        
+        self.quota_units = quota_units
         self.uploader_id = uploader_id
         self.filename_contains = filename_contains
         self.filename_endswith = filename_endswith
@@ -80,5 +81,6 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         ]
             
         return file_paths
+  
     
 
