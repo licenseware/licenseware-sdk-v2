@@ -29,24 +29,28 @@
 <pre><code class="python">from marshmallow import (
     Schema, 
     fields, 
-    validate,       #utils validatiors
+    validate,       #utils validators
     validates,      #decorator  
 )
 
 from app.licenseware.common.constants import flags
-from app.licenseware.common.validators import validate_icon
+from app.licenseware.common.validators import validate_icon, validate_uuid4
 
 
-class AppActivatedTenantsSchema(Schema): ... #TODO
-class DataAvailableTenantsSchema(Schema): ...#TODO
+
+    
+class DataAvailableTenantsSchema(Schema): 
+    tenant_id = fields.Str(required=True, validate=validate_uuid4)
+    last_update_date = fields.Str(required=True)
+    
 
 
 class AppInfoSchema(Schema):
     
     app_id = fields.Str(required=True, validate=validate.Length(min=3))
     name = fields.Str(required=True, validate=validate.Length(min=3))  
-    tenants_with_app_activated = fields.List(fields.Dict, required=True) #TODO
-    tenants_with_data_available = fields.List(fields.Dict, required=True) #TODO
+    tenants_with_app_activated = fields.List(fields.Str, validate=validate_uuid4, required=True) 
+    tenants_with_data_available = fields.List(fields.Nested(DataAvailableTenantsSchema), required=True) 
     description = fields.Str(required=True, validate=validate.Length(min=10))
     flags = fields.List(fields.Str, required=False)#, validate=validate.OneOf(flags.BETA, flags.SOON))
     icon = fields.Str(required=False, validate=validate_icon)
@@ -72,86 +76,6 @@ class RegisterAppPayloadSchema(Schema):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="licenseware.common.serializers.register_app_payload_schema.AppActivatedTenantsSchema"><code class="flex name class">
-<span>class <span class="ident">AppActivatedTenantsSchema</span></span>
-<span>(</span><span>*, only: Union[Sequence[str], Set[str], None] = None, exclude: Union[Sequence[str], Set[str]] = (), many: bool = False, context: Optional[Dict[~KT, ~VT]] = None, load_only: Union[Sequence[str], Set[str]] = (), dump_only: Union[Sequence[str], Set[str]] = (), partial: Union[bool, Sequence[str], Set[str]] = False, unknown: Optional[str] = None)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Base schema class with which to define custom schemas.</p>
-<p>Example usage:</p>
-<p>.. code-block:: python</p>
-<pre><code>import datetime as dt
-from dataclasses import dataclass
-
-from marshmallow import Schema, fields
-
-
-@dataclass
-class Album:
-    title: str
-    release_date: dt.date
-
-
-class AlbumSchema(Schema):
-    title = fields.Str()
-    release_date = fields.Date()
-
-
-album = Album("Beggars Banquet", dt.date(1968, 12, 6))
-schema = AlbumSchema()
-data = schema.dump(album)
-data  # {'release_date': '1968-12-06', 'title': 'Beggars Banquet'}
-</code></pre>
-<p>:param only: Whitelist of the declared fields to select when
-instantiating the Schema. If None, all fields are used. Nested fields
-can be represented with dot delimiters.
-:param exclude: Blacklist of the declared fields to exclude
-when instantiating the Schema. If a field appears in both <code>only</code> and
-<code>exclude</code>, it is not used. Nested fields can be represented with dot
-delimiters.
-:param many: Should be set to <code>True</code> if <code>obj</code> is a collection
-so that the object will be serialized to a list.
-:param context: Optional context passed to :class:<code>fields.Method</code> and
-:class:<code>fields.Function</code> fields.
-:param load_only: Fields to skip during serialization (write-only fields)
-:param dump_only: Fields to skip during deserialization (read-only fields)
-:param partial: Whether to ignore missing fields and not require
-any fields declared. Propagates down to <code>Nested</code> fields as well. If
-its value is an iterable, only missing fields listed in that iterable
-will be ignored. Use dot delimiters to specify nested fields.
-:param unknown: Whether to exclude, include, or raise an error for unknown
-fields in the data. Use <code>EXCLUDE</code>, <code>INCLUDE</code> or <code>RAISE</code>.</p>
-<div class="admonition versionchanged">
-<p class="admonition-title">Changed in version:&ensp;3.0.0</p>
-<p><code>prefix</code> parameter removed.</p>
-</div>
-<div class="admonition versionchanged">
-<p class="admonition-title">Changed in version:&ensp;2.0.0</p>
-<p><code>__validators__</code>, <code>__preprocessors__</code>, and <code>__data_handlers__</code> are removed in favor of
-<code>marshmallow.decorators.validates_schema</code>,
-<code>marshmallow.decorators.pre_load</code> and <code>marshmallow.decorators.post_dump</code>.
-<code>__accessor__</code> and <code>__error_handler__</code> are deprecated. Implement the
-<code>handle_error</code> and <code>get_attribute</code> methods instead.</p>
-</div></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class AppActivatedTenantsSchema(Schema): ... #TODO</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>marshmallow.schema.Schema</li>
-<li>marshmallow.base.SchemaABC</li>
-</ul>
-<h3>Class variables</h3>
-<dl>
-<dt id="licenseware.common.serializers.register_app_payload_schema.AppActivatedTenantsSchema.opts"><code class="name">var <span class="ident">opts</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-</dl>
-</dd>
 <dt id="licenseware.common.serializers.register_app_payload_schema.AppInfoSchema"><code class="flex name class">
 <span>class <span class="ident">AppInfoSchema</span></span>
 <span>(</span><span>*, only: Union[Sequence[str], Set[str], None] = None, exclude: Union[Sequence[str], Set[str]] = (), many: bool = False, context: Optional[Dict[~KT, ~VT]] = None, load_only: Union[Sequence[str], Set[str]] = (), dump_only: Union[Sequence[str], Set[str]] = (), partial: Union[bool, Sequence[str], Set[str]] = False, unknown: Optional[str] = None)</span>
@@ -221,8 +145,8 @@ fields in the data. Use <code>EXCLUDE</code>, <code>INCLUDE</code> or <code>RAIS
     
     app_id = fields.Str(required=True, validate=validate.Length(min=3))
     name = fields.Str(required=True, validate=validate.Length(min=3))  
-    tenants_with_app_activated = fields.List(fields.Dict, required=True) #TODO
-    tenants_with_data_available = fields.List(fields.Dict, required=True) #TODO
+    tenants_with_app_activated = fields.List(fields.Str, validate=validate_uuid4, required=True) 
+    tenants_with_data_available = fields.List(fields.Nested(DataAvailableTenantsSchema), required=True) 
     description = fields.Str(required=True, validate=validate.Length(min=10))
     flags = fields.List(fields.Str, required=False)#, validate=validate.OneOf(flags.BETA, flags.SOON))
     icon = fields.Str(required=False, validate=validate_icon)
@@ -358,7 +282,9 @@ fields in the data. Use <code>EXCLUDE</code>, <code>INCLUDE</code> or <code>RAIS
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class DataAvailableTenantsSchema(Schema): ...#TODO</code></pre>
+<pre><code class="python">class DataAvailableTenantsSchema(Schema): 
+    tenant_id = fields.Str(required=True, validate=validate_uuid4)
+    last_update_date = fields.Str(required=True)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -367,7 +293,15 @@ fields in the data. Use <code>EXCLUDE</code>, <code>INCLUDE</code> or <code>RAIS
 </ul>
 <h3>Class variables</h3>
 <dl>
+<dt id="licenseware.common.serializers.register_app_payload_schema.DataAvailableTenantsSchema.last_update_date"><code class="name">var <span class="ident">last_update_date</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
 <dt id="licenseware.common.serializers.register_app_payload_schema.DataAvailableTenantsSchema.opts"><code class="name">var <span class="ident">opts</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="licenseware.common.serializers.register_app_payload_schema.DataAvailableTenantsSchema.tenant_id"><code class="name">var <span class="ident">tenant_id</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -475,12 +409,6 @@ fields in the data. Use <code>EXCLUDE</code>, <code>INCLUDE</code> or <code>RAIS
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="licenseware.common.serializers.register_app_payload_schema.AppActivatedTenantsSchema" href="#licenseware.common.serializers.register_app_payload_schema.AppActivatedTenantsSchema">AppActivatedTenantsSchema</a></code></h4>
-<ul class="">
-<li><code><a title="licenseware.common.serializers.register_app_payload_schema.AppActivatedTenantsSchema.opts" href="#licenseware.common.serializers.register_app_payload_schema.AppActivatedTenantsSchema.opts">opts</a></code></li>
-</ul>
-</li>
-<li>
 <h4><code><a title="licenseware.common.serializers.register_app_payload_schema.AppInfoSchema" href="#licenseware.common.serializers.register_app_payload_schema.AppInfoSchema">AppInfoSchema</a></code></h4>
 <ul class="">
 <li><code><a title="licenseware.common.serializers.register_app_payload_schema.AppInfoSchema.app_activation_url" href="#licenseware.common.serializers.register_app_payload_schema.AppInfoSchema.app_activation_url">app_activation_url</a></code></li>
@@ -501,7 +429,9 @@ fields in the data. Use <code>EXCLUDE</code>, <code>INCLUDE</code> or <code>RAIS
 <li>
 <h4><code><a title="licenseware.common.serializers.register_app_payload_schema.DataAvailableTenantsSchema" href="#licenseware.common.serializers.register_app_payload_schema.DataAvailableTenantsSchema">DataAvailableTenantsSchema</a></code></h4>
 <ul class="">
+<li><code><a title="licenseware.common.serializers.register_app_payload_schema.DataAvailableTenantsSchema.last_update_date" href="#licenseware.common.serializers.register_app_payload_schema.DataAvailableTenantsSchema.last_update_date">last_update_date</a></code></li>
 <li><code><a title="licenseware.common.serializers.register_app_payload_schema.DataAvailableTenantsSchema.opts" href="#licenseware.common.serializers.register_app_payload_schema.DataAvailableTenantsSchema.opts">opts</a></code></li>
+<li><code><a title="licenseware.common.serializers.register_app_payload_schema.DataAvailableTenantsSchema.tenant_id" href="#licenseware.common.serializers.register_app_payload_schema.DataAvailableTenantsSchema.tenant_id">tenant_id</a></code></li>
 </ul>
 </li>
 <li>

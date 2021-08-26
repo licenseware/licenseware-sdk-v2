@@ -28,11 +28,18 @@
 </summary>
 <pre><code class="python">from marshmallow import ValidationError
 from uuid import UUID
+import random
 
 
-def _valid_uuid(uuid_string):
+def _valid_uuid(value):
     try:
-        UUID(uuid_string)
+        if not value: return True
+        if isinstance(value, str):
+            UUID(value)
+        elif isinstance(value, list) and value:
+            UUID(random.choice(value)) # optimistic validation
+        else:
+            raise ValidationError(&#34;Not a valid uuid4 string&#34;)
         return True
     except ValueError:
         return False
@@ -40,7 +47,7 @@ def _valid_uuid(uuid_string):
 
 def validate_uuid4(value):
     if not _valid_uuid(value):
-        raise ValidationError(f&#34;{value} is not a valid uuid4 string&#34;)
+        raise ValidationError(&#34;Not a valid uuid4 string&#34;)
     </code></pre>
 </details>
 </section>
@@ -62,7 +69,7 @@ def validate_uuid4(value):
 </summary>
 <pre><code class="python">def validate_uuid4(value):
     if not _valid_uuid(value):
-        raise ValidationError(f&#34;{value} is not a valid uuid4 string&#34;)</code></pre>
+        raise ValidationError(&#34;Not a valid uuid4 string&#34;)</code></pre>
 </details>
 </dd>
 </dl>

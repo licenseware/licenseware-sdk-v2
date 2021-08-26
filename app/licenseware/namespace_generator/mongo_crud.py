@@ -33,7 +33,6 @@ class MongoCrud:
         params = {}
         if self.request_obj.args is None: return params
         params = dict(self.request_obj.args) or {}
-        params.pop('tenant_id', None)
         return params
 
     @property
@@ -42,13 +41,18 @@ class MongoCrud:
         if self.request_obj.json is None: return payload
         if isinstance(self.request_obj.json, dict):
             payload = self.request_obj.json
-            payload.pop('tenant_id', None)
-
         return payload
 
     @property
     def query(self):
         tenant = {'tenant_id': self.request_obj.headers.get("Tenantid")}
+    
+        if self.params['tenant_id'] != tenant['tenant_id']:
+            raise Exception("The 'tenant_id' provided in query parameter is not the same as the one from headers")
+            
+        if self.payload['tenant_id'] != tenant['tenant_id']:
+            raise Exception("The 'tenant_id' provided in query parameter is not the same as the one from headers")
+
         query = {**tenant, **self.params, **self.payload}
         log.warning(f"CRUD Request: {query}")
         return query
@@ -103,9 +107,8 @@ class MongoCrud:
         self.request_obj = request_obj
 
         data = dict(self.query, **{
-            "_id": str(uuid.uuid4()),
             "updated_at": datetime.datetime.utcnow().isoformat()}
-                    )
+        )
 
         inserted_docs = m.insert(
             schema=self.schema,

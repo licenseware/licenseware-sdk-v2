@@ -30,7 +30,8 @@
 from app.licenseware.common.constants import envs, states
 from app.licenseware.registry_service.register_uploader import register_uploader
 from app.licenseware.utils.dramatiq_redis_broker import broker
-from app.licenseware.utils.logger import log 
+from app.licenseware.utils.logger import log, log_dict
+from app.licenseware.quota import Quota
 
 
 
@@ -93,8 +94,8 @@ class UploaderBuilder:
 
     def validate_filenames(self, flask_request):
         
-        response, status_code = self.validator_class.calculate_quota(flask_request)
-        if response[&#39;status&#39;] == &#39;fail&#39;: return response, status_code
+        quota_response, quota_status_code = self.validator_class.calculate_quota(flask_request)
+        if quota_status_code != 200: return quota_response, quota_status_code
         
         response, status_code = self.validator_class.get_filenames_response(flask_request)
         return response, status_code
@@ -102,37 +103,36 @@ class UploaderBuilder:
         
     def upload_files(self, flask_request):
         
-        quota_response, status_code = self.validator_class.calculate_quota(flask_request)
-        if quota_response[&#39;status&#39;] == &#39;fail&#39;: return quota_response, status_code
+        quota_response, quota_status_code = self.validator_class.calculate_quota(flask_request)
+        if quota_status_code != 200: return quota_response, quota_status_code
+        
         
         response, status_code = self.validator_class.get_file_objects_response(flask_request)
         
-        event_data = {
-            &#39;tenant_id&#39;: flask_request.headers.get(&#34;TenantId&#34;),
-            &#39;filepaths&#39;: self.validator_class.get_only_valid_filepaths_from_objects_response(response),
-            &#39;headers&#39;:  dict(flask_request.headers) if flask_request.headers else {},
-            &#39;json&#39;:  dict(flask_request.json) if flask_request.json else {},
-        }
-        
-        log.warning(&#34;Sending event data&#34;)
-        
-        self.worker.send(event_data)
-        
+        if status_code == 200:
+            
+            event_data = {
+                &#39;tenant_id&#39;: flask_request.headers.get(&#34;Tenantid&#34;),
+                &#39;filepaths&#39;: self.validator_class.get_only_valid_filepaths_from_objects_response(response),
+                &#39;headers&#39;:  dict(flask_request.headers) if flask_request.headers else {},
+                &#39;json&#39;:  dict(flask_request.json) if flask_request.json else {},
+            }
+            
+            log_dict(event_data)
+            self.worker.send(event_data)
+            
+            
         return response, status_code
     
     
     def init_tenant_quota(self, tenant_id:str):
-        #TODO
-        return {&#39;status&#39;: &#39;TODO&#39;}, 200
+        return Quota(tenant_id=tenant_id, uploader_id=self.uploader_id).init_quota()
     
-    def upload_tenant_quota(self, tenant_id:str):
-        #TODO
-        return {&#39;status&#39;: &#39;TODO&#39;}, 200
+    # def update_tenant_quota(self, tenant_id:str):
+    #     return Quota(tenant_id=tenant_id, uploader_id=self.uploader_id).init_quota()
     
     def check_tenant_quota(self, tenant_id:str):
-        #TODO
-        return {&#39;status&#39;: &#39;TODO&#39;}, 200
-        
+        return Quota(tenant_id=tenant_id, uploader_id=self.uploader_id).check_quota()
         
         
         
@@ -217,8 +217,8 @@ class UploaderBuilder:
 
     def validate_filenames(self, flask_request):
         
-        response, status_code = self.validator_class.calculate_quota(flask_request)
-        if response[&#39;status&#39;] == &#39;fail&#39;: return response, status_code
+        quota_response, quota_status_code = self.validator_class.calculate_quota(flask_request)
+        if quota_status_code != 200: return quota_response, quota_status_code
         
         response, status_code = self.validator_class.get_filenames_response(flask_request)
         return response, status_code
@@ -226,36 +226,36 @@ class UploaderBuilder:
         
     def upload_files(self, flask_request):
         
-        quota_response, status_code = self.validator_class.calculate_quota(flask_request)
-        if quota_response[&#39;status&#39;] == &#39;fail&#39;: return quota_response, status_code
+        quota_response, quota_status_code = self.validator_class.calculate_quota(flask_request)
+        if quota_status_code != 200: return quota_response, quota_status_code
+        
         
         response, status_code = self.validator_class.get_file_objects_response(flask_request)
         
-        event_data = {
-            &#39;tenant_id&#39;: flask_request.headers.get(&#34;TenantId&#34;),
-            &#39;filepaths&#39;: self.validator_class.get_only_valid_filepaths_from_objects_response(response),
-            &#39;headers&#39;:  dict(flask_request.headers) if flask_request.headers else {},
-            &#39;json&#39;:  dict(flask_request.json) if flask_request.json else {},
-        }
-        
-        log.warning(&#34;Sending event data&#34;)
-        
-        self.worker.send(event_data)
-        
+        if status_code == 200:
+            
+            event_data = {
+                &#39;tenant_id&#39;: flask_request.headers.get(&#34;Tenantid&#34;),
+                &#39;filepaths&#39;: self.validator_class.get_only_valid_filepaths_from_objects_response(response),
+                &#39;headers&#39;:  dict(flask_request.headers) if flask_request.headers else {},
+                &#39;json&#39;:  dict(flask_request.json) if flask_request.json else {},
+            }
+            
+            log_dict(event_data)
+            self.worker.send(event_data)
+            
+            
         return response, status_code
     
     
     def init_tenant_quota(self, tenant_id:str):
-        #TODO
-        return {&#39;status&#39;: &#39;TODO&#39;}, 200
+        return Quota(tenant_id=tenant_id, uploader_id=self.uploader_id).init_quota()
     
-    def upload_tenant_quota(self, tenant_id:str):
-        #TODO
-        return {&#39;status&#39;: &#39;TODO&#39;}, 200
+    # def update_tenant_quota(self, tenant_id:str):
+    #     return Quota(tenant_id=tenant_id, uploader_id=self.uploader_id).init_quota()
     
     def check_tenant_quota(self, tenant_id:str):
-        #TODO
-        return {&#39;status&#39;: &#39;TODO&#39;}, 200</code></pre>
+        return Quota(tenant_id=tenant_id, uploader_id=self.uploader_id).check_quota()</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -269,8 +269,7 @@ class UploaderBuilder:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def check_tenant_quota(self, tenant_id:str):
-    #TODO
-    return {&#39;status&#39;: &#39;TODO&#39;}, 200</code></pre>
+    return Quota(tenant_id=tenant_id, uploader_id=self.uploader_id).check_quota()</code></pre>
 </details>
 </dd>
 <dt id="licenseware.uploader_builder.uploader_builder.UploaderBuilder.init_tenant_quota"><code class="name flex">
@@ -283,8 +282,7 @@ class UploaderBuilder:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def init_tenant_quota(self, tenant_id:str):
-    #TODO
-    return {&#39;status&#39;: &#39;TODO&#39;}, 200</code></pre>
+    return Quota(tenant_id=tenant_id, uploader_id=self.uploader_id).init_quota()</code></pre>
 </details>
 </dd>
 <dt id="licenseware.uploader_builder.uploader_builder.UploaderBuilder.register_uploader"><code class="name flex">
@@ -314,37 +312,26 @@ class UploaderBuilder:
 </summary>
 <pre><code class="python">def upload_files(self, flask_request):
     
-    quota_response, status_code = self.validator_class.calculate_quota(flask_request)
-    if quota_response[&#39;status&#39;] == &#39;fail&#39;: return quota_response, status_code
+    quota_response, quota_status_code = self.validator_class.calculate_quota(flask_request)
+    if quota_status_code != 200: return quota_response, quota_status_code
+    
     
     response, status_code = self.validator_class.get_file_objects_response(flask_request)
     
-    event_data = {
-        &#39;tenant_id&#39;: flask_request.headers.get(&#34;TenantId&#34;),
-        &#39;filepaths&#39;: self.validator_class.get_only_valid_filepaths_from_objects_response(response),
-        &#39;headers&#39;:  dict(flask_request.headers) if flask_request.headers else {},
-        &#39;json&#39;:  dict(flask_request.json) if flask_request.json else {},
-    }
-    
-    log.warning(&#34;Sending event data&#34;)
-    
-    self.worker.send(event_data)
-    
+    if status_code == 200:
+        
+        event_data = {
+            &#39;tenant_id&#39;: flask_request.headers.get(&#34;Tenantid&#34;),
+            &#39;filepaths&#39;: self.validator_class.get_only_valid_filepaths_from_objects_response(response),
+            &#39;headers&#39;:  dict(flask_request.headers) if flask_request.headers else {},
+            &#39;json&#39;:  dict(flask_request.json) if flask_request.json else {},
+        }
+        
+        log_dict(event_data)
+        self.worker.send(event_data)
+        
+        
     return response, status_code</code></pre>
-</details>
-</dd>
-<dt id="licenseware.uploader_builder.uploader_builder.UploaderBuilder.upload_tenant_quota"><code class="name flex">
-<span>def <span class="ident">upload_tenant_quota</span></span>(<span>self, tenant_id: str)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def upload_tenant_quota(self, tenant_id:str):
-    #TODO
-    return {&#39;status&#39;: &#39;TODO&#39;}, 200</code></pre>
 </details>
 </dd>
 <dt id="licenseware.uploader_builder.uploader_builder.UploaderBuilder.validate_filenames"><code class="name flex">
@@ -358,8 +345,8 @@ class UploaderBuilder:
 </summary>
 <pre><code class="python">def validate_filenames(self, flask_request):
     
-    response, status_code = self.validator_class.calculate_quota(flask_request)
-    if response[&#39;status&#39;] == &#39;fail&#39;: return response, status_code
+    quota_response, quota_status_code = self.validator_class.calculate_quota(flask_request)
+    if quota_status_code != 200: return quota_response, quota_status_code
     
     response, status_code = self.validator_class.get_filenames_response(flask_request)
     return response, status_code</code></pre>
@@ -385,12 +372,11 @@ class UploaderBuilder:
 <ul>
 <li>
 <h4><code><a title="licenseware.uploader_builder.uploader_builder.UploaderBuilder" href="#licenseware.uploader_builder.uploader_builder.UploaderBuilder">UploaderBuilder</a></code></h4>
-<ul class="two-column">
+<ul class="">
 <li><code><a title="licenseware.uploader_builder.uploader_builder.UploaderBuilder.check_tenant_quota" href="#licenseware.uploader_builder.uploader_builder.UploaderBuilder.check_tenant_quota">check_tenant_quota</a></code></li>
 <li><code><a title="licenseware.uploader_builder.uploader_builder.UploaderBuilder.init_tenant_quota" href="#licenseware.uploader_builder.uploader_builder.UploaderBuilder.init_tenant_quota">init_tenant_quota</a></code></li>
 <li><code><a title="licenseware.uploader_builder.uploader_builder.UploaderBuilder.register_uploader" href="#licenseware.uploader_builder.uploader_builder.UploaderBuilder.register_uploader">register_uploader</a></code></li>
 <li><code><a title="licenseware.uploader_builder.uploader_builder.UploaderBuilder.upload_files" href="#licenseware.uploader_builder.uploader_builder.UploaderBuilder.upload_files">upload_files</a></code></li>
-<li><code><a title="licenseware.uploader_builder.uploader_builder.UploaderBuilder.upload_tenant_quota" href="#licenseware.uploader_builder.uploader_builder.UploaderBuilder.upload_tenant_quota">upload_tenant_quota</a></code></li>
 <li><code><a title="licenseware.uploader_builder.uploader_builder.UploaderBuilder.validate_filenames" href="#licenseware.uploader_builder.uploader_builder.UploaderBuilder.validate_filenames">validate_filenames</a></code></li>
 </ul>
 </li>

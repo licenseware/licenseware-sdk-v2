@@ -68,6 +68,10 @@ class RVToolsUploaderValidator(UploaderValidator):
     def calculate_quota(self, flask_request) -> Tuple[dict, int]:
         
         file_objects = flask_request.files.getlist("files[]")
+        
+        
+        
+        
         # each set of files have a different way of calculating quota
         # TODO
         # - calculate quota based on user_id (send a get request with tenant_id query param to auth-service /user_id_from_tenant_id)
@@ -116,7 +120,8 @@ rv_tools_uploader = UploaderBuilder(
     description="XLSX export from RVTools after scanning your Vmware infrastructure.", 
     accepted_file_types=['.xls', '.xlsx'],
     validator_class=rv_tools_validator,
-    worker_function=rv_tools_worker
+    worker_function=rv_tools_worker,
+    quota_units = 1
 )
 
 # Here we are:

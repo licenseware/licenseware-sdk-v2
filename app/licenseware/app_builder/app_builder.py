@@ -60,6 +60,8 @@ class base_paths:
     tenant_registration_path: str ='/register_tenant'
 
 
+# TODO 
+# if envs.ENVIRONMENT == 'local' add uploader_id and app_id prefixes from envs.PERSONAL_PREFIX
 
 
 class AppBuilder:

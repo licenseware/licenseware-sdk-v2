@@ -27,11 +27,14 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">from marshmallow import Schema, fields
+from app.licenseware.common.validators import validate_uuid4
+
 
 #TODO
 
+
 class AnalysisStatusSchema(Schema):
-    tenant_id = fields.UUID(required=True)
+    tenant_id = fields.Str(required=True, validate=validate_uuid4)
     status = fields.Str(required=True)
     uploader_id = fields.Str(required=False)
     
@@ -113,7 +116,7 @@ fields in the data. Use <code>EXCLUDE</code>, <code>INCLUDE</code> or <code>RAIS
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class AnalysisStatusSchema(Schema):
-    tenant_id = fields.UUID(required=True)
+    tenant_id = fields.Str(required=True, validate=validate_uuid4)
     status = fields.Str(required=True)
     uploader_id = fields.Str(required=False)</code></pre>
 </details>

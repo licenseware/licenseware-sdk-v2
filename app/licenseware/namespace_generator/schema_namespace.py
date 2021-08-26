@@ -1,16 +1,21 @@
 import re
 from inspect import signature
-from marshmallow import Schema
+
+from marshmallow import Schema, fields
 from marshmallow_jsonschema import JSONSchema
 from flask_restx import Namespace, Resource
 
+from app.licenseware.common.validators import validate_uuid4
 from app.licenseware.decorators.auth_decorators import authorization_check
 from app.licenseware.utils.miscellaneous import swagger_authorization_header, http_methods
 
 from .mongo_request import MongoRequest
 
 
-
+# Every api namespace generated with SchemaNamespace must have `tenant_id` and `updated_at` fields
+class BaseSchema(Schema):
+    tenant_id = fields.Str(required=True, validate=validate_uuid4)
+    updated_at = fields.Str(required=False)
 
 
 
@@ -42,6 +47,14 @@ class SchemaNamespace(MongoRequest):
     namespace:Namespace = None
     ):
         self.schema = self.schema or schema
+        
+        # Adding `tenant_id` and `updated_at` fields to received schema
+        self.schema = type(
+            self.schema.__name__,
+            (self.schema, BaseSchema,),
+            {}
+        )
+        
         self.collection = self.collection or collection
         self.decorators = self.decorators or decorators
         self.methods = self.methods or methods
@@ -55,7 +68,7 @@ class SchemaNamespace(MongoRequest):
         self.model = None
         self.resources = None
         self.http_methods = None
-
+        
 
     @classmethod
     def _initialize(cls):

@@ -43,6 +43,8 @@ class envs:
 
     # Environment variables available at startup
     DEBUG:bool = os.environ['DEBUG'] == 'true'
+    ENVIRONMENT:str = os.environ["ENVIRONMENT"]
+    PERSONAL_PREFIX:str = os.environ["PERSONAL_PREFIX"]
     APP_ID:str = os.environ["APP_ID"]
     APP_HOST:str = os.environ['APP_HOST']
     LWARE_USER:str = os.environ['LWARE_IDENTITY_USER']

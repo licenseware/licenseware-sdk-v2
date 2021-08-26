@@ -144,7 +144,7 @@ class FileContentValidator:
             create json response
         &#34;&#34;&#34;
         
-        tenant_id = flask_request.headers.get(&#34;TenantId&#34;)
+        tenant_id = flask_request.headers.get(&#34;Tenantid&#34;)
     
         file_objects = self.get_file_objects_from_request(flask_request)
         if not isinstance(file_objects, list): return file_objects
@@ -291,7 +291,7 @@ class FileContentValidator:
             create json response
         &#34;&#34;&#34;
         
-        tenant_id = flask_request.headers.get(&#34;TenantId&#34;)
+        tenant_id = flask_request.headers.get(&#34;Tenantid&#34;)
     
         file_objects = self.get_file_objects_from_request(flask_request)
         if not isinstance(file_objects, list): return file_objects
@@ -354,7 +354,7 @@ create json response</p></div>
         create json response
     &#34;&#34;&#34;
     
-    tenant_id = flask_request.headers.get(&#34;TenantId&#34;)
+    tenant_id = flask_request.headers.get(&#34;Tenantid&#34;)
 
     file_objects = self.get_file_objects_from_request(flask_request)
     if not isinstance(file_objects, list): return file_objects

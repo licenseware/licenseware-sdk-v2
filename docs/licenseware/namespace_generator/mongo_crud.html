@@ -61,7 +61,6 @@ class MongoCrud:
         params = {}
         if self.request_obj.args is None: return params
         params = dict(self.request_obj.args) or {}
-        params.pop(&#39;tenant_id&#39;, None)
         return params
 
     @property
@@ -70,13 +69,18 @@ class MongoCrud:
         if self.request_obj.json is None: return payload
         if isinstance(self.request_obj.json, dict):
             payload = self.request_obj.json
-            payload.pop(&#39;tenant_id&#39;, None)
-
         return payload
 
     @property
     def query(self):
         tenant = {&#39;tenant_id&#39;: self.request_obj.headers.get(&#34;Tenantid&#34;)}
+    
+        if self.params[&#39;tenant_id&#39;] != tenant[&#39;tenant_id&#39;]:
+            raise Exception(&#34;The &#39;tenant_id&#39; provided in query parameter is not the same as the one from headers&#34;)
+            
+        if self.payload[&#39;tenant_id&#39;] != tenant[&#39;tenant_id&#39;]:
+            raise Exception(&#34;The &#39;tenant_id&#39; provided in query parameter is not the same as the one from headers&#34;)
+
         query = {**tenant, **self.params, **self.payload}
         log.warning(f&#34;CRUD Request: {query}&#34;)
         return query
@@ -131,9 +135,8 @@ class MongoCrud:
         self.request_obj = request_obj
 
         data = dict(self.query, **{
-            &#34;_id&#34;: str(uuid.uuid4()),
             &#34;updated_at&#34;: datetime.datetime.utcnow().isoformat()}
-                    )
+        )
 
         inserted_docs = m.insert(
             schema=self.schema,
@@ -207,7 +210,6 @@ Indexes are provided on serializer metadata (simple_indexes, compound_indexes).<
         params = {}
         if self.request_obj.args is None: return params
         params = dict(self.request_obj.args) or {}
-        params.pop(&#39;tenant_id&#39;, None)
         return params
 
     @property
@@ -216,13 +218,18 @@ Indexes are provided on serializer metadata (simple_indexes, compound_indexes).<
         if self.request_obj.json is None: return payload
         if isinstance(self.request_obj.json, dict):
             payload = self.request_obj.json
-            payload.pop(&#39;tenant_id&#39;, None)
-
         return payload
 
     @property
     def query(self):
         tenant = {&#39;tenant_id&#39;: self.request_obj.headers.get(&#34;Tenantid&#34;)}
+    
+        if self.params[&#39;tenant_id&#39;] != tenant[&#39;tenant_id&#39;]:
+            raise Exception(&#34;The &#39;tenant_id&#39; provided in query parameter is not the same as the one from headers&#34;)
+            
+        if self.payload[&#39;tenant_id&#39;] != tenant[&#39;tenant_id&#39;]:
+            raise Exception(&#34;The &#39;tenant_id&#39; provided in query parameter is not the same as the one from headers&#34;)
+
         query = {**tenant, **self.params, **self.payload}
         log.warning(f&#34;CRUD Request: {query}&#34;)
         return query
@@ -277,9 +284,8 @@ Indexes are provided on serializer metadata (simple_indexes, compound_indexes).<
         self.request_obj = request_obj
 
         data = dict(self.query, **{
-            &#34;_id&#34;: str(uuid.uuid4()),
             &#34;updated_at&#34;: datetime.datetime.utcnow().isoformat()}
-                    )
+        )
 
         inserted_docs = m.insert(
             schema=self.schema,
@@ -333,7 +339,6 @@ def params(self):
     params = {}
     if self.request_obj.args is None: return params
     params = dict(self.request_obj.args) or {}
-    params.pop(&#39;tenant_id&#39;, None)
     return params</code></pre>
 </details>
 </dd>
@@ -350,8 +355,6 @@ def payload(self):
     if self.request_obj.json is None: return payload
     if isinstance(self.request_obj.json, dict):
         payload = self.request_obj.json
-        payload.pop(&#39;tenant_id&#39;, None)
-
     return payload</code></pre>
 </details>
 </dd>
@@ -365,6 +368,13 @@ def payload(self):
 <pre><code class="python">@property
 def query(self):
     tenant = {&#39;tenant_id&#39;: self.request_obj.headers.get(&#34;Tenantid&#34;)}
+
+    if self.params[&#39;tenant_id&#39;] != tenant[&#39;tenant_id&#39;]:
+        raise Exception(&#34;The &#39;tenant_id&#39; provided in query parameter is not the same as the one from headers&#34;)
+        
+    if self.payload[&#39;tenant_id&#39;] != tenant[&#39;tenant_id&#39;]:
+        raise Exception(&#34;The &#39;tenant_id&#39; provided in query parameter is not the same as the one from headers&#34;)
+
     query = {**tenant, **self.params, **self.payload}
     log.warning(f&#34;CRUD Request: {query}&#34;)
     return query</code></pre>
@@ -456,9 +466,8 @@ def query(self):
     self.request_obj = request_obj
 
     data = dict(self.query, **{
-        &#34;_id&#34;: str(uuid.uuid4()),
         &#34;updated_at&#34;: datetime.datetime.utcnow().isoformat()}
-                )
+    )
 
     inserted_docs = m.insert(
         schema=self.schema,

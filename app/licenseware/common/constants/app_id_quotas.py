@@ -27,6 +27,7 @@ max_int = sys.maxsize
 set_quota = lambda q: max_int if envs.DEBUG else q
 
 
+#TODO add quota to uploader
 
 QUOTA = {
     

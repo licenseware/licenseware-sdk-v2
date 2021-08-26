@@ -28,17 +28,22 @@
 </summary>
 <pre><code class="python">import re
 from inspect import signature
-from marshmallow import Schema
+
+from marshmallow import Schema, fields
 from marshmallow_jsonschema import JSONSchema
 from flask_restx import Namespace, Resource
 
+from app.licenseware.common.validators import validate_uuid4
 from app.licenseware.decorators.auth_decorators import authorization_check
 from app.licenseware.utils.miscellaneous import swagger_authorization_header, http_methods
 
 from .mongo_request import MongoRequest
 
 
-
+# Every api namespace generated with SchemaNamespace must have `tenant_id` and `updated_at` fields
+class BaseSchema(Schema):
+    tenant_id = fields.Str(required=True, validate=validate_uuid4)
+    updated_at = fields.Str(required=False)
 
 
 
@@ -70,6 +75,14 @@ class SchemaNamespace(MongoRequest):
     namespace:Namespace = None
     ):
         self.schema = self.schema or schema
+        
+        # Adding `tenant_id` and `updated_at` fields to received schema
+        self.schema = type(
+            self.schema.__name__,
+            (self.schema, BaseSchema,),
+            {}
+        )
+        
         self.collection = self.collection or collection
         self.decorators = self.decorators or decorators
         self.methods = self.methods or methods
@@ -83,7 +96,7 @@ class SchemaNamespace(MongoRequest):
         self.model = None
         self.resources = None
         self.http_methods = None
-
+        
 
     @classmethod
     def _initialize(cls):
@@ -216,6 +229,96 @@ class SchemaNamespace(MongoRequest):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
+<dt id="licenseware.namespace_generator.schema_namespace.BaseSchema"><code class="flex name class">
+<span>class <span class="ident">BaseSchema</span></span>
+<span>(</span><span>*, only: Union[Sequence[str], Set[str], None] = None, exclude: Union[Sequence[str], Set[str]] = (), many: bool = False, context: Optional[Dict[~KT, ~VT]] = None, load_only: Union[Sequence[str], Set[str]] = (), dump_only: Union[Sequence[str], Set[str]] = (), partial: Union[bool, Sequence[str], Set[str]] = False, unknown: Optional[str] = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Base schema class with which to define custom schemas.</p>
+<p>Example usage:</p>
+<p>.. code-block:: python</p>
+<pre><code>import datetime as dt
+from dataclasses import dataclass
+
+from marshmallow import Schema, fields
+
+
+@dataclass
+class Album:
+    title: str
+    release_date: dt.date
+
+
+class AlbumSchema(Schema):
+    title = fields.Str()
+    release_date = fields.Date()
+
+
+album = Album("Beggars Banquet", dt.date(1968, 12, 6))
+schema = AlbumSchema()
+data = schema.dump(album)
+data  # {'release_date': '1968-12-06', 'title': 'Beggars Banquet'}
+</code></pre>
+<p>:param only: Whitelist of the declared fields to select when
+instantiating the Schema. If None, all fields are used. Nested fields
+can be represented with dot delimiters.
+:param exclude: Blacklist of the declared fields to exclude
+when instantiating the Schema. If a field appears in both <code>only</code> and
+<code>exclude</code>, it is not used. Nested fields can be represented with dot
+delimiters.
+:param many: Should be set to <code>True</code> if <code>obj</code> is a collection
+so that the object will be serialized to a list.
+:param context: Optional context passed to :class:<code>fields.Method</code> and
+:class:<code>fields.Function</code> fields.
+:param load_only: Fields to skip during serialization (write-only fields)
+:param dump_only: Fields to skip during deserialization (read-only fields)
+:param partial: Whether to ignore missing fields and not require
+any fields declared. Propagates down to <code>Nested</code> fields as well. If
+its value is an iterable, only missing fields listed in that iterable
+will be ignored. Use dot delimiters to specify nested fields.
+:param unknown: Whether to exclude, include, or raise an error for unknown
+fields in the data. Use <code>EXCLUDE</code>, <code>INCLUDE</code> or <code>RAISE</code>.</p>
+<div class="admonition versionchanged">
+<p class="admonition-title">Changed in version:&ensp;3.0.0</p>
+<p><code>prefix</code> parameter removed.</p>
+</div>
+<div class="admonition versionchanged">
+<p class="admonition-title">Changed in version:&ensp;2.0.0</p>
+<p><code>__validators__</code>, <code>__preprocessors__</code>, and <code>__data_handlers__</code> are removed in favor of
+<code>marshmallow.decorators.validates_schema</code>,
+<code>marshmallow.decorators.pre_load</code> and <code>marshmallow.decorators.post_dump</code>.
+<code>__accessor__</code> and <code>__error_handler__</code> are deprecated. Implement the
+<code>handle_error</code> and <code>get_attribute</code> methods instead.</p>
+</div></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class BaseSchema(Schema):
+    tenant_id = fields.Str(required=True, validate=validate_uuid4)
+    updated_at = fields.Str(required=False)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>marshmallow.schema.Schema</li>
+<li>marshmallow.base.SchemaABC</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="licenseware.namespace_generator.schema_namespace.BaseSchema.opts"><code class="name">var <span class="ident">opts</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="licenseware.namespace_generator.schema_namespace.BaseSchema.tenant_id"><code class="name">var <span class="ident">tenant_id</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="licenseware.namespace_generator.schema_namespace.BaseSchema.updated_at"><code class="name">var <span class="ident">updated_at</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
 <dt id="licenseware.namespace_generator.schema_namespace.SchemaNamespace"><code class="flex name class">
 <span>class <span class="ident">SchemaNamespace</span></span>
 <span>(</span><span>schema: marshmallow.schema.Schema = None, collection: str = None, methods: list = ['GET', 'POST', 'PUT', 'DELETE'], decorators: list = [&lt;function authorization_check&gt;], authorizations: dict = {'Tenantid': {'type': 'apiKey', 'in': 'header', 'name': 'Tenantid'}, 'Authorization': {'type': 'apiKey', 'in': 'header', 'name': 'Authorization'}}, namespace: flask_restx.namespace.Namespace = None)</span>
@@ -259,6 +362,14 @@ methods=['GET', 'POST']
     namespace:Namespace = None
     ):
         self.schema = self.schema or schema
+        
+        # Adding `tenant_id` and `updated_at` fields to received schema
+        self.schema = type(
+            self.schema.__name__,
+            (self.schema, BaseSchema,),
+            {}
+        )
+        
         self.collection = self.collection or collection
         self.decorators = self.decorators or decorators
         self.methods = self.methods or methods
@@ -272,7 +383,7 @@ methods=['GET', 'POST']
         self.model = None
         self.resources = None
         self.http_methods = None
-
+        
 
     @classmethod
     def _initialize(cls):
@@ -620,6 +731,14 @@ methods=['GET', 'POST']
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
+<li>
+<h4><code><a title="licenseware.namespace_generator.schema_namespace.BaseSchema" href="#licenseware.namespace_generator.schema_namespace.BaseSchema">BaseSchema</a></code></h4>
+<ul class="">
+<li><code><a title="licenseware.namespace_generator.schema_namespace.BaseSchema.opts" href="#licenseware.namespace_generator.schema_namespace.BaseSchema.opts">opts</a></code></li>
+<li><code><a title="licenseware.namespace_generator.schema_namespace.BaseSchema.tenant_id" href="#licenseware.namespace_generator.schema_namespace.BaseSchema.tenant_id">tenant_id</a></code></li>
+<li><code><a title="licenseware.namespace_generator.schema_namespace.BaseSchema.updated_at" href="#licenseware.namespace_generator.schema_namespace.BaseSchema.updated_at">updated_at</a></code></li>
+</ul>
+</li>
 <li>
 <h4><code><a title="licenseware.namespace_generator.schema_namespace.SchemaNamespace" href="#licenseware.namespace_generator.schema_namespace.SchemaNamespace">SchemaNamespace</a></code></h4>
 <ul class="two-column">

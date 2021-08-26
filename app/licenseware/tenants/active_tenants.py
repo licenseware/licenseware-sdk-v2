@@ -52,8 +52,9 @@ def get_last_update_dates(tenant_id:str = None, data_collection_name:str = None)
         pipeline, 
         collection = data_collection_name or envs.MONGO_COLLECTION_DATA_NAME
     )
-
-    if not last_update_dates:
+    
+    if last_update_dates == [{'tenant_id': None, 'last_update_date': None}]:
+        last_update_dates = []
         log.info("Could not get last update dates")
 
     return last_update_dates

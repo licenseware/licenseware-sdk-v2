@@ -116,7 +116,7 @@ class FileContentValidator:
             create json response
         """
         
-        tenant_id = flask_request.headers.get("TenantId")
+        tenant_id = flask_request.headers.get("Tenantid")
     
         file_objects = self.get_file_objects_from_request(flask_request)
         if not isinstance(file_objects, list): return file_objects
