@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>licenseware.app_builder.uploads_namespace.filenames_validation_namespace API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Given a list of filenames return validation analysis response …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,11 +22,22 @@
 <h1 class="title">Module <code>licenseware.app_builder.uploads_namespace.filenames_validation_namespace</code></h1>
 </header>
 <section id="section-intro">
+<p>Given a list of filenames return validation analysis response</p>
+<p>Notice we are using <code>build_restx_model</code> function to generate the swagger body required for the request.</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from flask import request
+<pre><code class="python">&#34;&#34;&#34;
+
+Given a list of filenames return validation analysis response
+
+Notice we are using `build_restx_model` function to generate the swagger body required for the request.  
+
+&#34;&#34;&#34;
+
+
+from flask import request
 from flask_restx import Namespace, Resource
 from marshmallow import Schema, fields
 
@@ -62,7 +73,6 @@ def get_filenames_validation_namespace(ns: Namespace, uploaders:list):
                 },
                 body=restx_model
             )
-            @ns.marshal_with(restx_model)
             def post(self):
                 return uploader.validate_filenames(request)
 
@@ -107,7 +117,6 @@ def get_filenames_validation_namespace(ns: Namespace, uploaders:list):
                 },
                 body=restx_model
             )
-            @ns.marshal_with(restx_model)
             def post(self):
                 return uploader.validate_filenames(request)
 

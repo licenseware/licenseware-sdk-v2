@@ -22,7 +22,7 @@ def register_component(**kwargs):
         'data': [{
             "app_id": envs.APP_ID,
             "component_id": kwargs['component_id'],
-            "url": kwargs['component_url'],
+            "url": kwargs['url'],
             "order": kwargs['order'],
             "style_attributes": kwargs['style_attributes'],
             "attributes": kwargs['attributes'],

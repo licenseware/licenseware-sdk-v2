@@ -1,7 +1,15 @@
+"""
+
+When this endpoint is called the generated metadata from marshmallow schemas provided in `AppBuilder` at `editable_tables_schemas` parameter will be returned.
+
+See `editable_table` package for more information.
+
+"""
+
 from flask_restx import Api, Resource
 from app.licenseware.decorators.auth_decorators import authorization_check
 from app.licenseware.decorators import failsafe
-from app.licenseware.editable_tables import editable_tables_from_schemas
+from app.licenseware.editable_table import editable_tables_from_schemas
 
 
 

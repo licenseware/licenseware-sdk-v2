@@ -1,7 +1,15 @@
+"""
+
+Here we are creating the `uploads_namespace` that will be imported in `app_builder` along with the route creation functions from this package.
+
+Use one module per route.
+
+"""
+
 from flask_restx import Namespace
 from app.licenseware.common.constants import envs
 
-# Here we are importing the route creation functions 
+# Here we are importing the 
 # Each function will receive the `uploads_namespace` as a first parameter followed by other parameters if needed
 from .filenames_validation_namespace import get_filenames_validation_namespace
 from .filestream_validation_namespace import get_filestream_validation_namespace

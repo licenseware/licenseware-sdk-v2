@@ -295,12 +295,11 @@ ifmp_app.register_endpoint(custom_schema_endpoint)
 
 
 
+# Call init_app at the end
+# ifmp_app.register_app()
+ifmp_app.init_app(app, register=True)
 
-if __name__ == "__main__":
-    
-    # Call init_app at the end
-    # ifmp_app.register_app()
-    ifmp_app.init_app(app, register=True)
-    
-    
+
+
+if __name__ == "__main__":    
     app.run(port=4000, debug=True)

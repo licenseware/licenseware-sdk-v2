@@ -2,6 +2,7 @@ import unittest
 from app.licenseware.uploader_validator import UploaderValidator
 import os, io
 from werkzeug.datastructures import FileStorage
+from . import tenant_id
 
 # python3 -m unittest tests/test_uploader_validator.py
 
@@ -43,8 +44,8 @@ class flask_request:
     class headers:
         
         @classmethod
-        def get(cls, tenant_id):
-            return '3d1fdc6b-04bc-44c8-ae7c-5fa5b9122f1a'
+        def get(cls, tenant_id_param):
+            return tenant_id
             
          
             

@@ -14,7 +14,7 @@ dev:
 	python3 main.py
 	
 mock:
-	python3 mock_server.py
+	uwsgi --http 0.0.0.0:5000 -w mock_server:app --processes 4
 
 worker:
 	flask worker -p4

@@ -1,5 +1,5 @@
 import requests
-from app.licenseware.utils.logger import log
+from app.licenseware.utils.logger import log, log_dict
 from app.licenseware.common.constants import envs
 from app.licenseware.decorators.auth_decorators import authenticated_machine
 from app.licenseware.common.validators.registry_payload_validators import validate_register_report_payload
@@ -17,7 +17,11 @@ def register_report(**kwargs):
             "message": "App not registered, no auth token available"
         }, 401
     
-
+    
+    
+    log.debug(kwargs.keys())
+    
+    
     payload = {
         'data': [{
             "app_id": envs.APP_ID,
@@ -25,7 +29,7 @@ def register_report(**kwargs):
             "report_name": kwargs['name'],
             "description": kwargs['description'],
             "flags": kwargs['flags'],
-            "url": kwargs['report_url'],
+            "url": kwargs['url'],
             "report_components":  kwargs['report_components'],
             "connected_apps": kwargs['connected_apps']
         }]

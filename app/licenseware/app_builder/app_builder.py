@@ -1,3 +1,11 @@
+"""
+
+`AppBuilder` is reponsible for creating the Api from the `X_namespace` packages and `X_route` modules. Authenticates the `App` and sends the registration information to registry-service. 
+
+Notice that history report route/path is provided but is not implemented that's because a report must be defined with aggregated data from AnalysisStats mongo collection. 
+
+"""
+
 from dataclasses import dataclass
 from flask_restx.resource import Resource
 from app.licenseware.common.constants.envs import envs
@@ -52,8 +60,10 @@ class base_paths:
     tenant_registration_path: str ='/register_tenant'
 
 
+
+
 class AppBuilder:
- 
+    
  
     def __init__(
         self, 

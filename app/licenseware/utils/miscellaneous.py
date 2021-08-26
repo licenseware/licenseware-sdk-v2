@@ -39,10 +39,10 @@ http_methods = ['GET', 'POST', 'PUT', 'DELETE']
 
 
 swagger_authorization_header = {
-    'TenantId': {
+    'Tenantid': {
         'type': 'apiKey',
         'in': 'header',
-        'name': 'TenantId'
+        'name': 'Tenantid'
     },
     'Authorization': {
         'type': 'apiKey',

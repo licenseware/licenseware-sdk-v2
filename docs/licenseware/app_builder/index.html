@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>licenseware.app_builder API documentation</title>
-<meta name="description" content="In the `app_builder` package we define the `app` and build routes …" />
+<meta name="description" content="In the `app_builder` package we define the `app` and build the api …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,20 +22,38 @@
 <h1 class="title">Module <code>licenseware.app_builder</code></h1>
 </header>
 <section id="section-intro">
-<p>In the <code><a title="licenseware.app_builder.app_builder" href="app_builder.html">licenseware.app_builder.app_builder</a></code> package we define the <code>app</code> and build routes.
+<p>In the <code><a title="licenseware.app_builder.app_builder" href="app_builder.html">licenseware.app_builder.app_builder</a></code> package we define the <code>app</code> and build the api.
 </p>
 <p>Make sure to decorate each route with <code>failsafe</code> decorator that way app will not crash
 and will log the error in app.log</p>
+<p>There are 2 ways we can add new endpoints to the main Api:</p>
+<ul>
+<li>
+<p>The first one is to pass instantiated <code>api</code> object from <code><a title="licenseware.app_builder.app_builder" href="app_builder.html">licenseware.app_builder.app_builder</a></code> to a function, use that <code>api</code> object then pass it back to <code>AppBuilder</code> class. See <code><a title="licenseware.app_builder.app_activation_route" href="app_activation_route.html">licenseware.app_builder.app_activation_route</a></code> for a full example;</p>
+</li>
+<li>
+<p>The second one is to create a new package (folder) just like we did with <code><a title="licenseware.app_builder.uploads_namespace" href="uploads_namespace/index.html">licenseware.app_builder.uploads_namespace</a></code>, declare the <code>Namespace</code> in the <strong>init</strong>.py file and the functions needed. The functions and the namespace created will be imported in the <code>AppBuilder</code> class and invoked. See <code><a title="licenseware.app_builder.uploads_namespace" href="uploads_namespace/index.html">licenseware.app_builder.uploads_namespace</a></code> for a full example.</p>
+</li>
+</ul>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
 
-In the `app_builder` package we define the `app` and build routes.   
+In the `app_builder` package we define the `app` and build the api.   
 
 Make sure to decorate each route with `failsafe` decorator that way app will not crash
 and will log the error in app.log
+
+There are 2 ways we can add new endpoints to the main Api:
+
+- The first one is to pass instantiated `api` object from `app_builder` to a function, use that `api` object then pass it back to `AppBuilder` class. See `app_activation_route` for a full example;
+
+- The second one is to create a new package (folder) just like we did with `uploads_namespace`, declare the `Namespace` in the __init__.py file and the functions needed. The functions and the namespace created will be imported in the `AppBuilder` class and invoked. See `uploads_namespace` for a full example.
+
+
+       
 
 
 &#34;&#34;&#34;
@@ -49,43 +67,43 @@ from .app_builder import AppBuilder</code></pre>
 <dl>
 <dt><code class="name"><a title="licenseware.app_builder.app_activation_route" href="app_activation_route.html">licenseware.app_builder.app_activation_route</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>When this endpoint is called the <code>Quota</code> for this tenant_id must be created and the <code>App</code> must be registered.</p></div>
 </dd>
 <dt><code class="name"><a title="licenseware.app_builder.app_builder" href="app_builder.html">licenseware.app_builder.app_builder</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p><code>AppBuilder</code> is reponsible for creating the Api from the <code>X_namespace</code> packages and <code>X_route</code> modules. Authenticates the <code>App</code> and sends the …</p></div>
 </dd>
 <dt><code class="name"><a title="licenseware.app_builder.app_registration_route" href="app_registration_route.html">licenseware.app_builder.app_registration_route</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>When this endpoint is called the registration information for this <code>App</code> is sent to registry-service.</p></div>
 </dd>
 <dt><code class="name"><a title="licenseware.app_builder.editable_tables_route" href="editable_tables_route.html">licenseware.app_builder.editable_tables_route</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>When this endpoint is called the generated metadata from marshmallow schemas provided in <code>AppBuilder</code> at <code>editable_tables_schemas</code> parameter will be …</p></div>
 </dd>
 <dt><code class="name"><a title="licenseware.app_builder.endpoint_builder_namespace" href="endpoint_builder_namespace/index.html">licenseware.app_builder.endpoint_builder_namespace</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Here we are creating the <code><a title="licenseware.app_builder.endpoint_builder_namespace" href="endpoint_builder_namespace/index.html">licenseware.app_builder.endpoint_builder_namespace</a></code> that will be imported in <code><a title="licenseware.app_builder.app_builder" href="app_builder.html">licenseware.app_builder.app_builder</a></code> along with the route creation functions from this package …</p></div>
 </dd>
 <dt><code class="name"><a title="licenseware.app_builder.refresh_registration_route" href="refresh_registration_route.html">licenseware.app_builder.refresh_registration_route</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>When this endpoint is called the registration information from all <code>App</code> entities (uploaders, reports etc) are sent to registry service.</p></div>
 </dd>
 <dt><code class="name"><a title="licenseware.app_builder.report_components_namespace" href="report_components_namespace/index.html">licenseware.app_builder.report_components_namespace</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Here we are creating the <code><a title="licenseware.app_builder.report_components_namespace" href="report_components_namespace/index.html">licenseware.app_builder.report_components_namespace</a></code> that will be imported in <code><a title="licenseware.app_builder.app_builder" href="app_builder.html">licenseware.app_builder.app_builder</a></code> along with the route creation functions from this package …</p></div>
 </dd>
 <dt><code class="name"><a title="licenseware.app_builder.reports_namespace" href="reports_namespace/index.html">licenseware.app_builder.reports_namespace</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Here we are creating the <code><a title="licenseware.app_builder.reports_namespace" href="reports_namespace/index.html">licenseware.app_builder.reports_namespace</a></code> that will be imported in <code><a title="licenseware.app_builder.app_builder" href="app_builder.html">licenseware.app_builder.app_builder</a></code> along with the route creation functions from this package …</p></div>
 </dd>
 <dt><code class="name"><a title="licenseware.app_builder.tenant_registration_route" href="tenant_registration_route.html">licenseware.app_builder.tenant_registration_route</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>When this endpoint is called info about Tenant <code>App</code> activation and utilization will be returned.</p></div>
 </dd>
 <dt><code class="name"><a title="licenseware.app_builder.uploads_namespace" href="uploads_namespace/index.html">licenseware.app_builder.uploads_namespace</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Here we are creating the <code><a title="licenseware.app_builder.uploads_namespace" href="uploads_namespace/index.html">licenseware.app_builder.uploads_namespace</a></code> that will be imported in <code><a title="licenseware.app_builder.app_builder" href="app_builder.html">licenseware.app_builder.app_builder</a></code> along with the route creation functions from this package …</p></div>
 </dd>
 </dl>
 </section>

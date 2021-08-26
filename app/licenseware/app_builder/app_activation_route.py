@@ -1,3 +1,9 @@
+"""
+
+When this endpoint is called the `Quota` for this tenant_id must be created and the `App` must be registered.
+
+"""
+
 from flask import request
 from flask_restx import Api, Resource
 from app.licenseware.decorators.auth_decorators import authorization_check
@@ -8,6 +14,7 @@ from app.licenseware.utils.logger import log
 
 
 def add_app_activation_route(api: Api, appvars:dict):
+
     
     @api.route(appvars['app_activation_path'])
     class InitializeTenantApp(Resource):

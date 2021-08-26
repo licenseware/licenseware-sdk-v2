@@ -1,3 +1,12 @@
+"""
+
+Given a list of filenames return validation analysis response
+
+Notice we are using `build_restx_model` function to generate the swagger body required for the request.  
+
+"""
+
+
 from flask import request
 from flask_restx import Namespace, Resource
 from marshmallow import Schema, fields
@@ -34,7 +43,6 @@ def get_filenames_validation_namespace(ns: Namespace, uploaders:list):
                 },
                 body=restx_model
             )
-            @ns.marshal_with(restx_model)
             def post(self):
                 return uploader.validate_filenames(request)
 

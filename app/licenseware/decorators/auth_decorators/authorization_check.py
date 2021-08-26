@@ -25,7 +25,7 @@ def authorization_check(f):
             return {'status': 'fail', 'message':fail_message}, 403
 
         headers = {
-            "TenantId": headers["Tenantid"],
+            "Tenantid": headers["Tenantid"],
             "Authorization": headers["Authorization"]
         }
 

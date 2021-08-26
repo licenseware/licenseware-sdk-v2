@@ -69,7 +69,7 @@ class ReportBuilder:
         self.app_id = envs.APP_ID
         self.flags = flags
         self.filters = filters
-        self.report_url = envs.REPORT_URL  + self.report_path
+        self.url = envs.REPORT_URL  + self.report_path
         
         # Needed to overwrite report_components
         self.report_components = []
@@ -87,7 +87,7 @@ class ReportBuilder:
             &#34;flags&#34;: self.flags,
             &#34;report_components&#34;: self.report_components,
             &#34;filters&#34;: self.filters,
-            &#34;url&#34;: self.report_url,
+            &#34;url&#34;: self.url,
             &#34;connected_apps&#34;: self.connected_apps
         }
         return payload, 200
@@ -107,7 +107,7 @@ class ReportBuilder:
             metadata = component.get_registration_payload()
             
             metadata[&#39;order&#39;] = metadata[&#39;order&#39;] or order + 1
-            metadata[&#39;url&#39;] = self.report_url + metadata.pop(&#39;path&#39;)
+            metadata[&#39;url&#39;] = self.url + metadata.pop(&#39;path&#39;)
             metadata[&#39;type&#39;] = metadata.pop(&#39;component_type&#39;) 
             
             self.report_components.append(metadata)
@@ -175,7 +175,7 @@ class ReportBuilder:
         self.app_id = envs.APP_ID
         self.flags = flags
         self.filters = filters
-        self.report_url = envs.REPORT_URL  + self.report_path
+        self.url = envs.REPORT_URL  + self.report_path
         
         # Needed to overwrite report_components
         self.report_components = []
@@ -193,7 +193,7 @@ class ReportBuilder:
             &#34;flags&#34;: self.flags,
             &#34;report_components&#34;: self.report_components,
             &#34;filters&#34;: self.filters,
-            &#34;url&#34;: self.report_url,
+            &#34;url&#34;: self.url,
             &#34;connected_apps&#34;: self.connected_apps
         }
         return payload, 200
@@ -213,7 +213,7 @@ class ReportBuilder:
             metadata = component.get_registration_payload()
             
             metadata[&#39;order&#39;] = metadata[&#39;order&#39;] or order + 1
-            metadata[&#39;url&#39;] = self.report_url + metadata.pop(&#39;path&#39;)
+            metadata[&#39;url&#39;] = self.url + metadata.pop(&#39;path&#39;)
             metadata[&#39;type&#39;] = metadata.pop(&#39;component_type&#39;) 
             
             self.report_components.append(metadata)</code></pre>
@@ -239,7 +239,7 @@ class ReportBuilder:
         metadata = component.get_registration_payload()
         
         metadata[&#39;order&#39;] = metadata[&#39;order&#39;] or order + 1
-        metadata[&#39;url&#39;] = self.report_url + metadata.pop(&#39;path&#39;)
+        metadata[&#39;url&#39;] = self.url + metadata.pop(&#39;path&#39;)
         metadata[&#39;type&#39;] = metadata.pop(&#39;component_type&#39;) 
         
         self.report_components.append(metadata)</code></pre>
@@ -276,7 +276,7 @@ class ReportBuilder:
         &#34;flags&#34;: self.flags,
         &#34;report_components&#34;: self.report_components,
         &#34;filters&#34;: self.filters,
-        &#34;url&#34;: self.report_url,
+        &#34;url&#34;: self.url,
         &#34;connected_apps&#34;: self.connected_apps
     }
     return payload, 200</code></pre>

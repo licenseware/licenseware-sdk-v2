@@ -362,7 +362,17 @@ REDIS_PORT=6379
 ```
 
 
-Documentation automatically generated with [`pdoc3`](https://pdoc3.github.io/pdoc/).
+
+Make commands:
+
+- `make up` and  `make down` - start and stop mongo and redis databases;
+- `make mock` - start mock server which app will use for authentication, registry-service or other external services dependencies;
+- `make dev` - start application with hot reload;
+- `make worker` - start dramatiq worker;
+- `make test` - run all unit tests.
+- `make dev-docs` - start [`pdoc3`](https://pdoc3.github.io/pdoc/) documentation server, which auto generates documentation from markdown doc strings to html.
+- `make docs` - generate `docs` folder with all documantation generated in html format (can be added later to github pages `github.io/python3-licenseware-sdk-docs`)
 
 
-`http://localhost:8080/app/licenseware/`
+
+

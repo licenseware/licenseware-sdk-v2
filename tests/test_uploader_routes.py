@@ -1,19 +1,17 @@
 import unittest
 from app.licenseware.utils.logger import log
 from main import app
+from . import headers
 
 import os, io
 from werkzeug.datastructures import FileStorage
 from app.licenseware.uploader_validator import UploaderValidator
+
+
  
 # python3 -m unittest tests/test_uploader_routes.py
  
  
-headers = {
-    'Tenantid': 'TheTenantid',
-    'Authorization': 'TheAuthorization' 
-}
-
 prefix = '/ifmp'
 pathto = lambda route: prefix + route
 
@@ -70,6 +68,8 @@ class TestUploaderRoutes(unittest.TestCase):
             headers=headers,
             json=filenames_to_validate
         )
+        
+        log.debug(response.data)
         
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json['status'], 'success')

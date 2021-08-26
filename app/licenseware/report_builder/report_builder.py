@@ -41,7 +41,7 @@ class ReportBuilder:
         self.app_id = envs.APP_ID
         self.flags = flags
         self.filters = filters
-        self.report_url = envs.REPORT_URL  + self.report_path
+        self.url = envs.REPORT_URL  + self.report_path
         
         # Needed to overwrite report_components
         self.report_components = []
@@ -59,7 +59,7 @@ class ReportBuilder:
             "flags": self.flags,
             "report_components": self.report_components,
             "filters": self.filters,
-            "url": self.report_url,
+            "url": self.url,
             "connected_apps": self.connected_apps
         }
         return payload, 200
@@ -79,7 +79,7 @@ class ReportBuilder:
             metadata = component.get_registration_payload()
             
             metadata['order'] = metadata['order'] or order + 1
-            metadata['url'] = self.report_url + metadata.pop('path')
+            metadata['url'] = self.url + metadata.pop('path')
             metadata['type'] = metadata.pop('component_type') 
             
             self.report_components.append(metadata)

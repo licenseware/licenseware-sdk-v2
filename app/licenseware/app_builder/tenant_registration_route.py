@@ -1,3 +1,10 @@
+"""
+
+When this endpoint is called info about Tenant `App` activation and utilization will be returned.
+
+"""
+
+
 from flask import request
 from flask_restx import Api, Resource
 from app.licenseware.decorators.auth_decorators import machine_check

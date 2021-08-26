@@ -53,7 +53,7 @@ def authorization_check(f):
             return {&#39;status&#39;: &#39;fail&#39;, &#39;message&#39;:fail_message}, 403
 
         headers = {
-            &#34;TenantId&#34;: headers[&#34;Tenantid&#34;],
+            &#34;Tenantid&#34;: headers[&#34;Tenantid&#34;],
             &#34;Authorization&#34;: headers[&#34;Authorization&#34;]
         }
 
@@ -103,7 +103,7 @@ def authorization_check(f):
             return {&#39;status&#39;: &#39;fail&#39;, &#39;message&#39;:fail_message}, 403
 
         headers = {
-            &#34;TenantId&#34;: headers[&#34;Tenantid&#34;],
+            &#34;Tenantid&#34;: headers[&#34;Tenantid&#34;],
             &#34;Authorization&#34;: headers[&#34;Authorization&#34;]
         }
 

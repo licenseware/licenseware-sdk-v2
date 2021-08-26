@@ -1,3 +1,9 @@
+"""
+
+When this endpoint is called the registration information for this `App` is sent to registry-service.
+
+"""
+
 from flask_restx import Api, Resource
 from app.licenseware.decorators.auth_decorators import machine_check
 from app.licenseware.decorators import failsafe

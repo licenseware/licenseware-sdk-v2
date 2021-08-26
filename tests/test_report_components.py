@@ -3,7 +3,7 @@ from app.licenseware.report_components import BaseReportComponent
 from app.licenseware.utils.logger import log
 from app.licenseware.report_components.style_attributes import style_attributes as styles
 from app.licenseware.common.constants import icons
-
+from . import tenant_id
 # python3 -m unittest tests/test_report_components.py
 
 
@@ -24,9 +24,9 @@ class flask_request:
     class headers:
         
         @classmethod
-        def get(cls, tenant_id):
-            assert tenant_id == "Tenantid"
-            return '3d1fdc6b-04bc-44c8-ae7c-5fa5b9122f1a'
+        def get(cls, tenant_id_param):
+            assert tenant_id_param == "Tenantid"
+            return tenant_id
             
          
 

@@ -1,3 +1,11 @@
+"""
+
+Here we are creating the `report_components_namespace` that will be imported in `app_builder` along with the route creation functions from this package.
+
+Use one module per route.
+
+"""
+
 from flask_restx import Namespace
 from app.licenseware.common.constants import envs
 

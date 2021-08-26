@@ -38,12 +38,11 @@ class ComponentSchema(Schema):
     component_id = fields.Str(required=True)
     title = fields.Str(required=True) 
     url = fields.Url(required=True)
-    component_url = fields.Url(required=True)
     order = fields.Int(required=True)
     style_attributes = fields.Dict(required=True)
     attributes = fields.Dict(required=True)
     type = fields.Str(required=True)
-    
+    icon = fields.Str(required=False) #is icon only on series?
 
 
 class ReportSchema(Schema):
@@ -144,11 +143,11 @@ fields in the data. Use <code>EXCLUDE</code>, <code>INCLUDE</code> or <code>RAIS
     component_id = fields.Str(required=True)
     title = fields.Str(required=True) 
     url = fields.Url(required=True)
-    component_url = fields.Url(required=True)
     order = fields.Int(required=True)
     style_attributes = fields.Dict(required=True)
     attributes = fields.Dict(required=True)
-    type = fields.Str(required=True)</code></pre>
+    type = fields.Str(required=True)
+    icon = fields.Str(required=False) #is icon only on series?</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -165,7 +164,7 @@ fields in the data. Use <code>EXCLUDE</code>, <code>INCLUDE</code> or <code>RAIS
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="licenseware.common.serializers.register_report_payload_schema.ComponentSchema.component_url"><code class="name">var <span class="ident">component_url</span></code></dt>
+<dt id="licenseware.common.serializers.register_report_payload_schema.ComponentSchema.icon"><code class="name">var <span class="ident">icon</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -421,7 +420,7 @@ fields in the data. Use <code>EXCLUDE</code>, <code>INCLUDE</code> or <code>RAIS
 <ul class="two-column">
 <li><code><a title="licenseware.common.serializers.register_report_payload_schema.ComponentSchema.attributes" href="#licenseware.common.serializers.register_report_payload_schema.ComponentSchema.attributes">attributes</a></code></li>
 <li><code><a title="licenseware.common.serializers.register_report_payload_schema.ComponentSchema.component_id" href="#licenseware.common.serializers.register_report_payload_schema.ComponentSchema.component_id">component_id</a></code></li>
-<li><code><a title="licenseware.common.serializers.register_report_payload_schema.ComponentSchema.component_url" href="#licenseware.common.serializers.register_report_payload_schema.ComponentSchema.component_url">component_url</a></code></li>
+<li><code><a title="licenseware.common.serializers.register_report_payload_schema.ComponentSchema.icon" href="#licenseware.common.serializers.register_report_payload_schema.ComponentSchema.icon">icon</a></code></li>
 <li><code><a title="licenseware.common.serializers.register_report_payload_schema.ComponentSchema.opts" href="#licenseware.common.serializers.register_report_payload_schema.ComponentSchema.opts">opts</a></code></li>
 <li><code><a title="licenseware.common.serializers.register_report_payload_schema.ComponentSchema.order" href="#licenseware.common.serializers.register_report_payload_schema.ComponentSchema.order">order</a></code></li>
 <li><code><a title="licenseware.common.serializers.register_report_payload_schema.ComponentSchema.style_attributes" href="#licenseware.common.serializers.register_report_payload_schema.ComponentSchema.style_attributes">style_attributes</a></code></li>

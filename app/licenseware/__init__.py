@@ -2,7 +2,25 @@
 
 Documentation automatically generated with [`pdoc3`](https://pdoc3.github.io/pdoc/).
 
-# What is an `App`?
+#Contents
+
+1. [What is an `App`?](#what-is-an-app)
+2. [Set environment variables](#set-environment-variables)
+3. [`App` declaration](#app-declaration)
+4. [`Uploader` declaration](#uploader-declaration)
+5. [`Report` declaration](#report-declaration)
+6. [Custom namespaces](#custom-namespaces)
+7. [Endpoints from simple functions](#endpoints-from-simple-functions)
+8. [The `main` file](#the-main-file)
+9. [Licenseware package structure](#licenseware-package-structure)
+
+
+
+
+
+<a name="what-is-an-app">
+#What is an `App`?
+</a>
 
 Each Licenseware `App`/`Service` is responsible for:
 
@@ -14,6 +32,8 @@ Each **APP** has:
 
 - one or more uploaders
 - one or more reports 
+- one or more report components
+
 
 Each **UPLOADER** has:
 
@@ -27,7 +47,14 @@ Each **REPORT** has:
 - report components can be attached either to app builder instance or to report builder instance
 
 
-# Set environment variables
+
+
+
+
+
+<a name="set-environment-variables">
+#Set environment variables
+</a>
 
 Fist make sure you have set the environment variables:
 
@@ -70,7 +97,15 @@ make up
 ```
 
 
+
+
+
+
+
+
+<a name="app-declaration">
 # `App` declaration
+</a>
 
 `AppBuilder` class will be used to define our `App`. 
 This class will handle: 
@@ -98,7 +133,15 @@ ifmp_app = AppBuilder(
 The `ifmp_app` instance is now ready to attach other uploaders, reports, report components (or others) using *ifmp_app.register_X* methods.
 
 
+
+
+
+
+
+
+<a name="uploader-declaration">
 # `Uploader` declaration
+</a>
 
 The uploader is responsible for:
 
@@ -236,7 +279,19 @@ Of course defining an uploader can be defined in just one file too.
 
 
 
+
+
+
+
+
+
+
+
+
+
+<a name="report-declaration">
 # `Report` declaration
+</a>
 
 A `Report` is composed of one or more `report components`. 
 Each report component will inherit from `BaseReportComponent` class.
@@ -385,7 +440,13 @@ ifmp_app.register_report(virtualization_details_report)
 Reports api will be handled by the `ifmp_app` instance.
 
 
+
+
+
+
+<a name="custom-namespaces">
 # Custom namespaces
+</a>
 
 We are not restricted using just the apis generated from `AppBuilder` we can add new custom ones to `App`/`ifmp_app`.
 
@@ -423,7 +484,12 @@ If the custom namespace created is repetead for all apps consider adding it to `
 
 
 
-# Apis from simple functions
+
+
+
+<a name="endpoints-from-simple-functions">
+# Endpoints from simple functions
+</a>
 
 Class `EndpointBuilder` can be used to generate endpoints from simple functions.
 The function name will be used to extract the http method and the route path (`get_custom_data_from_mongo` -->
@@ -453,7 +519,21 @@ ifmp_app.register_endpoint(custom_func_endpoint)
 ```
 
 
-# The `main` file
+
+
+
+
+
+
+
+<a name="the-main-file">
+#The `main` file
+</a>
+
+In the main file or in `create_app` builder function (where Flask is instantiated) we can initialize the `App` with `ifmp_app.init_app(app)` where `app` is the Flask instance. 
+
+When `init_app` is invoked all endpoinds defined in `app_builder` will be created and registration information will be sent to registry-service if `register=True`. You can also initiate the registration to registry-service process with `ifmp_app.register_app()` 
+
 
 ```py
 
@@ -481,8 +561,6 @@ ifmp_app.register_endpoint(custom_func_endpoint)
 # Just like any other flask extension
 ifmp_app.init_app(app, register=True)    
     
-# register=True - if True will send registration information to registry-service 
-
 
 if __name__ == "__main__":    
     app.run(port=4000, debug=True)
@@ -492,7 +570,143 @@ if __name__ == "__main__":
 
 
 
+<a name="licenseware-package-structure">
+# Licenseware package structure
+</a> 
 
+```bash
+
+.
+├── app_builder
+│   ├── app_activation_route.py
+│   ├── app_builder.py
+│   ├── app_registration_route.py
+│   ├── editable_tables_route.py
+│   ├── endpoint_builder_namespace
+│   │   └── __init__.py
+│   ├── __init__.py
+│   ├── refresh_registration_route.py
+│   ├── report_components_namespace
+│   │   ├── __init__.py
+│   │   └── report_individual_components_namespace.py
+│   ├── reports_namespace
+│   │   ├── __init__.py
+│   │   ├── report_components_namespace.py
+│   │   ├── report_metadata_namespace.py
+│   │   └── report_register_namespace.py
+│   ├── tenant_registration_route.py
+│   └── uploads_namespace
+│       ├── filenames_validation_namespace.py
+│       ├── filestream_validation_namespace.py
+│       ├── __init__.py
+│       ├── quota_namespace.py
+│       └── status_namespace.py
+├── auth
+│   ├── auth.py
+│   └── __init__.py
+├── cli
+│   └── __init__.py
+├── common
+│   ├── constants
+│   │   ├── envs.py
+│   │   ├── flags.py
+│   │   ├── icons.py
+│   │   ├── __init__.py
+│   │   ├── quotas.py
+│   │   └── states.py
+│   ├── __init__.py
+│   ├── serializers
+│   │   ├── analysis_status_schema.py
+│   │   ├── app_utilization_schema.py
+│   │   ├── event_schema.py
+│   │   ├── file_upload_validation_schema.py
+│   │   ├── __init__.py
+│   │   ├── register_app_payload_schema.py
+│   │   ├── register_report_component_payload.py
+│   │   ├── register_report_payload_schema.py
+│   │   ├── register_uploader_payload_schema.py
+│   │   └── register_uploader_status_payload_schema.py
+│   └── validators
+│       ├── file_validators.py
+│       ├── __init__.py
+│       ├── registry_payload_validators.py
+│       ├── schema_validator.py
+│       ├── validate_icon.py
+│       └── validate_route.py
+├── decorators
+│   ├── auth_decorators
+│   │   ├── authenticated_machine.py
+│   │   ├── authorization_check.py
+│   │   ├── auth_required.py
+│   │   ├── __init__.py
+│   │   └── machine_check.py
+│   ├── failsafe_decorator.py
+│   └── __init__.py
+├── editable_table
+│   ├── editable_table.py
+│   └── __init__.py
+├── endpoint_builder
+│   ├── endpoint_builder.py
+│   └── __init__.py
+├── __init__.py
+├── mongodata
+│   ├── __init__.py
+│   ├── mongo_connection.py
+│   └── mongodata.py
+├── namespace_generator
+│   ├── __init__.py
+│   ├── mongo_crud.py
+│   ├── mongo_request.py
+│   └── schema_namespace.py
+├── quota
+│   └── __init__.py
+├── registry_service
+│   ├── __init__.py
+│   ├── register_all.py
+│   ├── register_app.py
+│   ├── register_component.py
+│   ├── register_report.py
+│   ├── register_uploader.py
+│   └── register_upload_status.py
+├── report_builder
+│   ├── __init__.py
+│   └── report_builder.py
+├── report_components
+│   ├── attributes
+│   │   ├── bar_vertical.py
+│   │   ├── __init__.py
+│   │   ├── pie.py
+│   │   ├── summary.py
+│   │   └── table.py
+│   ├── base_report_component.py
+│   ├── build_match_expression.py
+│   ├── __init__.py
+│   └── style_attributes
+│       ├── __init__.py
+│       └── style_attributes.py
+├── tenants
+│   ├── active_tenants.py
+│   ├── close_timeout_files.py
+│   ├── __init__.py
+│   └── processing_status.py
+├── uploader_builder
+│   ├── __init__.py
+│   └── uploader_builder.py
+├── uploader_validator
+│   ├── file_content_validator.py
+│   ├── filename_validator.py
+│   ├── __init__.py
+│   └── uploader_validator.py
+└── utils
+    ├── dramatiq_redis_broker.py
+    ├── file_utils.py
+    ├── __init__.py
+    ├── logger.py
+    └── miscellaneous.py
+
+27 directories, 99 files
+
+```
 
 
 '''

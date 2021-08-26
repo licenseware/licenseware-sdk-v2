@@ -71,7 +71,7 @@ class BaseReportComponent:
         # We are using `generate_small_id` func to avoid component_id conflicts
         # This `component_url` is independed from the report 
         self.component_path = &#39;/&#39; + generate_id() + self.path
-        self.component_url = envs.REPORT_COMPONENT_URL + self.component_path
+        self.url = envs.REPORT_COMPONENT_URL + self.component_path
         self.order = order
         self.style_attributes = style_attributes
         self.attributes = attributes
@@ -151,7 +151,7 @@ class BaseReportComponent:
             &#34;order&#34;: self.order,
             &#34;component_id&#34;: self.component_id,
             &#34;path&#34;: self.path,
-            &#34;component_url&#34;: self.component_url,
+            &#34;url&#34;: self.url,
             &#34;style_attributes&#34;: self.style_attributes,
             &#34;attributes&#34;: self.attributes,
             &#34;component_type&#34;: self.component_type
@@ -315,7 +315,7 @@ class ODBSummary(BaseReportComponent):
         # We are using `generate_small_id` func to avoid component_id conflicts
         # This `component_url` is independed from the report 
         self.component_path = &#39;/&#39; + generate_id() + self.path
-        self.component_url = envs.REPORT_COMPONENT_URL + self.component_path
+        self.url = envs.REPORT_COMPONENT_URL + self.component_path
         self.order = order
         self.style_attributes = style_attributes
         self.attributes = attributes
@@ -395,7 +395,7 @@ class ODBSummary(BaseReportComponent):
             &#34;order&#34;: self.order,
             &#34;component_id&#34;: self.component_id,
             &#34;path&#34;: self.path,
-            &#34;component_url&#34;: self.component_url,
+            &#34;url&#34;: self.url,
             &#34;style_attributes&#34;: self.style_attributes,
             &#34;attributes&#34;: self.attributes,
             &#34;component_type&#34;: self.component_type
@@ -532,7 +532,7 @@ custom pipeline
         &#34;order&#34;: self.order,
         &#34;component_id&#34;: self.component_id,
         &#34;path&#34;: self.path,
-        &#34;component_url&#34;: self.component_url,
+        &#34;url&#34;: self.url,
         &#34;style_attributes&#34;: self.style_attributes,
         &#34;attributes&#34;: self.attributes,
         &#34;component_type&#34;: self.component_type

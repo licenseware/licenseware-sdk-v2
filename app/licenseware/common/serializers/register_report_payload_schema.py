@@ -10,12 +10,11 @@ class ComponentSchema(Schema):
     component_id = fields.Str(required=True)
     title = fields.Str(required=True) 
     url = fields.Url(required=True)
-    component_url = fields.Url(required=True)
     order = fields.Int(required=True)
     style_attributes = fields.Dict(required=True)
     attributes = fields.Dict(required=True)
     type = fields.Str(required=True)
-    
+    icon = fields.Str(required=False) #is icon only on series?
 
 
 class ReportSchema(Schema):

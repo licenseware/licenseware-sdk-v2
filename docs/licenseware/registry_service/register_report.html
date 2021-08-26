@@ -27,7 +27,7 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">import requests
-from app.licenseware.utils.logger import log
+from app.licenseware.utils.logger import log, log_dict
 from app.licenseware.common.constants import envs
 from app.licenseware.decorators.auth_decorators import authenticated_machine
 from app.licenseware.common.validators.registry_payload_validators import validate_register_report_payload
@@ -45,7 +45,11 @@ def register_report(**kwargs):
             &#34;message&#34;: &#34;App not registered, no auth token available&#34;
         }, 401
     
-
+    
+    
+    log.debug(kwargs.keys())
+    
+    
     payload = {
         &#39;data&#39;: [{
             &#34;app_id&#34;: envs.APP_ID,
@@ -53,7 +57,7 @@ def register_report(**kwargs):
             &#34;report_name&#34;: kwargs[&#39;name&#39;],
             &#34;description&#34;: kwargs[&#39;description&#39;],
             &#34;flags&#34;: kwargs[&#39;flags&#39;],
-            &#34;url&#34;: kwargs[&#39;report_url&#39;],
+            &#34;url&#34;: kwargs[&#39;url&#39;],
             &#34;report_components&#34;:  kwargs[&#39;report_components&#39;],
             &#34;connected_apps&#34;: kwargs[&#39;connected_apps&#39;]
         }]
@@ -106,7 +110,11 @@ def register_report(**kwargs):
             &#34;message&#34;: &#34;App not registered, no auth token available&#34;
         }, 401
     
-
+    
+    
+    log.debug(kwargs.keys())
+    
+    
     payload = {
         &#39;data&#39;: [{
             &#34;app_id&#34;: envs.APP_ID,
@@ -114,7 +122,7 @@ def register_report(**kwargs):
             &#34;report_name&#34;: kwargs[&#39;name&#39;],
             &#34;description&#34;: kwargs[&#39;description&#39;],
             &#34;flags&#34;: kwargs[&#39;flags&#39;],
-            &#34;url&#34;: kwargs[&#39;report_url&#39;],
+            &#34;url&#34;: kwargs[&#39;url&#39;],
             &#34;report_components&#34;:  kwargs[&#39;report_components&#39;],
             &#34;connected_apps&#34;: kwargs[&#39;connected_apps&#39;]
         }]

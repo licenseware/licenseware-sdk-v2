@@ -23,7 +23,21 @@
 </header>
 <section id="section-intro">
 <p>Documentation automatically generated with <a href="https://pdoc3.github.io/pdoc/"><code>pdoc3</code></a>.</p>
+<h1 id="contents">Contents</h1>
+<ol>
+<li><a href="#what-is-an-app">What is an <code>App</code>?</a></li>
+<li><a href="#set-environment-variables">Set environment variables</a></li>
+<li><a href="#app-declaration"><code>App</code> declaration</a></li>
+<li><a href="#uploader-declaration"><code>Uploader</code> declaration</a></li>
+<li><a href="#report-declaration"><code>Report</code> declaration</a></li>
+<li><a href="#custom-namespaces">Custom namespaces</a></li>
+<li><a href="#endpoints-from-simple-functions">Endpoints from simple functions</a></li>
+<li><a href="#the-main-file">The <code>main</code> file</a></li>
+<li><a href="#licenseware-package-structure">Licenseware package structure</a></li>
+</ol>
+<p><a name="what-is-an-app"></p>
 <h1 id="what-is-an-app">What is an <code>App</code>?</h1>
+<p></a></p>
 <p>Each Licenseware <code>App</code>/<code>Service</code> is responsible for:</p>
 <ul>
 <li>processing files submitted by the user;</li>
@@ -33,6 +47,7 @@
 <ul>
 <li>one or more uploaders</li>
 <li>one or more reports </li>
+<li>one or more report components</li>
 </ul>
 <p>Each <strong>UPLOADER</strong> has:</p>
 <ul>
@@ -44,7 +59,9 @@
 <li>one or more report components</li>
 <li>report components can be attached either to app builder instance or to report builder instance</li>
 </ul>
+<p><a name="set-environment-variables"></p>
 <h1 id="set-environment-variables">Set environment variables</h1>
+<p></a></p>
 <p>Fist make sure you have set the environment variables:</p>
 <pre><code class="language-bash">#.env
 
@@ -79,7 +96,9 @@ REDIS_PORT=6379
 <p>Start <code>redis</code> and <code>mongo</code> databases:</p>
 <pre><code class="language-bash">make up
 </code></pre>
+<p><a name="app-declaration"></p>
 <h1 id="app-declaration"><code>App</code> declaration</h1>
+<p></a></p>
 <p><code>AppBuilder</code> class will be used to define our <code>App</code>.
 This class will handle: </p>
 <ul>
@@ -101,7 +120,9 @@ ifmp_app = AppBuilder(
 
 </code></pre>
 <p>The <code>ifmp_app</code> instance is now ready to attach other uploaders, reports, report components (or others) using <em>ifmp_app.register_X</em> methods.</p>
+<p><a name="uploader-declaration"></p>
 <h1 id="uploader-declaration"><code>Uploader</code> declaration</h1>
+<p></a></p>
 <p>The uploader is responsible for:</p>
 <ul>
 <li>validating files received from user;</li>
@@ -211,7 +232,9 @@ The registering process will take care of api generation for uploaders.</p>
 <pre><code class="language-py">ifmp_app.register_uploader(rv_tools_uploader)
 </code></pre>
 <p>Of course defining an uploader can be defined in just one file too.</p>
+<p><a name="report-declaration"></p>
 <h1 id="report-declaration"><code>Report</code> declaration</h1>
+<p></a></p>
 <p>A <code>Report</code> is composed of one or more <code>report components</code>.
 Each report component will inherit from <code>BaseReportComponent</code> class.</p>
 <h2 id="creating-the-report-component">Creating the <code>Report component</code></h2>
@@ -345,7 +368,9 @@ virtualization_details_report = ReportBuilder(
 <pre><code class="language-py">ifmp_app.register_report(virtualization_details_report)
 </code></pre>
 <p>Reports api will be handled by the <code>ifmp_app</code> instance.</p>
+<p><a name="custom-namespaces"></p>
 <h1 id="custom-namespaces">Custom namespaces</h1>
+<p></a></p>
 <p>We are not restricted using just the apis generated from <code>AppBuilder</code> we can add new custom ones to <code>App</code>/<code>ifmp_app</code>.</p>
 <pre><code class="language-py">#some_namespace.py
 
@@ -369,7 +394,9 @@ class CustomApiRoute(Resource):
 </code></pre>
 <p><code>ifmp_app</code> will make sure it will have the app prefix.</p>
 <p>If the custom namespace created is repetead for all apps consider adding it to <code><a title="licenseware.app_builder" href="app_builder/index.html">licenseware.app_builder</a></code> package.</p>
-<h1 id="apis-from-simple-functions">Apis from simple functions</h1>
+<p><a name="endpoints-from-simple-functions"></p>
+<h1 id="endpoints-from-simple-functions">Endpoints from simple functions</h1>
+<p></a></p>
 <p>Class <code>EndpointBuilder</code> can be used to generate endpoints from simple functions.
 The function name will be used to extract the http method and the route path (<code>get_custom_data_from_mongo</code> &ndash;&gt;
 <code>GET</code> http-method, <code>/get_custom_data_from_mongo</code> path-route)</p>
@@ -391,7 +418,11 @@ custom_func_endpoint = EndpointBuilder(get_custom_data_from_mongo)
 <p>Later in our <code>main</code> file: </p>
 <pre><code class="language-py">ifmp_app.register_endpoint(custom_func_endpoint)
 </code></pre>
+<p><a name="the-main-file"></p>
 <h1 id="the-main-file">The <code>main</code> file</h1>
+<p></a></p>
+<p>In the main file or in <code>create_app</code> builder function (where Flask is instantiated) we can initialize the <code>App</code> with <code>ifmp_app.init_app(app)</code> where <code>app</code> is the Flask instance. </p>
+<p>When <code>init_app</code> is invoked all endpoinds defined in <code><a title="licenseware.app_builder" href="app_builder/index.html">licenseware.app_builder</a></code> will be created and registration information will be sent to registry-service if <code>register=True</code>. You can also initiate the registration to registry-service process with <code>ifmp_app.register_app()</code> </p>
 <pre><code class="language-py">
 from flask import Flask
 from ...app_definition import ifmp_app
@@ -417,12 +448,145 @@ ifmp_app.register_endpoint(custom_func_endpoint)
 # Just like any other flask extension
 ifmp_app.init_app(app, register=True)    
 
-# register=True - if True will send registration information to registry-service 
-
 
 if __name__ == &quot;__main__&quot;:    
     app.run(port=4000, debug=True)
 
+
+</code></pre>
+<p><a name="licenseware-package-structure"></p>
+<h1 id="licenseware-package-structure">Licenseware package structure</h1>
+<p></a> </p>
+<pre><code class="language-bash">
+.
+├── app_builder
+│   ├── app_activation_route.py
+│   ├── app_builder.py
+│   ├── app_registration_route.py
+│   ├── editable_tables_route.py
+│   ├── endpoint_builder_namespace
+│   │   └── __init__.py
+│   ├── __init__.py
+│   ├── refresh_registration_route.py
+│   ├── report_components_namespace
+│   │   ├── __init__.py
+│   │   └── report_individual_components_namespace.py
+│   ├── reports_namespace
+│   │   ├── __init__.py
+│   │   ├── report_components_namespace.py
+│   │   ├── report_metadata_namespace.py
+│   │   └── report_register_namespace.py
+│   ├── tenant_registration_route.py
+│   └── uploads_namespace
+│       ├── filenames_validation_namespace.py
+│       ├── filestream_validation_namespace.py
+│       ├── __init__.py
+│       ├── quota_namespace.py
+│       └── status_namespace.py
+├── auth
+│   ├── auth.py
+│   └── __init__.py
+├── cli
+│   └── __init__.py
+├── common
+│   ├── constants
+│   │   ├── envs.py
+│   │   ├── flags.py
+│   │   ├── icons.py
+│   │   ├── __init__.py
+│   │   ├── quotas.py
+│   │   └── states.py
+│   ├── __init__.py
+│   ├── serializers
+│   │   ├── analysis_status_schema.py
+│   │   ├── app_utilization_schema.py
+│   │   ├── event_schema.py
+│   │   ├── file_upload_validation_schema.py
+│   │   ├── __init__.py
+│   │   ├── register_app_payload_schema.py
+│   │   ├── register_report_component_payload.py
+│   │   ├── register_report_payload_schema.py
+│   │   ├── register_uploader_payload_schema.py
+│   │   └── register_uploader_status_payload_schema.py
+│   └── validators
+│       ├── file_validators.py
+│       ├── __init__.py
+│       ├── registry_payload_validators.py
+│       ├── schema_validator.py
+│       ├── validate_icon.py
+│       └── validate_route.py
+├── decorators
+│   ├── auth_decorators
+│   │   ├── authenticated_machine.py
+│   │   ├── authorization_check.py
+│   │   ├── auth_required.py
+│   │   ├── __init__.py
+│   │   └── machine_check.py
+│   ├── failsafe_decorator.py
+│   └── __init__.py
+├── editable_table
+│   ├── editable_table.py
+│   └── __init__.py
+├── endpoint_builder
+│   ├── endpoint_builder.py
+│   └── __init__.py
+├── __init__.py
+├── mongodata
+│   ├── __init__.py
+│   ├── mongo_connection.py
+│   └── mongodata.py
+├── namespace_generator
+│   ├── __init__.py
+│   ├── mongo_crud.py
+│   ├── mongo_request.py
+│   └── schema_namespace.py
+├── quota
+│   └── __init__.py
+├── registry_service
+│   ├── __init__.py
+│   ├── register_all.py
+│   ├── register_app.py
+│   ├── register_component.py
+│   ├── register_report.py
+│   ├── register_uploader.py
+│   └── register_upload_status.py
+├── report_builder
+│   ├── __init__.py
+│   └── report_builder.py
+├── report_components
+│   ├── attributes
+│   │   ├── bar_vertical.py
+│   │   ├── __init__.py
+│   │   ├── pie.py
+│   │   ├── summary.py
+│   │   └── table.py
+│   ├── base_report_component.py
+│   ├── build_match_expression.py
+│   ├── __init__.py
+│   └── style_attributes
+│       ├── __init__.py
+│       └── style_attributes.py
+├── tenants
+│   ├── active_tenants.py
+│   ├── close_timeout_files.py
+│   ├── __init__.py
+│   └── processing_status.py
+├── uploader_builder
+│   ├── __init__.py
+│   └── uploader_builder.py
+├── uploader_validator
+│   ├── file_content_validator.py
+│   ├── filename_validator.py
+│   ├── __init__.py
+│   └── uploader_validator.py
+└── utils
+    ├── dramatiq_redis_broker.py
+    ├── file_utils.py
+    ├── __init__.py
+    ├── logger.py
+    └── miscellaneous.py
+
+27 directories, 99 files
 
 </code></pre>
 <details class="source">
@@ -433,7 +597,25 @@ if __name__ == &quot;__main__&quot;:
 
 Documentation automatically generated with [`pdoc3`](https://pdoc3.github.io/pdoc/).
 
-# What is an `App`?
+#Contents
+
+1. [What is an `App`?](#what-is-an-app)
+2. [Set environment variables](#set-environment-variables)
+3. [`App` declaration](#app-declaration)
+4. [`Uploader` declaration](#uploader-declaration)
+5. [`Report` declaration](#report-declaration)
+6. [Custom namespaces](#custom-namespaces)
+7. [Endpoints from simple functions](#endpoints-from-simple-functions)
+8. [The `main` file](#the-main-file)
+9. [Licenseware package structure](#licenseware-package-structure)
+
+
+
+
+
+&lt;a name=&#34;what-is-an-app&#34;&gt;
+#What is an `App`?
+&lt;/a&gt;
 
 Each Licenseware `App`/`Service` is responsible for:
 
@@ -445,6 +627,8 @@ Each **APP** has:
 
 - one or more uploaders
 - one or more reports 
+- one or more report components
+
 
 Each **UPLOADER** has:
 
@@ -458,7 +642,14 @@ Each **REPORT** has:
 - report components can be attached either to app builder instance or to report builder instance
 
 
-# Set environment variables
+
+
+
+
+
+&lt;a name=&#34;set-environment-variables&#34;&gt;
+#Set environment variables
+&lt;/a&gt;
 
 Fist make sure you have set the environment variables:
 
@@ -501,7 +692,15 @@ make up
 ```
 
 
+
+
+
+
+
+
+&lt;a name=&#34;app-declaration&#34;&gt;
 # `App` declaration
+&lt;/a&gt;
 
 `AppBuilder` class will be used to define our `App`. 
 This class will handle: 
@@ -529,7 +728,15 @@ ifmp_app = AppBuilder(
 The `ifmp_app` instance is now ready to attach other uploaders, reports, report components (or others) using *ifmp_app.register_X* methods.
 
 
+
+
+
+
+
+
+&lt;a name=&#34;uploader-declaration&#34;&gt;
 # `Uploader` declaration
+&lt;/a&gt;
 
 The uploader is responsible for:
 
@@ -667,7 +874,19 @@ Of course defining an uploader can be defined in just one file too.
 
 
 
+
+
+
+
+
+
+
+
+
+
+&lt;a name=&#34;report-declaration&#34;&gt;
 # `Report` declaration
+&lt;/a&gt;
 
 A `Report` is composed of one or more `report components`. 
 Each report component will inherit from `BaseReportComponent` class.
@@ -816,7 +1035,13 @@ ifmp_app.register_report(virtualization_details_report)
 Reports api will be handled by the `ifmp_app` instance.
 
 
+
+
+
+
+&lt;a name=&#34;custom-namespaces&#34;&gt;
 # Custom namespaces
+&lt;/a&gt;
 
 We are not restricted using just the apis generated from `AppBuilder` we can add new custom ones to `App`/`ifmp_app`.
 
@@ -854,7 +1079,12 @@ If the custom namespace created is repetead for all apps consider adding it to `
 
 
 
-# Apis from simple functions
+
+
+
+&lt;a name=&#34;endpoints-from-simple-functions&#34;&gt;
+# Endpoints from simple functions
+&lt;/a&gt;
 
 Class `EndpointBuilder` can be used to generate endpoints from simple functions.
 The function name will be used to extract the http method and the route path (`get_custom_data_from_mongo` --&gt;
@@ -884,7 +1114,21 @@ ifmp_app.register_endpoint(custom_func_endpoint)
 ```
 
 
-# The `main` file
+
+
+
+
+
+
+
+&lt;a name=&#34;the-main-file&#34;&gt;
+#The `main` file
+&lt;/a&gt;
+
+In the main file or in `create_app` builder function (where Flask is instantiated) we can initialize the `App` with `ifmp_app.init_app(app)` where `app` is the Flask instance. 
+
+When `init_app` is invoked all endpoinds defined in `app_builder` will be created and registration information will be sent to registry-service if `register=True`. You can also initiate the registration to registry-service process with `ifmp_app.register_app()` 
+
 
 ```py
 
@@ -912,8 +1156,6 @@ ifmp_app.register_endpoint(custom_func_endpoint)
 # Just like any other flask extension
 ifmp_app.init_app(app, register=True)    
     
-# register=True - if True will send registration information to registry-service 
-
 
 if __name__ == &#34;__main__&#34;:    
     app.run(port=4000, debug=True)
@@ -923,7 +1165,143 @@ if __name__ == &#34;__main__&#34;:
 
 
 
+&lt;a name=&#34;licenseware-package-structure&#34;&gt;
+# Licenseware package structure
+&lt;/a&gt; 
 
+```bash
+
+.
+├── app_builder
+│   ├── app_activation_route.py
+│   ├── app_builder.py
+│   ├── app_registration_route.py
+│   ├── editable_tables_route.py
+│   ├── endpoint_builder_namespace
+│   │   └── __init__.py
+│   ├── __init__.py
+│   ├── refresh_registration_route.py
+│   ├── report_components_namespace
+│   │   ├── __init__.py
+│   │   └── report_individual_components_namespace.py
+│   ├── reports_namespace
+│   │   ├── __init__.py
+│   │   ├── report_components_namespace.py
+│   │   ├── report_metadata_namespace.py
+│   │   └── report_register_namespace.py
+│   ├── tenant_registration_route.py
+│   └── uploads_namespace
+│       ├── filenames_validation_namespace.py
+│       ├── filestream_validation_namespace.py
+│       ├── __init__.py
+│       ├── quota_namespace.py
+│       └── status_namespace.py
+├── auth
+│   ├── auth.py
+│   └── __init__.py
+├── cli
+│   └── __init__.py
+├── common
+│   ├── constants
+│   │   ├── envs.py
+│   │   ├── flags.py
+│   │   ├── icons.py
+│   │   ├── __init__.py
+│   │   ├── quotas.py
+│   │   └── states.py
+│   ├── __init__.py
+│   ├── serializers
+│   │   ├── analysis_status_schema.py
+│   │   ├── app_utilization_schema.py
+│   │   ├── event_schema.py
+│   │   ├── file_upload_validation_schema.py
+│   │   ├── __init__.py
+│   │   ├── register_app_payload_schema.py
+│   │   ├── register_report_component_payload.py
+│   │   ├── register_report_payload_schema.py
+│   │   ├── register_uploader_payload_schema.py
+│   │   └── register_uploader_status_payload_schema.py
+│   └── validators
+│       ├── file_validators.py
+│       ├── __init__.py
+│       ├── registry_payload_validators.py
+│       ├── schema_validator.py
+│       ├── validate_icon.py
+│       └── validate_route.py
+├── decorators
+│   ├── auth_decorators
+│   │   ├── authenticated_machine.py
+│   │   ├── authorization_check.py
+│   │   ├── auth_required.py
+│   │   ├── __init__.py
+│   │   └── machine_check.py
+│   ├── failsafe_decorator.py
+│   └── __init__.py
+├── editable_table
+│   ├── editable_table.py
+│   └── __init__.py
+├── endpoint_builder
+│   ├── endpoint_builder.py
+│   └── __init__.py
+├── __init__.py
+├── mongodata
+│   ├── __init__.py
+│   ├── mongo_connection.py
+│   └── mongodata.py
+├── namespace_generator
+│   ├── __init__.py
+│   ├── mongo_crud.py
+│   ├── mongo_request.py
+│   └── schema_namespace.py
+├── quota
+│   └── __init__.py
+├── registry_service
+│   ├── __init__.py
+│   ├── register_all.py
+│   ├── register_app.py
+│   ├── register_component.py
+│   ├── register_report.py
+│   ├── register_uploader.py
+│   └── register_upload_status.py
+├── report_builder
+│   ├── __init__.py
+│   └── report_builder.py
+├── report_components
+│   ├── attributes
+│   │   ├── bar_vertical.py
+│   │   ├── __init__.py
+│   │   ├── pie.py
+│   │   ├── summary.py
+│   │   └── table.py
+│   ├── base_report_component.py
+│   ├── build_match_expression.py
+│   ├── __init__.py
+│   └── style_attributes
+│       ├── __init__.py
+│       └── style_attributes.py
+├── tenants
+│   ├── active_tenants.py
+│   ├── close_timeout_files.py
+│   ├── __init__.py
+│   └── processing_status.py
+├── uploader_builder
+│   ├── __init__.py
+│   └── uploader_builder.py
+├── uploader_validator
+│   ├── file_content_validator.py
+│   ├── filename_validator.py
+│   ├── __init__.py
+│   └── uploader_validator.py
+└── utils
+    ├── dramatiq_redis_broker.py
+    ├── file_utils.py
+    ├── __init__.py
+    ├── logger.py
+    └── miscellaneous.py
+
+27 directories, 99 files
+
+```
 
 
 &#39;&#39;&#39;
@@ -939,7 +1317,7 @@ load_dotenv()  </code></pre>
 <dl>
 <dt><code class="name"><a title="licenseware.app_builder" href="app_builder/index.html">licenseware.app_builder</a></code></dt>
 <dd>
-<div class="desc"><p>In the <code><a title="licenseware.app_builder" href="app_builder/index.html">licenseware.app_builder</a></code> package we define the <code>app</code> and build routes …</p></div>
+<div class="desc"><p>In the <code><a title="licenseware.app_builder" href="app_builder/index.html">licenseware.app_builder</a></code> package we define the <code>app</code> and build the api …</p></div>
 </dd>
 <dt><code class="name"><a title="licenseware.auth" href="auth/index.html">licenseware.auth</a></code></dt>
 <dd>
@@ -957,7 +1335,7 @@ load_dotenv()  </code></pre>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt><code class="name"><a title="licenseware.editable_tables" href="editable_tables/index.html">licenseware.editable_tables</a></code></dt>
+<dt><code class="name"><a title="licenseware.editable_table" href="editable_table/index.html">licenseware.editable_table</a></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -1019,6 +1397,7 @@ which can be used to generate flask_restx namespace from marshmallow schema …<
 <h1>Index</h1>
 <div class="toc">
 <ul>
+<li><a href="#contents">Contents</a></li>
 <li><a href="#what-is-an-app">What is an App?</a></li>
 <li><a href="#set-environment-variables">Set environment variables</a></li>
 <li><a href="#app-declaration">App declaration</a></li>
@@ -1033,8 +1412,9 @@ which can be used to generate flask_restx namespace from marshmallow schema …<
 </ul>
 </li>
 <li><a href="#custom-namespaces">Custom namespaces</a></li>
-<li><a href="#apis-from-simple-functions">Apis from simple functions</a></li>
+<li><a href="#endpoints-from-simple-functions">Endpoints from simple functions</a></li>
 <li><a href="#the-main-file">The main file</a></li>
+<li><a href="#licenseware-package-structure">Licenseware package structure</a></li>
 </ul>
 </div>
 <ul id="index">
@@ -1045,7 +1425,7 @@ which can be used to generate flask_restx namespace from marshmallow schema …<
 <li><code><a title="licenseware.cli" href="cli/index.html">licenseware.cli</a></code></li>
 <li><code><a title="licenseware.common" href="common/index.html">licenseware.common</a></code></li>
 <li><code><a title="licenseware.decorators" href="decorators/index.html">licenseware.decorators</a></code></li>
-<li><code><a title="licenseware.editable_tables" href="editable_tables/index.html">licenseware.editable_tables</a></code></li>
+<li><code><a title="licenseware.editable_table" href="editable_table/index.html">licenseware.editable_table</a></code></li>
 <li><code><a title="licenseware.endpoint_builder" href="endpoint_builder/index.html">licenseware.endpoint_builder</a></code></li>
 <li><code><a title="licenseware.mongodata" href="mongodata/index.html">licenseware.mongodata</a></code></li>
 <li><code><a title="licenseware.namespace_generator" href="namespace_generator/index.html">licenseware.namespace_generator</a></code></li>

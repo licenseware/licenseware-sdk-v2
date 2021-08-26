@@ -1,3 +1,10 @@
+"""
+
+When this endpoint is called the registration information from all `App` entities (uploaders, reports etc) are sent to registry service.
+
+"""
+
+
 from flask_restx import Api, Resource
 from app.licenseware.decorators.auth_decorators import machine_check
 from app.licenseware.registry_service import register_all
