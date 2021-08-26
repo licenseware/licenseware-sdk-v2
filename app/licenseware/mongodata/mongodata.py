@@ -38,7 +38,7 @@ from pymongo.read_concern import ReadConcern
 from pymongo.errors import DuplicateKeyError
 
 
-@failsafe
+
 def validate_data(schema, data):
     """
         Using Marshmallow schema class to validate data (dict or list of dicts) 
@@ -150,7 +150,7 @@ class Connect(object):
         return MongoClient(os.getenv("MONGO_CONNECTION_STRING"))
 
 
-@failsafe
+
 def get_collection(collection, db_name=None):
     """
         Gets the collection on which mongo CRUD operations can be performed
@@ -176,7 +176,7 @@ def get_collection(collection, db_name=None):
         return collection
 
 
-@failsafe
+
 def insert(schema, collection, data, db_name=None):
     """
         Insert validated documents in database.
@@ -197,8 +197,6 @@ def insert(schema, collection, data, db_name=None):
             return collection
 
         data = validate_data(schema, data)
-        if isinstance(data, str):
-            return data
 
         if isinstance(data, dict):
             _oid_inserted = collection.with_options(
@@ -214,7 +212,7 @@ def insert(schema, collection, data, db_name=None):
         raise Exception(f"Can't interpret validated data: {data}")
 
 
-@failsafe
+
 def fetch(match, collection, as_list=True, db_name=None):
     """
         Get data from mongo, based on match dict or string id.
@@ -265,7 +263,7 @@ def fetch(match, collection, as_list=True, db_name=None):
         return (parse_doc(doc) for doc in found_docs)
 
 
-@failsafe
+
 def aggregate(pipeline, collection, as_list=True, db_name=None):
     """
         Fetch documents based on pipeline queries.
@@ -329,7 +327,7 @@ def _append_query(dict_: dict) -> dict:
     return q or dict_
 
 
-@failsafe
+
 def update(schema, match, new_data, collection, append=False, db_name=None):
     """
         Update documents based on match query.
@@ -356,8 +354,6 @@ def update(schema, match, new_data, collection, append=False, db_name=None):
             match = match['_id'] = match['distinct_key']
 
         new_data = validate_data(schema, new_data)
-        if isinstance(new_data, str):
-            return new_data
 
         _filter = {"_id": match["_id"]} if "_id" in match else match
         updated_docs_nbr = collection.with_options(write_concern=WriteConcern("majority")).update_many(
@@ -369,7 +365,7 @@ def update(schema, match, new_data, collection, append=False, db_name=None):
         return updated_docs_nbr
 
 
-@failsafe
+
 def delete(match, collection, db_name=None):
     """
 
@@ -400,7 +396,7 @@ def delete(match, collection, db_name=None):
         return deleted_docs_nbr
 
 
-@failsafe
+
 def delete_collection(collection, db_name=None):
     """
         Delete a collection from the database.
@@ -417,7 +413,7 @@ def delete_collection(collection, db_name=None):
         return 1 if res is None else 0
 
 
-@failsafe
+
 def document_count(match, collection, db_name=None):
     """
         Delete a collection from the database.

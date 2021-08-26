@@ -42,7 +42,7 @@ def get_auth_machines_url():
 class envs:
 
     # Environment variables available at startup
-    
+    DEBUG:bool = os.environ['DEBUG'] == 'true'
     APP_ID:str = os.environ["APP_ID"]
     APP_HOST:str = os.environ['APP_HOST']
     LWARE_USER:str = os.environ['LWARE_IDENTITY_USER']

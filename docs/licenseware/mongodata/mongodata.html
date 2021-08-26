@@ -83,7 +83,7 @@ from pymongo.read_concern import ReadConcern
 from pymongo.errors import DuplicateKeyError
 
 
-@failsafe
+
 def validate_data(schema, data):
     &#34;&#34;&#34;
         Using Marshmallow schema class to validate data (dict or list of dicts) 
@@ -195,7 +195,7 @@ class Connect(object):
         return MongoClient(os.getenv(&#34;MONGO_CONNECTION_STRING&#34;))
 
 
-@failsafe
+
 def get_collection(collection, db_name=None):
     &#34;&#34;&#34;
         Gets the collection on which mongo CRUD operations can be performed
@@ -221,7 +221,7 @@ def get_collection(collection, db_name=None):
         return collection
 
 
-@failsafe
+
 def insert(schema, collection, data, db_name=None):
     &#34;&#34;&#34;
         Insert validated documents in database.
@@ -242,8 +242,6 @@ def insert(schema, collection, data, db_name=None):
             return collection
 
         data = validate_data(schema, data)
-        if isinstance(data, str):
-            return data
 
         if isinstance(data, dict):
             _oid_inserted = collection.with_options(
@@ -259,7 +257,7 @@ def insert(schema, collection, data, db_name=None):
         raise Exception(f&#34;Can&#39;t interpret validated data: {data}&#34;)
 
 
-@failsafe
+
 def fetch(match, collection, as_list=True, db_name=None):
     &#34;&#34;&#34;
         Get data from mongo, based on match dict or string id.
@@ -310,7 +308,7 @@ def fetch(match, collection, as_list=True, db_name=None):
         return (parse_doc(doc) for doc in found_docs)
 
 
-@failsafe
+
 def aggregate(pipeline, collection, as_list=True, db_name=None):
     &#34;&#34;&#34;
         Fetch documents based on pipeline queries.
@@ -374,7 +372,7 @@ def _append_query(dict_: dict) -&gt; dict:
     return q or dict_
 
 
-@failsafe
+
 def update(schema, match, new_data, collection, append=False, db_name=None):
     &#34;&#34;&#34;
         Update documents based on match query.
@@ -401,8 +399,6 @@ def update(schema, match, new_data, collection, append=False, db_name=None):
             match = match[&#39;_id&#39;] = match[&#39;distinct_key&#39;]
 
         new_data = validate_data(schema, new_data)
-        if isinstance(new_data, str):
-            return new_data
 
         _filter = {&#34;_id&#34;: match[&#34;_id&#34;]} if &#34;_id&#34; in match else match
         updated_docs_nbr = collection.with_options(write_concern=WriteConcern(&#34;majority&#34;)).update_many(
@@ -414,7 +410,7 @@ def update(schema, match, new_data, collection, append=False, db_name=None):
         return updated_docs_nbr
 
 
-@failsafe
+
 def delete(match, collection, db_name=None):
     &#34;&#34;&#34;
 
@@ -445,7 +441,7 @@ def delete(match, collection, db_name=None):
         return deleted_docs_nbr
 
 
-@failsafe
+
 def delete_collection(collection, db_name=None):
     &#34;&#34;&#34;
         Delete a collection from the database.
@@ -462,7 +458,7 @@ def delete_collection(collection, db_name=None):
         return 1 if res is None else 0
 
 
-@failsafe
+
 def document_count(match, collection, db_name=None):
     &#34;&#34;&#34;
         Delete a collection from the database.
@@ -504,8 +500,7 @@ def document_count(match, collection, db_name=None):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@failsafe
-def aggregate(pipeline, collection, as_list=True, db_name=None):
+<pre><code class="python">def aggregate(pipeline, collection, as_list=True, db_name=None):
     &#34;&#34;&#34;
         Fetch documents based on pipeline queries.
         https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline/
@@ -552,8 +547,7 @@ def aggregate(pipeline, collection, as_list=True, db_name=None):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@failsafe
-def delete(match, collection, db_name=None):
+<pre><code class="python">def delete(match, collection, db_name=None):
     &#34;&#34;&#34;
 
         Delete documents based on match query.
@@ -592,8 +586,7 @@ def delete(match, collection, db_name=None):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@failsafe
-def delete_collection(collection, db_name=None):
+<pre><code class="python">def delete_collection(collection, db_name=None):
     &#34;&#34;&#34;
         Delete a collection from the database.
     &#34;&#34;&#34;
@@ -618,8 +611,7 @@ def delete_collection(collection, db_name=None):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@failsafe
-def document_count(match, collection, db_name=None):
+<pre><code class="python">def document_count(match, collection, db_name=None):
     &#34;&#34;&#34;
         Delete a collection from the database.
     &#34;&#34;&#34;
@@ -653,8 +645,7 @@ def document_count(match, collection, db_name=None):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@failsafe
-def fetch(match, collection, as_list=True, db_name=None):
+<pre><code class="python">def fetch(match, collection, as_list=True, db_name=None):
     &#34;&#34;&#34;
         Get data from mongo, based on match dict or string id.
 
@@ -714,8 +705,7 @@ def fetch(match, collection, as_list=True, db_name=None):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@failsafe
-def get_collection(collection, db_name=None):
+<pre><code class="python">def get_collection(collection, db_name=None):
     &#34;&#34;&#34;
         Gets the collection on which mongo CRUD operations can be performed
 
@@ -758,8 +748,7 @@ If something fails will return a string with the error message.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@failsafe
-def insert(schema, collection, data, db_name=None):
+<pre><code class="python">def insert(schema, collection, data, db_name=None):
     &#34;&#34;&#34;
         Insert validated documents in database.
 
@@ -779,8 +768,6 @@ def insert(schema, collection, data, db_name=None):
             return collection
 
         data = validate_data(schema, data)
-        if isinstance(data, str):
-            return data
 
         if isinstance(data, dict):
             _oid_inserted = collection.with_options(
@@ -935,8 +922,7 @@ def insert(schema, collection, data, db_name=None):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@failsafe
-def update(schema, match, new_data, collection, append=False, db_name=None):
+<pre><code class="python">def update(schema, match, new_data, collection, append=False, db_name=None):
     &#34;&#34;&#34;
         Update documents based on match query.
 
@@ -962,8 +948,6 @@ def update(schema, match, new_data, collection, append=False, db_name=None):
             match = match[&#39;_id&#39;] = match[&#39;distinct_key&#39;]
 
         new_data = validate_data(schema, new_data)
-        if isinstance(new_data, str):
-            return new_data
 
         _filter = {&#34;_id&#34;: match[&#34;_id&#34;]} if &#34;_id&#34; in match else match
         updated_docs_nbr = collection.with_options(write_concern=WriteConcern(&#34;majority&#34;)).update_many(
@@ -1018,8 +1002,7 @@ def update(schema, match, new_data, collection, append=False, db_name=None):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@failsafe
-def validate_data(schema, data):
+<pre><code class="python">def validate_data(schema, data):
     &#34;&#34;&#34;
         Using Marshmallow schema class to validate data (dict or list of dicts) 
     &#34;&#34;&#34;

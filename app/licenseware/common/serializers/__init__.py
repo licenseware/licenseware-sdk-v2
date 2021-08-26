@@ -7,7 +7,7 @@ To skip validation simply comment out the validation function (see common.valida
 """
 
 from .analysis_status_schema import AnalysisStatusSchema
-from .app_utilization_schema import AppUtilizationSchema
+from .quota_schema import QuotaSchema
 from .event_schema import EventSchema
 from .register_app_payload_schema import RegisterAppPayloadSchema
 from .register_uploader_payload_schema import RegisterUploaderPayloadSchema

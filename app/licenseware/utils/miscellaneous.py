@@ -1,9 +1,19 @@
+"""
+
+Small 1 liners utilities that are to small to pe placed in a module 
+
+"""
+
 import random
 import string
+import requests
 from flask_restx import Namespace
 from marshmallow import Schema
 from marshmallow_jsonschema import JSONSchema
 from typing import List
+
+from app.licenseware.utils.logger import log
+from app.licenseware.common.constants import envs
 
 
 
@@ -50,3 +60,19 @@ swagger_authorization_header = {
         'name': 'Authorization'
     }
 }
+
+
+def get_user_id(tenant_id:str = None):
+    
+    response = requests.get(
+        url=envs.AUTH_USERS_URL,
+        headers={
+            "TenantId": tenant_id,
+            "Authorization": envs.get_auth_token()
+        }
+    )
+    
+    if response.status_code == 200:
+        user_id = response.json()['user_id']
+        return user_id
+    

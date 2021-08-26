@@ -2,14 +2,10 @@
 
 Validator for streams of files and files.
 
+
+```py
+
 from licenseware.common.validators.file_validators import GeneralValidator, validate_filename
-
-
-A class that validates files and text
-    
-Usage
-
-from file_validators import GeneralValidator, validate_filename
 
 v = GeneralValidator(
     input_object,           - required: file path, string or stream
@@ -23,28 +19,19 @@ v = GeneralValidator(
     buffer = 9000           - bytes buffer to read from stream FileStorage object
 )
 
-if v.validate():
-    # stuff
+
+valid_input = True
+
+try:
+    v.validate() # valid
+except:
+    valid_input = False # not valid
 
 
-# or with json message
 
-res = v.validate(show_reason=True)
-if res['status'] == 'success':
-    return res['message']
-elif res['status'] == 'fail':
-    return res['message']
-    
-    
-    
-You can import individually these function validators
+```
 
-
-validate_text_contains_all(data, text_contains_all_list)
-validate_text_contains_any(data, text_contains_any_list)
-validate_sheets(input_object, required_sheets)
-validate_columns(data, required_columns_list, required_sheets_list)
-validate_rows_number(data, min_rows_number, required_sheets_list)
+You can also import individually the function bellow:
 
 
 """
@@ -312,7 +299,7 @@ class GeneralValidator:
 
     def validate(self):
         """ 
-            param: show_reason - if true will return a dict with status and message 
+            When called run all validators on `input_object` parameter
         """
 
         self._check_required_input_type()

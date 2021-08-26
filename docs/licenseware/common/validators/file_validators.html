@@ -23,44 +23,33 @@
 </header>
 <section id="section-intro">
 <p>Validator for streams of files and files.</p>
-<p>from licenseware.common.validators.file_validators import GeneralValidator, validate_filename</p>
-<p>A class that validates files and text</p>
-<p>Usage</p>
-<p>from file_validators import GeneralValidator, validate_filename</p>
-<p>v = GeneralValidator(
-input_object,
-- required: file path, string or stream
-required_input_type = None,
-- required: 'excel', 'csv', 'txt', 'string', 'stream'
-required_sheets
-= [], - sheets names list that needs to be found in 'excel'
-required_columns
-= [], - columns names list that needs to be found in 'excel', 'csv'
-text_contains_all = [], - text list that needs to be found in 'txt', 'string', 'stream'
-text_contains_any = [], - text list that needs to be found in 'txt', 'string', 'stream'
-min_rows_number
-= 0,
-- minimum rows needed for 'excel', 'csv'
-header_starts_at
-= 0
-- row number where the header with columns starts (count starts from 0)
-buffer = 9000
-- bytes buffer to read from stream FileStorage object
-)</p>
-<p>if v.validate():
-# stuff</p>
-<h1 id="or-with-json-message">or with json message</h1>
-<p>res = v.validate(show_reason=True)
-if res['status'] == 'success':
-return res['message']
-elif res['status'] == 'fail':
-return res['message']</p>
-<p>You can import individually these function validators</p>
-<p>validate_text_contains_all(data, text_contains_all_list)
-validate_text_contains_any(data, text_contains_any_list)
-validate_sheets(input_object, required_sheets)
-validate_columns(data, required_columns_list, required_sheets_list)
-validate_rows_number(data, min_rows_number, required_sheets_list)</p>
+<pre><code class="language-py">
+from licenseware.common.validators.file_validators import GeneralValidator, validate_filename
+
+v = GeneralValidator(
+    input_object,           - required: file path, string or stream
+    required_input_type = None,    - required: 'excel', 'csv', 'txt', 'string', 'stream'
+    required_sheets   = [], - sheets names list that needs to be found in 'excel'
+    required_columns  = [], - columns names list that needs to be found in 'excel', 'csv'
+    text_contains_all = [], - text list that needs to be found in 'txt', 'string', 'stream'
+    text_contains_any = [], - text list that needs to be found in 'txt', 'string', 'stream'
+    min_rows_number   = 0,  - minimum rows needed for 'excel', 'csv'
+    header_starts_at  = 0   - row number where the header with columns starts (count starts from 0)
+    buffer = 9000           - bytes buffer to read from stream FileStorage object
+)
+
+
+valid_input = True
+
+try:
+    v.validate() # valid
+except:
+    valid_input = False # not valid
+
+
+
+</code></pre>
+<p>You can also import individually the function bellow:</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -69,14 +58,10 @@ validate_rows_number(data, min_rows_number, required_sheets_list)</p>
 
 Validator for streams of files and files.
 
+
+```py
+
 from licenseware.common.validators.file_validators import GeneralValidator, validate_filename
-
-
-A class that validates files and text
-    
-Usage
-
-from file_validators import GeneralValidator, validate_filename
 
 v = GeneralValidator(
     input_object,           - required: file path, string or stream
@@ -90,28 +75,19 @@ v = GeneralValidator(
     buffer = 9000           - bytes buffer to read from stream FileStorage object
 )
 
-if v.validate():
-    # stuff
+
+valid_input = True
+
+try:
+    v.validate() # valid
+except:
+    valid_input = False # not valid
 
 
-# or with json message
 
-res = v.validate(show_reason=True)
-if res[&#39;status&#39;] == &#39;success&#39;:
-    return res[&#39;message&#39;]
-elif res[&#39;status&#39;] == &#39;fail&#39;:
-    return res[&#39;message&#39;]
-    
-    
-    
-You can import individually these function validators
+```
 
-
-validate_text_contains_all(data, text_contains_all_list)
-validate_text_contains_any(data, text_contains_any_list)
-validate_sheets(input_object, required_sheets)
-validate_columns(data, required_columns_list, required_sheets_list)
-validate_rows_number(data, min_rows_number, required_sheets_list)
+You can also import individually the function bellow:
 
 
 &#34;&#34;&#34;
@@ -379,7 +355,7 @@ class GeneralValidator:
 
     def validate(self):
         &#34;&#34;&#34; 
-            param: show_reason - if true will return a dict with status and message 
+            When called run all validators on `input_object` parameter
         &#34;&#34;&#34;
 
         self._check_required_input_type()
@@ -726,7 +702,7 @@ class GeneralValidator:
 
     def validate(self):
         &#34;&#34;&#34; 
-            param: show_reason - if true will return a dict with status and message 
+            When called run all validators on `input_object` parameter
         &#34;&#34;&#34;
 
         self._check_required_input_type()
@@ -746,14 +722,14 @@ class GeneralValidator:
 <span>def <span class="ident">validate</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>param: show_reason - if true will return a dict with status and message</p></div>
+<div class="desc"><p>When called run all validators on <code>input_object</code> parameter</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def validate(self):
     &#34;&#34;&#34; 
-        param: show_reason - if true will return a dict with status and message 
+        When called run all validators on `input_object` parameter
     &#34;&#34;&#34;
 
     self._check_required_input_type()
@@ -776,9 +752,7 @@ class GeneralValidator:
 <nav id="sidebar">
 <h1>Index</h1>
 <div class="toc">
-<ul>
-<li><a href="#or-with-json-message">or with json message</a></li>
-</ul>
+<ul></ul>
 </div>
 <ul id="index">
 <li><h3>Super-module</h3>

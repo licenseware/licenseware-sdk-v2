@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>licenseware.common.constants.quotas API documentation</title>
-<meta name="description" content="" />
+<title>licenseware.common.constants.app_id_quotas API documentation</title>
+<meta name="description" content="Here define app ids and their uploaders_ids along with uploader_ids max quota …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -19,54 +19,86 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>licenseware.common.constants.quotas</code></h1>
+<h1 class="title">Module <code>licenseware.common.constants.app_id_quotas</code></h1>
 </header>
 <section id="section-intro">
+<p>Here define app ids and their uploaders_ids along with uploader_ids max quota.</p>
+<p>Each item in <code>QUOTA</code> dictionary has the following shape:</p>
+<pre><code class="language-js">'app_id': {
+    &quot;uploader_id1&quot;: set_quota(10),  # Databases
+    &quot;uploader_id2&quot;: set_quota(1),  # Files
+    &quot;uploader_id_etc&quot;: set_quota(1),  # Files
+}
+</code></pre>
+<p><strong>Atention!</strong>
+<code>APP_ID</code> from .env file should be present in <code>QUOTA</code> dictionary</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from dataclasses import dataclass
+<pre><code class="python">&#34;&#34;&#34;
 
-#TODO
+Here define app ids and their uploaders_ids along with uploader_ids max quota.
 
-@dataclass
-class quotas:
-    
-    CPUQ:int = 10 # Databases
-    RV_TOOLS:int = 1 # Files
-    LMS_DETAIL:int = 1 # Files
-    
+Each item in `QUOTA` dictionary has the following shape:
 
+```js
+&#39;app_id&#39;: {
+    &#34;uploader_id1&#34;: set_quota(10),  # Databases
+    &#34;uploader_id2&#34;: set_quota(1),  # Files
+    &#34;uploader_id_etc&#34;: set_quota(1),  # Files
+}
+```
+
+**Atention!** 
+`APP_ID` from .env file should be present in `QUOTA` dictionary
+
+
+&#34;&#34;&#34;
+
+
+import sys
+from .envs import envs
+
+# If debug true remove limit 
+max_int = sys.maxsize
+set_quota = lambda q: max_int if envs.DEBUG else q
 
 
 
 QUOTA = {
-    #IFMP
-    &#34;cpuq&#34;: 10,  # Databases
-    &#34;rv_tools&#34;: 1,  # Files
-    &#34;lms_detail&#34;: 1,  # Files
-    &#34;powercli&#34;: 1,  # Files
     
-    #ODB
-    &#34;review_lite&#34;: 16, # Databases
-    &#34;lms_options&#34;: 1, # Files
-
-    #OFMW
-    &#34;ofmw_archive&#34;: 1,  # 1 Device  == 1 archive
+    &#39;ifmp&#39;: {
+        &#34;cpuq&#34;: set_quota(10),  # Databases
+        &#34;rv_tools&#34;: set_quota(1),  # Files
+        &#34;lms_detail&#34;: set_quota(1),  # Files
+        &#34;powercli&#34;: set_quota(1),  # Files        
+    },
     
-    #CM
-    &#34;pdf_contract&#34;: 1, # 1 pdf contract
+    &#39;odb&#39;: {
+        &#34;review_lite&#34;: set_quota(16), # Databases
+        &#34;lms_options&#34;: set_quota(1), # Files
+    },
     
-    #MDM
-    &#34;sccm_queries&#34;: 1 # 1 pack of 3 csv files
+    &#39;fmw&#39;: {
+        &#34;fmw_archive&#34;: set_quota(1),  # 1 Device  == 1 archive
+    },
+    
+    &#39;contracts&#39;: {
+        &#34;pdf_contract&#34;: set_quota(1), # 1 pdf contract
+    },
+    
+    &#39;mdm&#39;: {
+        &#34;sccm_queries&#34;: set_quota(1) # 1 pack of 3 csv files    
+    }
+    
 }
 
+# Selecting uploader_ids for current app
+QUOTA = QUOTA[envs.APP_ID]
 
-# if os.getenv(&#39;DEBUG&#39;) == &#39;true&#39;:
-#     QUOTA = dict(
-#         zip(QUOTA.keys(), [sys.maxsize]*len(QUOTA.keys()))
-#     )</code></pre>
+
+ </code></pre>
 </details>
 </section>
 <section>
@@ -74,43 +106,23 @@ QUOTA = {
 <section>
 </section>
 <section>
-</section>
-<section>
-<h2 class="section-title" id="header-classes">Classes</h2>
+<h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="licenseware.common.constants.quotas.quotas"><code class="flex name class">
-<span>class <span class="ident">quotas</span></span>
-<span>(</span><span>CPUQ: int = 10, RV_TOOLS: int = 1, LMS_DETAIL: int = 1)</span>
+<dt id="licenseware.common.constants.app_id_quotas.set_quota"><code class="name flex">
+<span>def <span class="ident">set_quota</span></span>(<span>q)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>quotas(CPUQ: int = 10, RV_TOOLS: int = 1, LMS_DETAIL: int = 1)</p></div>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class quotas:
-    
-    CPUQ:int = 10 # Databases
-    RV_TOOLS:int = 1 # Files
-    LMS_DETAIL:int = 1 # Files</code></pre>
+<pre><code class="python">set_quota = lambda q: max_int if envs.DEBUG else q</code></pre>
 </details>
-<h3>Class variables</h3>
-<dl>
-<dt id="licenseware.common.constants.quotas.quotas.CPUQ"><code class="name">var <span class="ident">CPUQ</span> : int</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="licenseware.common.constants.quotas.quotas.LMS_DETAIL"><code class="name">var <span class="ident">LMS_DETAIL</span> : int</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="licenseware.common.constants.quotas.quotas.RV_TOOLS"><code class="name">var <span class="ident">RV_TOOLS</span> : int</code></dt>
-<dd>
-<div class="desc"></div>
 </dd>
 </dl>
-</dd>
-</dl>
+</section>
+<section>
 </section>
 </article>
 <nav id="sidebar">
@@ -124,16 +136,9 @@ QUOTA = {
 <li><code><a title="licenseware.common.constants" href="index.html">licenseware.common.constants</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-classes">Classes</a></h3>
-<ul>
-<li>
-<h4><code><a title="licenseware.common.constants.quotas.quotas" href="#licenseware.common.constants.quotas.quotas">quotas</a></code></h4>
+<li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="licenseware.common.constants.quotas.quotas.CPUQ" href="#licenseware.common.constants.quotas.quotas.CPUQ">CPUQ</a></code></li>
-<li><code><a title="licenseware.common.constants.quotas.quotas.LMS_DETAIL" href="#licenseware.common.constants.quotas.quotas.LMS_DETAIL">LMS_DETAIL</a></code></li>
-<li><code><a title="licenseware.common.constants.quotas.quotas.RV_TOOLS" href="#licenseware.common.constants.quotas.quotas.RV_TOOLS">RV_TOOLS</a></code></li>
-</ul>
-</li>
+<li><code><a title="licenseware.common.constants.app_id_quotas.set_quota" href="#licenseware.common.constants.app_id_quotas.set_quota">set_quota</a></code></li>
 </ul>
 </li>
 </ul>
