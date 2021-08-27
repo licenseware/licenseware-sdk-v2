@@ -50,13 +50,9 @@ def rv_tools_worker(event_data):
     # }
     
     log.info("Starting working")
-    
     notify_upload_status(event_data, status=states.RUNNING)
-    
     log.debug(event_data) # here add the processing file logic
-    
     notify_upload_status(event_data, status=states.IDLE)
-    
     log.info("Finished working")
     
 

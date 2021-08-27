@@ -1,4 +1,5 @@
 '''
+
 # Contents
 
 1. [Quickstart](#quickstart)
@@ -72,7 +73,9 @@ def rv_tools_worker(event_data):
     # }
     
     log.info("Starting working")
-    log.debug(event_data)
+    notify_upload_status(event_data, status=states.RUNNING)
+    log.debug(event_data) # here add the processing file logic
+    notify_upload_status(event_data, status=states.IDLE)
     log.info("Finished working")
     
 
@@ -517,11 +520,14 @@ Here is the worker function which will process the files in the background.
 ```py
 #worker.py
 
+from licenseware.notification import notify_upload_status
 from licenseware.utils.logger import log
 
 def rv_tools_worker(event_data):
     log.info("Starting working")
-    # custom logic here
+    notify_upload_status(event_data, status=states.RUNNING)
+    log.debug(event_data) # here add the processing file logic
+    notify_upload_status(event_data, status=states.IDLE)
     log.info("Finished working")
     
 ```
