@@ -1,4 +1,20 @@
+# Contents
 
+1. [Quickstart](#quickstart)
+2. [What is an `App`?](#what-is-an-app)
+3. [Set environment variables](#set-environment-variables)
+4. [`App` declaration](#app-declaration)
+5. [`Uploader` declaration](#uploader-declaration)
+6. [`Report` declaration](#report-declaration)
+7. [Custom namespaces](#custom-namespaces)
+8. [Endpoints from simple functions](#endpoints-from-simple-functions)
+9. [The `main` file](#the-main-file)
+10. [Licenseware package structure](#licenseware-package-structure)
+
+
+
+
+<a name="quickstart"></a>
 # QUICKSTART 
 
 Bellow is a full working example of almost all features the sdk provides.
@@ -352,25 +368,10 @@ Make commands:
 Documentation automatically generated with [`pdoc3`](https://pdoc3.github.io/pdoc/).
 
 
-#Contents
 
-1. [What is an `App`?](#what-is-an-app)
-2. [Set environment variables](#set-environment-variables)
-3. [`App` declaration](#app-declaration)
-4. [`Uploader` declaration](#uploader-declaration)
-5. [`Report` declaration](#report-declaration)
-6. [Custom namespaces](#custom-namespaces)
-7. [Endpoints from simple functions](#endpoints-from-simple-functions)
-8. [The `main` file](#the-main-file)
-9. [Licenseware package structure](#licenseware-package-structure)
+<a name="what-is-an-app"></a>
+# What is an `App`?
 
-
-
-
-
-<a name="what-is-an-app">
-#What is an `App`?
-</a>
 
 Each Licenseware `App`/`Service` is responsible for:
 
@@ -402,9 +403,9 @@ Each **REPORT** has:
 
 
 
-<a name="set-environment-variables">
-#Set environment variables
-</a>
+<a name="set-environment-variables"></a>
+# Set environment variables
+
 
 Fist make sure you have set the environment variables:
 
@@ -457,9 +458,9 @@ make up
 
 
 
-<a name="app-declaration">
+<a name="app-declaration"></a>
 # `App` declaration
-</a>
+
 
 `AppBuilder` class will be used to define our `App`. 
 This class will handle: 
@@ -493,9 +494,9 @@ The `ifmp_app` instance is now ready to attach other uploaders, reports, report 
 
 
 
-<a name="uploader-declaration">
+<a name="uploader-declaration"></a>
 # `Uploader` declaration
-</a>
+
 
 The uploader is responsible for:
 
@@ -636,9 +637,9 @@ Of course defining an uploader can be defined in just one file too.
 
 
 
-<a name="report-declaration">
+<a name="report-declaration"></a>
 # `Report` declaration
-</a>
+
 
 A `Report` is composed of one or more `report components`. 
 Each report component will inherit from `BaseReportComponent` class.
@@ -791,9 +792,9 @@ Reports api will be handled by the `ifmp_app` instance.
 
 
 
-<a name="custom-namespaces">
+<a name="custom-namespaces"></a>
 # Custom namespaces
-</a>
+
 
 We are not restricted using just the apis generated from `AppBuilder` we can add new custom ones to `App`/`ifmp_app`.
 
@@ -834,9 +835,9 @@ If the custom namespace created is repetead for all apps consider adding it to `
 
 
 
-<a name="endpoints-from-simple-functions">
+<a name="endpoints-from-simple-functions"></a>
 # Endpoints from simple functions
-</a>
+
 
 Class `EndpointBuilder` can be used to generate endpoints from simple functions.
 The function name will be used to extract the http method and the route path (`get_custom_data_from_mongo` -->
@@ -873,9 +874,9 @@ ifmp_app.register_endpoint(custom_func_endpoint)
 
 
 
-<a name="the-main-file">
-#The `main` file
-</a>
+<a name="the-main-file"></a>
+# The `main` file
+
 
 In the main file or in `create_app` builder function (where Flask is instantiated) we can initialize the `App` with `ifmp_app.init_app(app)` where `app` is the Flask instance. 
 

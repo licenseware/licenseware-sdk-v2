@@ -28,10 +28,17 @@
 </summary>
 <pre><code class="python">import os
 from typing import Tuple
+
+from flask import Request
+
+from app.licenseware.quota import Quota
+from app.licenseware.utils.logger import log
+from app.licenseware.common.constants import envs
+
 from .filename_validator import FileNameValidator
 from .file_content_validator import FileContentValidator
 
-from app.licenseware.utils.logger import log
+
 
 
 
@@ -43,7 +50,6 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
     
     def __init__(
         self,
-        uploader_id:str = None,
         filename_contains:list = [],
         filename_endswith:list = [],
         ignore_filenames:list = [],
@@ -57,9 +63,11 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         buffer:int = 9000,
         filename_valid_message = &#34;Filename is valid&#34;,
         filename_invalid_message =  None,
-        filename_ignored_message =  &#34;Filename is ignored&#34;
+        filename_ignored_message =  &#34;Filename is ignored&#34;,
+        uploader_id:str = None,
+        quota_units:int = None, 
     ):
-        
+        self.quota_units = quota_units
         self.uploader_id = uploader_id
         self.filename_contains = filename_contains
         self.filename_endswith = filename_endswith
@@ -79,12 +87,49 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         super().__init__(**vars(self))
      
     
-    def calculate_quota(self, flask_request) -&gt; Tuple[dict, int]:
-        &#34;&#34;&#34;
-            receive flask_request, extract tenantid and files, calculate quota
-            - quota will be different for each uploader_id
-        &#34;&#34;&#34;
-        raise NotImplementedError(&#34;Overwrite `calculate_quota` func&#34;)
+    def quota_within_limits(self, tenant_id:str, units: int) -&gt; bool:
+        
+        if envs.ENVIRONMENT == &#39;local&#39;: return True
+        
+        q = Quota(
+            tenant_id=tenant_id, 
+            uploader_id=self.uploader_id, 
+            units=self.quota_units
+        )
+        
+        _, status_code = q.check_quota(units)
+        
+        if status_code != 200: return False
+        return True
+    
+    
+    def update_quota(self, tenant_id:str, units: int) -&gt; Tuple[dict, int]:
+        
+        q = Quota(
+            tenant_id=tenant_id, 
+            uploader_id=self.uploader_id, 
+            units=self.quota_units
+        )
+        
+        response, status_code = q.update_quota(units)
+        
+        return response, status_code
+        
+        
+    def calculate_quota(self, flask_request: Request) -&gt; Tuple[dict, int]:
+        
+        log.warning(&#34;Calculating quota based on length of files&#34;)
+        
+        tenant_id = flask_request.headers.get(&#39;Tenantid&#39;)
+        file_objects = flask_request.files.getlist(&#34;files[]&#34;)
+        
+        current_units_to_process = len(file_objects)
+        
+        if self.quota_within_limits(tenant_id, current_units_to_process):
+            self.update_quota(tenant_id, current_units_to_process)
+            return {&#39;status&#39;: &#39;success&#39;, &#39;message&#39;: &#39;Quota within limits&#39;}, 200
+        
+        return {&#39;status&#39;: &#39;fail&#39;, &#39;message&#39;: &#39;Quota exceeded&#39;}, 402
     
         
     @classmethod
@@ -108,6 +153,7 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         ]
             
         return file_paths
+  
     </code></pre>
 </details>
 </section>
@@ -122,7 +168,7 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
 <dl>
 <dt id="licenseware.uploader_validator.uploader_validator.UploaderValidator"><code class="flex name class">
 <span>class <span class="ident">UploaderValidator</span></span>
-<span>(</span><span>uploader_id: str = None, filename_contains: list = [], filename_endswith: list = [], ignore_filenames: list = [], required_input_type: str = None, required_sheets: list = [], required_columns: list = [], text_contains_all: list = [], text_contains_any: list = [], min_rows_number: int = 0, header_starts_at: int = 0, buffer: int = 9000, filename_valid_message='Filename is valid', filename_invalid_message=None, filename_ignored_message='Filename is ignored')</span>
+<span>(</span><span>filename_contains: list = [], filename_endswith: list = [], ignore_filenames: list = [], required_input_type: str = None, required_sheets: list = [], required_columns: list = [], text_contains_all: list = [], text_contains_any: list = [], min_rows_number: int = 0, header_starts_at: int = 0, buffer: int = 9000, filename_valid_message='Filename is valid', filename_invalid_message=None, filename_ignored_message='Filename is ignored', uploader_id: str = None, quota_units: int = None)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -138,7 +184,6 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
     
     def __init__(
         self,
-        uploader_id:str = None,
         filename_contains:list = [],
         filename_endswith:list = [],
         ignore_filenames:list = [],
@@ -152,9 +197,11 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         buffer:int = 9000,
         filename_valid_message = &#34;Filename is valid&#34;,
         filename_invalid_message =  None,
-        filename_ignored_message =  &#34;Filename is ignored&#34;
+        filename_ignored_message =  &#34;Filename is ignored&#34;,
+        uploader_id:str = None,
+        quota_units:int = None, 
     ):
-        
+        self.quota_units = quota_units
         self.uploader_id = uploader_id
         self.filename_contains = filename_contains
         self.filename_endswith = filename_endswith
@@ -174,12 +221,49 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         super().__init__(**vars(self))
      
     
-    def calculate_quota(self, flask_request) -&gt; Tuple[dict, int]:
-        &#34;&#34;&#34;
-            receive flask_request, extract tenantid and files, calculate quota
-            - quota will be different for each uploader_id
-        &#34;&#34;&#34;
-        raise NotImplementedError(&#34;Overwrite `calculate_quota` func&#34;)
+    def quota_within_limits(self, tenant_id:str, units: int) -&gt; bool:
+        
+        if envs.ENVIRONMENT == &#39;local&#39;: return True
+        
+        q = Quota(
+            tenant_id=tenant_id, 
+            uploader_id=self.uploader_id, 
+            units=self.quota_units
+        )
+        
+        _, status_code = q.check_quota(units)
+        
+        if status_code != 200: return False
+        return True
+    
+    
+    def update_quota(self, tenant_id:str, units: int) -&gt; Tuple[dict, int]:
+        
+        q = Quota(
+            tenant_id=tenant_id, 
+            uploader_id=self.uploader_id, 
+            units=self.quota_units
+        )
+        
+        response, status_code = q.update_quota(units)
+        
+        return response, status_code
+        
+        
+    def calculate_quota(self, flask_request: Request) -&gt; Tuple[dict, int]:
+        
+        log.warning(&#34;Calculating quota based on length of files&#34;)
+        
+        tenant_id = flask_request.headers.get(&#39;Tenantid&#39;)
+        file_objects = flask_request.files.getlist(&#34;files[]&#34;)
+        
+        current_units_to_process = len(file_objects)
+        
+        if self.quota_within_limits(tenant_id, current_units_to_process):
+            self.update_quota(tenant_id, current_units_to_process)
+            return {&#39;status&#39;: &#39;success&#39;, &#39;message&#39;: &#39;Quota within limits&#39;}, 200
+        
+        return {&#39;status&#39;: &#39;fail&#39;, &#39;message&#39;: &#39;Quota exceeded&#39;}, 402
     
         
     @classmethod
@@ -256,21 +340,75 @@ def get_only_valid_filepaths_from_objects_response(cls, file_objects_response):
 <h3>Methods</h3>
 <dl>
 <dt id="licenseware.uploader_validator.uploader_validator.UploaderValidator.calculate_quota"><code class="name flex">
-<span>def <span class="ident">calculate_quota</span></span>(<span>self, flask_request) ‑> Tuple[dict, int]</span>
+<span>def <span class="ident">calculate_quota</span></span>(<span>self, flask_request: flask.wrappers.Request) ‑> Tuple[dict, int]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>receive flask_request, extract tenantid and files, calculate quota
-- quota will be different for each uploader_id</p></div>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def calculate_quota(self, flask_request) -&gt; Tuple[dict, int]:
-    &#34;&#34;&#34;
-        receive flask_request, extract tenantid and files, calculate quota
-        - quota will be different for each uploader_id
-    &#34;&#34;&#34;
-    raise NotImplementedError(&#34;Overwrite `calculate_quota` func&#34;)</code></pre>
+<pre><code class="python">def calculate_quota(self, flask_request: Request) -&gt; Tuple[dict, int]:
+    
+    log.warning(&#34;Calculating quota based on length of files&#34;)
+    
+    tenant_id = flask_request.headers.get(&#39;Tenantid&#39;)
+    file_objects = flask_request.files.getlist(&#34;files[]&#34;)
+    
+    current_units_to_process = len(file_objects)
+    
+    if self.quota_within_limits(tenant_id, current_units_to_process):
+        self.update_quota(tenant_id, current_units_to_process)
+        return {&#39;status&#39;: &#39;success&#39;, &#39;message&#39;: &#39;Quota within limits&#39;}, 200
+    
+    return {&#39;status&#39;: &#39;fail&#39;, &#39;message&#39;: &#39;Quota exceeded&#39;}, 402</code></pre>
+</details>
+</dd>
+<dt id="licenseware.uploader_validator.uploader_validator.UploaderValidator.quota_within_limits"><code class="name flex">
+<span>def <span class="ident">quota_within_limits</span></span>(<span>self, tenant_id: str, units: int) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def quota_within_limits(self, tenant_id:str, units: int) -&gt; bool:
+    
+    if envs.ENVIRONMENT == &#39;local&#39;: return True
+    
+    q = Quota(
+        tenant_id=tenant_id, 
+        uploader_id=self.uploader_id, 
+        units=self.quota_units
+    )
+    
+    _, status_code = q.check_quota(units)
+    
+    if status_code != 200: return False
+    return True</code></pre>
+</details>
+</dd>
+<dt id="licenseware.uploader_validator.uploader_validator.UploaderValidator.update_quota"><code class="name flex">
+<span>def <span class="ident">update_quota</span></span>(<span>self, tenant_id: str, units: int) ‑> Tuple[dict, int]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update_quota(self, tenant_id:str, units: int) -&gt; Tuple[dict, int]:
+    
+    q = Quota(
+        tenant_id=tenant_id, 
+        uploader_id=self.uploader_id, 
+        units=self.quota_units
+    )
+    
+    response, status_code = q.update_quota(units)
+    
+    return response, status_code</code></pre>
 </details>
 </dd>
 </dl>
@@ -312,6 +450,8 @@ def get_only_valid_filepaths_from_objects_response(cls, file_objects_response):
 <li><code><a title="licenseware.uploader_validator.uploader_validator.UploaderValidator.calculate_quota" href="#licenseware.uploader_validator.uploader_validator.UploaderValidator.calculate_quota">calculate_quota</a></code></li>
 <li><code><a title="licenseware.uploader_validator.uploader_validator.UploaderValidator.get_filepaths_from_objects_response" href="#licenseware.uploader_validator.uploader_validator.UploaderValidator.get_filepaths_from_objects_response">get_filepaths_from_objects_response</a></code></li>
 <li><code><a title="licenseware.uploader_validator.uploader_validator.UploaderValidator.get_only_valid_filepaths_from_objects_response" href="#licenseware.uploader_validator.uploader_validator.UploaderValidator.get_only_valid_filepaths_from_objects_response">get_only_valid_filepaths_from_objects_response</a></code></li>
+<li><code><a title="licenseware.uploader_validator.uploader_validator.UploaderValidator.quota_within_limits" href="#licenseware.uploader_validator.uploader_validator.UploaderValidator.quota_within_limits">quota_within_limits</a></code></li>
+<li><code><a title="licenseware.uploader_validator.uploader_validator.UploaderValidator.update_quota" href="#licenseware.uploader_validator.uploader_validator.UploaderValidator.update_quota">update_quota</a></code></li>
 </ul>
 </li>
 </ul>

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>licenseware API documentation</title>
-<meta name="description" content="Documentation automatically generated with [`pdoc3`](https://pdoc3.github.io/pdoc/) …" />
+<meta name="description" content="Contents …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,9 +22,9 @@
 <h1 class="title">Package <code>licenseware</code></h1>
 </header>
 <section id="section-intro">
-<p>Documentation automatically generated with <a href="https://pdoc3.github.io/pdoc/"><code>pdoc3</code></a>.</p>
 <h1 id="contents">Contents</h1>
 <ol>
+<li><a href="#quickstart">Quickstart</a></li>
 <li><a href="#what-is-an-app">What is an <code>App</code>?</a></li>
 <li><a href="#set-environment-variables">Set environment variables</a></li>
 <li><a href="#app-declaration"><code>App</code> declaration</a></li>
@@ -35,9 +35,348 @@
 <li><a href="#the-main-file">The <code>main</code> file</a></li>
 <li><a href="#licenseware-package-structure">Licenseware package structure</a></li>
 </ol>
-<p><a name="what-is-an-app"></p>
+<p><a name="quickstart"></a></p>
+<h1 id="quickstart">QUICKSTART</h1>
+<p>Bellow is a full working example of almost all features the sdk provides.</p>
+<pre><code class="language-py">
+from dotenv import load_dotenv
+load_dotenv()  
+
+from flask import Flask
+from flask_restx import Namespace, Resource
+from marshmallow import Schema, fields
+
+from app.licenseware.common.constants import flags, icons, envs
+from app.licenseware.utils.logger import log
+
+from app.licenseware.app_builder import AppBuilder
+from app.licenseware.uploader_builder import UploaderBuilder
+from app.licenseware.uploader_validator import UploaderValidator
+from app.licenseware.report_builder import ReportBuilder
+from app.licenseware.report_components import BaseReportComponent
+from app.licenseware.report_components.style_attributes import style_attributes as styles
+from app.licenseware.endpoint_builder import EndpointBuilder
+
+
+
+app = Flask(__name__)
+
+
+# APP
+
+ifmp_app = AppBuilder(
+    name = 'Infrastructure Mapper',
+    description = 'Overview of devices and networks',
+    flags = [flags.BETA]
+)
+
+
+# UPLOADERS
+
+
+# Here is the worker function 
+# which will process the files in the background
+def rv_tools_worker(event_data):
+
+    # Event data will contain the following information
+    # event_data = {
+    #     'tenant_id': 'the tenant_id from request',
+    #     'filepaths': 'absolute file paths to the files uploaded',
+    #     'headers':  'flask request headers',
+    #     'json':  'flask request json data',
+    # }
+
+    log.info(&quot;Starting working&quot;)
+    log.debug(event_data)
+    log.info(&quot;Finished working&quot;)
+
+
+
+
+# Here we are defining the validation required for each upload
+
+class RVToolsUploaderValidator(UploaderValidator): 
+    # If necessary you can overwrite bellow mentioned methods
+    ...
+
+    # def calculate_quota(self, flask_request) -&gt; Tuple[dict, int]:
+    # responsible for calculating quota based on tenant_id and returning a json response, status code 
+    # ...
+
+    # def get_filenames_response(self, flask_request): 
+    # responsible for validating filenames and returning a json response, status code
+    # ...
+
+    # def get_file_objects_response(self, flask_request): 
+    #   responsible for validating filenames, their contents and returning a json response, status code
+    # ...
+
+
+
+rv_tools_validator = RVToolsUploaderValidator(
+    filename_contains = ['RV', 'Tools'],
+    filename_endswith = ['.xls', '.xlsx'],
+    ignore_filenames  = ['skip_this_file.csv'],
+    required_input_type = &quot;excel&quot;,
+    min_rows_number = 1,
+    required_sheets = ['tabvInfo', 'tabvCPU', 'tabvHost', 'tabvCluster'],
+    required_columns = [
+        'VM', 'Host', 'OS', 'Sockets', 'CPUs', 'Model', 'CPU Model',
+        'Cluster', '# CPU', '# Cores', 'ESX Version', 'HT Active',
+        'Name', 'NumCpuThreads', 'NumCpuCores'
+    ]
+)
+
+# Here we are creating the uploader 
+# Notice we are providing the the validator created up to `validator_class` parameter
+# `worker_function` will be called when `uploader_id` is triggered
+# The `uploader_id` event is triggered when files are uploaded to `/uploads/uploader_id/files` route
+
+rv_tools_uploader = UploaderBuilder(
+    name=&quot;RVTools&quot;, 
+    uploader_id = 'rv_tools',
+    description=&quot;XLSX export from RVTools after scanning your Vmware infrastructure.&quot;, 
+    accepted_file_types=['.xls', '.xlsx'],
+    validator_class=rv_tools_validator,
+    worker_function=rv_tools_worker,
+    quota_units = 1
+)
+
+# Here we are:
+# - adding the uploader to the main app (uploaders list)
+# - sending uploader information to registry-service
+ifmp_app.register_uploader(rv_tools_uploader)
+
+
+
+
+# REPORTS
+
+
+class VirtualOverview(BaseReportComponent):
+
+    def __init__(
+        self, 
+        title: str, 
+        component_id: str, 
+        component_type: str
+    ):
+        self.title = title
+        self.component_id = component_id
+        self.component_type = component_type
+
+        super().__init__(**vars(self))
+
+
+    def get_data(self, flask_request):
+
+        match_filters = self.get_mongo_match_filters(flask_request)
+
+        log.info(match_filters)
+
+        return ['mongo pipeline result']
+
+
+    def set_attributes(self):
+
+        # Short hand based on value_key
+        # See based on component type funcs from: licenseware.report_components.attributes
+        value_key_and_icon = [
+            (&quot;number_of_devices&quot;, icons.SERVERS), 
+            (&quot;number_of_databases&quot;, icons.DATABASE_ROUNDED)
+        ]
+
+        # Set values straight to self.attributes
+        self.attributes = self.build_attributes(value_key_and_icon)
+
+
+        # Or raw dict (same results are achived using the method up)
+
+        attributes = {'series': [
+            {
+                'value_description': 'Number of devices',
+                'value_key': 'number_of_devices',
+                'icon': 'ServersIcon'
+            },
+            {
+                'value_description': 'Number of databases',
+                'value_key': 'number_of_databases',
+                'icon': 'DatabaseIconRounded'
+            }
+        ]}
+
+        # You can also return attributes
+        return attributes
+
+
+    def set_style_attributes(self):
+
+        # You can set a dictionary directly or return a dict like bellow
+        self.style_attributes = {
+            'width': '1/3'
+        }
+
+        # or import `style_attributes` dataclass
+        # from app.licenseware.report_components.style_attributes import style_attributes as styles
+        style_attributes = self.build_style_attributes([
+            styles.WIDTH_ONE_THIRD
+            #etc
+        ])
+
+        return style_attributes
+
+
+virtual_overview = VirtualOverview(
+    title=&quot;Overview&quot;,
+    component_id=&quot;virtual_overview&quot;,
+    component_type='summary'
+)
+
+
+# Register component to registry-service (to act as a first class citizen)
+ifmp_app.register_report_component(virtual_overview)
+
+
+# Define a report wich holds one or more report components
+virtualization_details_report = ReportBuilder(
+    name=&quot;Virtualization Details&quot;,
+    report_id=&quot;virtualization_details&quot;,
+    description=&quot;This report gives you a detailed view of your virtual infrastructure. Deep dive into the infrastructure topology, identify devices with missing host details and capping rules for licensing.&quot;,
+    connected_apps=['ifmp-service'],
+    report_components=[
+        virtual_overview        
+    ]
+)
+
+
+ifmp_app.register_report(virtualization_details_report)
+
+
+
+
+
+
+# CUSTOM RESTX NAMESPACES
+# We can add also custom namespaces to main IFMP Api
+
+custom_ns = Namespace(
+    name=&quot;Custom&quot;, 
+    description=&quot;This is a custom namespace with the app prefix&quot;
+)
+
+@custom_ns.route(&quot;/custom-api-route&quot;)
+class CustomApiRoute(Resource):    
+    @custom_ns.doc(&quot;custom&quot;)
+    def get(self):
+        return &quot;custom-api-route&quot;
+
+# Add it to main app 
+# it will have the same namespace prefix /ifmp/v1/ + ns-prefix/custom-api-route
+ifmp_app.add_namespace(custom_ns, path='/ns-prefix')
+
+# If the namespace defined up it's used on all apps 
+# add it to licenseware sdk in app_builder default routes
+
+
+
+# EndpointBuilder
+
+# Endpoints can be generated from functions or marshmellow schemas
+# add http method as a prefix to schema or function handler (get_some_data, PostDeviceDataSchema etc)
+
+# Here we are using a function to create an endpoint like /custom_endpoint/custom_data_from_mongo
+
+def get_custom_data_from_mongo(flask_request):
+    &quot;&quot;&quot; Custom documentation &quot;&quot;&quot;
+
+    # Some logic here
+
+    return &quot;Some data&quot;
+
+
+custom_func_endpoint = EndpointBuilder(get_custom_data_from_mongo)
+
+ifmp_app.register_endpoint(custom_func_endpoint)
+
+# Here we are using a schema to generate an endpoint
+
+class GetDeviceData(Schema):
+
+    class Meta:
+        collection_name = envs.MONGO_COLLECTION_DATA_NAME
+
+    tenant_id = fields.Str(required=False)
+    updated_at = fields.Str(required=False)
+    name = fields.Str(required=True)
+    occupation = fields.Str(required=False)
+
+
+custom_schema_endpoint = EndpointBuilder(GetDeviceData)
+
+
+ifmp_app.register_endpoint(custom_schema_endpoint)
+
+
+
+# Call init_app at the end
+# ifmp_app.register_app()
+ifmp_app.init_app(app, register=True)
+
+
+
+if __name__ == &quot;__main__&quot;:    
+    app.run(port=4000, debug=True)
+
+</code></pre>
+<p>Required environment variables</p>
+<pre><code class="language-bash">
+DEBUG=true
+ENVIRONMENT=local
+PERSONAL_PREFIX=acmt
+
+
+FLASK_APP=main:app
+
+APP_ID=ifmp
+APP_HOST=http://localhost:5000
+
+LWARE_IDENTITY_USER=John
+LWARE_IDENTITY_PASSWORD=secret
+
+AUTH_SERVICE_URL=http://localhost:5000/auth
+AUTH_SERVICE_USERS_URL_PATH=/users
+AUTH_SERVICE_MACHINES_URL_PATH=/machines
+
+REGISTRY_SERVICE_URL=http://localhost:5000/registry-service
+
+FILE_UPLOAD_PATH=/tmp/lware
+
+MONGO_ROOT_USERNAME=John
+MONGO_ROOT_PASSWORD=secret
+MONGO_HOSTNAME=localhost
+MONGO_PORT=27017
+MONGO_DATABASE_NAME=db
+MONGO_CONNECTION_STRING=mongodb://${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DATABASE_NAME}
+
+
+REDIS_HOST=redis_db_sdk
+REDIS_PORT=6379
+
+</code></pre>
+<p>Make commands:</p>
+<ul>
+<li><code>make up</code> and
+<code>make down</code> - start and stop mongo and redis databases;</li>
+<li><code>make mock</code> - start mock server which app will use for authentication, registry-service or other external services dependencies;</li>
+<li><code>make dev</code> - start application with hot reload;</li>
+<li><code>make worker</code> - start dramatiq worker;</li>
+<li><code>make test</code> - run all unit tests.</li>
+<li><code>make dev-docs</code> - start <a href="https://pdoc3.github.io/pdoc/"><code>pdoc3</code></a> documentation server, which auto generates documentation from markdown doc strings to html.</li>
+<li><code>make docs</code> - generate <code>docs</code> folder with all documantation generated in html format (can be added later to github pages <code>github.io/python3-licenseware-sdk-docs</code>)</li>
+</ul>
+<p>Documentation automatically generated with <a href="https://pdoc3.github.io/pdoc/"><code>pdoc3</code></a>.</p>
+<p><a name="what-is-an-app"></a></p>
 <h1 id="what-is-an-app">What is an <code>App</code>?</h1>
-<p></a></p>
 <p>Each Licenseware <code>App</code>/<code>Service</code> is responsible for:</p>
 <ul>
 <li>processing files submitted by the user;</li>
@@ -59,11 +398,14 @@
 <li>one or more report components</li>
 <li>report components can be attached either to app builder instance or to report builder instance</li>
 </ul>
-<p><a name="set-environment-variables"></p>
+<p><a name="set-environment-variables"></a></p>
 <h1 id="set-environment-variables">Set environment variables</h1>
-<p></a></p>
 <p>Fist make sure you have set the environment variables:</p>
 <pre><code class="language-bash">#.env
+DEBUG=true
+ENVIRONMENT=local
+PERSONAL_PREFIX=acmt
+
 
 FLASK_APP=main:app
 
@@ -96,9 +438,8 @@ REDIS_PORT=6379
 <p>Start <code>redis</code> and <code>mongo</code> databases:</p>
 <pre><code class="language-bash">make up
 </code></pre>
-<p><a name="app-declaration"></p>
+<p><a name="app-declaration"></a></p>
 <h1 id="app-declaration"><code>App</code> declaration</h1>
-<p></a></p>
 <p><code>AppBuilder</code> class will be used to define our <code>App</code>.
 This class will handle: </p>
 <ul>
@@ -120,9 +461,8 @@ ifmp_app = AppBuilder(
 
 </code></pre>
 <p>The <code>ifmp_app</code> instance is now ready to attach other uploaders, reports, report components (or others) using <em>ifmp_app.register_X</em> methods.</p>
-<p><a name="uploader-declaration"></p>
+<p><a name="uploader-declaration"></a></p>
 <h1 id="uploader-declaration"><code>Uploader</code> declaration</h1>
-<p></a></p>
 <p>The uploader is responsible for:</p>
 <ul>
 <li>validating files received from user;</li>
@@ -166,18 +506,10 @@ from typing import Tuple
 from licenseware.uploader_validator import UploaderValidator
 
 
-class RVToolsUploaderValidator(UploaderValidator):
-
-    def calculate_quota(self, flask_request) -&gt; Tuple[dict, int]:
-
-        file_objects = flask_request.files.getlist(&quot;files[]&quot;)
-
-        # custom logic for quota calculation
-
-        if quota_ok:
-            return {'status': 'success', 'message': 'Quota within limits'}, 200
-        else:
-            return {'status': 'fail', 'message': 'Quota exceeded'}, 402
+class RVToolsUploaderValidator(UploaderValidator): 
+    # Overwrite `calculate_quota`, `get_filenames_response` or `get_file_objects_response` if needed
+    # Otherwise you can just instantiate the class validator from `UploaderValidator` 
+    ...
 
 
 
@@ -198,8 +530,9 @@ rv_tools_validator = RVToolsUploaderValidator(
 
 </code></pre>
 <p>If parameters provided for validating filenames and contents are not enough
-you can also overwrite <code>get_filenames_response</code> and <code>get_file_objects_response</code> methods.</p>
+you can also overwrite: <code>calculate_quota</code>, <code>get_filenames_response</code> and <code>get_file_objects_response</code> methods.</p>
 <ul>
+<li><code>calculate_quota</code>: given a flask request object calculates quota for tenant_id based on current processing units (by default it's using len(files) got from request)</li>
 <li><code>get_filenames_response</code> : given a flask request object validates filenames and returns a json response, status code</li>
 <li><code>get_file_objects_response</code> : given a flask request object validates filenames and contents and returns a json response, status code</li>
 </ul>
@@ -232,9 +565,8 @@ The registering process will take care of api generation for uploaders.</p>
 <pre><code class="language-py">ifmp_app.register_uploader(rv_tools_uploader)
 </code></pre>
 <p>Of course defining an uploader can be defined in just one file too.</p>
-<p><a name="report-declaration"></p>
+<p><a name="report-declaration"></a></p>
 <h1 id="report-declaration"><code>Report</code> declaration</h1>
-<p></a></p>
 <p>A <code>Report</code> is composed of one or more <code>report components</code>.
 Each report component will inherit from <code>BaseReportComponent</code> class.</p>
 <h2 id="creating-the-report-component">Creating the <code>Report component</code></h2>
@@ -368,9 +700,8 @@ virtualization_details_report = ReportBuilder(
 <pre><code class="language-py">ifmp_app.register_report(virtualization_details_report)
 </code></pre>
 <p>Reports api will be handled by the <code>ifmp_app</code> instance.</p>
-<p><a name="custom-namespaces"></p>
+<p><a name="custom-namespaces"></a></p>
 <h1 id="custom-namespaces">Custom namespaces</h1>
-<p></a></p>
 <p>We are not restricted using just the apis generated from <code>AppBuilder</code> we can add new custom ones to <code>App</code>/<code>ifmp_app</code>.</p>
 <pre><code class="language-py">#some_namespace.py
 
@@ -394,9 +725,8 @@ class CustomApiRoute(Resource):
 </code></pre>
 <p><code>ifmp_app</code> will make sure it will have the app prefix.</p>
 <p>If the custom namespace created is repetead for all apps consider adding it to <code><a title="licenseware.app_builder" href="app_builder/index.html">licenseware.app_builder</a></code> package.</p>
-<p><a name="endpoints-from-simple-functions"></p>
+<p><a name="endpoints-from-simple-functions"></a></p>
 <h1 id="endpoints-from-simple-functions">Endpoints from simple functions</h1>
-<p></a></p>
 <p>Class <code>EndpointBuilder</code> can be used to generate endpoints from simple functions.
 The function name will be used to extract the http method and the route path (<code>get_custom_data_from_mongo</code> &ndash;&gt;
 <code>GET</code> http-method, <code>/get_custom_data_from_mongo</code> path-route)</p>
@@ -418,9 +748,8 @@ custom_func_endpoint = EndpointBuilder(get_custom_data_from_mongo)
 <p>Later in our <code>main</code> file: </p>
 <pre><code class="language-py">ifmp_app.register_endpoint(custom_func_endpoint)
 </code></pre>
-<p><a name="the-main-file"></p>
+<p><a name="the-main-file"></a></p>
 <h1 id="the-main-file">The <code>main</code> file</h1>
-<p></a></p>
 <p>In the main file or in <code>create_app</code> builder function (where Flask is instantiated) we can initialize the <code>App</code> with <code>ifmp_app.init_app(app)</code> where <code>app</code> is the Flask instance. </p>
 <p>When <code>init_app</code> is invoked all endpoinds defined in <code><a title="licenseware.app_builder" href="app_builder/index.html">licenseware.app_builder</a></code> will be created and registration information will be sent to registry-service if <code>register=True</code>. You can also initiate the registration to registry-service process with <code>ifmp_app.register_app()</code> </p>
 <pre><code class="language-py">
@@ -454,168 +783,385 @@ if __name__ == &quot;__main__&quot;:
 
 
 </code></pre>
-<p><a name="licenseware-package-structure"></p>
-<h1 id="licenseware-package-structure">Licenseware package structure</h1>
-<p></a> </p>
-<pre><code class="language-bash">
-.
-├── app_builder
-│   ├── app_activation_route.py
-│   ├── app_builder.py
-│   ├── app_registration_route.py
-│   ├── editable_tables_route.py
-│   ├── endpoint_builder_namespace
-│   │   └── __init__.py
-│   ├── __init__.py
-│   ├── refresh_registration_route.py
-│   ├── report_components_namespace
-│   │   ├── __init__.py
-│   │   └── report_individual_components_namespace.py
-│   ├── reports_namespace
-│   │   ├── __init__.py
-│   │   ├── report_components_namespace.py
-│   │   ├── report_metadata_namespace.py
-│   │   └── report_register_namespace.py
-│   ├── tenant_registration_route.py
-│   └── uploads_namespace
-│       ├── filenames_validation_namespace.py
-│       ├── filestream_validation_namespace.py
-│       ├── __init__.py
-│       ├── quota_namespace.py
-│       └── status_namespace.py
-├── auth
-│   ├── auth.py
-│   └── __init__.py
-├── cli
-│   └── __init__.py
-├── common
-│   ├── constants
-│   │   ├── envs.py
-│   │   ├── flags.py
-│   │   ├── icons.py
-│   │   ├── __init__.py
-│   │   ├── quotas.py
-│   │   └── states.py
-│   ├── __init__.py
-│   ├── serializers
-│   │   ├── analysis_status_schema.py
-│   │   ├── app_utilization_schema.py
-│   │   ├── event_schema.py
-│   │   ├── file_upload_validation_schema.py
-│   │   ├── __init__.py
-│   │   ├── register_app_payload_schema.py
-│   │   ├── register_report_component_payload.py
-│   │   ├── register_report_payload_schema.py
-│   │   ├── register_uploader_payload_schema.py
-│   │   └── register_uploader_status_payload_schema.py
-│   └── validators
-│       ├── file_validators.py
-│       ├── __init__.py
-│       ├── registry_payload_validators.py
-│       ├── schema_validator.py
-│       ├── validate_icon.py
-│       └── validate_route.py
-├── decorators
-│   ├── auth_decorators
-│   │   ├── authenticated_machine.py
-│   │   ├── authorization_check.py
-│   │   ├── auth_required.py
-│   │   ├── __init__.py
-│   │   └── machine_check.py
-│   ├── failsafe_decorator.py
-│   └── __init__.py
-├── editable_table
-│   ├── editable_table.py
-│   └── __init__.py
-├── endpoint_builder
-│   ├── endpoint_builder.py
-│   └── __init__.py
-├── __init__.py
-├── mongodata
-│   ├── __init__.py
-│   ├── mongo_connection.py
-│   └── mongodata.py
-├── namespace_generator
-│   ├── __init__.py
-│   ├── mongo_crud.py
-│   ├── mongo_request.py
-│   └── schema_namespace.py
-├── quota
-│   └── __init__.py
-├── registry_service
-│   ├── __init__.py
-│   ├── register_all.py
-│   ├── register_app.py
-│   ├── register_component.py
-│   ├── register_report.py
-│   ├── register_uploader.py
-│   └── register_upload_status.py
-├── report_builder
-│   ├── __init__.py
-│   └── report_builder.py
-├── report_components
-│   ├── attributes
-│   │   ├── bar_vertical.py
-│   │   ├── __init__.py
-│   │   ├── pie.py
-│   │   ├── summary.py
-│   │   └── table.py
-│   ├── base_report_component.py
-│   ├── build_match_expression.py
-│   ├── __init__.py
-│   └── style_attributes
-│       ├── __init__.py
-│       └── style_attributes.py
-├── tenants
-│   ├── active_tenants.py
-│   ├── close_timeout_files.py
-│   ├── __init__.py
-│   └── processing_status.py
-├── uploader_builder
-│   ├── __init__.py
-│   └── uploader_builder.py
-├── uploader_validator
-│   ├── file_content_validator.py
-│   ├── filename_validator.py
-│   ├── __init__.py
-│   └── uploader_validator.py
-└── utils
-    ├── dramatiq_redis_broker.py
-    ├── file_utils.py
-    ├── __init__.py
-    ├── logger.py
-    └── miscellaneous.py
-
-27 directories, 99 files
-
-</code></pre>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#39;&#39;&#39;
+# Contents
+
+1. [Quickstart](#quickstart)
+2. [What is an `App`?](#what-is-an-app)
+3. [Set environment variables](#set-environment-variables)
+4. [`App` declaration](#app-declaration)
+5. [`Uploader` declaration](#uploader-declaration)
+6. [`Report` declaration](#report-declaration)
+7. [Custom namespaces](#custom-namespaces)
+8. [Endpoints from simple functions](#endpoints-from-simple-functions)
+9. [The `main` file](#the-main-file)
+10. [Licenseware package structure](#licenseware-package-structure)
+
+
+
+
+&lt;a name=&#34;quickstart&#34;&gt;&lt;/a&gt;
+# QUICKSTART 
+
+Bellow is a full working example of almost all features the sdk provides.
+
+
+```py
+
+from dotenv import load_dotenv
+load_dotenv()  
+
+from flask import Flask
+from flask_restx import Namespace, Resource
+from marshmallow import Schema, fields
+
+from app.licenseware.common.constants import flags, icons, envs
+from app.licenseware.utils.logger import log
+
+from app.licenseware.app_builder import AppBuilder
+from app.licenseware.uploader_builder import UploaderBuilder
+from app.licenseware.uploader_validator import UploaderValidator
+from app.licenseware.report_builder import ReportBuilder
+from app.licenseware.report_components import BaseReportComponent
+from app.licenseware.report_components.style_attributes import style_attributes as styles
+from app.licenseware.endpoint_builder import EndpointBuilder
+
+
+
+app = Flask(__name__)
+
+
+# APP
+
+ifmp_app = AppBuilder(
+    name = &#39;Infrastructure Mapper&#39;,
+    description = &#39;Overview of devices and networks&#39;,
+    flags = [flags.BETA]
+)
+
+
+# UPLOADERS
+
+
+# Here is the worker function 
+# which will process the files in the background
+def rv_tools_worker(event_data):
+    
+    # Event data will contain the following information
+    # event_data = {
+    #     &#39;tenant_id&#39;: &#39;the tenant_id from request&#39;,
+    #     &#39;filepaths&#39;: &#39;absolute file paths to the files uploaded&#39;,
+    #     &#39;headers&#39;:  &#39;flask request headers&#39;,
+    #     &#39;json&#39;:  &#39;flask request json data&#39;,
+    # }
+    
+    log.info(&#34;Starting working&#34;)
+    log.debug(event_data)
+    log.info(&#34;Finished working&#34;)
+    
+
+
+
+# Here we are defining the validation required for each upload
+
+class RVToolsUploaderValidator(UploaderValidator): 
+    # If necessary you can overwrite bellow mentioned methods
+    ...
+    
+    # def calculate_quota(self, flask_request) -&gt; Tuple[dict, int]:
+    # responsible for calculating quota based on tenant_id and returning a json response, status code 
+    # ...
+    
+    # def get_filenames_response(self, flask_request): 
+    # responsible for validating filenames and returning a json response, status code
+    # ...
+    
+    # def get_file_objects_response(self, flask_request): 
+    #   responsible for validating filenames, their contents and returning a json response, status code
+    # ...
+    
+    
+
+rv_tools_validator = RVToolsUploaderValidator(
+    filename_contains = [&#39;RV&#39;, &#39;Tools&#39;],
+    filename_endswith = [&#39;.xls&#39;, &#39;.xlsx&#39;],
+    ignore_filenames  = [&#39;skip_this_file.csv&#39;],
+    required_input_type = &#34;excel&#34;,
+    min_rows_number = 1,
+    required_sheets = [&#39;tabvInfo&#39;, &#39;tabvCPU&#39;, &#39;tabvHost&#39;, &#39;tabvCluster&#39;],
+    required_columns = [
+        &#39;VM&#39;, &#39;Host&#39;, &#39;OS&#39;, &#39;Sockets&#39;, &#39;CPUs&#39;, &#39;Model&#39;, &#39;CPU Model&#39;,
+        &#39;Cluster&#39;, &#39;# CPU&#39;, &#39;# Cores&#39;, &#39;ESX Version&#39;, &#39;HT Active&#39;,
+        &#39;Name&#39;, &#39;NumCpuThreads&#39;, &#39;NumCpuCores&#39;
+    ]
+)
+
+# Here we are creating the uploader 
+# Notice we are providing the the validator created up to `validator_class` parameter
+# `worker_function` will be called when `uploader_id` is triggered
+# The `uploader_id` event is triggered when files are uploaded to `/uploads/uploader_id/files` route
+
+rv_tools_uploader = UploaderBuilder(
+    name=&#34;RVTools&#34;, 
+    uploader_id = &#39;rv_tools&#39;,
+    description=&#34;XLSX export from RVTools after scanning your Vmware infrastructure.&#34;, 
+    accepted_file_types=[&#39;.xls&#39;, &#39;.xlsx&#39;],
+    validator_class=rv_tools_validator,
+    worker_function=rv_tools_worker,
+    quota_units = 1
+)
+
+# Here we are:
+# - adding the uploader to the main app (uploaders list)
+# - sending uploader information to registry-service
+ifmp_app.register_uploader(rv_tools_uploader)
+
+
+
+
+# REPORTS
+
+
+class VirtualOverview(BaseReportComponent):
+            
+    def __init__(
+        self, 
+        title: str, 
+        component_id: str, 
+        component_type: str
+    ):
+        self.title = title
+        self.component_id = component_id
+        self.component_type = component_type
+        
+        super().__init__(**vars(self))
+        
+        
+    def get_data(self, flask_request):
+        
+        match_filters = self.get_mongo_match_filters(flask_request)
+        
+        log.info(match_filters)
+
+        return [&#39;mongo pipeline result&#39;]
+    
+    
+    def set_attributes(self):
+        
+        # Short hand based on value_key
+        # See based on component type funcs from: licenseware.report_components.attributes
+        value_key_and_icon = [
+            (&#34;number_of_devices&#34;, icons.SERVERS), 
+            (&#34;number_of_databases&#34;, icons.DATABASE_ROUNDED)
+        ]
+
+        # Set values straight to self.attributes
+        self.attributes = self.build_attributes(value_key_and_icon)
+        
+        
+        # Or raw dict (same results are achived using the method up)
+        
+        attributes = {&#39;series&#39;: [
+            {
+                &#39;value_description&#39;: &#39;Number of devices&#39;,
+                &#39;value_key&#39;: &#39;number_of_devices&#39;,
+                &#39;icon&#39;: &#39;ServersIcon&#39;
+            },
+            {
+                &#39;value_description&#39;: &#39;Number of databases&#39;,
+                &#39;value_key&#39;: &#39;number_of_databases&#39;,
+                &#39;icon&#39;: &#39;DatabaseIconRounded&#39;
+            }
+        ]}
+        
+        # You can also return attributes
+        return attributes
+        
+        
+    def set_style_attributes(self):
+        
+        # You can set a dictionary directly or return a dict like bellow
+        self.style_attributes = {
+            &#39;width&#39;: &#39;1/3&#39;
+        }
+        
+        # or import `style_attributes` dataclass
+        # from app.licenseware.report_components.style_attributes import style_attributes as styles
+        style_attributes = self.build_style_attributes([
+            styles.WIDTH_ONE_THIRD
+            #etc
+        ])
+        
+        return style_attributes
+        
+
+virtual_overview = VirtualOverview(
+    title=&#34;Overview&#34;,
+    component_id=&#34;virtual_overview&#34;,
+    component_type=&#39;summary&#39;
+)
+
+
+# Register component to registry-service (to act as a first class citizen)
+ifmp_app.register_report_component(virtual_overview)
+
+
+# Define a report wich holds one or more report components
+virtualization_details_report = ReportBuilder(
+    name=&#34;Virtualization Details&#34;,
+    report_id=&#34;virtualization_details&#34;,
+    description=&#34;This report gives you a detailed view of your virtual infrastructure. Deep dive into the infrastructure topology, identify devices with missing host details and capping rules for licensing.&#34;,
+    connected_apps=[&#39;ifmp-service&#39;],
+    report_components=[
+        virtual_overview        
+    ]
+)
+
+
+ifmp_app.register_report(virtualization_details_report)
+
+
+
+
+
+
+# CUSTOM RESTX NAMESPACES
+# We can add also custom namespaces to main IFMP Api
+
+custom_ns = Namespace(
+    name=&#34;Custom&#34;, 
+    description=&#34;This is a custom namespace with the app prefix&#34;
+)
+
+@custom_ns.route(&#34;/custom-api-route&#34;)
+class CustomApiRoute(Resource):    
+    @custom_ns.doc(&#34;custom&#34;)
+    def get(self):
+        return &#34;custom-api-route&#34;
+    
+# Add it to main app 
+# it will have the same namespace prefix /ifmp/v1/ + ns-prefix/custom-api-route
+ifmp_app.add_namespace(custom_ns, path=&#39;/ns-prefix&#39;)
+
+# If the namespace defined up it&#39;s used on all apps 
+# add it to licenseware sdk in app_builder default routes
+
+
+
+# EndpointBuilder
+
+# Endpoints can be generated from functions or marshmellow schemas
+# add http method as a prefix to schema or function handler (get_some_data, PostDeviceDataSchema etc)
+
+# Here we are using a function to create an endpoint like /custom_endpoint/custom_data_from_mongo
+
+def get_custom_data_from_mongo(flask_request):
+    &#34;&#34;&#34; Custom documentation &#34;&#34;&#34;
+    
+    # Some logic here
+
+    return &#34;Some data&#34;
+
+
+custom_func_endpoint = EndpointBuilder(get_custom_data_from_mongo)
+
+ifmp_app.register_endpoint(custom_func_endpoint)
+
+# Here we are using a schema to generate an endpoint
+
+class GetDeviceData(Schema):
+    
+    class Meta:
+        collection_name = envs.MONGO_COLLECTION_DATA_NAME
+    
+    tenant_id = fields.Str(required=False)
+    updated_at = fields.Str(required=False)
+    name = fields.Str(required=True)
+    occupation = fields.Str(required=False)
+    
+    
+custom_schema_endpoint = EndpointBuilder(GetDeviceData)
+
+
+ifmp_app.register_endpoint(custom_schema_endpoint)
+
+
+
+# Call init_app at the end
+# ifmp_app.register_app()
+ifmp_app.init_app(app, register=True)
+
+
+
+if __name__ == &#34;__main__&#34;:    
+    app.run(port=4000, debug=True)
+
+```
+
+Required environment variables
+
+```bash
+
+DEBUG=true
+ENVIRONMENT=local
+PERSONAL_PREFIX=acmt
+
+
+FLASK_APP=main:app
+
+APP_ID=ifmp
+APP_HOST=http://localhost:5000
+
+LWARE_IDENTITY_USER=John
+LWARE_IDENTITY_PASSWORD=secret
+
+AUTH_SERVICE_URL=http://localhost:5000/auth
+AUTH_SERVICE_USERS_URL_PATH=/users
+AUTH_SERVICE_MACHINES_URL_PATH=/machines
+
+REGISTRY_SERVICE_URL=http://localhost:5000/registry-service
+
+FILE_UPLOAD_PATH=/tmp/lware
+
+MONGO_ROOT_USERNAME=John
+MONGO_ROOT_PASSWORD=secret
+MONGO_HOSTNAME=localhost
+MONGO_PORT=27017
+MONGO_DATABASE_NAME=db
+MONGO_CONNECTION_STRING=mongodb://${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DATABASE_NAME}
+
+
+REDIS_HOST=redis_db_sdk
+REDIS_PORT=6379
+
+```
+
+
+
+Make commands:
+
+- `make up` and  `make down` - start and stop mongo and redis databases;
+- `make mock` - start mock server which app will use for authentication, registry-service or other external services dependencies;
+- `make dev` - start application with hot reload;
+- `make worker` - start dramatiq worker;
+- `make test` - run all unit tests.
+- `make dev-docs` - start [`pdoc3`](https://pdoc3.github.io/pdoc/) documentation server, which auto generates documentation from markdown doc strings to html.
+- `make docs` - generate `docs` folder with all documantation generated in html format (can be added later to github pages `github.io/python3-licenseware-sdk-docs`)
+
+
+
 
 Documentation automatically generated with [`pdoc3`](https://pdoc3.github.io/pdoc/).
 
-#Contents
-
-1. [What is an `App`?](#what-is-an-app)
-2. [Set environment variables](#set-environment-variables)
-3. [`App` declaration](#app-declaration)
-4. [`Uploader` declaration](#uploader-declaration)
-5. [`Report` declaration](#report-declaration)
-6. [Custom namespaces](#custom-namespaces)
-7. [Endpoints from simple functions](#endpoints-from-simple-functions)
-8. [The `main` file](#the-main-file)
-9. [Licenseware package structure](#licenseware-package-structure)
 
 
+&lt;a name=&#34;what-is-an-app&#34;&gt;&lt;/a&gt;
+# What is an `App`?
 
-
-
-&lt;a name=&#34;what-is-an-app&#34;&gt;
-#What is an `App`?
-&lt;/a&gt;
 
 Each Licenseware `App`/`Service` is responsible for:
 
@@ -647,14 +1193,18 @@ Each **REPORT** has:
 
 
 
-&lt;a name=&#34;set-environment-variables&#34;&gt;
-#Set environment variables
-&lt;/a&gt;
+&lt;a name=&#34;set-environment-variables&#34;&gt;&lt;/a&gt;
+# Set environment variables
+
 
 Fist make sure you have set the environment variables:
 
 ```bash
 #.env
+DEBUG=true
+ENVIRONMENT=local
+PERSONAL_PREFIX=acmt
+
 
 FLASK_APP=main:app
 
@@ -698,9 +1248,9 @@ make up
 
 
 
-&lt;a name=&#34;app-declaration&#34;&gt;
+&lt;a name=&#34;app-declaration&#34;&gt;&lt;/a&gt;
 # `App` declaration
-&lt;/a&gt;
+
 
 `AppBuilder` class will be used to define our `App`. 
 This class will handle: 
@@ -734,9 +1284,9 @@ The `ifmp_app` instance is now ready to attach other uploaders, reports, report 
 
 
 
-&lt;a name=&#34;uploader-declaration&#34;&gt;
+&lt;a name=&#34;uploader-declaration&#34;&gt;&lt;/a&gt;
 # `Uploader` declaration
-&lt;/a&gt;
+
 
 The uploader is responsible for:
 
@@ -796,21 +1346,13 @@ from typing import Tuple
 from licenseware.uploader_validator import UploaderValidator
 
 
-class RVToolsUploaderValidator(UploaderValidator):
+class RVToolsUploaderValidator(UploaderValidator): 
+    # Overwrite `calculate_quota`, `get_filenames_response` or `get_file_objects_response` if needed
+    # Otherwise you can just instantiate the class validator from `UploaderValidator` 
+    ...
     
-    def calculate_quota(self, flask_request) -&gt; Tuple[dict, int]:
     
-        file_objects = flask_request.files.getlist(&#34;files[]&#34;)
-        
-        # custom logic for quota calculation
-        
-        if quota_ok:
-            return {&#39;status&#39;: &#39;success&#39;, &#39;message&#39;: &#39;Quota within limits&#39;}, 200
-        else:
-            return {&#39;status&#39;: &#39;fail&#39;, &#39;message&#39;: &#39;Quota exceeded&#39;}, 402
-
-
-
+    
 rv_tools_validator = RVToolsUploaderValidator(
     filename_contains = [&#39;RV&#39;, &#39;Tools&#39;],
     filename_endswith = [&#39;.xls&#39;, &#39;.xlsx&#39;],
@@ -829,8 +1371,9 @@ rv_tools_validator = RVToolsUploaderValidator(
 ```
 
 If parameters provided for validating filenames and contents are not enough 
-you can also overwrite `get_filenames_response` and `get_file_objects_response` methods.
+you can also overwrite: `calculate_quota`, `get_filenames_response` and `get_file_objects_response` methods.
 
+- `calculate_quota`: given a flask request object calculates quota for tenant_id based on current processing units (by default it&#39;s using len(files) got from request)
 - `get_filenames_response` : given a flask request object validates filenames and returns a json response, status code
 - `get_file_objects_response` : given a flask request object validates filenames and contents and returns a json response, status code
 
@@ -884,9 +1427,9 @@ Of course defining an uploader can be defined in just one file too.
 
 
 
-&lt;a name=&#34;report-declaration&#34;&gt;
+&lt;a name=&#34;report-declaration&#34;&gt;&lt;/a&gt;
 # `Report` declaration
-&lt;/a&gt;
+
 
 A `Report` is composed of one or more `report components`. 
 Each report component will inherit from `BaseReportComponent` class.
@@ -1039,9 +1582,9 @@ Reports api will be handled by the `ifmp_app` instance.
 
 
 
-&lt;a name=&#34;custom-namespaces&#34;&gt;
+&lt;a name=&#34;custom-namespaces&#34;&gt;&lt;/a&gt;
 # Custom namespaces
-&lt;/a&gt;
+
 
 We are not restricted using just the apis generated from `AppBuilder` we can add new custom ones to `App`/`ifmp_app`.
 
@@ -1082,9 +1625,9 @@ If the custom namespace created is repetead for all apps consider adding it to `
 
 
 
-&lt;a name=&#34;endpoints-from-simple-functions&#34;&gt;
+&lt;a name=&#34;endpoints-from-simple-functions&#34;&gt;&lt;/a&gt;
 # Endpoints from simple functions
-&lt;/a&gt;
+
 
 Class `EndpointBuilder` can be used to generate endpoints from simple functions.
 The function name will be used to extract the http method and the route path (`get_custom_data_from_mongo` --&gt;
@@ -1121,9 +1664,9 @@ ifmp_app.register_endpoint(custom_func_endpoint)
 
 
 
-&lt;a name=&#34;the-main-file&#34;&gt;
-#The `main` file
-&lt;/a&gt;
+&lt;a name=&#34;the-main-file&#34;&gt;&lt;/a&gt;
+# The `main` file
+
 
 In the main file or in `create_app` builder function (where Flask is instantiated) we can initialize the `App` with `ifmp_app.init_app(app)` where `app` is the Flask instance. 
 
@@ -1160,146 +1703,6 @@ ifmp_app.init_app(app, register=True)
 if __name__ == &#34;__main__&#34;:    
     app.run(port=4000, debug=True)
 
-
-```
-
-
-
-&lt;a name=&#34;licenseware-package-structure&#34;&gt;
-# Licenseware package structure
-&lt;/a&gt; 
-
-```bash
-
-.
-├── app_builder
-│   ├── app_activation_route.py
-│   ├── app_builder.py
-│   ├── app_registration_route.py
-│   ├── editable_tables_route.py
-│   ├── endpoint_builder_namespace
-│   │   └── __init__.py
-│   ├── __init__.py
-│   ├── refresh_registration_route.py
-│   ├── report_components_namespace
-│   │   ├── __init__.py
-│   │   └── report_individual_components_namespace.py
-│   ├── reports_namespace
-│   │   ├── __init__.py
-│   │   ├── report_components_namespace.py
-│   │   ├── report_metadata_namespace.py
-│   │   └── report_register_namespace.py
-│   ├── tenant_registration_route.py
-│   └── uploads_namespace
-│       ├── filenames_validation_namespace.py
-│       ├── filestream_validation_namespace.py
-│       ├── __init__.py
-│       ├── quota_namespace.py
-│       └── status_namespace.py
-├── auth
-│   ├── auth.py
-│   └── __init__.py
-├── cli
-│   └── __init__.py
-├── common
-│   ├── constants
-│   │   ├── envs.py
-│   │   ├── flags.py
-│   │   ├── icons.py
-│   │   ├── __init__.py
-│   │   ├── quotas.py
-│   │   └── states.py
-│   ├── __init__.py
-│   ├── serializers
-│   │   ├── analysis_status_schema.py
-│   │   ├── app_utilization_schema.py
-│   │   ├── event_schema.py
-│   │   ├── file_upload_validation_schema.py
-│   │   ├── __init__.py
-│   │   ├── register_app_payload_schema.py
-│   │   ├── register_report_component_payload.py
-│   │   ├── register_report_payload_schema.py
-│   │   ├── register_uploader_payload_schema.py
-│   │   └── register_uploader_status_payload_schema.py
-│   └── validators
-│       ├── file_validators.py
-│       ├── __init__.py
-│       ├── registry_payload_validators.py
-│       ├── schema_validator.py
-│       ├── validate_icon.py
-│       └── validate_route.py
-├── decorators
-│   ├── auth_decorators
-│   │   ├── authenticated_machine.py
-│   │   ├── authorization_check.py
-│   │   ├── auth_required.py
-│   │   ├── __init__.py
-│   │   └── machine_check.py
-│   ├── failsafe_decorator.py
-│   └── __init__.py
-├── editable_table
-│   ├── editable_table.py
-│   └── __init__.py
-├── endpoint_builder
-│   ├── endpoint_builder.py
-│   └── __init__.py
-├── __init__.py
-├── mongodata
-│   ├── __init__.py
-│   ├── mongo_connection.py
-│   └── mongodata.py
-├── namespace_generator
-│   ├── __init__.py
-│   ├── mongo_crud.py
-│   ├── mongo_request.py
-│   └── schema_namespace.py
-├── quota
-│   └── __init__.py
-├── registry_service
-│   ├── __init__.py
-│   ├── register_all.py
-│   ├── register_app.py
-│   ├── register_component.py
-│   ├── register_report.py
-│   ├── register_uploader.py
-│   └── register_upload_status.py
-├── report_builder
-│   ├── __init__.py
-│   └── report_builder.py
-├── report_components
-│   ├── attributes
-│   │   ├── bar_vertical.py
-│   │   ├── __init__.py
-│   │   ├── pie.py
-│   │   ├── summary.py
-│   │   └── table.py
-│   ├── base_report_component.py
-│   ├── build_match_expression.py
-│   ├── __init__.py
-│   └── style_attributes
-│       ├── __init__.py
-│       └── style_attributes.py
-├── tenants
-│   ├── active_tenants.py
-│   ├── close_timeout_files.py
-│   ├── __init__.py
-│   └── processing_status.py
-├── uploader_builder
-│   ├── __init__.py
-│   └── uploader_builder.py
-├── uploader_validator
-│   ├── file_content_validator.py
-│   ├── filename_validator.py
-│   ├── __init__.py
-│   └── uploader_validator.py
-└── utils
-    ├── dramatiq_redis_broker.py
-    ├── file_utils.py
-    ├── __init__.py
-    ├── logger.py
-    └── miscellaneous.py
-
-27 directories, 99 files
 
 ```
 
@@ -1399,6 +1802,7 @@ which can be used to generate flask_restx namespace from marshmallow schema …<
 <div class="toc">
 <ul>
 <li><a href="#contents">Contents</a></li>
+<li><a href="#quickstart">QUICKSTART</a></li>
 <li><a href="#what-is-an-app">What is an App?</a></li>
 <li><a href="#set-environment-variables">Set environment variables</a></li>
 <li><a href="#app-declaration">App declaration</a></li>
@@ -1415,7 +1819,6 @@ which can be used to generate flask_restx namespace from marshmallow schema …<
 <li><a href="#custom-namespaces">Custom namespaces</a></li>
 <li><a href="#endpoints-from-simple-functions">Endpoints from simple functions</a></li>
 <li><a href="#the-main-file">The main file</a></li>
-<li><a href="#licenseware-package-structure">Licenseware package structure</a></li>
 </ul>
 </div>
 <ul id="index">

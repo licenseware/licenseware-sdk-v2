@@ -67,11 +67,8 @@ def add_app_activation_route(api: Api, appvars:dict):
                 return {&#39;status&#39;: &#39;fail&#39;, &#39;message&#39;: &#39;Tenantid not provided&#39;}, 403
 
             for uploader in appvars[&#39;uploaders&#39;]:
-                log.warning(&#34;TODO - Initialize quota for tenant_id&#34;)
-                # qmsg, _ = uploader.init_tenant_quota(tenant_id)
-                
-                # if qmsg[&#39;status&#39;] != &#39;success&#39;:
-                #     return {&#39;status&#39;: &#39;fail&#39;, &#39;message&#39;: &#39;App failed to install&#39;}, 500
+                qmsg, status_code = uploader.init_tenant_quota(tenant_id)
+                if status_code != 200: return qmsg, status_code
             
             dmsg, _ = register_app(**appvars)
             
@@ -127,11 +124,8 @@ def add_app_activation_route(api: Api, appvars:dict):
                 return {&#39;status&#39;: &#39;fail&#39;, &#39;message&#39;: &#39;Tenantid not provided&#39;}, 403
 
             for uploader in appvars[&#39;uploaders&#39;]:
-                log.warning(&#34;TODO - Initialize quota for tenant_id&#34;)
-                # qmsg, _ = uploader.init_tenant_quota(tenant_id)
-                
-                # if qmsg[&#39;status&#39;] != &#39;success&#39;:
-                #     return {&#39;status&#39;: &#39;fail&#39;, &#39;message&#39;: &#39;App failed to install&#39;}, 500
+                qmsg, status_code = uploader.init_tenant_quota(tenant_id)
+                if status_code != 200: return qmsg, status_code
             
             dmsg, _ = register_app(**appvars)
             
