@@ -12,7 +12,7 @@ from app.licenseware.common.constants.envs import envs
 from typing import Callable
 from flask import Flask
 from flask_restx import Api, Namespace
-from app.licenseware.registry_service import register_app
+from app.licenseware.registry_service import register_all
 from app.licenseware.tenants import get_activated_tenants, get_tenants_with_data
 from app.licenseware.utils.logger import log
 from app.licenseware.auth import Authenticator
@@ -60,9 +60,6 @@ class base_paths:
     tenant_registration_path: str ='/register_tenant'
 
 
-# TODO 
-# if envs.ENVIRONMENT == 'local' add uploader_id and app_id prefixes from envs.PERSONAL_PREFIX
-
 
 class AppBuilder:
     
@@ -87,6 +84,7 @@ class AppBuilder:
         **kwargs
     ):
         
+
         self.app_id = envs.APP_ID 
         self.name = name
         self.description = description
@@ -257,29 +255,20 @@ class AppBuilder:
             Sending registration payloads to registry-service
         """
         
-        # Register app
-        response, status_code = register_app(**vars(self))
-        if status_code not in {200, 201}:
-            raise Exception("App failed to register!")
+        # Converting from objects to dictionaries
+        reports = [vars(r) for r in self.reports]
+        report_components = [vars(rv) for rv in self.report_components]
+        uploaders = [vars(u) for u in self.uploaders]
         
-        # Register uploaders
-        for uploader_instance in self.uploaders:
-            uploader_response, uploader_status_code = uploader_instance.register_uploader()
-            if uploader_status_code not in {200, 201}:
-                raise Exception(f"Uploader failed to register!")
-            
-        # Register reports
-        for report_instance in self.reports:
-            report_response, report_status_code = report_instance.register_report()
-            if report_status_code not in {200, 201}:
-                raise Exception("Report failed to register!")
-            
-        # Register report components
-        for report_component_instance in self.report_components:
-            report_component_instance_response, report_component_instance_status_code = report_component_instance.register_component()
-            if report_component_instance_status_code not in {200, 201}:
-                raise Exception("Report component failed to register!")
-            
+        response, status_code = register_all(
+            app = self.appvars,
+            reports = reports, 
+            report_components = report_components, 
+            uploaders = uploaders
+        )
+        
+        if status_code != 200: raise Exception(response['message'])
+        
         return response, status_code
         
 

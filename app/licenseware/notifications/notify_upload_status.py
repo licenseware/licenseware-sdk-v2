@@ -1,5 +1,5 @@
 from app.licenseware.registry_service import register_upload_status
-
+from app.licenseware.utils.logger import log
 
 
 def notify_upload_status(event: dict, status:str):
@@ -9,7 +9,7 @@ def notify_upload_status(event: dict, status:str):
     
     status = {
         'tenant_id': event['tenant_id'],
-        'upload_id': event['uploader_id'], 
+        'uploader_id': event['uploader_id'], 
         'status': status
     }
     

@@ -61,8 +61,6 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
     
     def quota_within_limits(self, tenant_id:str, units: int) -> bool:
         
-        if envs.ENVIRONMENT == 'local': return True
-        
         q = Quota(
             tenant_id=tenant_id, 
             uploader_id=self.uploader_id, 

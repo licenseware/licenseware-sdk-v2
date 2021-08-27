@@ -29,10 +29,13 @@
 <pre><code class="python">from .register_app import register_app
 from .register_uploader import register_uploader
 from .register_report import register_report
+from .register_component import register_component
 from app.licenseware.utils.logger import log
+from app.licenseware.decorators.auth_decorators import authenticated_machine
 
 
-def register_all(app:dict, reports:list, uploaders:list):
+@authenticated_machine
+def register_all(app:dict, reports:list, report_components:list, uploaders:list):
     
     registering_successful = True
     
@@ -43,12 +46,16 @@ def register_all(app:dict, reports:list, uploaders:list):
     for report in reports:
         _, status_code = register_report(**report)
         if status_code != 200: registering_successful = False
+    
+    for rep_component in report_components:
+        _, status_code = register_component(**rep_component)
+        if status_code != 200: registering_successful = False
         
     for uploader in uploaders:
         _, status_code = register_uploader(**uploader)
         if status_code != 200: registering_successful = False
-        
-        
+    
+    
     if registering_successful:
         return {&#39;status&#39;: &#39;success&#39;, &#39;message&#39;: &#39;Registering process was successful&#39;}, 200
     
@@ -66,7 +73,7 @@ def register_all(app:dict, reports:list, uploaders:list):
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="licenseware.registry_service.register_all.register_all"><code class="name flex">
-<span>def <span class="ident">register_all</span></span>(<span>app: dict, reports: list, uploaders: list)</span>
+<span>def <span class="ident">register_all</span></span>(<span>app: dict, reports: list, report_components: list, uploaders: list)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -74,7 +81,8 @@ def register_all(app:dict, reports:list, uploaders:list):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def register_all(app:dict, reports:list, uploaders:list):
+<pre><code class="python">@authenticated_machine
+def register_all(app:dict, reports:list, report_components:list, uploaders:list):
     
     registering_successful = True
     
@@ -85,12 +93,16 @@ def register_all(app:dict, reports:list, uploaders:list):
     for report in reports:
         _, status_code = register_report(**report)
         if status_code != 200: registering_successful = False
+    
+    for rep_component in report_components:
+        _, status_code = register_component(**rep_component)
+        if status_code != 200: registering_successful = False
         
     for uploader in uploaders:
         _, status_code = register_uploader(**uploader)
         if status_code != 200: registering_successful = False
-        
-        
+    
+    
     if registering_successful:
         return {&#39;status&#39;: &#39;success&#39;, &#39;message&#39;: &#39;Registering process was successful&#39;}, 200
     

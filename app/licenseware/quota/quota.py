@@ -1,3 +1,4 @@
+import sys
 import datetime
 import dateutil.parser as dateparser
 from typing import Tuple
@@ -27,9 +28,13 @@ class Quota:
         schema:Schema = None,
         collection:str = None,
     ):
+        
+        if envs.ENVIRONMENT == 'local': 
+            units = sys.maxsize
+            
+        self.units = units
         self.tenant_id = tenant_id
         self.uploader_id = uploader_id
-        self.units = units
         self.schema = schema or QuotaSchema
         self.collection = collection or envs.MONGO_COLLECTION_UTILIZATION_NAME
          
@@ -134,8 +139,7 @@ class Quota:
         for quota in results:
             monthly_quota_consumed += quota['monthly_quota_consumed']
         
-        
-        if monthly_quota_consumed <= quota['monthly_quota'] + units:
+        if monthly_quota_consumed <= self.units + units:
             return {
                         'status': 'success',
                         'message': 'Utilization within monthly quota'

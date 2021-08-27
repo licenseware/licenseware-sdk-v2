@@ -36,16 +36,23 @@ from app.licenseware.common.validators.registry_payload_validators import valida
 
 
 @authenticated_machine
-def register_upload_status(tenant_id:str, status:str, uploader_id:str):
-
-    headers = {&#34;Authorization&#34;: envs.get_auth_token()}
+def register_upload_status(**kwargs):
+    
+    if not envs.app_is_authenticated():
+        log.warning(&#39;App not registered, no auth token available&#39;)
+        return {
+            &#34;status&#34;: &#34;fail&#34;,
+            &#34;message&#34;: &#34;App not registered, no auth token available&#34;
+        }, 401
+        
+        
     payload = {
         &#39;data&#39;: [
             {
                 &#39;app_id&#39;: envs.APP_ID,
-                &#39;tenant_id&#39;: tenant_id,
-                &#39;upload_id&#39;: uploader_id, 
-                &#39;status&#39;: status,
+                &#39;tenant_id&#39;: kwargs[&#39;tenant_id&#39;],
+                &#39;upload_id&#39;: kwargs[&#39;uploader_id&#39;], 
+                &#39;status&#39;: kwargs[&#39;status&#39;],
             }
         ]
     }
@@ -53,6 +60,7 @@ def register_upload_status(tenant_id:str, status:str, uploader_id:str):
     log.info(payload)
     validate_register_uploader_status_payload(payload)
     
+    headers = {&#34;Authorization&#34;: envs.get_auth_token()}
     response = requests.post(
         url=envs.REGISTER_UPLOADER_STATUS_URL,
         headers=headers,
@@ -75,7 +83,7 @@ def register_upload_status(tenant_id:str, status:str, uploader_id:str):
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="licenseware.registry_service.register_upload_status.register_upload_status"><code class="name flex">
-<span>def <span class="ident">register_upload_status</span></span>(<span>tenant_id: str, status: str, uploader_id: str)</span>
+<span>def <span class="ident">register_upload_status</span></span>(<span>**kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -84,16 +92,23 @@ def register_upload_status(tenant_id:str, status:str, uploader_id:str):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@authenticated_machine
-def register_upload_status(tenant_id:str, status:str, uploader_id:str):
-
-    headers = {&#34;Authorization&#34;: envs.get_auth_token()}
+def register_upload_status(**kwargs):
+    
+    if not envs.app_is_authenticated():
+        log.warning(&#39;App not registered, no auth token available&#39;)
+        return {
+            &#34;status&#34;: &#34;fail&#34;,
+            &#34;message&#34;: &#34;App not registered, no auth token available&#34;
+        }, 401
+        
+        
     payload = {
         &#39;data&#39;: [
             {
                 &#39;app_id&#39;: envs.APP_ID,
-                &#39;tenant_id&#39;: tenant_id,
-                &#39;upload_id&#39;: uploader_id, 
-                &#39;status&#39;: status,
+                &#39;tenant_id&#39;: kwargs[&#39;tenant_id&#39;],
+                &#39;upload_id&#39;: kwargs[&#39;uploader_id&#39;], 
+                &#39;status&#39;: kwargs[&#39;status&#39;],
             }
         ]
     }
@@ -101,6 +116,7 @@ def register_upload_status(tenant_id:str, status:str, uploader_id:str):
     log.info(payload)
     validate_register_uploader_status_payload(payload)
     
+    headers = {&#34;Authorization&#34;: envs.get_auth_token()}
     response = requests.post(
         url=envs.REGISTER_UPLOADER_STATUS_URL,
         headers=headers,

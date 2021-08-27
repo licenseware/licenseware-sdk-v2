@@ -6,16 +6,16 @@ from . import headers
 import os, io
 from werkzeug.datastructures import FileStorage
 from app.licenseware.uploader_validator import UploaderValidator
-
+from app.licenseware.common.constants import envs
 
  
 # python3 -m unittest tests/test_uploader_routes.py
  
  
-prefix = '/ifmp'
+prefix = envs.APP_ID
 pathto = lambda route: prefix + route
 
-uploader_id = 'rv_tools'
+uploader_id = envs.PERSONAL_PREFIX + 'rv_tools'
 
 upload_validation_path = f"/uploads/{uploader_id}/validation"
 upload_path = f"/uploads/{uploader_id}/files"

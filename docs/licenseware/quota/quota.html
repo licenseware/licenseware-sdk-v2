@@ -26,7 +26,8 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">import datetime
+<pre><code class="python">import sys
+import datetime
 import dateutil.parser as dateparser
 from typing import Tuple
 
@@ -55,9 +56,13 @@ class Quota:
         schema:Schema = None,
         collection:str = None,
     ):
+        
+        if envs.ENVIRONMENT == &#39;local&#39;: 
+            units = sys.maxsize
+            
+        self.units = units
         self.tenant_id = tenant_id
         self.uploader_id = uploader_id
-        self.units = units
         self.schema = schema or QuotaSchema
         self.collection = collection or envs.MONGO_COLLECTION_UTILIZATION_NAME
          
@@ -162,8 +167,7 @@ class Quota:
         for quota in results:
             monthly_quota_consumed += quota[&#39;monthly_quota_consumed&#39;]
         
-        
-        if monthly_quota_consumed &lt;= quota[&#39;monthly_quota&#39;] + units:
+        if monthly_quota_consumed &lt;= self.units + units:
             return {
                         &#39;status&#39;: &#39;success&#39;,
                         &#39;message&#39;: &#39;Utilization within monthly quota&#39;
@@ -221,9 +225,13 @@ class Quota:
         schema:Schema = None,
         collection:str = None,
     ):
+        
+        if envs.ENVIRONMENT == &#39;local&#39;: 
+            units = sys.maxsize
+            
+        self.units = units
         self.tenant_id = tenant_id
         self.uploader_id = uploader_id
-        self.units = units
         self.schema = schema or QuotaSchema
         self.collection = collection or envs.MONGO_COLLECTION_UTILIZATION_NAME
          
@@ -328,8 +336,7 @@ class Quota:
         for quota in results:
             monthly_quota_consumed += quota[&#39;monthly_quota_consumed&#39;]
         
-        
-        if monthly_quota_consumed &lt;= quota[&#39;monthly_quota&#39;] + units:
+        if monthly_quota_consumed &lt;= self.units + units:
             return {
                         &#39;status&#39;: &#39;success&#39;,
                         &#39;message&#39;: &#39;Utilization within monthly quota&#39;
@@ -377,8 +384,7 @@ class Quota:
     for quota in results:
         monthly_quota_consumed += quota[&#39;monthly_quota_consumed&#39;]
     
-    
-    if monthly_quota_consumed &lt;= quota[&#39;monthly_quota&#39;] + units:
+    if monthly_quota_consumed &lt;= self.units + units:
         return {
                     &#39;status&#39;: &#39;success&#39;,
                     &#39;message&#39;: &#39;Utilization within monthly quota&#39;

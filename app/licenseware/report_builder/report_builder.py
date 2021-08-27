@@ -31,8 +31,12 @@ class ReportBuilder:
         filters:list = []
          
     ):
-        self.name = name
+        
+        if envs.ENVIRONMENT == 'local': 
+            report_id = envs.PERSONAL_PREFIX + report_id
+            
         self.report_id = report_id
+        self.name = name
         self.description = description
         self.components = report_components
         self.report_path = report_path or '/' + report_id 

@@ -31,10 +31,12 @@ def add_refresh_registration_route(api:Api, appvars:dict):
             # Converting from objects to dictionaries
             reports   = [vars(r) for r in appvars['reports']]
             uploaders = [vars(u) for u in appvars['uploaders']]
+            report_components = [vars(rv) for rv in appvars['report_components']]
             
             response, status_code = register_all(
                 app = appvars,
                 reports = reports, 
+                report_components = report_components, 
                 uploaders = uploaders
             )
             

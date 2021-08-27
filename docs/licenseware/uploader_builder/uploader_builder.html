@@ -75,6 +75,9 @@ class UploaderBuilder:
         **kwargs
     ):
         
+        if envs.ENVIRONMENT == &#39;local&#39;: 
+            uploader_id = envs.PERSONAL_PREFIX + uploader_id
+
         #Passing variables to validator class
         validator_class.uploader_id = uploader_id
         validator_class.quota_units = quota_units
@@ -137,6 +140,7 @@ class UploaderBuilder:
             event_data = {
                 &#39;tenant_id&#39;: flask_request.headers.get(&#34;Tenantid&#34;),
                 &#39;filepaths&#39;: self.validator_class.get_only_valid_filepaths_from_objects_response(response),
+                &#39;uploader_id&#39;: self.uploader_id,
                 &#39;headers&#39;:  dict(flask_request.headers) if flask_request.headers else {},
                 &#39;json&#39;:  dict(flask_request.json) if flask_request.json else {},
             }
@@ -255,6 +259,9 @@ status_check_path:str = None - url path/route where gives back the status of the
         **kwargs
     ):
         
+        if envs.ENVIRONMENT == &#39;local&#39;: 
+            uploader_id = envs.PERSONAL_PREFIX + uploader_id
+
         #Passing variables to validator class
         validator_class.uploader_id = uploader_id
         validator_class.quota_units = quota_units
@@ -317,6 +324,7 @@ status_check_path:str = None - url path/route where gives back the status of the
             event_data = {
                 &#39;tenant_id&#39;: flask_request.headers.get(&#34;Tenantid&#34;),
                 &#39;filepaths&#39;: self.validator_class.get_only_valid_filepaths_from_objects_response(response),
+                &#39;uploader_id&#39;: self.uploader_id,
                 &#39;headers&#39;:  dict(flask_request.headers) if flask_request.headers else {},
                 &#39;json&#39;:  dict(flask_request.json) if flask_request.json else {},
             }
@@ -445,6 +453,7 @@ status_check_path:str = None - url path/route where gives back the status of the
         event_data = {
             &#39;tenant_id&#39;: flask_request.headers.get(&#34;Tenantid&#34;),
             &#39;filepaths&#39;: self.validator_class.get_only_valid_filepaths_from_objects_response(response),
+            &#39;uploader_id&#39;: self.uploader_id,
             &#39;headers&#39;:  dict(flask_request.headers) if flask_request.headers else {},
             &#39;json&#39;:  dict(flask_request.json) if flask_request.json else {},
         }

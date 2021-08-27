@@ -33,11 +33,17 @@
 <li><a href="#custom-namespaces">Custom namespaces</a></li>
 <li><a href="#endpoints-from-simple-functions">Endpoints from simple functions</a></li>
 <li><a href="#the-main-file">The <code>main</code> file</a></li>
-<li><a href="#licenseware-package-structure">Licenseware package structure</a></li>
 </ol>
 <p><a name="quickstart"></a></p>
 <h1 id="quickstart">QUICKSTART</h1>
 <p>Bellow is a full working example of almost all features the sdk provides.</p>
+<p>Start the services in the following order:</p>
+<ol>
+<li><code>make up</code> - mongo and redis;</li>
+<li><code>make mock</code> - mock dependency server for our app;</li>
+<li><code>make prod</code> or <code>make dev</code> - start the app server;</li>
+<li><code>make worker</code> - start the background worker.</li>
+</ol>
 <pre><code class="language-py">
 from dotenv import load_dotenv
 load_dotenv()  
@@ -82,12 +88,15 @@ def rv_tools_worker(event_data):
     # event_data = {
     #     'tenant_id': 'the tenant_id from request',
     #     'filepaths': 'absolute file paths to the files uploaded',
+    #     'uploader_id': 'the uploader id in our case rv_tools'
     #     'headers':  'flask request headers',
     #     'json':  'flask request json data',
     # }
 
     log.info(&quot;Starting working&quot;)
-    log.debug(event_data)
+    notify_upload_status(event_data, status=states.RUNNING)
+    log.debug(event_data) # here add the processing file logic
+    notify_upload_status(event_data, status=states.IDLE)
     log.info(&quot;Finished working&quot;)
 
 
@@ -476,11 +485,14 @@ ifmp_app = AppBuilder(
 <p>Here is the worker function which will process the files in the background.</p>
 <pre><code class="language-py">#worker.py
 
+from licenseware.notification import notify_upload_status
 from licenseware.utils.logger import log
 
 def rv_tools_worker(event_data):
     log.info(&quot;Starting working&quot;)
-    # custom logic here
+    notify_upload_status(event_data, status=states.RUNNING)
+    log.debug(event_data) # here add the processing file logic
+    notify_upload_status(event_data, status=states.IDLE)
     log.info(&quot;Finished working&quot;)
 
 </code></pre>
@@ -489,6 +501,7 @@ def rv_tools_worker(event_data):
 {
     'tenant_id': &quot;uuid4 tenant id from flask request.headers&quot;,
     'filepaths': [&quot;absolute/path/to/files/uploaded&quot;],
+    'uploader_id': 'the uploader id in our case rv_tools'
     'headers':  'flask request.headers',
     'json':  'flask request.json',
 }
@@ -783,6 +796,11 @@ if __name__ == &quot;__main__&quot;:
 
 
 </code></pre>
+<h1 id="load-testing">Load testing</h1>
+<h2 id="todo">TODO</h2>
+<p><a href="https://github.com/americanexpress/baton">baton docs</a></p>
+<pre><code class="language-bash">baton -u http://localhost:4000 -c 10 -r 10000
+</code></pre>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -799,7 +817,6 @@ if __name__ == &quot;__main__&quot;:
 7. [Custom namespaces](#custom-namespaces)
 8. [Endpoints from simple functions](#endpoints-from-simple-functions)
 9. [The `main` file](#the-main-file)
-10. [Licenseware package structure](#licenseware-package-structure)
 
 
 
@@ -808,6 +825,14 @@ if __name__ == &quot;__main__&quot;:
 # QUICKSTART 
 
 Bellow is a full working example of almost all features the sdk provides.
+
+Start the services in the following order:
+
+1. `make up` - mongo and redis;
+2. `make mock` - mock dependency server for our app;
+3. `make prod` or `make dev` - start the app server;
+4. `make worker` - start the background worker.
+
 
 
 ```py
@@ -855,12 +880,15 @@ def rv_tools_worker(event_data):
     # event_data = {
     #     &#39;tenant_id&#39;: &#39;the tenant_id from request&#39;,
     #     &#39;filepaths&#39;: &#39;absolute file paths to the files uploaded&#39;,
+    #     &#39;uploader_id&#39;: &#39;the uploader id in our case rv_tools&#39;
     #     &#39;headers&#39;:  &#39;flask request headers&#39;,
     #     &#39;json&#39;:  &#39;flask request json data&#39;,
     # }
     
     log.info(&#34;Starting working&#34;)
-    log.debug(event_data)
+    notify_upload_status(event_data, status=states.RUNNING)
+    log.debug(event_data) # here add the processing file logic
+    notify_upload_status(event_data, status=states.IDLE)
     log.info(&#34;Finished working&#34;)
     
 
@@ -1305,11 +1333,14 @@ Here is the worker function which will process the files in the background.
 ```py
 #worker.py
 
+from licenseware.notification import notify_upload_status
 from licenseware.utils.logger import log
 
 def rv_tools_worker(event_data):
     log.info(&#34;Starting working&#34;)
-    # custom logic here
+    notify_upload_status(event_data, status=states.RUNNING)
+    log.debug(event_data) # here add the processing file logic
+    notify_upload_status(event_data, status=states.IDLE)
     log.info(&#34;Finished working&#34;)
     
 ```
@@ -1321,6 +1352,7 @@ The `event_data` will be a dictionary with the following contents:
 {
     &#39;tenant_id&#39;: &#34;uuid4 tenant id from flask request.headers&#34;,
     &#39;filepaths&#39;: [&#34;absolute/path/to/files/uploaded&#34;],
+    &#39;uploader_id&#39;: &#39;the uploader id in our case rv_tools&#39;
     &#39;headers&#39;:  &#39;flask request.headers&#39;,
     &#39;json&#39;:  &#39;flask request.json&#39;,
 }
@@ -1706,6 +1738,16 @@ if __name__ == &#34;__main__&#34;:
 
 ```
 
+# Load testing
+
+## TODO
+
+[baton docs](https://github.com/americanexpress/baton)
+
+
+```bash
+baton -u http://localhost:4000 -c 10 -r 10000
+```
 
 &#39;&#39;&#39;
 
@@ -1755,6 +1797,10 @@ Authentification credentials will be taken from <code>.env</code> file …</p></
 <dd>
 <div class="desc"><p>This module makes available the <code>namespace</code> decorator
 which can be used to generate flask_restx namespace from marshmallow schema …</p></div>
+</dd>
+<dt><code class="name"><a title="licenseware.notifications" href="notifications/index.html">licenseware.notifications</a></code></dt>
+<dd>
+<div class="desc"></div>
 </dd>
 <dt><code class="name"><a title="licenseware.quota" href="quota/index.html">licenseware.quota</a></code></dt>
 <dd>
@@ -1819,6 +1865,10 @@ which can be used to generate flask_restx namespace from marshmallow schema …<
 <li><a href="#custom-namespaces">Custom namespaces</a></li>
 <li><a href="#endpoints-from-simple-functions">Endpoints from simple functions</a></li>
 <li><a href="#the-main-file">The main file</a></li>
+<li><a href="#load-testing">Load testing</a><ul>
+<li><a href="#todo">TODO</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <ul id="index">
@@ -1833,6 +1883,7 @@ which can be used to generate flask_restx namespace from marshmallow schema …<
 <li><code><a title="licenseware.endpoint_builder" href="endpoint_builder/index.html">licenseware.endpoint_builder</a></code></li>
 <li><code><a title="licenseware.mongodata" href="mongodata/index.html">licenseware.mongodata</a></code></li>
 <li><code><a title="licenseware.namespace_generator" href="namespace_generator/index.html">licenseware.namespace_generator</a></code></li>
+<li><code><a title="licenseware.notifications" href="notifications/index.html">licenseware.notifications</a></code></li>
 <li><code><a title="licenseware.quota" href="quota/index.html">licenseware.quota</a></code></li>
 <li><code><a title="licenseware.registry_service" href="registry_service/index.html">licenseware.registry_service</a></code></li>
 <li><code><a title="licenseware.report_builder" href="report_builder/index.html">licenseware.report_builder</a></code></li>

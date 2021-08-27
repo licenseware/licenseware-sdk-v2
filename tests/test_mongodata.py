@@ -12,6 +12,8 @@ from app.licenseware import mongodata as m
 
 # python3 -m unittest tests/test_mongodata.py
 
+collection_name = 'TEST' + envs.MONGO_COLLECTION_DATA_NAME
+
 
 class TestMongoData(unittest.TestCase):
     
@@ -54,7 +56,7 @@ class TestMongoData(unittest.TestCase):
         response = m.insert(
             schema=MySchema, 
             data=doc,
-            collection=envs.MONGO_COLLECTION_DATA_NAME
+            collection=collection_name
         )
         
         self.assertEqual(len(response), 1)
@@ -63,7 +65,7 @@ class TestMongoData(unittest.TestCase):
         
         response = m.fetch(
             match=query,
-            collection=envs.MONGO_COLLECTION_DATA_NAME
+            collection=collection_name
         )
         
         # log.debug(response)
@@ -104,7 +106,7 @@ class TestMongoData(unittest.TestCase):
         inserted_id_list = m.insert(
             schema=MySchema, 
             data=doclist,
-            collection=envs.MONGO_COLLECTION_DATA_NAME
+            collection=collection_name
         )
         
         self.assertEqual(len(inserted_id_list), len(doclist))
@@ -113,7 +115,7 @@ class TestMongoData(unittest.TestCase):
             
             response = m.fetch(
                 match={'_id': inserted_id},
-                collection=envs.MONGO_COLLECTION_DATA_NAME
+                collection=collection_name
             )
             
             name_added = False
@@ -123,17 +125,7 @@ class TestMongoData(unittest.TestCase):
                     
             self.assertTrue(name_added)
                 
-                
-    def test_fetch_with_query(self):
-        
-        response = m.fetch(
-            match={'occupation': 'dev'},
-            collection=envs.MONGO_COLLECTION_DATA_NAME
-        )
-        
-        self.assertTrue(len(response) > 1)
-        
-        
+            
     def test_update(self):
     
         class MySchema(Schema):
@@ -148,7 +140,7 @@ class TestMongoData(unittest.TestCase):
         response = m.insert(
             schema=MySchema, 
             data=doc,
-            collection=envs.MONGO_COLLECTION_DATA_NAME
+            collection=collection_name
         )
         
         self.assertEqual(len(response), 1)
@@ -157,14 +149,18 @@ class TestMongoData(unittest.TestCase):
             schema=MySchema,
             match={'occupation': 'copywriter'},
             new_data={'occupation': 'developer'},
-            collection='IFMPData'
+            collection=collection_name
         )
         
         self.assertEqual(updated_docs, 1)
         
         
-    
-
+        response = m.fetch(
+            match={},
+            collection=collection_name
+        )
+        
+        self.assertTrue(len(response) > 1)
 
 
 

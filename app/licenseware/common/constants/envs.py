@@ -36,6 +36,10 @@ def get_auth_machines_url():
         
     return None
 
+def get_app_id():
+
+    if os.environ["ENVIRONMENT"] == 'local':
+        return os.environ["PERSONAL_PREFIX"] + os.environ["APP_ID"]
 
 
 @dataclass
@@ -45,7 +49,7 @@ class envs:
     DEBUG:bool = os.environ['DEBUG'] == 'true'
     ENVIRONMENT:str = os.environ["ENVIRONMENT"]
     PERSONAL_PREFIX:str = os.environ["PERSONAL_PREFIX"]
-    APP_ID:str = os.environ["APP_ID"]
+    APP_ID:str = get_app_id()
     APP_HOST:str = os.environ['APP_HOST']
     LWARE_USER:str = os.environ['LWARE_IDENTITY_USER']
     LWARE_PASSWORD:str = os.environ['LWARE_IDENTITY_PASSWORD']
@@ -75,9 +79,9 @@ class envs:
     FILE_UPLOAD_PATH:str = os.getenv("FILE_UPLOAD_PATH", 'tmp/lware')
     
     # Base mongo collection names
-    MONGO_COLLECTION_DATA_NAME:str = os.environ["APP_ID"].upper() + "Data" 
-    MONGO_COLLECTION_UTILIZATION_NAME:str = os.environ["APP_ID"].upper() + "Utilization"
-    MONGO_COLLECTION_ANALYSIS_NAME:str = os.environ["APP_ID"].upper() + "Analysis"
+    MONGO_COLLECTION_DATA_NAME:str = APP_ID.upper() + "Data" 
+    MONGO_COLLECTION_UTILIZATION_NAME:str = APP_ID.upper() + "Utilization"
+    MONGO_COLLECTION_ANALYSIS_NAME:str = APP_ID.upper() + "Analysis"
     
     # Mongo connection data
     MONGO_ROOT_USERNAME:str = os.environ["MONGO_ROOT_USERNAME"]
