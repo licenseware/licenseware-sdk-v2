@@ -5,12 +5,15 @@ from flask import Flask
 from flask_restx import Namespace, Resource
 from marshmallow import Schema, fields
 
-from app.licenseware.common.constants import flags, icons, envs
+from app.licenseware.common.constants import flags, icons, envs, states
 from app.licenseware.utils.logger import log
 
 from app.licenseware.app_builder import AppBuilder
+
 from app.licenseware.uploader_builder import UploaderBuilder
 from app.licenseware.uploader_validator import UploaderValidator
+from app.licenseware.notifications import notify_upload_status
+
 from app.licenseware.report_builder import ReportBuilder
 from app.licenseware.report_components import BaseReportComponent
 from app.licenseware.report_components.style_attributes import style_attributes as styles
@@ -41,12 +44,19 @@ def rv_tools_worker(event_data):
     # event_data = {
     #     'tenant_id': 'the tenant_id from request',
     #     'filepaths': 'absolute file paths to the files uploaded',
+    #     'uploader_id': 'the uploader id in our case rv_tools'
     #     'headers':  'flask request headers',
     #     'json':  'flask request json data',
     # }
     
     log.info("Starting working")
-    log.debug(event_data)
+    
+    notify_upload_status(event_data, status=states.RUNNING)
+    
+    log.debug(event_data) # here add the processing file logic
+    
+    notify_upload_status(event_data, status=states.IDLE)
+    
     log.info("Finished working")
     
 

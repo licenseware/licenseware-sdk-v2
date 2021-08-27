@@ -109,6 +109,7 @@ class UploaderBuilder:
             event_data = {
                 'tenant_id': flask_request.headers.get("Tenantid"),
                 'filepaths': self.validator_class.get_only_valid_filepaths_from_objects_response(response),
+                'uploader_id': self.uploader_id,
                 'headers':  dict(flask_request.headers) if flask_request.headers else {},
                 'json':  dict(flask_request.json) if flask_request.json else {},
             }

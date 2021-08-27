@@ -7,3 +7,4 @@ from .register_uploader import register_uploader
 from .register_report import register_report
 from .register_all import register_all
 from .register_component import register_component
+from .register_upload_status import register_upload_status

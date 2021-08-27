@@ -66,6 +66,7 @@ def rv_tools_worker(event_data):
     # event_data = {
     #     'tenant_id': 'the tenant_id from request',
     #     'filepaths': 'absolute file paths to the files uploaded',
+    #     'uploader_id': 'the uploader id in our case rv_tools'
     #     'headers':  'flask request headers',
     #     'json':  'flask request json data',
     # }
@@ -532,6 +533,7 @@ The `event_data` will be a dictionary with the following contents:
 {
     'tenant_id': "uuid4 tenant id from flask request.headers",
     'filepaths': ["absolute/path/to/files/uploaded"],
+    'uploader_id': 'the uploader id in our case rv_tools'
     'headers':  'flask request.headers',
     'json':  'flask request.json',
 }
