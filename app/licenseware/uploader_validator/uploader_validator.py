@@ -1,9 +1,16 @@
 import os
 from typing import Tuple
+
+from flask import Request
+
+from app.licenseware.quota import Quota
+from app.licenseware.utils.logger import log
+from app.licenseware.common.constants import envs
+
 from .filename_validator import FileNameValidator
 from .file_content_validator import FileContentValidator
 
-from app.licenseware.utils.logger import log
+
 
 
 
@@ -52,12 +59,49 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         super().__init__(**vars(self))
      
     
-    def calculate_quota(self, flask_request) -> Tuple[dict, int]:
-        """
-            receive flask_request, extract tenantid and files, calculate quota
-            - quota will be different for each uploader_id
-        """
-        raise NotImplementedError("Overwrite `calculate_quota` func")
+    def quota_within_limits(self, tenant_id:str, units: int) -> bool:
+        
+        if envs.ENVIRONMENT == 'local': return True
+        
+        q = Quota(
+            tenant_id=tenant_id, 
+            uploader_id=self.uploader_id, 
+            units=self.quota_units
+        )
+        
+        _, status_code = q.check_quota(units)
+        
+        if status_code != 200: return False
+        return True
+    
+    
+    def update_quota(self, tenant_id:str, units: int) -> Tuple[dict, int]:
+        
+        q = Quota(
+            tenant_id=tenant_id, 
+            uploader_id=self.uploader_id, 
+            units=self.quota_units
+        )
+        
+        response, status_code = q.update_quota(units)
+        
+        return response, status_code
+        
+        
+    def calculate_quota(self, flask_request: Request) -> Tuple[dict, int]:
+        
+        log.warning("Calculating quota based on length of files")
+        
+        tenant_id = flask_request.headers.get('Tenantid')
+        file_objects = flask_request.files.getlist("files[]")
+        
+        current_units_to_process = len(file_objects)
+        
+        if self.quota_within_limits(tenant_id, current_units_to_process):
+            self.update_quota(tenant_id, current_units_to_process)
+            return {'status': 'success', 'message': 'Quota within limits'}, 200
+        
+        return {'status': 'fail', 'message': 'Quota exceeded'}, 402
     
         
     @classmethod

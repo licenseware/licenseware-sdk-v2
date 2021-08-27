@@ -16,9 +16,6 @@ from app.licenseware.report_components import BaseReportComponent
 from app.licenseware.report_components.style_attributes import style_attributes as styles
 from app.licenseware.endpoint_builder import EndpointBuilder
 
-from typing import Tuple
-
-
 
 
 app = Flask(__name__)
@@ -57,32 +54,13 @@ def rv_tools_worker(event_data):
 
 # Here we are defining the validation required for each upload
 
-class RVToolsUploaderValidator(UploaderValidator):
+class RVToolsUploaderValidator(UploaderValidator): 
+    # If necessary you can overwrite bellow mentioned methods
+    ...
     
-    def calculate_quota(self, flask_request) -> Tuple[dict, int]:
-        """
-            Each set of files have a different way of calculating quota
-            TODO
-            - calculate quota based on user_id (send a get request with tenant_id query param to auth-service /user_id_from_tenant_id)
-            - gather all docs from IFMPUtilization collection with user_id
-            - calculate quota based on user plan (if plan free calculate quota. if plan paid do something else, probably send a default quota within limits?)
-            
-        """
-        
-        file_objects = flask_request.files.getlist("files[]")
-        
-        
-        
-        if len(file_objects) > self.quota_units:
-            return {'status': 'fail', 'message': 'Quota exceeded'}, 402
-        else:
-            return {'status': 'success', 'message': 'Quota within limits'}, 200
-            
-        
-        
-        
-        
-    # If necessary you can overwrite the way validation of filenames and file binary it's done
+    # def calculate_quota(self, flask_request) -> Tuple[dict, int]:
+    # responsible for calculating quota based on tenant_id and returning a json response, status code 
+    # ...
     
     # def get_filenames_response(self, flask_request): 
     # responsible for validating filenames and returning a json response, status code

@@ -9,6 +9,25 @@ from app.licenseware.quota import Quota
 
 class UploaderBuilder:
     
+    """
+    
+    name:str - name of the uploader
+    uploader_id:str - uploader_id, this should be unique for each app declared
+    description:str - description of this uploader, what type of files it accepts 
+    accepted_file_types:list - accepted file formats .xlsx, .pdf etc 
+    validator_class: Type -  this is a UploaderValidator class instance
+    worker_function: Callable - this is responsible for processing the received files (receives a dict with tenant_id and absolute paths to files)
+    quota_units:int - number of units allowed to be processed for free each month
+    flags:list = [] - stage of the development see constants.flags dataclass to see/add values
+    status:str = states.IDLE - state of the worker_function it it's processing or not the files
+    icon:str = "default.png" - icon for this uploader see constants.icons dataclass to see/add more
+    upload_path:str = None - url path/route where files will be updated
+    upload_validation_path:str = None - url path/route where filenames will be validated
+    quota_validation_path:str = None - url path/route where quota for this uploader_id is checked
+    status_check_path:str = None - url path/route where gives back the status of the worker function
+    
+    """
+    
     def __init__(
         self, 
         name:str, 
@@ -102,14 +121,34 @@ class UploaderBuilder:
     
     
     def init_tenant_quota(self, tenant_id:str):
-        return Quota(tenant_id=tenant_id, uploader_id=self.uploader_id).init_quota()
+        
+        # Used in app_activation_path
+        
+        q = Quota(
+            tenant_id=tenant_id, 
+            uploader_id=self.uploader_id, 
+            units=self.quota_units
+        )
+        
+        response, status_code = q.init_quota()
+        
+        return response, status_code
     
-    # def update_tenant_quota(self, tenant_id:str):
-    #     return Quota(tenant_id=tenant_id, uploader_id=self.uploader_id).init_quota()
     
     def check_tenant_quota(self, tenant_id:str):
-        return Quota(tenant_id=tenant_id, uploader_id=self.uploader_id).check_quota()
         
+        # Used for uploader_id/quota route
+        
+        q = Quota(
+            tenant_id=tenant_id, 
+            uploader_id=self.uploader_id, 
+            units=self.quota_units
+        )
+        
+        response, status_code = q.check_quota()
+        
+        return response, status_code
+    
         
         
         

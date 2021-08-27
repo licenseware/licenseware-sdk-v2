@@ -60,6 +60,10 @@ Fist make sure you have set the environment variables:
 
 ```bash
 #.env
+DEBUG=true
+ENVIRONMENT=local
+PERSONAL_PREFIX=acmt
+
 
 FLASK_APP=main:app
 
@@ -201,21 +205,13 @@ from typing import Tuple
 from licenseware.uploader_validator import UploaderValidator
 
 
-class RVToolsUploaderValidator(UploaderValidator):
+class RVToolsUploaderValidator(UploaderValidator): 
+    # Overwrite `calculate_quota`, `get_filenames_response` or `get_file_objects_response` if needed
+    # Otherwise you can just instantiate the class validator from `UploaderValidator` 
+    ...
     
-    def calculate_quota(self, flask_request) -> Tuple[dict, int]:
     
-        file_objects = flask_request.files.getlist("files[]")
-        
-        # custom logic for quota calculation
-        
-        if quota_ok:
-            return {'status': 'success', 'message': 'Quota within limits'}, 200
-        else:
-            return {'status': 'fail', 'message': 'Quota exceeded'}, 402
-
-
-
+    
 rv_tools_validator = RVToolsUploaderValidator(
     filename_contains = ['RV', 'Tools'],
     filename_endswith = ['.xls', '.xlsx'],
@@ -234,8 +230,9 @@ rv_tools_validator = RVToolsUploaderValidator(
 ```
 
 If parameters provided for validating filenames and contents are not enough 
-you can also overwrite `get_filenames_response` and `get_file_objects_response` methods.
+you can also overwrite: `calculate_quota`, `get_filenames_response` and `get_file_objects_response` methods.
 
+- `calculate_quota`: given a flask request object calculates quota for tenant_id based on current processing units (by default it's using len(files) got from request)
 - `get_filenames_response` : given a flask request object validates filenames and returns a json response, status code
 - `get_file_objects_response` : given a flask request object validates filenames and contents and returns a json response, status code
 

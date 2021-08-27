@@ -24,6 +24,6 @@ def get_status_namespace(ns: Namespace, uploaders:list):
                 },
             ) 
             def get(self):
-                return get_processing_status(request.headers.get("TenantId")) 
+                return get_processing_status(request.headers.get("Tenantid")) 
             
     return ns

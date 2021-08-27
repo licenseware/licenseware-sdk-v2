@@ -13,8 +13,9 @@ class TestQuota(unittest.TestCase):
     def test_quota(self):
         
         uploader_id = 'rv_tools'
+        units = 1
         
-        q = Quota(tenant_id, uploader_id)
+        q = Quota(tenant_id, uploader_id, units)
         
         response, status_code = q.init_quota()
         self.assertEqual(status_code, 200)

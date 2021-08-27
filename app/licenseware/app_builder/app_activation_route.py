@@ -38,11 +38,8 @@ def add_app_activation_route(api: Api, appvars:dict):
                 return {'status': 'fail', 'message': 'Tenantid not provided'}, 403
 
             for uploader in appvars['uploaders']:
-                log.warning("TODO - Initialize quota for tenant_id")
-                # qmsg, _ = uploader.init_tenant_quota(tenant_id)
-                
-                # if qmsg['status'] != 'success':
-                #     return {'status': 'fail', 'message': 'App failed to install'}, 500
+                qmsg, status_code = uploader.init_tenant_quota(tenant_id)
+                if status_code != 200: return qmsg, status_code
             
             dmsg, _ = register_app(**appvars)
             
