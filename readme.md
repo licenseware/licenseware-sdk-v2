@@ -9,7 +9,6 @@
 7. [Custom namespaces](#custom-namespaces)
 8. [Endpoints from simple functions](#endpoints-from-simple-functions)
 9. [The `main` file](#the-main-file)
-10. [Licenseware package structure](#licenseware-package-structure)
 
 
 
@@ -18,6 +17,14 @@
 # QUICKSTART 
 
 Bellow is a full working example of almost all features the sdk provides.
+
+Start the services in the following order:
+
+1. `make up` - mongo and redis;
+2. `make mock` - mock dependency server for our app;
+3. `make prod` or `make dev` - start the app server;
+4. `make worker` - start the background worker.
+
 
 
 ```py
@@ -923,4 +930,13 @@ if __name__ == "__main__":
 
 ```
 
+# Load testing
 
+## TODO
+
+[baton docs](https://github.com/americanexpress/baton)
+
+
+```bash
+baton -u http://localhost:4000 -c 10 -r 10000
+```
