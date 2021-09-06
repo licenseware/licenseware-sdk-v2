@@ -26,9 +26,9 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">import app.licenseware.mongodata as m
-from app.licenseware.utils.logger import log
-from app.licenseware.common.constants import envs
+<pre><code class="python">from licenseware import mongodata as m
+from licenseware.utils.logger import log
+from licenseware.common.constants import envs
 
 
 
@@ -41,13 +41,13 @@ def get_activated_tenants(tenant_id:str = None, utilization_collection_name:str 
         tenants_list = m.fetch(
             match=&#39;tenant_id&#39;, collection=utilization_collection_name or envs.MONGO_COLLECTION_UTILIZATION_NAME
         )
-        log.info(f&#34;Activated_tenants: {tenants_list}&#34;)
+        # log.info(f&#34;Activated_tenants: {tenants_list}&#34;)
         return tenants_list
 
     tenants_list = m.fetch(
         match={&#39;tenant_id&#39;: tenant_id}, collection=utilization_collection_name or envs.MONGO_COLLECTION_UTILIZATION_NAME
     )
-    log.info(f&#34;Activated tenant: {tenants_list}&#34;)
+    # log.info(f&#34;Activated tenant: {tenants_list}&#34;)
     
     return tenants_list
 
@@ -83,7 +83,7 @@ def get_last_update_dates(tenant_id:str = None, data_collection_name:str = None)
     
     if last_update_dates == [{&#39;tenant_id&#39;: None, &#39;last_update_date&#39;: None}]:
         last_update_dates = []
-        log.info(&#34;Could not get last update dates&#34;)
+        # log.info(&#34;Could not get last update dates&#34;)
 
     return last_update_dates
 
@@ -101,7 +101,7 @@ def get_tenants_with_data(tenant_id=None, data_collection_name:str = None):
             &#34;last_update_date&#34;: tenant[&#34;last_update_date&#34;]
         } for tenant in enabled_tenants]
 
-    log.info(f&#34;enabled_tenants: {enabled_tenants}&#34;)
+    # log.info(f&#34;enabled_tenants: {enabled_tenants}&#34;)
     return enabled_tenants
 
 
@@ -113,7 +113,7 @@ def clear_tenant_data(tenant_id, data_collection_name:str = None):
         collection=data_collection_name or envs.MONGO_COLLECTION_DATA_NAME 
     )
 
-    log.info(f&#34;tenant data deleted: {res}&#34;)</code></pre>
+    # log.info(f&#34;tenant data deleted: {res}&#34;)</code></pre>
 </details>
 </section>
 <section>
@@ -139,7 +139,7 @@ def clear_tenant_data(tenant_id, data_collection_name:str = None):
         collection=data_collection_name or envs.MONGO_COLLECTION_DATA_NAME 
     )
 
-    log.info(f&#34;tenant data deleted: {res}&#34;)</code></pre>
+    # log.info(f&#34;tenant data deleted: {res}&#34;)</code></pre>
 </details>
 </dd>
 <dt id="licenseware.tenants.active_tenants.get_activated_tenants"><code class="name flex">
@@ -160,13 +160,13 @@ def clear_tenant_data(tenant_id, data_collection_name:str = None):
         tenants_list = m.fetch(
             match=&#39;tenant_id&#39;, collection=utilization_collection_name or envs.MONGO_COLLECTION_UTILIZATION_NAME
         )
-        log.info(f&#34;Activated_tenants: {tenants_list}&#34;)
+        # log.info(f&#34;Activated_tenants: {tenants_list}&#34;)
         return tenants_list
 
     tenants_list = m.fetch(
         match={&#39;tenant_id&#39;: tenant_id}, collection=utilization_collection_name or envs.MONGO_COLLECTION_UTILIZATION_NAME
     )
-    log.info(f&#34;Activated tenant: {tenants_list}&#34;)
+    # log.info(f&#34;Activated tenant: {tenants_list}&#34;)
     
     return tenants_list</code></pre>
 </details>
@@ -211,7 +211,7 @@ def clear_tenant_data(tenant_id, data_collection_name:str = None):
     
     if last_update_dates == [{&#39;tenant_id&#39;: None, &#39;last_update_date&#39;: None}]:
         last_update_dates = []
-        log.info(&#34;Could not get last update dates&#34;)
+        # log.info(&#34;Could not get last update dates&#34;)
 
     return last_update_dates</code></pre>
 </details>
@@ -238,7 +238,7 @@ def clear_tenant_data(tenant_id, data_collection_name:str = None):
             &#34;last_update_date&#34;: tenant[&#34;last_update_date&#34;]
         } for tenant in enabled_tenants]
 
-    log.info(f&#34;enabled_tenants: {enabled_tenants}&#34;)
+    # log.info(f&#34;enabled_tenants: {enabled_tenants}&#34;)
     return enabled_tenants</code></pre>
 </details>
 </dd>

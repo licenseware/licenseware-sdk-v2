@@ -28,9 +28,9 @@
 </summary>
 <pre><code class="python">import itertools
 
-from app.licenseware.common.constants.envs import envs
-from app.licenseware.registry_service import register_report
-from app.licenseware.utils.logger import log
+from licenseware.common.constants.envs import envs
+from licenseware.registry_service import register_report
+from licenseware.utils.logger import log
 
 
 
@@ -61,10 +61,7 @@ class ReportBuilder:
         filters:list = []
          
     ):
-        
-        if envs.ENVIRONMENT == &#39;local&#39;: 
-            report_id = envs.PERSONAL_PREFIX + report_id
-            
+         
         self.report_id = report_id
         self.name = name
         self.description = description
@@ -174,10 +171,7 @@ class ReportBuilder:
         filters:list = []
          
     ):
-        
-        if envs.ENVIRONMENT == &#39;local&#39;: 
-            report_id = envs.PERSONAL_PREFIX + report_id
-            
+         
         self.report_id = report_id
         self.name = name
         self.description = description

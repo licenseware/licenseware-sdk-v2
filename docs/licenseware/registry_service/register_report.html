@@ -27,10 +27,10 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">import requests
-from app.licenseware.utils.logger import log, log_dict
-from app.licenseware.common.constants import envs
-from app.licenseware.decorators.auth_decorators import authenticated_machine
-from app.licenseware.common.validators.registry_payload_validators import validate_register_report_payload
+from licenseware.utils.logger import log, log_dict
+from licenseware.common.constants import envs
+from licenseware.decorators.auth_decorators import authenticated_machine
+from licenseware.common.validators.registry_payload_validators import validate_register_report_payload
 
 
 
@@ -44,11 +44,15 @@ def register_report(**kwargs):
             &#34;status&#34;: &#34;fail&#34;,
             &#34;message&#34;: &#34;App not registered, no auth token available&#34;
         }, 401
+        
+        
+    app_id = envs.APP_ID + envs.PERSONAL_SUFFIX if envs.environment_is_local() else envs.APP_ID
+    report_id = kwargs[&#39;report_id&#39;] + envs.PERSONAL_SUFFIX if envs.environment_is_local() else kwargs[&#39;report_id&#39;]
     
     payload = {
         &#39;data&#39;: [{
-            &#34;app_id&#34;: envs.APP_ID,
-            &#34;report_id&#34;: kwargs[&#39;report_id&#39;],
+            &#34;app_id&#34;: app_id,
+            &#34;report_id&#34;: report_id,
             &#34;report_name&#34;: kwargs[&#39;name&#39;],
             &#34;description&#34;: kwargs[&#39;description&#39;],
             &#34;flags&#34;: kwargs[&#39;flags&#39;],
@@ -105,11 +109,15 @@ def register_report(**kwargs):
             &#34;status&#34;: &#34;fail&#34;,
             &#34;message&#34;: &#34;App not registered, no auth token available&#34;
         }, 401
+        
+        
+    app_id = envs.APP_ID + envs.PERSONAL_SUFFIX if envs.environment_is_local() else envs.APP_ID
+    report_id = kwargs[&#39;report_id&#39;] + envs.PERSONAL_SUFFIX if envs.environment_is_local() else kwargs[&#39;report_id&#39;]
     
     payload = {
         &#39;data&#39;: [{
-            &#34;app_id&#34;: envs.APP_ID,
-            &#34;report_id&#34;: kwargs[&#39;report_id&#39;],
+            &#34;app_id&#34;: app_id,
+            &#34;report_id&#34;: report_id,
             &#34;report_name&#34;: kwargs[&#39;name&#39;],
             &#34;description&#34;: kwargs[&#39;description&#39;],
             &#34;flags&#34;: kwargs[&#39;flags&#39;],

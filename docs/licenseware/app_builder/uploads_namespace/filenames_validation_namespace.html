@@ -41,10 +41,10 @@ from flask import request
 from flask_restx import Namespace, Resource
 from marshmallow import Schema, fields
 
-from app.licenseware.decorators.auth_decorators import authorization_check
-from app.licenseware.decorators import failsafe
-from app.licenseware.utils.logger import log
-from app.licenseware.utils.miscellaneous import build_restx_model
+from licenseware.decorators.auth_decorators import authorization_check
+from licenseware.decorators import failsafe
+from licenseware.utils.logger import log
+from licenseware.utils.miscellaneous import build_restx_model
 
 
 class FilenamesValidationSchema(Schema):

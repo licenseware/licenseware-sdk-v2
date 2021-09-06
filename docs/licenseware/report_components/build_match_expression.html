@@ -27,7 +27,7 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">from typing import List
-from app.licenseware.utils.logger import log
+from licenseware.utils.logger import log
 
 
 
@@ -114,7 +114,7 @@ def build_match_expression(filter_payload: List[dict]) -&gt; dict:
     for filter_section in filter_payload:
         parsed_filter.update(
             condition_switcher[filter_section[&#34;filter_type&#34;]](
-                filter_section[&#34;column&#34;], filter_section[&#34;filter_value&#34;] # TODO is filter value a list? if yes rename it to `filter_values`
+                filter_section[&#34;column&#34;], filter_section[&#34;filter_value&#34;]
             )
         )
         
@@ -182,7 +182,7 @@ filter_value: "the device name"
     for filter_section in filter_payload:
         parsed_filter.update(
             condition_switcher[filter_section[&#34;filter_type&#34;]](
-                filter_section[&#34;column&#34;], filter_section[&#34;filter_value&#34;] # TODO is filter value a list? if yes rename it to `filter_values`
+                filter_section[&#34;column&#34;], filter_section[&#34;filter_value&#34;]
             )
         )
         

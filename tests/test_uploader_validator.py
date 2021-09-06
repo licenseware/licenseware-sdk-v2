@@ -1,5 +1,5 @@
 import unittest
-from app.licenseware.uploader_validator import UploaderValidator
+from licenseware.uploader_validator import UploaderValidator
 import os, io
 from werkzeug.datastructures import FileStorage
 from . import tenant_id

@@ -2,12 +2,12 @@ import unittest
 
 from pymongo import collection
 
-from app.licenseware.utils.logger import log
+from licenseware.utils.logger import log
 from marshmallow import Schema, fields
 
-from app.licenseware.common.constants import envs
-from app.licenseware.mongodata.mongo_connection import db
-from app.licenseware import mongodata as m
+from licenseware.common.constants import envs
+from licenseware.mongodata.mongo_connection import db
+from licenseware import mongodata as m
 
 
 # python3 -m unittest tests/test_mongodata.py

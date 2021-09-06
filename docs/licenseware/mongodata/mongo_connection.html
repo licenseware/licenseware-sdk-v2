@@ -49,7 +49,7 @@ TODO count number of connections, use context manager for client connection
 &#34;&#34;&#34;
 
 from pymongo import MongoClient
-from app.licenseware.common.constants import envs
+from licenseware.common.constants import envs
 
 client = MongoClient(envs.MONGO_CONNECTION_STRING)
 # Raise error if connection is not established

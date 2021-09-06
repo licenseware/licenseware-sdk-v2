@@ -26,13 +26,10 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from os import name
-from typing import Any
-from marshmallow import Schema
-from flask import request
+<pre><code class="python">from typing import Any
 from flask_restx import Namespace, Resource
-from app.licenseware.utils.miscellaneous import http_methods
-from app.licenseware.namespace_generator import SchemaNamespace
+from licenseware.utils.miscellaneous import http_methods
+from licenseware.namespace_generator import SchemaNamespace
 import inspect
 
 
@@ -43,7 +40,7 @@ class EndpointBuilder:
     &#34;&#34;&#34;
     Usage: 
     
-    from app.licenseware.endpoint_builder import EndpointBuilder
+    from licenseware.endpoint_builder import EndpointBuilder
     
     index_endpoint = EndpointBuilder(
         handler = get_some_data,
@@ -148,7 +145,7 @@ class EndpointBuilder:
 </code></dt>
 <dd>
 <div class="desc"><p>Usage: </p>
-<p>from app.licenseware.endpoint_builder import EndpointBuilder</p>
+<p>from licenseware.endpoint_builder import EndpointBuilder</p>
 <p>index_endpoint = EndpointBuilder(
 handler = get_some_data,
 **options
@@ -167,7 +164,7 @@ handler = get_some_data,
     &#34;&#34;&#34;
     Usage: 
     
-    from app.licenseware.endpoint_builder import EndpointBuilder
+    from licenseware.endpoint_builder import EndpointBuilder
     
     index_endpoint = EndpointBuilder(
         handler = get_some_data,

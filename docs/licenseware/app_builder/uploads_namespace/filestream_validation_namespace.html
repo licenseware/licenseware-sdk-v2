@@ -29,9 +29,9 @@
 <pre><code class="python">from flask import request
 from flask_restx import Namespace, Resource 
 
-from app.licenseware.decorators.auth_decorators import authorization_check
-from app.licenseware.decorators import failsafe
-from app.licenseware.tenants import clear_tenant_data 
+from licenseware.decorators.auth_decorators import authorization_check
+from licenseware.decorators import failsafe
+from licenseware.tenants import clear_tenant_data 
 from werkzeug.datastructures import FileStorage
 
 

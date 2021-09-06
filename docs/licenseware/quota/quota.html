@@ -33,11 +33,11 @@ from typing import Tuple
 
 from marshmallow.schema import Schema
 
-from app.licenseware import mongodata
-from app.licenseware.common.constants import envs
-from app.licenseware.common.serializers import QuotaSchema
-from app.licenseware.utils.miscellaneous import get_user_id
-from app.licenseware.utils.logger import log
+from licenseware import mongodata
+from licenseware.common.constants import envs
+from licenseware.common.serializers import QuotaSchema
+from licenseware.utils.miscellaneous import get_user_id
+from licenseware.utils.logger import log
 
 
 def get_quota_reset_date():

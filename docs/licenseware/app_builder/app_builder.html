@@ -38,16 +38,16 @@ Notice that history report route/path is provided but is not implemented that&#3
 
 from dataclasses import dataclass
 from flask_restx.resource import Resource
-from app.licenseware.common.constants.envs import envs
+from licenseware.common.constants.envs import envs
 from typing import Callable
 from flask import Flask
 from flask_restx import Api, Namespace
-from app.licenseware.registry_service import register_all
-from app.licenseware.tenants import get_activated_tenants, get_tenants_with_data
-from app.licenseware.utils.logger import log
-from app.licenseware.auth import Authenticator
-from app.licenseware.utils.dramatiq_redis_broker import broker
-from app.licenseware.utils.miscellaneous import swagger_authorization_header
+from licenseware.registry_service import register_all
+from licenseware.tenants import get_activated_tenants, get_tenants_with_data
+from licenseware.utils.logger import log
+from licenseware.auth import Authenticator
+from licenseware.utils.dramatiq_redis_broker import broker
+from licenseware.utils.miscellaneous import swagger_authorization_header
 
 from .refresh_registration_route import add_refresh_registration_route
 from .editable_tables_route import add_editable_tables_route
@@ -114,8 +114,7 @@ class AppBuilder:
         **kwargs
     ):
         
-
-        self.app_id = envs.APP_ID 
+ 
         self.name = name
         self.description = description
         self.flags = flags
@@ -155,7 +154,7 @@ class AppBuilder:
         self.kwargs = kwargs    
         
         # TODO version needs to be added to all urls + &#39;/v&#39; + self.version
-        self.prefix = &#39;/&#39; + self.app_id 
+        self.prefix = &#39;/&#39; + envs.APP_ID 
         self.app = None
         self.api = None
         self.ns  = None
@@ -168,7 +167,7 @@ class AppBuilder:
     
     
     
-    def init_app(self, app: Flask, register:bool =True):
+    def init_app(self, app: Flask):
         
         # This hides flask_restx `X-fields` from swagger headers  
         app.config[&#39;RESTX_MASK_SWAGGER&#39;] = False
@@ -179,16 +178,15 @@ class AppBuilder:
          
         self.authenticate_app()
         self.init_dramatiq_broker()
-        if register: self.register_app()
         
         self.init_api()
         self.init_routes()
         self.init_namespaces()
         
         
-    def init_dramatiq_broker(self):
+    def init_dramatiq_broker(self, app:Flask = None):
         # Add middleware if needed
-        broker.init_app(self.app)
+        broker.init_app(app or self.app)
         
     
     def authenticate_app(self):
@@ -325,8 +323,7 @@ class AppBuilder:
         
         for rep_component in self.report_components:
             if rep_component.component_id == report_component_instance.component_id:
-                log.warning(f&#34;Report component_id: &#39;{report_component_instance.component_id}&#39; was already declared&#34;)
-                # Not raising errors because component_ids urls have attached an id to avoid name colizions
+                raise Exception(f&#34;Report component_id: &#39;{report_component_instance.component_id}&#39; was already declared&#34;)
                 
         self.report_components.append(report_component_instance)
         
@@ -390,8 +387,7 @@ class AppBuilder:
         **kwargs
     ):
         
-
-        self.app_id = envs.APP_ID 
+ 
         self.name = name
         self.description = description
         self.flags = flags
@@ -431,7 +427,7 @@ class AppBuilder:
         self.kwargs = kwargs    
         
         # TODO version needs to be added to all urls + &#39;/v&#39; + self.version
-        self.prefix = &#39;/&#39; + self.app_id 
+        self.prefix = &#39;/&#39; + envs.APP_ID 
         self.app = None
         self.api = None
         self.ns  = None
@@ -444,7 +440,7 @@ class AppBuilder:
     
     
     
-    def init_app(self, app: Flask, register:bool =True):
+    def init_app(self, app: Flask):
         
         # This hides flask_restx `X-fields` from swagger headers  
         app.config[&#39;RESTX_MASK_SWAGGER&#39;] = False
@@ -455,16 +451,15 @@ class AppBuilder:
          
         self.authenticate_app()
         self.init_dramatiq_broker()
-        if register: self.register_app()
         
         self.init_api()
         self.init_routes()
         self.init_namespaces()
         
         
-    def init_dramatiq_broker(self):
+    def init_dramatiq_broker(self, app:Flask = None):
         # Add middleware if needed
-        broker.init_app(self.app)
+        broker.init_app(app or self.app)
         
     
     def authenticate_app(self):
@@ -601,8 +596,7 @@ class AppBuilder:
         
         for rep_component in self.report_components:
             if rep_component.component_id == report_component_instance.component_id:
-                log.warning(f&#34;Report component_id: &#39;{report_component_instance.component_id}&#39; was already declared&#34;)
-                # Not raising errors because component_ids urls have attached an id to avoid name colizions
+                raise Exception(f&#34;Report component_id: &#39;{report_component_instance.component_id}&#39; was already declared&#34;)
                 
         self.report_components.append(report_component_instance)
         
@@ -760,7 +754,7 @@ class AppBuilder:
 </details>
 </dd>
 <dt id="licenseware.app_builder.app_builder.AppBuilder.init_app"><code class="name flex">
-<span>def <span class="ident">init_app</span></span>(<span>self, app: flask.app.Flask, register: bool = True)</span>
+<span>def <span class="ident">init_app</span></span>(<span>self, app: flask.app.Flask)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -768,7 +762,7 @@ class AppBuilder:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def init_app(self, app: Flask, register:bool =True):
+<pre><code class="python">def init_app(self, app: Flask):
     
     # This hides flask_restx `X-fields` from swagger headers  
     app.config[&#39;RESTX_MASK_SWAGGER&#39;] = False
@@ -779,7 +773,6 @@ class AppBuilder:
      
     self.authenticate_app()
     self.init_dramatiq_broker()
-    if register: self.register_app()
     
     self.init_api()
     self.init_routes()
@@ -787,7 +780,7 @@ class AppBuilder:
 </details>
 </dd>
 <dt id="licenseware.app_builder.app_builder.AppBuilder.init_dramatiq_broker"><code class="name flex">
-<span>def <span class="ident">init_dramatiq_broker</span></span>(<span>self)</span>
+<span>def <span class="ident">init_dramatiq_broker</span></span>(<span>self, app: flask.app.Flask = None)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -795,9 +788,9 @@ class AppBuilder:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def init_dramatiq_broker(self):
+<pre><code class="python">def init_dramatiq_broker(self, app:Flask = None):
     # Add middleware if needed
-    broker.init_app(self.app)</code></pre>
+    broker.init_app(app or self.app)</code></pre>
 </details>
 </dd>
 <dt id="licenseware.app_builder.app_builder.AppBuilder.init_namespaces"><code class="name flex">
@@ -922,8 +915,7 @@ class AppBuilder:
     
     for rep_component in self.report_components:
         if rep_component.component_id == report_component_instance.component_id:
-            log.warning(f&#34;Report component_id: &#39;{report_component_instance.component_id}&#39; was already declared&#34;)
-            # Not raising errors because component_ids urls have attached an id to avoid name colizions
+            raise Exception(f&#34;Report component_id: &#39;{report_component_instance.component_id}&#39; was already declared&#34;)
             
     self.report_components.append(report_component_instance)</code></pre>
 </details>

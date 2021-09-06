@@ -33,9 +33,9 @@ from marshmallow import Schema, fields
 from marshmallow_jsonschema import JSONSchema
 from flask_restx import Namespace, Resource
 
-from app.licenseware.common.validators import validate_uuid4
-from app.licenseware.decorators.auth_decorators import authorization_check
-from app.licenseware.utils.miscellaneous import swagger_authorization_header, http_methods
+from licenseware.common.validators import validate_uuid4
+from licenseware.decorators.auth_decorators import authorization_check
+from licenseware.utils.miscellaneous import swagger_authorization_header, http_methods
 
 from .mongo_request import MongoRequest
 

@@ -34,9 +34,9 @@ When this endpoint is called the registration information for this `App` is sent
 &#34;&#34;&#34;
 
 from flask_restx import Api, Resource
-from app.licenseware.decorators.auth_decorators import machine_check
-from app.licenseware.decorators import failsafe
-from app.licenseware.registry_service import register_app
+from licenseware.decorators.auth_decorators import machine_check
+from licenseware.decorators import failsafe
+from licenseware.registry_service import register_app
 
 
 def add_app_registration_route(api: Api, appvars:dict):

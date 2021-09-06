@@ -2,9 +2,9 @@ from logging import log
 import re
 import unittest
 from marshmallow import Schema, fields
-from app.licenseware.utils.logger import log
-from app.licenseware.common.constants import envs
-from app.licenseware.namespace_generator import SchemaNamespace
+from licenseware.utils.logger import log
+from licenseware.common.constants import envs
+from licenseware.namespace_generator import SchemaNamespace
 from main import app
 
 

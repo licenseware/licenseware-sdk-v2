@@ -35,10 +35,10 @@ When this endpoint is called the registration information from all `App` entitie
 
 
 from flask_restx import Api, Resource
-from app.licenseware.decorators.auth_decorators import machine_check
-from app.licenseware.registry_service import register_all
-from app.licenseware.decorators import failsafe
-from app.licenseware.utils.logger import log
+from licenseware.decorators.auth_decorators import machine_check
+from licenseware.registry_service import register_all
+from licenseware.decorators import failsafe
+from licenseware.utils.logger import log
 
 
 def add_refresh_registration_route(api:Api, appvars:dict):

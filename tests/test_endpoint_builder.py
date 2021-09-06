@@ -1,6 +1,6 @@
 import unittest
-from app.licenseware.utils.logger import log
-from app.licenseware.endpoint_builder import EndpointBuilder
+from licenseware.utils.logger import log
+from licenseware.endpoint_builder import EndpointBuilder
 
 
 # python3 -m unittest tests/test_endpoint_builder.py

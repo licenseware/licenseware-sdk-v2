@@ -6,18 +6,18 @@ from flask import Flask
 from flask_restx import Namespace, Resource
 from marshmallow import Schema, fields
 
-from app.licenseware.app_builder import AppBuilder
-from app.licenseware.common.constants import (envs, filters, flags, icons,
+from licenseware.app_builder import AppBuilder
+from licenseware.common.constants import (envs, filters, flags, icons,
                                               states)
-from app.licenseware.endpoint_builder import EndpointBuilder
-from app.licenseware.notifications import notify_upload_status
-from app.licenseware.report_builder import ReportBuilder
-from app.licenseware.report_components import BaseReportComponent
-from app.licenseware.report_components.style_attributes import \
+from licenseware.endpoint_builder import EndpointBuilder
+from licenseware.notifications import notify_upload_status
+from licenseware.report_builder import ReportBuilder
+from licenseware.report_components import BaseReportComponent
+from licenseware.report_components.style_attributes import \
     style_attributes as styles
-from app.licenseware.uploader_builder import UploaderBuilder
-from app.licenseware.uploader_validator import UploaderValidator
-from app.licenseware.utils.logger import log
+from licenseware.uploader_builder import UploaderBuilder
+from licenseware.uploader_validator import UploaderValidator
+from licenseware.utils.logger import log
 
 
 
@@ -183,7 +183,7 @@ class VirtualOverview(BaseReportComponent):
         }
         
         # or import `style_attributes` dataclass
-        # from app.licenseware.report_components.style_attributes import style_attributes as styles
+        # from licenseware.report_components.style_attributes import style_attributes as styles
         style_attributes = self.build_style_attributes([
             styles.WIDTH_ONE_THIRD
             #etc

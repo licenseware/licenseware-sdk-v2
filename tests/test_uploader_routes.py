@@ -1,12 +1,12 @@
 import unittest
-from app.licenseware.utils.logger import log
+from licenseware.utils.logger import log
 from main import app
 from . import headers
 
 import os, io
 from werkzeug.datastructures import FileStorage
-from app.licenseware.uploader_validator import UploaderValidator
-from app.licenseware.common.constants import envs
+from licenseware.uploader_validator import UploaderValidator
+from licenseware.common.constants import envs
 
  
 # python3 -m unittest tests/test_uploader_routes.py

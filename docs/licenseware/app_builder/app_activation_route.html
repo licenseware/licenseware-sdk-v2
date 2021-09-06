@@ -35,10 +35,10 @@ When this endpoint is called the `Quota` for this tenant_id must be created and 
 
 from flask import request
 from flask_restx import Api, Resource
-from app.licenseware.decorators.auth_decorators import authorization_check
-from app.licenseware.decorators import failsafe
-from app.licenseware.registry_service import register_app
-from app.licenseware.utils.logger import log
+from licenseware.decorators.auth_decorators import authorization_check
+from licenseware.decorators import failsafe
+from licenseware.registry_service import register_app
+from licenseware.utils.logger import log
 
 
 

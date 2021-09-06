@@ -1,8 +1,8 @@
 import unittest
-from app.licenseware.report_components import BaseReportComponent
-from app.licenseware.utils.logger import log
-from app.licenseware.report_components.style_attributes import style_attributes as styles
-from app.licenseware.common.constants import icons, filters
+from licenseware.report_components import BaseReportComponent
+from licenseware.utils.logger import log
+from licenseware.report_components.style_attributes import style_attributes as styles
+from licenseware.common.constants import icons, filters
 from . import tenant_id
 
 
@@ -102,7 +102,7 @@ class TestReportComponents(unittest.TestCase):
                 }
                 
                 # or import `style_attributes` dataclass
-                # from app.licenseware.report_components.style_attributes import style_attributes as styles
+                # from licenseware.report_components.style_attributes import style_attributes as styles
                 style_attributes = self.build_style_attributes([
                     styles.WIDTH_ONE_THIRD
                     #etc

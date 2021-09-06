@@ -26,10 +26,9 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">import uuid
-import datetime
-import app.licenseware.mongodata as m
-from app.licenseware.utils.logger import log
+<pre><code class="python">import datetime
+from licenseware import mongodata as m
+from licenseware.utils.logger import log
 from flask_restx import abort
 
 
@@ -82,22 +81,26 @@ class MongoCrud:
             raise Exception(&#34;The &#39;tenant_id&#39; provided in query parameter is not the same as the one from headers&#34;)
 
         query = {**tenant, **self.params, **self.payload}
-        log.warning(f&#34;CRUD Request: {query}&#34;)
+        # log.warning(f&#34;CRUD Request: {query}&#34;)
         return query
 
     def create_indexes(self):
         coll = m.get_collection(self.collection)
+        
         try:
             for i in self.schema.Meta.simple_indexes:
                 coll.create_index(i)
         except AttributeError:
-            log.info(&#34;No simple indexes declared&#34;)
+            # log.info(&#34;No simple indexes declared&#34;)
+            pass
+        
         try:
             for ci in self.schema.Meta.compound_indexes:
                 col_list = [(ci_m, 1) for ci_m in ci]
                 coll.create_index(col_list, unique=True)
         except AttributeError:
-            log.info(&#34;No compound indexes declared&#34;)
+            # log.info(&#34;No compound indexes declared&#34;)
+            pass
 
     def fetch_data(self, request_obj):
         self.request_obj = request_obj
@@ -231,22 +234,26 @@ Indexes are provided on serializer metadata (simple_indexes, compound_indexes).<
             raise Exception(&#34;The &#39;tenant_id&#39; provided in query parameter is not the same as the one from headers&#34;)
 
         query = {**tenant, **self.params, **self.payload}
-        log.warning(f&#34;CRUD Request: {query}&#34;)
+        # log.warning(f&#34;CRUD Request: {query}&#34;)
         return query
 
     def create_indexes(self):
         coll = m.get_collection(self.collection)
+        
         try:
             for i in self.schema.Meta.simple_indexes:
                 coll.create_index(i)
         except AttributeError:
-            log.info(&#34;No simple indexes declared&#34;)
+            # log.info(&#34;No simple indexes declared&#34;)
+            pass
+        
         try:
             for ci in self.schema.Meta.compound_indexes:
                 col_list = [(ci_m, 1) for ci_m in ci]
                 coll.create_index(col_list, unique=True)
         except AttributeError:
-            log.info(&#34;No compound indexes declared&#34;)
+            # log.info(&#34;No compound indexes declared&#34;)
+            pass
 
     def fetch_data(self, request_obj):
         self.request_obj = request_obj
@@ -376,7 +383,7 @@ def query(self):
         raise Exception(&#34;The &#39;tenant_id&#39; provided in query parameter is not the same as the one from headers&#34;)
 
     query = {**tenant, **self.params, **self.payload}
-    log.warning(f&#34;CRUD Request: {query}&#34;)
+    # log.warning(f&#34;CRUD Request: {query}&#34;)
     return query</code></pre>
 </details>
 </dd>
@@ -394,17 +401,21 @@ def query(self):
 </summary>
 <pre><code class="python">def create_indexes(self):
     coll = m.get_collection(self.collection)
+    
     try:
         for i in self.schema.Meta.simple_indexes:
             coll.create_index(i)
     except AttributeError:
-        log.info(&#34;No simple indexes declared&#34;)
+        # log.info(&#34;No simple indexes declared&#34;)
+        pass
+    
     try:
         for ci in self.schema.Meta.compound_indexes:
             col_list = [(ci_m, 1) for ci_m in ci]
             coll.create_index(col_list, unique=True)
     except AttributeError:
-        log.info(&#34;No compound indexes declared&#34;)</code></pre>
+        # log.info(&#34;No compound indexes declared&#34;)
+        pass</code></pre>
 </details>
 </dd>
 <dt id="licenseware.namespace_generator.mongo_crud.MongoCrud.delete_data"><code class="name flex">

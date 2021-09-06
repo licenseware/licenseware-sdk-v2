@@ -1,7 +1,7 @@
 import os
 import unittest
-from app.licenseware.common.constants import envs 
-from app.licenseware.auth import Authenticator
+from licenseware.common.constants import envs 
+from licenseware.auth import Authenticator
 
         
 # python3 -m unittest tests/test_licenseware_auth.py

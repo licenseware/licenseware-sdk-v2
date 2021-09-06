@@ -1,5 +1,5 @@
 import unittest
-from app.licenseware.registry_service import register_uploader
+from licenseware.registry_service import register_uploader
 
 
 # python3 -m unittest tests/test_register_uploader.py

@@ -1,6 +1,6 @@
 import unittest
-from app.licenseware.registry_service import register_app
-from app.licenseware.utils.logger import log
+from licenseware.registry_service import register_app
+from licenseware.utils.logger import log
 
 # python3 -m unittest tests/test_register_app.py 
 

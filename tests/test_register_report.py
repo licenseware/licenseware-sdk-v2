@@ -1,5 +1,5 @@
 import unittest
-from app.licenseware.registry_service import register_report
+from licenseware.registry_service import register_report
 
 
 # python3 -m unittest tests/test_register_report.py

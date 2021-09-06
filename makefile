@@ -24,7 +24,7 @@ test:
 	python3 -m unittest tests/*
 
 dev-docs:
-	pdoc --http : app
+	pdoc --http : licenseware
 
 docs:
-	pdoc --html --output-dir docs app/licenseware
+	pdoc --html --output-dir docs licenseware

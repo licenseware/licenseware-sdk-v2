@@ -1,7 +1,7 @@
 import unittest
-from app.licenseware.utils.logger import log
-from app.licenseware.app_builder.app_builder import base_paths
-from app.licenseware.common.constants import envs
+from licenseware.utils.logger import log
+from licenseware.app_builder.app_builder import base_paths
+from licenseware.common.constants import envs
 from main import app
 from . import headers, tenant_id
  

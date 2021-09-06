@@ -27,10 +27,10 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">import requests
-from app.licenseware.common.constants import envs
-from app.licenseware.decorators.auth_decorators import authenticated_machine
-from app.licenseware.utils.logger import log
-from app.licenseware.common.validators.registry_payload_validators import validate_register_uploader_status_payload
+from licenseware.common.constants import envs
+from licenseware.decorators.auth_decorators import authenticated_machine
+from licenseware.utils.logger import log
+from licenseware.common.validators.registry_payload_validators import validate_register_uploader_status_payload
 
 
 
@@ -46,12 +46,15 @@ def register_upload_status(**kwargs):
         }, 401
         
         
+    app_id = envs.APP_ID + envs.PERSONAL_SUFFIX if envs.environment_is_local() else envs.APP_ID
+    uploader_id = kwargs[&#39;uploader_id&#39;] + envs.PERSONAL_SUFFIX if envs.environment_is_local() else kwargs[&#39;uploader_id&#39;]
+    
     payload = {
         &#39;data&#39;: [
             {
-                &#39;app_id&#39;: envs.APP_ID,
+                &#39;app_id&#39;: app_id,
                 &#39;tenant_id&#39;: kwargs[&#39;tenant_id&#39;],
-                &#39;upload_id&#39;: kwargs[&#39;uploader_id&#39;], 
+                &#39;upload_id&#39;: uploader_id, 
                 &#39;status&#39;: kwargs[&#39;status&#39;],
             }
         ]
@@ -102,12 +105,15 @@ def register_upload_status(**kwargs):
         }, 401
         
         
+    app_id = envs.APP_ID + envs.PERSONAL_SUFFIX if envs.environment_is_local() else envs.APP_ID
+    uploader_id = kwargs[&#39;uploader_id&#39;] + envs.PERSONAL_SUFFIX if envs.environment_is_local() else kwargs[&#39;uploader_id&#39;]
+    
     payload = {
         &#39;data&#39;: [
             {
-                &#39;app_id&#39;: envs.APP_ID,
+                &#39;app_id&#39;: app_id,
                 &#39;tenant_id&#39;: kwargs[&#39;tenant_id&#39;],
-                &#39;upload_id&#39;: kwargs[&#39;uploader_id&#39;], 
+                &#39;upload_id&#39;: uploader_id, 
                 &#39;status&#39;: kwargs[&#39;status&#39;],
             }
         ]

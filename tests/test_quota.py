@@ -1,7 +1,7 @@
 import unittest
-from app.licenseware.utils.logger import log
-from app.licenseware.quota import Quota
-from app.licenseware.common.constants import envs
+from licenseware.utils.logger import log
+from licenseware.quota import Quota
+from licenseware.common.constants import envs
 from . import tenant_id
 import sys
 
