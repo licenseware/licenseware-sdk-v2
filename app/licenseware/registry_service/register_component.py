@@ -17,12 +17,14 @@ def register_component(**kwargs):
             "message": "App not registered, no auth token available"
         }, 401
     
+    
     app_id = envs.APP_ID + envs.PERSONAL_SUFFIX if envs.environment_is_local() else envs.APP_ID
+    component_id = kwargs['component_id'] + envs.PERSONAL_SUFFIX if envs.environment_is_local() else kwargs['component_id']
     
     payload = {
         'data': [{
             "app_id": app_id,
-            "component_id": kwargs['component_id'],
+            "component_id": component_id,
             "url": kwargs['url'],
             "order": kwargs['order'],
             "style_attributes": kwargs['style_attributes'],

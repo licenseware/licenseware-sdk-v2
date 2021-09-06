@@ -22,6 +22,7 @@ def register_uploader(**kwargs):
         
         
     app_id = envs.APP_ID + envs.PERSONAL_SUFFIX if envs.environment_is_local() else envs.APP_ID
+    uploader_id = kwargs['uploader_id'] + envs.PERSONAL_SUFFIX if envs.environment_is_local() else kwargs['uploader_id']
     
     payload = {
         'data': [{
@@ -29,7 +30,7 @@ def register_uploader(**kwargs):
             "upload_name": kwargs['name'],
             "description": kwargs['description'],
             "accepted_file_types": kwargs['accepted_file_types'],
-            "upload_id": kwargs['uploader_id'],
+            "upload_id": uploader_id,
             "flags": kwargs['flags'],
             "status": kwargs['status'],
             "icon": kwargs['icon'],

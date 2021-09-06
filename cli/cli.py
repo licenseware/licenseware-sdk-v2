@@ -1,5 +1,5 @@
 import os
-import click
+import typer
 
 
 '''
@@ -28,11 +28,15 @@ import click
 # licenseware new uploader rv_tools
 
 
-@click.command()
-@click.option('--create-app', required=False, default='testapp')
-def cli(create_app):
-    os.mkdir()
-    click.echo(f'{create_app} created')
+
+
+
+
+# @click.command()
+# @click.option('--create-app', required=False, default='testapp')
+# def cli(create_app):
+#     os.mkdir()
+#     click.echo(f'{create_app} created')
     
     
     

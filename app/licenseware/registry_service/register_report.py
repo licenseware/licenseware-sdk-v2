@@ -19,11 +19,12 @@ def register_report(**kwargs):
         
         
     app_id = envs.APP_ID + envs.PERSONAL_SUFFIX if envs.environment_is_local() else envs.APP_ID
+    report_id = kwargs['report_id'] + envs.PERSONAL_SUFFIX if envs.environment_is_local() else kwargs['report_id']
     
     payload = {
         'data': [{
             "app_id": app_id,
-            "report_id": kwargs['report_id'],
+            "report_id": report_id,
             "report_name": kwargs['name'],
             "description": kwargs['description'],
             "flags": kwargs['flags'],

@@ -19,13 +19,14 @@ def register_upload_status(**kwargs):
         
         
     app_id = envs.APP_ID + envs.PERSONAL_SUFFIX if envs.environment_is_local() else envs.APP_ID
-        
+    uploader_id = kwargs['uploader_id'] + envs.PERSONAL_SUFFIX if envs.environment_is_local() else kwargs['uploader_id']
+    
     payload = {
         'data': [
             {
                 'app_id': app_id,
                 'tenant_id': kwargs['tenant_id'],
-                'upload_id': kwargs['uploader_id'], 
+                'upload_id': uploader_id, 
                 'status': kwargs['status'],
             }
         ]
