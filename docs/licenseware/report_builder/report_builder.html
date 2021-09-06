@@ -26,7 +26,9 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from app.licenseware.common.constants.envs import envs
+<pre><code class="python">import itertools
+
+from app.licenseware.common.constants.envs import envs
 from app.licenseware.registry_service import register_report
 from app.licenseware.utils.logger import log
 
@@ -72,11 +74,11 @@ class ReportBuilder:
         self.connected_apps = connected_apps
         self.app_id = envs.APP_ID
         self.flags = flags
-        self.filters = filters
         self.url = envs.REPORT_URL  + self.report_path
         
-        # Needed to overwrite report_components
+        # Needed to overwrite report_components and filters
         self.report_components = []
+        self.filters = filters
         self.register_components()
         
         self.reportvars = vars(self)
@@ -100,7 +102,6 @@ class ReportBuilder:
     def register_report(self):
         return register_report(**self.reportvars)
 
-
     def register_components(self):
         
         for order, component in enumerate(self.components):
@@ -113,6 +114,10 @@ class ReportBuilder:
             metadata[&#39;order&#39;] = metadata[&#39;order&#39;] or order + 1
             metadata[&#39;url&#39;] = self.url + metadata.pop(&#39;path&#39;)
             metadata[&#39;type&#39;] = metadata.pop(&#39;component_type&#39;) 
+            
+            if metadata[&#34;filters&#34;]:
+                self.filters.append(metadata[&#34;filters&#34;])
+                self.filters = list(itertools.chain.from_iterable(self.filters))
             
             self.report_components.append(metadata)
             </code></pre>
@@ -182,11 +187,11 @@ class ReportBuilder:
         self.connected_apps = connected_apps
         self.app_id = envs.APP_ID
         self.flags = flags
-        self.filters = filters
         self.url = envs.REPORT_URL  + self.report_path
         
-        # Needed to overwrite report_components
+        # Needed to overwrite report_components and filters
         self.report_components = []
+        self.filters = filters
         self.register_components()
         
         self.reportvars = vars(self)
@@ -210,7 +215,6 @@ class ReportBuilder:
     def register_report(self):
         return register_report(**self.reportvars)
 
-
     def register_components(self):
         
         for order, component in enumerate(self.components):
@@ -223,6 +227,10 @@ class ReportBuilder:
             metadata[&#39;order&#39;] = metadata[&#39;order&#39;] or order + 1
             metadata[&#39;url&#39;] = self.url + metadata.pop(&#39;path&#39;)
             metadata[&#39;type&#39;] = metadata.pop(&#39;component_type&#39;) 
+            
+            if metadata[&#34;filters&#34;]:
+                self.filters.append(metadata[&#34;filters&#34;])
+                self.filters = list(itertools.chain.from_iterable(self.filters))
             
             self.report_components.append(metadata)</code></pre>
 </details>
@@ -249,6 +257,10 @@ class ReportBuilder:
         metadata[&#39;order&#39;] = metadata[&#39;order&#39;] or order + 1
         metadata[&#39;url&#39;] = self.url + metadata.pop(&#39;path&#39;)
         metadata[&#39;type&#39;] = metadata.pop(&#39;component_type&#39;) 
+        
+        if metadata[&#34;filters&#34;]:
+            self.filters.append(metadata[&#34;filters&#34;])
+            self.filters = list(itertools.chain.from_iterable(self.filters))
         
         self.report_components.append(metadata)</code></pre>
 </details>

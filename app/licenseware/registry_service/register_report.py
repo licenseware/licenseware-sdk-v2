@@ -17,11 +17,6 @@ def register_report(**kwargs):
             "message": "App not registered, no auth token available"
         }, 401
     
-    
-    
-    log.debug(kwargs.keys())
-    
-    
     payload = {
         'data': [{
             "app_id": envs.APP_ID,
@@ -31,7 +26,8 @@ def register_report(**kwargs):
             "flags": kwargs['flags'],
             "url": kwargs['url'],
             "report_components":  kwargs['report_components'],
-            "connected_apps": kwargs['connected_apps']
+            "connected_apps": kwargs['connected_apps'],
+            "filters" : kwargs['filters']
         }]
     }
     

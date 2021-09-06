@@ -30,7 +30,7 @@
 from app.licenseware.utils.logger import log
 from app.licenseware.common.constants import envs
 from app.licenseware.utils.miscellaneous import generate_id, flat_dict
-from app.licenseware.report_components.build_match_expression import build_match_expression
+from app.licenseware.report_components.build_match_expression import build_match_expression, condition_switcher
 from app.licenseware.registry_service import register_component
 from app.licenseware.report_components.attributes import (
     attributes_bar_vertical,
@@ -56,6 +56,7 @@ class BaseReportComponent:
         title:str,
         component_id:str,
         component_type:str,
+        filters:list = None,
         path:str = None,
         order:int = None,
         style_attributes:dict = None,
@@ -67,6 +68,7 @@ class BaseReportComponent:
         self.title = title
         self.component_id = component_id
         self.component_type = component_type
+        self.filters = filters
         self.path = path or &#39;/&#39; + component_id
         # We are using `generate_small_id` func to avoid component_id conflicts
         # This `component_url` is independed from the report 
@@ -77,6 +79,41 @@ class BaseReportComponent:
         self.attributes = attributes
         self.registration_payload = registration_payload
         self.options = options
+        
+        
+    def build_filter(self, column:str, allowed_filters:list, visible_name:str, validate:bool = True):
+        &#34;&#34;&#34;
+            Will return a dictionary similar to the one bellow:
+            
+            {
+                &#34;column&#34;: &#34;version.edition&#34;,
+                &#34;allowed_filters&#34;: [
+                    &#34;equals&#34;, &#34;contains&#34;, &#34;in_list&#34;
+                ],
+                &#34;visible_name&#34;: &#34;Product Edition&#34;
+            }
+            
+            The dictionary build will be used to filter mongo 
+            
+        &#34;&#34;&#34;
+        
+        if validate:
+            
+            if &#34; &#34; in column: 
+                raise ValueError(&#34;Parameter `column` can&#39;t contain spaces and must be all lowercase like `device_name`&#34;)
+
+            for f in allowed_filters:
+                if f not in condition_switcher.keys():
+                    raise ValueError(f&#34;Filter {f} not in {condition_switcher.keys()}&#34;)
+            
+        
+        return dict(
+            column = column,
+            allowed_filters = allowed_filters,
+            visible_name = visible_name
+        )
+        
+        
         
         
         
@@ -101,12 +138,13 @@ class BaseReportComponent:
         
         received_filters = flask_request.json or []
         
-        received_filters.append({
-            &#39;field_name&#39;: &#39;tenant_id&#39;, 
+        # Inserting filter by tenant_id
+        received_filters.insert(0, {
+            &#39;column&#39;: &#39;tenant_id&#39;, 
             &#39;filter_type&#39;: &#39;equals&#39;, 
             &#39;filter_value&#39;: flask_request.headers.get(&#39;Tenantid&#39;)
         })
-        
+            
         filters = build_match_expression(received_filters)
         
         return filters
@@ -137,14 +175,24 @@ class BaseReportComponent:
     
     def set_style_attributes(self):
         raise NotImplementedError(&#34;Please overwrite method `set_style_attributes`&#34;)
-        
+    
+    def set_allowed_filters(self):
+        log.warning(&#34;Component filters not set&#34;)
+        # raise NotImplementedError(&#34;Please overwrite method `set_allowed_filters`&#34;)
+    
     def get_registration_payload(self):
         
-        attributes = self.set_attributes()
-        if attributes: self.attributes = attributes
+        if not self.attributes:
+            attributes = self.set_attributes()
+            if attributes: self.attributes = attributes
         
-        style_attributes = self.set_style_attributes()
-        if style_attributes: self.style_attributes = style_attributes
+        if not self.style_attributes: 
+            style_attributes = self.set_style_attributes()
+            if style_attributes: self.style_attributes = style_attributes
+        
+        if not self.filters:
+            allowed_filters = self.set_allowed_filters()
+            if allowed_filters: self.filters = allowed_filters
         
         return {
             &#34;title&#34;: self.title,
@@ -154,7 +202,8 @@ class BaseReportComponent:
             &#34;url&#34;: self.url,
             &#34;style_attributes&#34;: self.style_attributes,
             &#34;attributes&#34;: self.attributes,
-            &#34;component_type&#34;: self.component_type
+            &#34;component_type&#34;: self.component_type,
+            &#34;filters&#34;: self.filters
         }
         
         
@@ -172,106 +221,7 @@ class BaseReportComponent:
         
 
         
-        
-         
-        
-&#34;&#34;&#34;
-
-
-from marshmallow import Schema, fields
-
-class DevicesByOs(Schema):
-
-    operating_system_type = fields.Str(required=True, registration_payload={&#34;visible_name&#34;: &#34;Operating System Type&#34;, &#34;type&#34;: &#34;label&#34;})
-    number_of_devices = fields.Int(required=True, registration_payload={&#34;visible_name&#34;: &#34;Number of Devices&#34;, &#34;type&#34;: &#34;value&#34;})
-
-
-
-def attributes_pie_chart():
-    return {
-        &#34;series&#34;: [
-            {
-                &#34;label_description&#34;: &#34;Operating System Type&#34;,
-                &#34;label_key&#34;: &#34;operating_system_type&#34;
-            },
-            {
-                &#34;value_description&#34;: &#34;Number of Devices&#34;,
-                &#34;value_key&#34;: &#34;number_of_devices&#34;
-            }
-        ]
-    }
-10:42
-device_name = fields.Str(required=True, registration_payload={&#34;visible_name&#34;: &#34;Device Name&#34;, &#34;description&#34;: &#34;The name of the device&#34;})
-10:45
-from marshmallow import Schema, fields
-
-class DevicesByOs(Schema):
-
-    class Meta:
-        render_as = [&#39;pie&#39;, &#39;table&#39;]
-        id = &#39;devices_by_os&#39;
-
-    operating_system_type = fields.Str(required=True, registration_payload={&#34;visible_name&#34;: &#34;Operating System Type&#34;, &#34;type&#34;: &#34;label&#34;})
-    number_of_devices = fields.Int(required=True, registration_payload={&#34;visible_name&#34;: &#34;Number of Devices&#34;, &#34;type&#34;: &#34;value&#34;})
-from marshmallow.fields import Url
-
-
-class BaseReportComponent:
-
-    def __init__(self, title, id, type, style_attributes) -&gt; None:
-        self.title = title
-        self.id = id 
-        self.url = id 
-        self.type = type
-        self.style_attributes = style_attributes
-
-    def return_data(self, flask_request):
-        pass
-
-    def return_attributes(self):
-        pass
-
-    def return_registration_payload(self):
-        return {
-            &#34;component_id&#34;: self.component_id,
-            &#34;url&#34;: self.url,
-            &#34;order&#34;: self.order,
-            &#34;style_attributes&#34;: self.style_attributes,
-            &#34;attributes&#34;: self.return_attributes,
-            &#34;title&#34;: self.title,
-            &#34;type&#34;: self.type
-        }
-
-
-class ODBSummary(BaseReportComponent):
-    
-    def __init__(self, title, style_attributes, type) -&gt; None:
-        super().__init__(title=title, id=&#34;odb-overview&#34;, style_attributes=style_attributes, type=type)
-
-    def return_data(self, flask_request):
-        #pipeline ... 
-        pass
-
-    def return_attributes(self):
-        if self.type == &#39;summary&#39;:
-            return self.return_attributes_summary()
-            
-
-    def return_attributes_summary(self):
-        return  {
-        &#34;series&#34;: [
-            {
-                &#34;label_description&#34;: &#34;Version&#34;,
-                &#34;label_key&#34;: &#34;version&#34;
-            },
-            {
-                &#34;value_description&#34;: &#34;Number of Databases&#34;,
-                &#34;value_key&#34;: &#34;number_of_databases&#34;
-            }
-        ]
-    }
-    
-&#34;&#34;&#34;</code></pre>
+        </code></pre>
 </details>
 </section>
 <section>
@@ -285,7 +235,7 @@ class ODBSummary(BaseReportComponent):
 <dl>
 <dt id="licenseware.report_components.base_report_component.BaseReportComponent"><code class="flex name class">
 <span>class <span class="ident">BaseReportComponent</span></span>
-<span>(</span><span>title: str, component_id: str, component_type: str, path: str = None, order: int = None, style_attributes: dict = None, attributes: dict = None, registration_payload: dict = None, **options)</span>
+<span>(</span><span>title: str, component_id: str, component_type: str, filters: list = None, path: str = None, order: int = None, style_attributes: dict = None, attributes: dict = None, registration_payload: dict = None, **options)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -300,6 +250,7 @@ class ODBSummary(BaseReportComponent):
         title:str,
         component_id:str,
         component_type:str,
+        filters:list = None,
         path:str = None,
         order:int = None,
         style_attributes:dict = None,
@@ -311,6 +262,7 @@ class ODBSummary(BaseReportComponent):
         self.title = title
         self.component_id = component_id
         self.component_type = component_type
+        self.filters = filters
         self.path = path or &#39;/&#39; + component_id
         # We are using `generate_small_id` func to avoid component_id conflicts
         # This `component_url` is independed from the report 
@@ -321,6 +273,41 @@ class ODBSummary(BaseReportComponent):
         self.attributes = attributes
         self.registration_payload = registration_payload
         self.options = options
+        
+        
+    def build_filter(self, column:str, allowed_filters:list, visible_name:str, validate:bool = True):
+        &#34;&#34;&#34;
+            Will return a dictionary similar to the one bellow:
+            
+            {
+                &#34;column&#34;: &#34;version.edition&#34;,
+                &#34;allowed_filters&#34;: [
+                    &#34;equals&#34;, &#34;contains&#34;, &#34;in_list&#34;
+                ],
+                &#34;visible_name&#34;: &#34;Product Edition&#34;
+            }
+            
+            The dictionary build will be used to filter mongo 
+            
+        &#34;&#34;&#34;
+        
+        if validate:
+            
+            if &#34; &#34; in column: 
+                raise ValueError(&#34;Parameter `column` can&#39;t contain spaces and must be all lowercase like `device_name`&#34;)
+
+            for f in allowed_filters:
+                if f not in condition_switcher.keys():
+                    raise ValueError(f&#34;Filter {f} not in {condition_switcher.keys()}&#34;)
+            
+        
+        return dict(
+            column = column,
+            allowed_filters = allowed_filters,
+            visible_name = visible_name
+        )
+        
+        
         
         
         
@@ -345,12 +332,13 @@ class ODBSummary(BaseReportComponent):
         
         received_filters = flask_request.json or []
         
-        received_filters.append({
-            &#39;field_name&#39;: &#39;tenant_id&#39;, 
+        # Inserting filter by tenant_id
+        received_filters.insert(0, {
+            &#39;column&#39;: &#39;tenant_id&#39;, 
             &#39;filter_type&#39;: &#39;equals&#39;, 
             &#39;filter_value&#39;: flask_request.headers.get(&#39;Tenantid&#39;)
         })
-        
+            
         filters = build_match_expression(received_filters)
         
         return filters
@@ -381,14 +369,24 @@ class ODBSummary(BaseReportComponent):
     
     def set_style_attributes(self):
         raise NotImplementedError(&#34;Please overwrite method `set_style_attributes`&#34;)
-        
+    
+    def set_allowed_filters(self):
+        log.warning(&#34;Component filters not set&#34;)
+        # raise NotImplementedError(&#34;Please overwrite method `set_allowed_filters`&#34;)
+    
     def get_registration_payload(self):
         
-        attributes = self.set_attributes()
-        if attributes: self.attributes = attributes
+        if not self.attributes:
+            attributes = self.set_attributes()
+            if attributes: self.attributes = attributes
         
-        style_attributes = self.set_style_attributes()
-        if style_attributes: self.style_attributes = style_attributes
+        if not self.style_attributes: 
+            style_attributes = self.set_style_attributes()
+            if style_attributes: self.style_attributes = style_attributes
+        
+        if not self.filters:
+            allowed_filters = self.set_allowed_filters()
+            if allowed_filters: self.filters = allowed_filters
         
         return {
             &#34;title&#34;: self.title,
@@ -398,7 +396,8 @@ class ODBSummary(BaseReportComponent):
             &#34;url&#34;: self.url,
             &#34;style_attributes&#34;: self.style_attributes,
             &#34;attributes&#34;: self.attributes,
-            &#34;component_type&#34;: self.component_type
+            &#34;component_type&#34;: self.component_type,
+            &#34;filters&#34;: self.filters
         }
         
         
@@ -429,6 +428,56 @@ class ODBSummary(BaseReportComponent):
         See `report_components.attributes` functions for more info
     &#34;&#34;&#34;
     return component_attributes_funcs[self.component_type](*args, **kwargs)</code></pre>
+</details>
+</dd>
+<dt id="licenseware.report_components.base_report_component.BaseReportComponent.build_filter"><code class="name flex">
+<span>def <span class="ident">build_filter</span></span>(<span>self, column: str, allowed_filters: list, visible_name: str, validate: bool = True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Will return a dictionary similar to the one bellow:</p>
+<p>{
+"column": "version.edition",
+"allowed_filters": [
+"equals", "contains", "in_list"
+],
+"visible_name": "Product Edition"
+}</p>
+<p>The dictionary build will be used to filter mongo</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def build_filter(self, column:str, allowed_filters:list, visible_name:str, validate:bool = True):
+    &#34;&#34;&#34;
+        Will return a dictionary similar to the one bellow:
+        
+        {
+            &#34;column&#34;: &#34;version.edition&#34;,
+            &#34;allowed_filters&#34;: [
+                &#34;equals&#34;, &#34;contains&#34;, &#34;in_list&#34;
+            ],
+            &#34;visible_name&#34;: &#34;Product Edition&#34;
+        }
+        
+        The dictionary build will be used to filter mongo 
+        
+    &#34;&#34;&#34;
+    
+    if validate:
+        
+        if &#34; &#34; in column: 
+            raise ValueError(&#34;Parameter `column` can&#39;t contain spaces and must be all lowercase like `device_name`&#34;)
+
+        for f in allowed_filters:
+            if f not in condition_switcher.keys():
+                raise ValueError(f&#34;Filter {f} not in {condition_switcher.keys()}&#34;)
+        
+    
+    return dict(
+        column = column,
+        allowed_filters = allowed_filters,
+        visible_name = visible_name
+    )</code></pre>
 </details>
 </dd>
 <dt id="licenseware.report_components.base_report_component.BaseReportComponent.build_style_attributes"><code class="name flex">
@@ -499,12 +548,13 @@ custom pipeline
     
     received_filters = flask_request.json or []
     
-    received_filters.append({
-        &#39;field_name&#39;: &#39;tenant_id&#39;, 
+    # Inserting filter by tenant_id
+    received_filters.insert(0, {
+        &#39;column&#39;: &#39;tenant_id&#39;, 
         &#39;filter_type&#39;: &#39;equals&#39;, 
         &#39;filter_value&#39;: flask_request.headers.get(&#39;Tenantid&#39;)
     })
-    
+        
     filters = build_match_expression(received_filters)
     
     return filters</code></pre>
@@ -521,11 +571,17 @@ custom pipeline
 </summary>
 <pre><code class="python">def get_registration_payload(self):
     
-    attributes = self.set_attributes()
-    if attributes: self.attributes = attributes
+    if not self.attributes:
+        attributes = self.set_attributes()
+        if attributes: self.attributes = attributes
     
-    style_attributes = self.set_style_attributes()
-    if style_attributes: self.style_attributes = style_attributes
+    if not self.style_attributes: 
+        style_attributes = self.set_style_attributes()
+        if style_attributes: self.style_attributes = style_attributes
+    
+    if not self.filters:
+        allowed_filters = self.set_allowed_filters()
+        if allowed_filters: self.filters = allowed_filters
     
     return {
         &#34;title&#34;: self.title,
@@ -535,7 +591,8 @@ custom pipeline
         &#34;url&#34;: self.url,
         &#34;style_attributes&#34;: self.style_attributes,
         &#34;attributes&#34;: self.attributes,
-        &#34;component_type&#34;: self.component_type
+        &#34;component_type&#34;: self.component_type,
+        &#34;filters&#34;: self.filters
     }</code></pre>
 </details>
 </dd>
@@ -558,6 +615,20 @@ custom pipeline
         raise Exception(&#34;Report Component failed to register!&#34;)
     
     return response, status_code</code></pre>
+</details>
+</dd>
+<dt id="licenseware.report_components.base_report_component.BaseReportComponent.set_allowed_filters"><code class="name flex">
+<span>def <span class="ident">set_allowed_filters</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_allowed_filters(self):
+    log.warning(&#34;Component filters not set&#34;)
+    # raise NotImplementedError(&#34;Please overwrite method `set_allowed_filters`&#34;)</code></pre>
 </details>
 </dd>
 <dt id="licenseware.report_components.base_report_component.BaseReportComponent.set_attributes"><code class="name flex">
@@ -608,11 +679,13 @@ custom pipeline
 <h4><code><a title="licenseware.report_components.base_report_component.BaseReportComponent" href="#licenseware.report_components.base_report_component.BaseReportComponent">BaseReportComponent</a></code></h4>
 <ul class="">
 <li><code><a title="licenseware.report_components.base_report_component.BaseReportComponent.build_attributes" href="#licenseware.report_components.base_report_component.BaseReportComponent.build_attributes">build_attributes</a></code></li>
+<li><code><a title="licenseware.report_components.base_report_component.BaseReportComponent.build_filter" href="#licenseware.report_components.base_report_component.BaseReportComponent.build_filter">build_filter</a></code></li>
 <li><code><a title="licenseware.report_components.base_report_component.BaseReportComponent.build_style_attributes" href="#licenseware.report_components.base_report_component.BaseReportComponent.build_style_attributes">build_style_attributes</a></code></li>
 <li><code><a title="licenseware.report_components.base_report_component.BaseReportComponent.get_data" href="#licenseware.report_components.base_report_component.BaseReportComponent.get_data">get_data</a></code></li>
 <li><code><a title="licenseware.report_components.base_report_component.BaseReportComponent.get_mongo_match_filters" href="#licenseware.report_components.base_report_component.BaseReportComponent.get_mongo_match_filters">get_mongo_match_filters</a></code></li>
 <li><code><a title="licenseware.report_components.base_report_component.BaseReportComponent.get_registration_payload" href="#licenseware.report_components.base_report_component.BaseReportComponent.get_registration_payload">get_registration_payload</a></code></li>
 <li><code><a title="licenseware.report_components.base_report_component.BaseReportComponent.register_component" href="#licenseware.report_components.base_report_component.BaseReportComponent.register_component">register_component</a></code></li>
+<li><code><a title="licenseware.report_components.base_report_component.BaseReportComponent.set_allowed_filters" href="#licenseware.report_components.base_report_component.BaseReportComponent.set_allowed_filters">set_allowed_filters</a></code></li>
 <li><code><a title="licenseware.report_components.base_report_component.BaseReportComponent.set_attributes" href="#licenseware.report_components.base_report_component.BaseReportComponent.set_attributes">set_attributes</a></code></li>
 <li><code><a title="licenseware.report_components.base_report_component.BaseReportComponent.set_style_attributes" href="#licenseware.report_components.base_report_component.BaseReportComponent.set_style_attributes">set_style_attributes</a></code></li>
 </ul>

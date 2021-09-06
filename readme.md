@@ -26,26 +26,29 @@ Start the services in the following order:
 4. `make worker` - start the background worker.
 
 
-
 ```py
-
 from dotenv import load_dotenv
+from flask.scaffold import F
 load_dotenv()  
 
 from flask import Flask
 from flask_restx import Namespace, Resource
 from marshmallow import Schema, fields
 
-from app.licenseware.common.constants import flags, icons, envs
+from app.licenseware.common.constants import flags, icons, envs, states, filters
 from app.licenseware.utils.logger import log
 
 from app.licenseware.app_builder import AppBuilder
+
 from app.licenseware.uploader_builder import UploaderBuilder
 from app.licenseware.uploader_validator import UploaderValidator
+from app.licenseware.notifications import notify_upload_status
+
 from app.licenseware.report_builder import ReportBuilder
 from app.licenseware.report_components import BaseReportComponent
 from app.licenseware.report_components.style_attributes import style_attributes as styles
 from app.licenseware.endpoint_builder import EndpointBuilder
+
 
 
 
@@ -217,7 +220,32 @@ class VirtualOverview(BaseReportComponent):
         ])
         
         return style_attributes
+    
+    
+    def set_allowed_filters(self):
+        # Provide a list of allowed filters for this component
+        return [
+            # You can use the build_filter method
+            self.build_filter(
+                column="device_name", 
+                allowed_filters=[
+                    filters.EQUALS, filters.CONTAINS, filters.IN_LIST
+                ], 
+                visible_name="Device Name", 
+                # validate:bool = True # This will check field_name and allowed_filters
+            ),
+            # or you can create the dictionary like bellow (disadvantage no autocomplete, no checks)
+            {
+                "column": "database_name",
+                "allowed_filters": [
+                    "equals", "contains", "in_list"
+                ],
+                "visible_name": "Database Name"
+            }
         
+        ]
+        
+
 
 virtual_overview = VirtualOverview(
     title="Overview",
@@ -320,46 +348,8 @@ ifmp_app.init_app(app, register=True)
 if __name__ == "__main__":    
     app.run(port=4000, debug=True)
 
-```
-
-Required environment variables
-
-```bash
-
-DEBUG=true
-ENVIRONMENT=local
-PERSONAL_PREFIX=acmt
-
-
-FLASK_APP=main:app
-
-APP_ID=ifmp
-APP_HOST=http://localhost:5000
-
-LWARE_IDENTITY_USER=John
-LWARE_IDENTITY_PASSWORD=secret
-
-AUTH_SERVICE_URL=http://localhost:5000/auth
-AUTH_SERVICE_USERS_URL_PATH=/users
-AUTH_SERVICE_MACHINES_URL_PATH=/machines
-
-REGISTRY_SERVICE_URL=http://localhost:5000/registry-service
-
-FILE_UPLOAD_PATH=/tmp/lware
-
-MONGO_ROOT_USERNAME=John
-MONGO_ROOT_PASSWORD=secret
-MONGO_HOSTNAME=localhost
-MONGO_PORT=27017
-MONGO_DATABASE_NAME=db
-MONGO_CONNECTION_STRING=mongodb://${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DATABASE_NAME}
-
-
-REDIS_HOST=redis_db_sdk
-REDIS_PORT=6379
 
 ```
-
 
 
 Make commands:
@@ -371,8 +361,6 @@ Make commands:
 - `make test` - run all unit tests.
 - `make dev-docs` - start [`pdoc3`](https://pdoc3.github.io/pdoc/) documentation server, which auto generates documentation from markdown doc strings to html.
 - `make docs` - generate `docs` folder with all documantation generated in html format (can be added later to github pages `github.io/python3-licenseware-sdk-docs`)
-
-
 
 
 Documentation automatically generated with [`pdoc3`](https://pdoc3.github.io/pdoc/).
@@ -406,11 +394,6 @@ Each **REPORT** has:
 
 - one or more report components
 - report components can be attached either to app builder instance or to report builder instance
-
-
-
-
-
 
 
 <a name="set-environment-variables"></a>
@@ -751,6 +734,32 @@ class VirtualOverview(BaseReportComponent):
         ])
         
         return style_attributes
+
+
+    def set_allowed_filters(self):
+        # Provide a list of allowed filters for this component
+        return [
+            # You can use the build_filter method
+            self.build_filter(
+                column="device_name", 
+                allowed_filters=[
+                    filters.EQUALS, filters.CONTAINS, filters.IN_LIST
+                ], 
+                visible_name="Device Name", 
+                # validate:bool = True # This will check field_name and allowed_filters
+            ),
+            # or you can create the dictionary like bellow (disadvantage no autocomplete, no checks)
+            {
+                "column": "database_name",
+                "allowed_filters": [
+                    "equals", "contains", "in_list"
+                ],
+                "visible_name": "Database Name"
+            }
+        
+        ]
+        
+    
         
 
 virtual_overview = VirtualOverview(

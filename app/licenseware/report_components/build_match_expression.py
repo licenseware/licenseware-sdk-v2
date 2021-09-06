@@ -3,47 +3,47 @@ from app.licenseware.utils.logger import log
 
 
 
-def in_list_expression_builder(field_name, filter_value):
+def in_list_expression_builder(column, filter_value):
     return {
         '$expr': {
-            '$in': [f'${field_name}', filter_value]
+            '$in': [f'${column}', filter_value]
         }
     }
 
 
-def equals_expression_builder(field_name, filter_value):
+def equals_expression_builder(column, filter_value):
     return {
-        field_name: filter_value
+        column: filter_value
     }
 
 
-def contains_expression_builder(field_name, filter_value):
+def contains_expression_builder(column, filter_value):
     return {
-        field_name: {'$regex': filter_value}
+        column: {'$regex': filter_value}
     }
 
 
-def greater_than_expression_builder(field_name, filter_value):
+def greater_than_expression_builder(column, filter_value):
     return {
-        field_name: {'$gt': filter_value}
+        column: {'$gt': filter_value}
     }
 
 
-def greater_or_equal_to_expression_builder(field_name, filter_value):
+def greater_or_equal_to_expression_builder(column, filter_value):
     return {
-        field_name: {'$gte': filter_value}
+        column: {'$gte': filter_value}
     }
 
 
-def less_than_expression_builder(field_name, filter_value):
+def less_than_expression_builder(column, filter_value):
     return {
-        field_name: {'$lt': filter_value}
+        column: {'$lt': filter_value}
     }
 
 
-def less_or_equal_to_expression_builder(field_name, filter_value):
+def less_or_equal_to_expression_builder(column, filter_value):
     return {
-        field_name: {'$lte': filter_value}
+        column: {'$lte': filter_value}
     }
 
 
@@ -66,7 +66,7 @@ def build_match_expression(filter_payload: List[dict]) -> dict:
     
     Filter metadata example: [
         {
-            field_name: "name", 
+            column: "name", 
             allowed_filters: ["equals", "contains", "in_list"], 
             visible_name: "Device Name"
         }
@@ -74,7 +74,7 @@ def build_match_expression(filter_payload: List[dict]) -> dict:
     
     Filter comming from frontend: [
         {
-            field_name: "name", 
+            column: "name", 
             filter_type: "equals", 
             filter_value: "the device name"
         }
@@ -86,7 +86,7 @@ def build_match_expression(filter_payload: List[dict]) -> dict:
     for filter_section in filter_payload:
         parsed_filter.update(
             condition_switcher[filter_section["filter_type"]](
-                filter_section["field_name"], filter_section["filter_value"] # TODO is filter value a list? if yes rename it to `filter_values`
+                filter_section["column"], filter_section["filter_value"]
             )
         )
         

@@ -76,6 +76,9 @@ def get_app_id():
 
     if os.environ[&#34;ENVIRONMENT&#34;] == &#39;local&#39;:
         return os.environ[&#34;PERSONAL_PREFIX&#34;] + os.environ[&#34;APP_ID&#34;]
+    
+    return os.environ[&#34;APP_ID&#34;]
+
 
 
 @dataclass
@@ -167,7 +170,9 @@ class envs:
 <pre><code class="python">def get_app_id():
 
     if os.environ[&#34;ENVIRONMENT&#34;] == &#39;local&#39;:
-        return os.environ[&#34;PERSONAL_PREFIX&#34;] + os.environ[&#34;APP_ID&#34;]</code></pre>
+        return os.environ[&#34;PERSONAL_PREFIX&#34;] + os.environ[&#34;APP_ID&#34;]
+    
+    return os.environ[&#34;APP_ID&#34;]</code></pre>
 </details>
 </dd>
 <dt id="licenseware.common.constants.envs.get_auth_machines_url"><code class="name flex">

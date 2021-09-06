@@ -27,7 +27,9 @@ def register_component(**kwargs):
             "style_attributes": kwargs['style_attributes'],
             "attributes": kwargs['attributes'],
             "title": kwargs['title'],
-            "type": kwargs['component_type']
+            "type": kwargs['component_type'],
+            "filters": kwargs['filters']
+            
         }]
     }
 

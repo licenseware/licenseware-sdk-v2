@@ -40,6 +40,9 @@ def get_app_id():
 
     if os.environ["ENVIRONMENT"] == 'local':
         return os.environ["PERSONAL_PREFIX"] + os.environ["APP_ID"]
+    
+    return os.environ["APP_ID"]
+
 
 
 @dataclass

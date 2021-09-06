@@ -1,11 +1,12 @@
 from dotenv import load_dotenv
+from flask.scaffold import F
 load_dotenv()  
 
 from flask import Flask
 from flask_restx import Namespace, Resource
 from marshmallow import Schema, fields
 
-from app.licenseware.common.constants import flags, icons, envs, states
+from app.licenseware.common.constants import flags, icons, envs, states, filters
 from app.licenseware.utils.logger import log
 
 from app.licenseware.app_builder import AppBuilder
@@ -18,6 +19,7 @@ from app.licenseware.report_builder import ReportBuilder
 from app.licenseware.report_components import BaseReportComponent
 from app.licenseware.report_components.style_attributes import style_attributes as styles
 from app.licenseware.endpoint_builder import EndpointBuilder
+
 
 
 
@@ -189,7 +191,32 @@ class VirtualOverview(BaseReportComponent):
         ])
         
         return style_attributes
+    
+    
+    def set_allowed_filters(self):
+        # Provide a list of allowed filters for this component
+        return [
+            # You can use the build_filter method
+            self.build_filter(
+                column="device_name", 
+                allowed_filters=[
+                    filters.EQUALS, filters.CONTAINS, filters.IN_LIST
+                ], 
+                visible_name="Device Name", 
+                # validate:bool = True # This will check field_name and allowed_filters
+            ),
+            # or you can create the dictionary like bellow (disadvantage no autocomplete, no checks)
+            {
+                "column": "database_name",
+                "allowed_filters": [
+                    "equals", "contains", "in_list"
+                ],
+                "visible_name": "Database Name"
+            }
         
+        ]
+        
+
 
 virtual_overview = VirtualOverview(
     title="Overview",

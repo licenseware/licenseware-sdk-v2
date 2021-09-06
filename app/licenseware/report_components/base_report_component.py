@@ -2,7 +2,7 @@ from flask import Request
 from app.licenseware.utils.logger import log
 from app.licenseware.common.constants import envs
 from app.licenseware.utils.miscellaneous import generate_id, flat_dict
-from app.licenseware.report_components.build_match_expression import build_match_expression
+from app.licenseware.report_components.build_match_expression import build_match_expression, condition_switcher
 from app.licenseware.registry_service import register_component
 from app.licenseware.report_components.attributes import (
     attributes_bar_vertical,
@@ -28,6 +28,7 @@ class BaseReportComponent:
         title:str,
         component_id:str,
         component_type:str,
+        filters:list = None,
         path:str = None,
         order:int = None,
         style_attributes:dict = None,
@@ -39,6 +40,7 @@ class BaseReportComponent:
         self.title = title
         self.component_id = component_id
         self.component_type = component_type
+        self.filters = filters
         self.path = path or '/' + component_id
         # We are using `generate_small_id` func to avoid component_id conflicts
         # This `component_url` is independed from the report 
@@ -49,6 +51,41 @@ class BaseReportComponent:
         self.attributes = attributes
         self.registration_payload = registration_payload
         self.options = options
+        
+        
+    def build_filter(self, column:str, allowed_filters:list, visible_name:str, validate:bool = True):
+        """
+            Will return a dictionary similar to the one bellow:
+            
+            {
+                "column": "version.edition",
+                "allowed_filters": [
+                    "equals", "contains", "in_list"
+                ],
+                "visible_name": "Product Edition"
+            }
+            
+            The dictionary build will be used to filter mongo 
+            
+        """
+        
+        if validate:
+            
+            if " " in column: 
+                raise ValueError("Parameter `column` can't contain spaces and must be all lowercase like `device_name`")
+
+            for f in allowed_filters:
+                if f not in condition_switcher.keys():
+                    raise ValueError(f"Filter {f} not in {condition_switcher.keys()}")
+            
+        
+        return dict(
+            column = column,
+            allowed_filters = allowed_filters,
+            visible_name = visible_name
+        )
+        
+        
         
         
         
@@ -73,12 +110,15 @@ class BaseReportComponent:
         
         received_filters = flask_request.json or []
         
-        received_filters.append({
-            'field_name': 'tenant_id', 
+        # Inserting filter by tenant_id
+        received_filters.insert(0, {
+            'column': 'tenant_id', 
             'filter_type': 'equals', 
             'filter_value': flask_request.headers.get('Tenantid')
         })
-        
+            
+        log.debug(received_filters)
+            
         filters = build_match_expression(received_filters)
         
         return filters
@@ -109,14 +149,24 @@ class BaseReportComponent:
     
     def set_style_attributes(self):
         raise NotImplementedError("Please overwrite method `set_style_attributes`")
-        
+    
+    def set_allowed_filters(self):
+        log.warning("Component filters not set")
+        # raise NotImplementedError("Please overwrite method `set_allowed_filters`")
+    
     def get_registration_payload(self):
         
-        attributes = self.set_attributes()
-        if attributes: self.attributes = attributes
+        if not self.attributes:
+            attributes = self.set_attributes()
+            if attributes: self.attributes = attributes
         
-        style_attributes = self.set_style_attributes()
-        if style_attributes: self.style_attributes = style_attributes
+        if not self.style_attributes: 
+            style_attributes = self.set_style_attributes()
+            if style_attributes: self.style_attributes = style_attributes
+        
+        if not self.filters:
+            allowed_filters = self.set_allowed_filters()
+            if allowed_filters: self.filters = allowed_filters
         
         return {
             "title": self.title,
@@ -126,7 +176,8 @@ class BaseReportComponent:
             "url": self.url,
             "style_attributes": self.style_attributes,
             "attributes": self.attributes,
-            "component_type": self.component_type
+            "component_type": self.component_type,
+            "filters": self.filters
         }
         
         
@@ -145,102 +196,3 @@ class BaseReportComponent:
 
         
         
-         
-        
-"""
-
-
-from marshmallow import Schema, fields
-
-class DevicesByOs(Schema):
-
-    operating_system_type = fields.Str(required=True, registration_payload={"visible_name": "Operating System Type", "type": "label"})
-    number_of_devices = fields.Int(required=True, registration_payload={"visible_name": "Number of Devices", "type": "value"})
-
-
-
-def attributes_pie_chart():
-    return {
-        "series": [
-            {
-                "label_description": "Operating System Type",
-                "label_key": "operating_system_type"
-            },
-            {
-                "value_description": "Number of Devices",
-                "value_key": "number_of_devices"
-            }
-        ]
-    }
-10:42
-device_name = fields.Str(required=True, registration_payload={"visible_name": "Device Name", "description": "The name of the device"})
-10:45
-from marshmallow import Schema, fields
-
-class DevicesByOs(Schema):
-
-    class Meta:
-        render_as = ['pie', 'table']
-        id = 'devices_by_os'
-
-    operating_system_type = fields.Str(required=True, registration_payload={"visible_name": "Operating System Type", "type": "label"})
-    number_of_devices = fields.Int(required=True, registration_payload={"visible_name": "Number of Devices", "type": "value"})
-from marshmallow.fields import Url
-
-
-class BaseReportComponent:
-
-    def __init__(self, title, id, type, style_attributes) -> None:
-        self.title = title
-        self.id = id 
-        self.url = id 
-        self.type = type
-        self.style_attributes = style_attributes
-
-    def return_data(self, flask_request):
-        pass
-
-    def return_attributes(self):
-        pass
-
-    def return_registration_payload(self):
-        return {
-            "component_id": self.component_id,
-            "url": self.url,
-            "order": self.order,
-            "style_attributes": self.style_attributes,
-            "attributes": self.return_attributes,
-            "title": self.title,
-            "type": self.type
-        }
-
-
-class ODBSummary(BaseReportComponent):
-    
-    def __init__(self, title, style_attributes, type) -> None:
-        super().__init__(title=title, id="odb-overview", style_attributes=style_attributes, type=type)
-
-    def return_data(self, flask_request):
-        #pipeline ... 
-        pass
-
-    def return_attributes(self):
-        if self.type == 'summary':
-            return self.return_attributes_summary()
-            
-
-    def return_attributes_summary(self):
-        return  {
-        "series": [
-            {
-                "label_description": "Version",
-                "label_key": "version"
-            },
-            {
-                "value_description": "Number of Databases",
-                "value_key": "number_of_databases"
-            }
-        ]
-    }
-    
-"""

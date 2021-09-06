@@ -1,4 +1,4 @@
-import re
+from app.licenseware.common.serializers.report_component_filter_schema import FilterSchema
 from marshmallow import (
     Schema, 
     fields, 
@@ -15,6 +15,8 @@ class ComponentSchema(Schema):
     attributes = fields.Dict(required=True)
     type = fields.Str(required=True)
     icon = fields.Str(required=False) #is icon only on series?
+    filters = fields.List(fields.Nested(FilterSchema), required=False)
+    
 
 
 class ReportSchema(Schema):
@@ -26,8 +28,8 @@ class ReportSchema(Schema):
     url = fields.Url(required=True)
     connected_apps = fields.List(fields.Str, required=False)
     report_components = fields.List(fields.Nested(ComponentSchema), required=False)
-
-
+    filters = fields.List(fields.Nested(FilterSchema), required=False)
+    
 
 class RegisterReportPayloadSchema(Schema):
     data = fields.List(fields.Nested(ReportSchema), required=True)

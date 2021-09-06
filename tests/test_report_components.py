@@ -2,14 +2,17 @@ import unittest
 from app.licenseware.report_components import BaseReportComponent
 from app.licenseware.utils.logger import log
 from app.licenseware.report_components.style_attributes import style_attributes as styles
-from app.licenseware.common.constants import icons
+from app.licenseware.common.constants import icons, filters
 from . import tenant_id
+
+
+
 # python3 -m unittest tests/test_report_components.py
 
 
 fe_filters = [
     {
-        'field_name': "name", 
+        'column': "name", 
         'filter_type': "equals", 
         'filter_value': "the device name"
     }
@@ -107,6 +110,34 @@ class TestReportComponents(unittest.TestCase):
                 
                 return style_attributes
                 
+                    
+            def set_allowed_filters(self):
+                # Provide a list of allowed filters for this component
+                return [
+                    # You can use the build_filter method
+                    self.build_filter(
+                        column="device_name", 
+                        allowed_filters=[
+                            filters.EQUALS, filters.CONTAINS, filters.IN_LIST
+                        ], 
+                        visible_name="Device Name", 
+                        # validate:bool = True # This will check field_name and allowed_filters
+                    ),
+                    # or you can create the dictionary like bellow (disadvantage no autocomplete, no checks)
+                    {
+                        "column": "database_name",
+                        "allowed_filters": [
+                            "equals", "contains", "in_list"
+                        ],
+                        "visible_name": "Database Name"
+                    }
+                
+                ]
+                
+
+                
+                
+                
         
         virtual_overview = VirtualOverview(
             title="Overview",
@@ -139,98 +170,3 @@ class TestReportComponents(unittest.TestCase):
     
         
         
-        
-        
-'''
-
-ODBConsolidatedReport.register_component(StandardReportComponent(
-    data={
-        "component_id": "odb_overview_v2",
-        "url": "/overview_v2",
-        "order": 1,
-        "style_attributes": {
-            "width": "1/3"
-        },
-        "attributes": odb_overview.attributes_summary(),
-        "title": "Overview",
-        "type": "summary",
-    }, data_method=odb_overview.return_data
-))
-
-
-
-from .utils import *
-
-collection = "ODBData"
-
-
-def return_pipeline(_filter):
-    pipeline = [
-        {
-            '$match': _filter
-        }, {
-            '$group': {
-                '_id': None,
-                'devices': {
-                    '$addToSet': '$device_name'
-                },
-                'databases': {
-                    '$addToSet': '$database_name'
-                }
-            }
-        }, {
-            '$project': {
-                '_id': 0,
-                'number_of_devices': {
-                    '$size': '$devices'
-                },
-                'number_of_databases': {
-                    '$size': '$databases'
-                }
-            }
-        }
-    ]
-    log.warning(pipeline)
-    return pipeline
-
-
-def attributes_table():
-    return {
-        'columns': [
-            {
-                'name': 'Number of Devices',
-                'prop': 'number_of_devices'
-            },
-            {
-                'name': 'Number of Databases',
-                'prop': 'number_of_databases'
-            },
-
-        ]
-    }
-
-
-def attributes_summary():
-    return {
-        "series": [
-            {
-                "value_description": "Number of Devices",
-                "value_key": "number_of_devices",
-                "icon": "ServersIcon"
-            },
-            {
-                "value_description": "Number of Databases",
-                "value_key": "number_of_databases",
-                "icon": "DatabaseIconRounded"
-            }
-        ]
-    }
-
-
-def return_data(_request, _filter=None):
-    _filter = build_tenant_filter(_request, _filter)
-    data = mongodata.aggregate(return_pipeline(_filter), collection=collection)
-    log.warning(data)
-    return data
-
-'''

@@ -31,47 +31,47 @@ from app.licenseware.utils.logger import log
 
 
 
-def in_list_expression_builder(field_name, filter_value):
+def in_list_expression_builder(column, filter_value):
     return {
         &#39;$expr&#39;: {
-            &#39;$in&#39;: [f&#39;${field_name}&#39;, filter_value]
+            &#39;$in&#39;: [f&#39;${column}&#39;, filter_value]
         }
     }
 
 
-def equals_expression_builder(field_name, filter_value):
+def equals_expression_builder(column, filter_value):
     return {
-        field_name: filter_value
+        column: filter_value
     }
 
 
-def contains_expression_builder(field_name, filter_value):
+def contains_expression_builder(column, filter_value):
     return {
-        field_name: {&#39;$regex&#39;: filter_value}
+        column: {&#39;$regex&#39;: filter_value}
     }
 
 
-def greater_than_expression_builder(field_name, filter_value):
+def greater_than_expression_builder(column, filter_value):
     return {
-        field_name: {&#39;$gt&#39;: filter_value}
+        column: {&#39;$gt&#39;: filter_value}
     }
 
 
-def greater_or_equal_to_expression_builder(field_name, filter_value):
+def greater_or_equal_to_expression_builder(column, filter_value):
     return {
-        field_name: {&#39;$gte&#39;: filter_value}
+        column: {&#39;$gte&#39;: filter_value}
     }
 
 
-def less_than_expression_builder(field_name, filter_value):
+def less_than_expression_builder(column, filter_value):
     return {
-        field_name: {&#39;$lt&#39;: filter_value}
+        column: {&#39;$lt&#39;: filter_value}
     }
 
 
-def less_or_equal_to_expression_builder(field_name, filter_value):
+def less_or_equal_to_expression_builder(column, filter_value):
     return {
-        field_name: {&#39;$lte&#39;: filter_value}
+        column: {&#39;$lte&#39;: filter_value}
     }
 
 
@@ -94,7 +94,7 @@ def build_match_expression(filter_payload: List[dict]) -&gt; dict:
     
     Filter metadata example: [
         {
-            field_name: &#34;name&#34;, 
+            column: &#34;name&#34;, 
             allowed_filters: [&#34;equals&#34;, &#34;contains&#34;, &#34;in_list&#34;], 
             visible_name: &#34;Device Name&#34;
         }
@@ -102,7 +102,7 @@ def build_match_expression(filter_payload: List[dict]) -&gt; dict:
     
     Filter comming from frontend: [
         {
-            field_name: &#34;name&#34;, 
+            column: &#34;name&#34;, 
             filter_type: &#34;equals&#34;, 
             filter_value: &#34;the device name&#34;
         }
@@ -114,7 +114,7 @@ def build_match_expression(filter_payload: List[dict]) -&gt; dict:
     for filter_section in filter_payload:
         parsed_filter.update(
             condition_switcher[filter_section[&#34;filter_type&#34;]](
-                filter_section[&#34;field_name&#34;], filter_section[&#34;filter_value&#34;] # TODO is filter value a list? if yes rename it to `filter_values`
+                filter_section[&#34;column&#34;], filter_section[&#34;filter_value&#34;] # TODO is filter value a list? if yes rename it to `filter_values`
             )
         )
         
@@ -139,14 +139,14 @@ def build_match_expression(filter_payload: List[dict]) -&gt; dict:
 <div class="desc"><p>Contructs the mongo $match expression from a given list of dicts</p>
 <p>Filter metadata example: [
 {
-field_name: "name",
+column: "name",
 allowed_filters: ["equals", "contains", "in_list"],
 visible_name: "Device Name"
 }
 ]</p>
 <p>Filter comming from frontend: [
 {
-field_name: "name",
+column: "name",
 filter_type: "equals",
 filter_value: "the device name"
 }
@@ -162,7 +162,7 @@ filter_value: "the device name"
     
     Filter metadata example: [
         {
-            field_name: &#34;name&#34;, 
+            column: &#34;name&#34;, 
             allowed_filters: [&#34;equals&#34;, &#34;contains&#34;, &#34;in_list&#34;], 
             visible_name: &#34;Device Name&#34;
         }
@@ -170,7 +170,7 @@ filter_value: "the device name"
     
     Filter comming from frontend: [
         {
-            field_name: &#34;name&#34;, 
+            column: &#34;name&#34;, 
             filter_type: &#34;equals&#34;, 
             filter_value: &#34;the device name&#34;
         }
@@ -182,7 +182,7 @@ filter_value: "the device name"
     for filter_section in filter_payload:
         parsed_filter.update(
             condition_switcher[filter_section[&#34;filter_type&#34;]](
-                filter_section[&#34;field_name&#34;], filter_section[&#34;filter_value&#34;] # TODO is filter value a list? if yes rename it to `filter_values`
+                filter_section[&#34;column&#34;], filter_section[&#34;filter_value&#34;] # TODO is filter value a list? if yes rename it to `filter_values`
             )
         )
         
@@ -192,7 +192,7 @@ filter_value: "the device name"
 </details>
 </dd>
 <dt id="licenseware.report_components.build_match_expression.contains_expression_builder"><code class="name flex">
-<span>def <span class="ident">contains_expression_builder</span></span>(<span>field_name, filter_value)</span>
+<span>def <span class="ident">contains_expression_builder</span></span>(<span>column, filter_value)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -200,14 +200,14 @@ filter_value: "the device name"
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def contains_expression_builder(field_name, filter_value):
+<pre><code class="python">def contains_expression_builder(column, filter_value):
     return {
-        field_name: {&#39;$regex&#39;: filter_value}
+        column: {&#39;$regex&#39;: filter_value}
     }</code></pre>
 </details>
 </dd>
 <dt id="licenseware.report_components.build_match_expression.equals_expression_builder"><code class="name flex">
-<span>def <span class="ident">equals_expression_builder</span></span>(<span>field_name, filter_value)</span>
+<span>def <span class="ident">equals_expression_builder</span></span>(<span>column, filter_value)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -215,14 +215,14 @@ filter_value: "the device name"
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def equals_expression_builder(field_name, filter_value):
+<pre><code class="python">def equals_expression_builder(column, filter_value):
     return {
-        field_name: filter_value
+        column: filter_value
     }</code></pre>
 </details>
 </dd>
 <dt id="licenseware.report_components.build_match_expression.greater_or_equal_to_expression_builder"><code class="name flex">
-<span>def <span class="ident">greater_or_equal_to_expression_builder</span></span>(<span>field_name, filter_value)</span>
+<span>def <span class="ident">greater_or_equal_to_expression_builder</span></span>(<span>column, filter_value)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -230,14 +230,14 @@ filter_value: "the device name"
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def greater_or_equal_to_expression_builder(field_name, filter_value):
+<pre><code class="python">def greater_or_equal_to_expression_builder(column, filter_value):
     return {
-        field_name: {&#39;$gte&#39;: filter_value}
+        column: {&#39;$gte&#39;: filter_value}
     }</code></pre>
 </details>
 </dd>
 <dt id="licenseware.report_components.build_match_expression.greater_than_expression_builder"><code class="name flex">
-<span>def <span class="ident">greater_than_expression_builder</span></span>(<span>field_name, filter_value)</span>
+<span>def <span class="ident">greater_than_expression_builder</span></span>(<span>column, filter_value)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -245,14 +245,14 @@ filter_value: "the device name"
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def greater_than_expression_builder(field_name, filter_value):
+<pre><code class="python">def greater_than_expression_builder(column, filter_value):
     return {
-        field_name: {&#39;$gt&#39;: filter_value}
+        column: {&#39;$gt&#39;: filter_value}
     }</code></pre>
 </details>
 </dd>
 <dt id="licenseware.report_components.build_match_expression.in_list_expression_builder"><code class="name flex">
-<span>def <span class="ident">in_list_expression_builder</span></span>(<span>field_name, filter_value)</span>
+<span>def <span class="ident">in_list_expression_builder</span></span>(<span>column, filter_value)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -260,16 +260,16 @@ filter_value: "the device name"
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def in_list_expression_builder(field_name, filter_value):
+<pre><code class="python">def in_list_expression_builder(column, filter_value):
     return {
         &#39;$expr&#39;: {
-            &#39;$in&#39;: [f&#39;${field_name}&#39;, filter_value]
+            &#39;$in&#39;: [f&#39;${column}&#39;, filter_value]
         }
     }</code></pre>
 </details>
 </dd>
 <dt id="licenseware.report_components.build_match_expression.less_or_equal_to_expression_builder"><code class="name flex">
-<span>def <span class="ident">less_or_equal_to_expression_builder</span></span>(<span>field_name, filter_value)</span>
+<span>def <span class="ident">less_or_equal_to_expression_builder</span></span>(<span>column, filter_value)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -277,14 +277,14 @@ filter_value: "the device name"
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def less_or_equal_to_expression_builder(field_name, filter_value):
+<pre><code class="python">def less_or_equal_to_expression_builder(column, filter_value):
     return {
-        field_name: {&#39;$lte&#39;: filter_value}
+        column: {&#39;$lte&#39;: filter_value}
     }</code></pre>
 </details>
 </dd>
 <dt id="licenseware.report_components.build_match_expression.less_than_expression_builder"><code class="name flex">
-<span>def <span class="ident">less_than_expression_builder</span></span>(<span>field_name, filter_value)</span>
+<span>def <span class="ident">less_than_expression_builder</span></span>(<span>column, filter_value)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -292,9 +292,9 @@ filter_value: "the device name"
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def less_than_expression_builder(field_name, filter_value):
+<pre><code class="python">def less_than_expression_builder(column, filter_value):
     return {
-        field_name: {&#39;$lt&#39;: filter_value}
+        column: {&#39;$lt&#39;: filter_value}
     }</code></pre>
 </details>
 </dd>
