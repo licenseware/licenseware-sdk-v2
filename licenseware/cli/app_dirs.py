@@ -1,7 +1,6 @@
 import os
 
 
-
 app_path = './app'
 app_dirs = [
     'common',
@@ -30,22 +29,4 @@ def create_app_dirs():
 
     # TODO move it to resources package instead of doc strings
     with open('main.py', 'w') as f:
-        f.write("""
-                
-from flask import Flask
-from app import MyApp
-
-
-app = Flask(__name__)
-MyApp.init_app(app)
-
-
-if __name__ == "__main__":   
-    
-    # Register app to registry-service
-    MyApp.register_app()
-    
-    app.run(port=4000, debug=True)
-
-
-""".strip())
+        f.write("#TODO")
