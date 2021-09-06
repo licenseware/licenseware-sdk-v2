@@ -13,13 +13,13 @@ def get_activated_tenants(tenant_id:str = None, utilization_collection_name:str 
         tenants_list = m.fetch(
             match='tenant_id', collection=utilization_collection_name or envs.MONGO_COLLECTION_UTILIZATION_NAME
         )
-        log.info(f"Activated_tenants: {tenants_list}")
+        # log.info(f"Activated_tenants: {tenants_list}")
         return tenants_list
 
     tenants_list = m.fetch(
         match={'tenant_id': tenant_id}, collection=utilization_collection_name or envs.MONGO_COLLECTION_UTILIZATION_NAME
     )
-    log.info(f"Activated tenant: {tenants_list}")
+    # log.info(f"Activated tenant: {tenants_list}")
     
     return tenants_list
 
@@ -55,7 +55,7 @@ def get_last_update_dates(tenant_id:str = None, data_collection_name:str = None)
     
     if last_update_dates == [{'tenant_id': None, 'last_update_date': None}]:
         last_update_dates = []
-        log.info("Could not get last update dates")
+        # log.info("Could not get last update dates")
 
     return last_update_dates
 
@@ -73,7 +73,7 @@ def get_tenants_with_data(tenant_id=None, data_collection_name:str = None):
             "last_update_date": tenant["last_update_date"]
         } for tenant in enabled_tenants]
 
-    log.info(f"enabled_tenants: {enabled_tenants}")
+    # log.info(f"enabled_tenants: {enabled_tenants}")
     return enabled_tenants
 
 
@@ -85,4 +85,4 @@ def clear_tenant_data(tenant_id, data_collection_name:str = None):
         collection=data_collection_name or envs.MONGO_COLLECTION_DATA_NAME 
     )
 
-    log.info(f"tenant data deleted: {res}")
+    # log.info(f"tenant data deleted: {res}")

@@ -15,7 +15,9 @@ from app.licenseware.common.constants import envs
 prefix = envs.APP_ID
 pathto = lambda route: prefix + route
 
-uploader_id = envs.PERSONAL_PREFIX + 'rv_tools'
+uploader_id = envs.PERSONAL_SUFFIX + 'rv_tools'
+uploader_id = 'rv_tools'
+
 
 upload_validation_path = f"/uploads/{uploader_id}/validation"
 upload_path = f"/uploads/{uploader_id}/files"

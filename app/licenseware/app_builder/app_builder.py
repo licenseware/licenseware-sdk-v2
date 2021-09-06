@@ -84,8 +84,7 @@ class AppBuilder:
         **kwargs
     ):
         
-
-        self.app_id = envs.APP_ID 
+ 
         self.name = name
         self.description = description
         self.flags = flags
@@ -125,7 +124,7 @@ class AppBuilder:
         self.kwargs = kwargs    
         
         # TODO version needs to be added to all urls + '/v' + self.version
-        self.prefix = '/' + self.app_id 
+        self.prefix = '/' + envs.APP_ID 
         self.app = None
         self.api = None
         self.ns  = None
@@ -138,7 +137,7 @@ class AppBuilder:
     
     
     
-    def init_app(self, app: Flask, register:bool =True):
+    def init_app(self, app: Flask):
         
         # This hides flask_restx `X-fields` from swagger headers  
         app.config['RESTX_MASK_SWAGGER'] = False
@@ -149,16 +148,15 @@ class AppBuilder:
          
         self.authenticate_app()
         self.init_dramatiq_broker()
-        if register: self.register_app()
         
         self.init_api()
         self.init_routes()
         self.init_namespaces()
         
         
-    def init_dramatiq_broker(self):
+    def init_dramatiq_broker(self, app:Flask = None):
         # Add middleware if needed
-        broker.init_app(self.app)
+        broker.init_app(app or self.app)
         
     
     def authenticate_app(self):
@@ -295,8 +293,7 @@ class AppBuilder:
         
         for rep_component in self.report_components:
             if rep_component.component_id == report_component_instance.component_id:
-                log.warning(f"Report component_id: '{report_component_instance.component_id}' was already declared")
-                # Not raising errors because component_ids urls have attached an id to avoid name colizions
+                raise Exception(f"Report component_id: '{report_component_instance.component_id}' was already declared")
                 
         self.report_components.append(report_component_instance)
         

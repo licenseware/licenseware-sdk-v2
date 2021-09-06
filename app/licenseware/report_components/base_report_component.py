@@ -1,7 +1,7 @@
 from flask import Request
 from app.licenseware.utils.logger import log
 from app.licenseware.common.constants import envs
-from app.licenseware.utils.miscellaneous import generate_id, flat_dict
+from app.licenseware.utils.miscellaneous import flat_dict
 from app.licenseware.report_components.build_match_expression import build_match_expression, condition_switcher
 from app.licenseware.registry_service import register_component
 from app.licenseware.report_components.attributes import (
@@ -42,9 +42,7 @@ class BaseReportComponent:
         self.component_type = component_type
         self.filters = filters
         self.path = path or '/' + component_id
-        # We are using `generate_small_id` func to avoid component_id conflicts
-        # This `component_url` is independed from the report 
-        self.component_path = '/' + generate_id() + self.path
+        self.component_path = '/' + self.path
         self.url = envs.REPORT_COMPONENT_URL + self.component_path
         self.order = order
         self.style_attributes = style_attributes
@@ -116,8 +114,6 @@ class BaseReportComponent:
             'filter_type': 'equals', 
             'filter_value': flask_request.headers.get('Tenantid')
         })
-            
-        log.debug(received_filters)
             
         filters = build_match_expression(received_filters)
         

@@ -13,7 +13,8 @@ class TestQuota(unittest.TestCase):
     
     def test_quota(self):
         
-        uploader_id = envs.PERSONAL_PREFIX + 'rv_tools'
+        # uploader_id = envs.PERSONAL_SUFFIX + 'rv_tools'
+        uploader_id = 'rv_tools'
         
         q = Quota(tenant_id, uploader_id, units=sys.maxsize)
         

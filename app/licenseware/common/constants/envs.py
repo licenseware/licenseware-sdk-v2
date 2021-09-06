@@ -36,13 +36,6 @@ def get_auth_machines_url():
         
     return None
 
-def get_app_id():
-
-    if os.environ["ENVIRONMENT"] == 'local':
-        return os.environ["PERSONAL_PREFIX"] + os.environ["APP_ID"]
-    
-    return os.environ["APP_ID"]
-
 
 
 @dataclass
@@ -51,8 +44,8 @@ class envs:
     # Environment variables available at startup
     DEBUG:bool = os.environ['DEBUG'] == 'true'
     ENVIRONMENT:str = os.environ["ENVIRONMENT"]
-    PERSONAL_PREFIX:str = os.environ["PERSONAL_PREFIX"]
-    APP_ID:str = get_app_id()
+    PERSONAL_SUFFIX:str = os.environ["PERSONAL_SUFFIX"]
+    APP_ID:str = os.environ["APP_ID"]
     APP_HOST:str = os.environ['APP_HOST']
     LWARE_USER:str = os.environ['LWARE_IDENTITY_USER']
     LWARE_PASSWORD:str = os.environ['LWARE_IDENTITY_PASSWORD']
@@ -108,8 +101,11 @@ class envs:
     
     @classmethod
     def app_is_authenticated(cls):
-        if os.getenv('APP_AUTHENTICATED') == 'true':
-            return True
-        return False
+        return os.getenv('APP_AUTHENTICATED') == 'true'
+            
+    @classmethod
+    def environment_is_local(cls):
+        return os.getenv('ENVIRONMENT') == 'local'
+    
         
     

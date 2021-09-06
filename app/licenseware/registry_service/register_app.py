@@ -20,10 +20,12 @@ def register_app(**kwargs):
             "message": "App not registered, no auth token available"
         }, 401
         
+        
+    app_id = envs.APP_ID + envs.PERSONAL_SUFFIX if envs.environment_is_local() else envs.APP_ID
     
     payload = {
         'data': [{
-            "app_id": envs.APP_ID,
+            "app_id": app_id,
             "name": kwargs['name'],
             "tenants_with_app_activated": kwargs['activated_tenants'],
             "tenants_with_data_available": kwargs['tenants_with_data'],

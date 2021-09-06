@@ -47,9 +47,6 @@ class UploaderBuilder:
         **kwargs
     ):
         
-        if envs.ENVIRONMENT == 'local': 
-            uploader_id = envs.PERSONAL_PREFIX + uploader_id
-
         #Passing variables to validator class
         validator_class.uploader_id = uploader_id
         validator_class.quota_units = quota_units

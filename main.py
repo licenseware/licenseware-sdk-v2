@@ -1,25 +1,23 @@
 from dotenv import load_dotenv
-from flask.scaffold import F
+
 load_dotenv()  
 
 from flask import Flask
 from flask_restx import Namespace, Resource
 from marshmallow import Schema, fields
 
-from app.licenseware.common.constants import flags, icons, envs, states, filters
-from app.licenseware.utils.logger import log
-
 from app.licenseware.app_builder import AppBuilder
-
-from app.licenseware.uploader_builder import UploaderBuilder
-from app.licenseware.uploader_validator import UploaderValidator
+from app.licenseware.common.constants import (envs, filters, flags, icons,
+                                              states)
+from app.licenseware.endpoint_builder import EndpointBuilder
 from app.licenseware.notifications import notify_upload_status
-
 from app.licenseware.report_builder import ReportBuilder
 from app.licenseware.report_components import BaseReportComponent
-from app.licenseware.report_components.style_attributes import style_attributes as styles
-from app.licenseware.endpoint_builder import EndpointBuilder
-
+from app.licenseware.report_components.style_attributes import \
+    style_attributes as styles
+from app.licenseware.uploader_builder import UploaderBuilder
+from app.licenseware.uploader_validator import UploaderValidator
+from app.licenseware.utils.logger import log
 
 
 
@@ -36,6 +34,7 @@ ifmp_app = AppBuilder(
 
 
 # UPLOADERS
+
 
 
 # Here is the worker function 
@@ -224,7 +223,7 @@ virtual_overview = VirtualOverview(
     component_type='summary'
 )
 
-
+# TODO raise component_id conflict
 # Register component to registry-service (to act as a first class citizen)
 ifmp_app.register_report_component(virtual_overview)
 
@@ -309,12 +308,13 @@ custom_schema_endpoint = EndpointBuilder(GetDeviceData)
 ifmp_app.register_endpoint(custom_schema_endpoint)
 
 
-
-# Call init_app at the end
-# ifmp_app.register_app()
-ifmp_app.init_app(app, register=True)
+# Call init_app in the flask function factory 
+ifmp_app.init_app(app)
 
 
-
-if __name__ == "__main__":    
+if __name__ == "__main__":   
+    
+    # Register app to registry-service
+    ifmp_app.register_app()
+    
     app.run(port=4000, debug=True)

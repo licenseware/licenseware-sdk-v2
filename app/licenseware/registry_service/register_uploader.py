@@ -21,9 +21,11 @@ def register_uploader(**kwargs):
         }, 401
         
         
+    app_id = envs.APP_ID + envs.PERSONAL_SUFFIX if envs.environment_is_local() else envs.APP_ID
+    
     payload = {
         'data': [{
-            "app_id": envs.APP_ID,
+            "app_id": app_id,
             "upload_name": kwargs['name'],
             "description": kwargs['description'],
             "accepted_file_types": kwargs['accepted_file_types'],

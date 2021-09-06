@@ -25,6 +25,8 @@ import click
 '''
 
 
+# licenseware new uploader rv_tools
+
 
 @click.command()
 @click.option('--create-app', required=False, default='testapp')

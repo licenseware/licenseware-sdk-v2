@@ -54,22 +54,26 @@ class MongoCrud:
             raise Exception("The 'tenant_id' provided in query parameter is not the same as the one from headers")
 
         query = {**tenant, **self.params, **self.payload}
-        log.warning(f"CRUD Request: {query}")
+        # log.warning(f"CRUD Request: {query}")
         return query
 
     def create_indexes(self):
         coll = m.get_collection(self.collection)
+        
         try:
             for i in self.schema.Meta.simple_indexes:
                 coll.create_index(i)
         except AttributeError:
-            log.info("No simple indexes declared")
+            # log.info("No simple indexes declared")
+            pass
+        
         try:
             for ci in self.schema.Meta.compound_indexes:
                 col_list = [(ci_m, 1) for ci_m in ci]
                 coll.create_index(col_list, unique=True)
         except AttributeError:
-            log.info("No compound indexes declared")
+            # log.info("No compound indexes declared")
+            pass
 
     def fetch_data(self, request_obj):
         self.request_obj = request_obj
