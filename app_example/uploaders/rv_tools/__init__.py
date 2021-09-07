@@ -6,7 +6,7 @@ from licenseware.uploader_builder import UploaderBuilder
 
 rv_tools_uploader = UploaderBuilder(
     name="Set uploader name here", 
-    uploader_id = "rv_tools",
+    uploader_id = 'rv_tools',
     description="Set uploader description", 
     accepted_file_types=['.xls', '.xlsx'],
     validator_class=rv_tools_validator,

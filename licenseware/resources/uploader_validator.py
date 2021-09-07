@@ -3,7 +3,7 @@ from licenseware.uploader_validator import UploaderValidator
 
 
 # If overwriting bellow mentioned methods is not necessary you can use `UploaderValidator` directly 
-class RvtoolsUploaderValidator(UploaderValidator): 
+class {{ uploader_id.replace("_", "").capitalize() }}UploaderValidator(UploaderValidator): 
     ...
     
     # def calculate_quota(self, flask_request) -> Tuple[dict, int]:
@@ -21,7 +21,7 @@ class RvtoolsUploaderValidator(UploaderValidator):
     
     
 # Fill parameters as per uploader needs 
-rv_tools_validator = RvtoolsUploaderValidator(
+{{ uploader_id }}_validator = {{ uploader_id.replace("_", "").capitalize() }}UploaderValidator(
     filename_contains = [],
     filename_endswith = [],
     ignore_filenames  = [],

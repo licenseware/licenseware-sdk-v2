@@ -1,6 +1,7 @@
 """
 
 Here are package static files that are used by the cli to generate files and folders.
+We are using jinja2 to fill variables from files.
 
 
 Usage: 

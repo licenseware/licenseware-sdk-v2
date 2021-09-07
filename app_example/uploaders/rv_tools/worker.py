@@ -5,7 +5,7 @@ from licenseware.notifications import notify_upload_status
 
 
 
-def rv_tools_worker(event:dict):
+def rv_tools_worker(event):
     # This is the worker entrypoint  
     
     log.info("Starting working")
