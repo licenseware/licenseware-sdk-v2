@@ -23,8 +23,16 @@ test:
 	rm -rf tests/__pycache__
 	python3 -m unittest tests/*
 
+
 dev-docs:
-	pdoc --http : licenseware
+	pdoc --http : app
 
 docs:
-	pdoc --html --output-dir docs licenseware
+	pdoc --html --output-dir app-docs app
+
+
+dev-sdk-docs:
+	pdoc --http : licenseware
+
+sdk-docs:
+	pdoc --html --output-dir sdk-docs licenseware

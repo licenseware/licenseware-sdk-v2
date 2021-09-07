@@ -6,6 +6,8 @@ import importlib.resources as pkg_resources
 
 from jinja2 import Template
 
+from .root_files import create_root_files
+
 
 
 app_path = './app'
@@ -20,17 +22,19 @@ app_dirs = [
 ]
 
 
-def _create_pkg_init_files(created_paths: list):
-
-    for path in created_paths:
-        file_path = os.path.join(path, '__init__.py')         
-        if os.path.exists(file_path):
-            log.warning("Skipped creating {} because it already exists")
-            continue
-        with open(file_path, 'w') as f:
-            f.write("# Add imports here")
+boilerplate_filenames = [
+    'main.py',
+    'mock_server.py',
+    'makefile',
+    '.env',
+    'docker-compose-mongo-redis.yml',
+    'requirements.txt',
+    'setup.py',
+    'README.md',
+    'main_example.py',
+]
      
-
+     
      
 def _create_app_init_file():
     
@@ -45,17 +49,17 @@ def _create_app_init_file():
             f.write(file_contents)
 
 
-           
-def _create_main_file():
-    
-    if not os.path.exists('main.py'):
         
-        raw_contents = pkg_resources.read_text(resources, 'main.py')
-        tmp = Template(raw_contents)
-        file_contents = tmp.render()
-        
-        with open('main.py', 'w') as f:
-            f.write(file_contents)
+def _create_pkg_init_files(created_paths: list):
+
+    for path in created_paths:
+        file_path = os.path.join(path, '__init__.py')         
+        if os.path.exists(file_path):
+            log.warning("Skipped creating {} because it already exists")
+            continue
+        with open(file_path, 'w') as f:
+            f.write("# Add imports here")
+     
 
 
 
@@ -69,4 +73,6 @@ def create_app_dirs():
         
     _create_pkg_init_files(created_paths)
     _create_app_init_file()
-    _create_main_file()
+    
+    create_root_files(*boilerplate_filenames)
+    
