@@ -1,68 +1,40 @@
-2021-09-07 11:01:43.828[ WARNING ]
-licenseware.cli.app_dirs:_create_pkg_init_files:59
-Skipped creating {} because it already exists
+2021-09-07 11:14:38.495[ WARNING ]
+licenseware.cli.root_files:create_root_files:19
+main.py
 
-2021-09-07 11:01:43.829[ WARNING ]
-licenseware.cli.app_dirs:_create_pkg_init_files:59
-Skipped creating {} because it already exists
+2021-09-07 11:14:38.497[ WARNING ]
+licenseware.cli.root_files:create_root_files:19
+mock_server.py
 
-2021-09-07 11:01:43.829[ WARNING ]
-licenseware.cli.app_dirs:_create_pkg_init_files:59
-Skipped creating {} because it already exists
+2021-09-07 11:14:38.499[ WARNING ]
+licenseware.cli.root_files:create_root_files:19
+makefile
 
-2021-09-07 11:01:43.830[ WARNING ]
-licenseware.cli.app_dirs:_create_pkg_init_files:59
-Skipped creating {} because it already exists
+2021-09-07 11:14:38.501[ WARNING ]
+licenseware.cli.root_files:create_root_files:19
+.env
 
-2021-09-07 11:01:43.830[ WARNING ]
-licenseware.cli.app_dirs:_create_pkg_init_files:59
-Skipped creating {} because it already exists
+2021-09-07 11:14:38.503[ WARNING ]
+licenseware.cli.root_files:create_root_files:19
+.gitignore
 
-2021-09-07 11:01:43.830[ WARNING ]
-licenseware.cli.app_dirs:_create_pkg_init_files:59
-Skipped creating {} because it already exists
+2021-09-07 11:14:38.505[ WARNING ]
+licenseware.cli.root_files:create_root_files:19
+docker-compose-mongo-redis.yml
 
-2021-09-07 11:01:43.831[ WARNING ]
-licenseware.cli.app_dirs:_create_pkg_init_files:59
-Skipped creating {} because it already exists
+2021-09-07 11:14:38.508[ WARNING ]
+licenseware.cli.root_files:create_root_files:19
+requirements.txt
 
-2021-09-07 11:01:43.837[ DEBUG ]
-tests.test_sdk_cli:test_create_app:25
-App structure created
+2021-09-07 11:14:38.510[ WARNING ]
+licenseware.cli.root_files:create_root_files:19
+setup.py
 
+2021-09-07 11:14:38.512[ WARNING ]
+licenseware.cli.root_files:create_root_files:19
+README.md
 
-2021-09-07 11:01:43.840[ DEBUG ]
-tests.test_sdk_cli:test_create_report:32
-Report structure created
-
-
-2021-09-07 11:01:43.844[ DEBUG ]
-tests.test_sdk_cli:test_create_report_component:39
-Report component structure created
-
-
-2021-09-07 11:01:43.847[ DEBUG ]
-tests.test_sdk_cli:test_create_uploader:46
-Uploader structure created
-
-
-2021-09-07 11:02:51.067[ DEBUG ]
-tests.test_sdk_cli:test_create_app:25
-App structure created
-
-
-2021-09-07 11:02:51.069[ DEBUG ]
-tests.test_sdk_cli:test_create_report:32
-Report structure created
-
-
-2021-09-07 11:02:51.072[ DEBUG ]
-tests.test_sdk_cli:test_create_report_component:39
-Report component structure created
-
-
-2021-09-07 11:02:51.075[ DEBUG ]
-tests.test_sdk_cli:test_create_uploader:46
-Uploader structure created
-
+2021-09-07 11:14:38.520[ WARNING ]
+licenseware.cli.root_files:create_root_files:19
+main_example.py
 
