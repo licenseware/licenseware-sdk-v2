@@ -36,11 +36,11 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         filename_valid_message = "Filename is valid",
         filename_invalid_message =  None,
         filename_ignored_message =  "Filename is ignored",
-        uploader_id:str = None,
-        quota_units:int = None, 
+        _uploader_id:str = None,
+        _quota_units:int = None, 
     ):
-        self.quota_units = quota_units
-        self.uploader_id = uploader_id
+        self.quota_units = _quota_units
+        self.uploader_id = _uploader_id
         self.filename_contains = filename_contains
         self.filename_endswith = filename_endswith
         self.ignore_filenames = ignore_filenames

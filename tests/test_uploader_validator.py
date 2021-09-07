@@ -57,7 +57,7 @@ class TestUploadValidator(unittest.TestCase):
     def test_validate_filenames(self):
         
         rv_tools_validator = UploaderValidator(
-            uploader_id = 'rv_tools',
+            # _uploader_id = 'rv_tools',
             filename_contains = ['RV', 'Tools'],
             filename_endswith = ['.xls', '.xlsx'],
             ignore_filenames  = ['skip_this_file.csv'],

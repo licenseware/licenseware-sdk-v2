@@ -1,4 +1,9 @@
-import os
+"""
+
+Here all cli functions are gathered and decorated with typer app decorator.
+
+"""
+
 import typer
 from .app_dirs import create_app_dirs
 from .report import create_report
@@ -12,21 +17,25 @@ app = typer.Typer(
     """
 )
 
+
 @app.command()
 def new_app():
     """ Creating boilerplate folders for a new app """
     create_app_dirs()
+    typer.echo("App structure created")
     
         
 @app.command()
 def new_uploader(name: str):
     """ Creating boilerplate folders for a new uploader """
     create_uploader(name)
+    typer.echo("Uploader structure created")
     
-
+    
 @app.command()
 def new_report(name: str):
     """ Creating boilerplate folders for a new report """
     create_report(name)
+    typer.echo("Report structure created")
     
     
