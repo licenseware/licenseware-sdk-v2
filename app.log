@@ -1,0 +1,68 @@
+2021-09-07 11:01:43.828[ WARNING ]
+licenseware.cli.app_dirs:_create_pkg_init_files:59
+Skipped creating {} because it already exists
+
+2021-09-07 11:01:43.829[ WARNING ]
+licenseware.cli.app_dirs:_create_pkg_init_files:59
+Skipped creating {} because it already exists
+
+2021-09-07 11:01:43.829[ WARNING ]
+licenseware.cli.app_dirs:_create_pkg_init_files:59
+Skipped creating {} because it already exists
+
+2021-09-07 11:01:43.830[ WARNING ]
+licenseware.cli.app_dirs:_create_pkg_init_files:59
+Skipped creating {} because it already exists
+
+2021-09-07 11:01:43.830[ WARNING ]
+licenseware.cli.app_dirs:_create_pkg_init_files:59
+Skipped creating {} because it already exists
+
+2021-09-07 11:01:43.830[ WARNING ]
+licenseware.cli.app_dirs:_create_pkg_init_files:59
+Skipped creating {} because it already exists
+
+2021-09-07 11:01:43.831[ WARNING ]
+licenseware.cli.app_dirs:_create_pkg_init_files:59
+Skipped creating {} because it already exists
+
+2021-09-07 11:01:43.837[ DEBUG ]
+tests.test_sdk_cli:test_create_app:25
+App structure created
+
+
+2021-09-07 11:01:43.840[ DEBUG ]
+tests.test_sdk_cli:test_create_report:32
+Report structure created
+
+
+2021-09-07 11:01:43.844[ DEBUG ]
+tests.test_sdk_cli:test_create_report_component:39
+Report component structure created
+
+
+2021-09-07 11:01:43.847[ DEBUG ]
+tests.test_sdk_cli:test_create_uploader:46
+Uploader structure created
+
+
+2021-09-07 11:02:51.067[ DEBUG ]
+tests.test_sdk_cli:test_create_app:25
+App structure created
+
+
+2021-09-07 11:02:51.069[ DEBUG ]
+tests.test_sdk_cli:test_create_report:32
+Report structure created
+
+
+2021-09-07 11:02:51.072[ DEBUG ]
+tests.test_sdk_cli:test_create_report_component:39
+Report component structure created
+
+
+2021-09-07 11:02:51.075[ DEBUG ]
+tests.test_sdk_cli:test_create_uploader:46
+Uploader structure created
+
+

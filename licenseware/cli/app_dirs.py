@@ -27,6 +27,7 @@ boilerplate_filenames = [
     'mock_server.py',
     'makefile',
     '.env',
+    '.gitignore',
     'docker-compose-mongo-redis.yml',
     'requirements.txt',
     'setup.py',
@@ -55,7 +56,6 @@ def _create_pkg_init_files(created_paths: list):
     for path in created_paths:
         file_path = os.path.join(path, '__init__.py')         
         if os.path.exists(file_path):
-            log.warning("Skipped creating {} because it already exists")
             continue
         with open(file_path, 'w') as f:
             f.write("# Add imports here")
