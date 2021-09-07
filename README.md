@@ -406,7 +406,7 @@ Fist make sure you have set the environment variables:
 #.env
 DEBUG=true
 ENVIRONMENT=local
-PERSONAL_PREFIX=acmt
+PERSONAL_SUFFIX=_fdsa
 
 
 FLASK_APP=main:app
