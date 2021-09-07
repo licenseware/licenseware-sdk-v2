@@ -10,9 +10,13 @@ def create_uploader(name):
     path = os.path.join(app_path, 'uploaders', name)
     if not os.path.exists(path): os.makedirs(path)
          
-    with open(os.path.join(path, '__init__.py'), 'w') as f:
-        f.write("# Add imports here")
-        
-    with open(os.path.join(path, 'worker.py'), 'w') as f:
-        f.write("# Define your worker in this package")
+    file_path = os.path.join(path, '__init__.py')
+    if not os.path.exists(file_path):
+        with open(file_path, 'w') as f:
+            f.write("# Add imports here")
+            
+    file_path = os.path.join(path, 'worker.py')
+    if not os.path.exists(file_path):
+        with open(file_path, 'w') as f:
+            f.write("# Define your worker in this package")
         

@@ -387,7 +387,7 @@ Each **APP** has:
 Each **UPLOADER** has:
 
 - one file validator class
-- one file processing function
+- one file processing/worker function
 
 
 Each **REPORT** has:

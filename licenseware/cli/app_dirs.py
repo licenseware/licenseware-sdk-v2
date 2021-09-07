@@ -1,10 +1,12 @@
 import os
+from licenseware.utils.logger import log
 
 
 app_path = './app'
 app_dirs = [
     'common',
     'reports',
+    'report_components',
     'uploaders',
     'utils',
     'controllers',
@@ -21,12 +23,20 @@ def create_app_dirs():
         created_paths.append(path)
         
     for path in created_paths:
-        with open(os.path.join(path, '__init__.py'), 'w') as f:
+        file_path = os.path.join(path, '__init__.py')         
+        if os.path.exists(file_path):
+            log.warning("Skipped creating {} because it already exists")
+            continue
+        with open(file_path, 'w') as f:
             f.write("# Add imports here")
             
-    with open(os.path.join(app_path, '__init__.py'), 'w') as f:
-        f.write("# Add imports here")
+            
+    file_path = os.path.join(app_path, '__init__.py')
+    if not os.path.exists(file_path):
+        with open(file_path, 'w') as f:
+            f.write("# Add imports here")
 
-    # TODO move it to resources package instead of doc strings
-    with open('main.py', 'w') as f:
-        f.write("#TODO")
+
+    if not os.path.exists('main.py'):
+        with open('main.py', 'w') as f:
+            f.write("#TODO")
