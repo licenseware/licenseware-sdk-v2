@@ -36,6 +36,31 @@ def _create_report_file(path:str, report_id:str):
     
 
 
+def _add_report_import_to_app_init_file(report_id:str):
+    
+    import_report_str   = f'from app.reports.{report_id} import {report_id}_report'
+    register_report_str = f'App.register_report({report_id}_report)'
+    
+    app_init_path = os.path.join(app_path, '__init__.py')
+    
+    with open(app_init_path, 'r') as f:
+        data = f.readlines()
+        
+    # Importing report 
+    data.insert(4, import_report_str)
+    data.insert(5, '\n')
+
+    # Registering report
+    data.insert(-1, register_report_str)
+    data.insert(-1, '\n')
+    
+    data = "".join(data)
+    
+    with open(app_init_path, 'w') as f:
+        f.write(data)
+
+
+
 def create_report(report_id:str):
     
     if not os.path.exists(os.path.join(app_path, 'reports')): 
@@ -46,4 +71,5 @@ def create_report(report_id:str):
          
     _create_report_init_file(path, report_id)
     _create_report_file(path, report_id)
+    _add_report_import_to_app_init_file(report_id)
          

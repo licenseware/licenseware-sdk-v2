@@ -39,6 +39,31 @@ def _create_component_file(path:str, component_id: str):
     
 
 
+def _add_component_import_to_app_init_file(component_id:str):
+    
+    import_component_str   = f'from app.report_components.{component_id} import {component_id}_component'
+    register_component_str = f'App.register_report_component({component_id}_component)'
+    
+    app_init_path = os.path.join(app_path, '__init__.py')
+    
+    with open(app_init_path, 'r') as f:
+        data = f.readlines()
+        
+    # Importing component 
+    data.insert(4, import_component_str)
+    data.insert(5, '\n')
+
+    # Registering component
+    data.insert(-1, register_component_str)
+    data.insert(-1, '\n')
+    
+    data = "".join(data)
+    
+    with open(app_init_path, 'w') as f:
+        f.write(data)
+
+
+
 def create_report_component(component_id: str, component_type: str):
     
     if not os.path.exists(os.path.join(app_path, 'report_components')): 
@@ -49,4 +74,5 @@ def create_report_component(component_id: str, component_type: str):
         
     _create_component_init_file(path, component_id, component_type)
     _create_component_file(path, component_id)
+    _add_component_import_to_app_init_file(component_id)
     
