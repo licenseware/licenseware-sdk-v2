@@ -28,23 +28,23 @@ def new_app():
     
         
 @app.command()
-def new_uploader(name: str):
+def new_uploader(uploader_id: str):
     """ Creating boilerplate folders for a new uploader """
-    create_uploader(name)
+    create_uploader(uploader_id)
     typer.echo("Uploader structure created")
     
     
 @app.command()
-def new_report(name: str):
+def new_report(report_id: str):
     """ Creating boilerplate folders for a new report """
-    create_report(name)
+    create_report(report_id)
     typer.echo("Report structure created")
     
     
 @app.command()
-def new_report_component(name: str):
+def new_report_component(component_id: str, component_type: str):
     """ Creating boilerplate folders for a new report component """
-    create_report_component(name)
+    create_report_component(component_id, component_type)
     typer.echo("Report component structure created")
     
     

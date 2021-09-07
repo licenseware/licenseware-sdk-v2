@@ -28,14 +28,14 @@ class TestCLI(unittest.TestCase):
         
     
     def test_create_report(self):
-        result = self.runner.invoke(app, ["new-report", "virtualization_report"])
+        result = self.runner.invoke(app, ["new-report", "virtualization_details"])
         log.debug(result.stdout)
         assert result.exit_code == 0
-        assert os.path.exists(os.path.join(app_path, 'reports', 'virtualization_report'))
+        assert os.path.exists(os.path.join(app_path, 'reports', 'virtualization_details'))
         
     
     def test_create_report_component(self):
-        result = self.runner.invoke(app, ["new-report-component", "virtual_overview"])
+        result = self.runner.invoke(app, ["new-report-component", "virtual_overview", "summary"])
         log.debug(result.stdout)
         assert result.exit_code == 0
         assert os.path.exists(os.path.join(app_path, 'report_components', 'virtual_overview'))
