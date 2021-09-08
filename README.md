@@ -324,7 +324,6 @@ virtual_overview = VirtualOverview(
     component_type='summary'
 )
 
-# TODO raise component_id conflict
 # Register component to registry-service (to act as a first class citizen)
 ifmp_app.register_report_component(virtual_overview)
 
@@ -438,8 +437,7 @@ Make commands:
 - `make test` - run all unit tests.
 - `make dev-docs` - this command will start a pdoc3 http server use for viewing and updating documentation for the app created;
 - `make docs` - this command will generate html docs based on docstrings provided in the app;
-- `make dev-sdk-docs` - this command will start a pdoc3 http server use for viewing and updating licenseware sdk documentation for the app created;
-- `make sdk-docs` - this command will generate html docs based on docstrings provided in the app;
+
 
 Documentation generated can be added later to github pages.
 

@@ -1,10 +1,13 @@
+from dotenv import load_dotenv
+load_dotenv()  
+
 from flask import Flask
 from app import App
 
 
 
-app = Flask(__name__)
 
+app = Flask(__name__)
 
 App.init_app(app)
 

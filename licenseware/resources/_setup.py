@@ -17,7 +17,7 @@ with open("requirements.txt", "r") as f:
     
     
     
-VERSION = '2.0.0'
+VERSION = '1.0.0'
 
 
 if os.path.exists("./CHANGELOG.md"):
@@ -34,9 +34,9 @@ if os.path.exists("./CHANGELOG.md"):
 
 
 setup(
-    name="licenseware",
+    name="TODO",
     version=VERSION,
-    description="Common utilities for licenseware.",
+    description="TODO",
     url="https://licenseware.io/",
     author="Licenseware",
     author_email="contact@licenseware.io",
@@ -48,9 +48,9 @@ setup(
         where=".",
         exclude=["tests"]
     ),
-    entry_points={
-        'console_scripts': [
-            'licenseware=licenseware.cli:cli_entrypoint',
-        ],
-    }
+    # entry_points={
+    #     'console_scripts': [
+    #         'licenseware=licenseware.cli:cli_entrypoint',
+    #     ],
+    # }
 )
