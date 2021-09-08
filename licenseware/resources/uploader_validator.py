@@ -22,12 +22,17 @@ class {{ uploader_id.replace("_", "").capitalize() }}UploaderValidator(UploaderV
     
 # Fill parameters as per uploader needs 
 {{ uploader_id }}_validator = {{ uploader_id.replace("_", "").capitalize() }}UploaderValidator(
-    filename_contains = [],
-    filename_endswith = [],
-    ignore_filenames  = [],
-    required_input_type = None,
+    filename_contains = ['RV', 'Tools'],
+    filename_endswith = ['.xls', '.xlsx'],
+    ignore_filenames  = ['skip_this_file.csv'],
+    required_input_type = "excel",
     min_rows_number = 1,
     header_starts_at = 0,
-    required_sheets = [],
-    required_columns = []
+    required_sheets  = ['tabvInfo', 'tabvCPU', 'tabvHost', 'tabvCluster'],
+    required_columns = [
+        'VM', 'Host', 'OS', 'Sockets', 'CPUs', 'Model', 'CPU Model',
+        'Cluster', '# CPU', '# Cores', 'ESX Version', 'HT Active',
+        'Name', 'NumCpuThreads', 'NumCpuCores'
+    ]
 )
+

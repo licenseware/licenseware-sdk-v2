@@ -13,8 +13,7 @@ from licenseware.endpoint_builder import EndpointBuilder
 from licenseware.notifications import notify_upload_status
 from licenseware.report_builder import ReportBuilder
 from licenseware.report_components import BaseReportComponent
-from licenseware.report_components.style_attributes import \
-    style_attributes as styles
+from licenseware.report_components.style_attributes import style_attributes as styles
 from licenseware.uploader_builder import UploaderBuilder
 from licenseware.uploader_validator import UploaderValidator
 from licenseware.utils.logger import log

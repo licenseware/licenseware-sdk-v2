@@ -42,7 +42,7 @@ class BaseReportComponent:
         self.component_type = component_type
         self.filters = filters
         self.path = path or '/' + component_id
-        self.component_path = '/' + self.path
+        self.component_path = self.path if self.path.startswith('/') else '/' + self.path 
         self.url = envs.REPORT_COMPONENT_URL + self.component_path
         self.order = order
         self.style_attributes = style_attributes

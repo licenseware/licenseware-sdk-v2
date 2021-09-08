@@ -247,6 +247,8 @@ class AppBuilder:
                 func(ns=report_components_namespace, report_components=self.report_components)
             )
         
+        
+    
                     
     def register_app(self):
         """
@@ -287,17 +289,25 @@ class AppBuilder:
         
         self.reports.append(report_instance)
         
-
+        
 
     def register_report_component(self, report_component_instance):
         
         for rep_component in self.report_components:
             if rep_component.component_id == report_component_instance.component_id:
                 raise Exception(f"Report component_id: '{report_component_instance.component_id}' was already declared")
-                
+            
+        metadata = report_component_instance.get_registration_payload()
+
+        report_component_instance.order = metadata['order'] or len(self.report_components) + 1
+        report_component_instance.type = metadata.pop('component_type') 
+        report_component_instance.style_attributes = metadata['style_attributes']
+        report_component_instance.attributes = metadata['attributes']
+        report_component_instance.filters = metadata['filters']
+    
         self.report_components.append(report_component_instance)
-        
-        
+    
+     
     def register_endpoint(self, endpoint_instance):
         ns = endpoint_instance.build_namespace(endpoint_builder_namespace)
         self.add_namespace(ns)

@@ -1,3 +1,20 @@
+"""
+This is here to load environment variables for tests to run.
+
+You can specify test order in the makefile
+
+Make sure to delete __pycache__ folder before each test
+
+
+rm -rf tests/__pycache__
+python3 -m unittest tests/test_sdk_cli.py
+rm -rf tests/__pycache__
+python3 -m unittest tests/*
+rm -rf app
+
+
+"""
+
 from dotenv import load_dotenv
 
 load_dotenv()  

@@ -90,6 +90,8 @@ class TestUploaderRoutes(unittest.TestCase):
             data=mock_binary_files
         )
         
+        log.warning(response.json)
+        
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json['status'], 'success')
         # 2 files have valid names in get_mock_binary_files func

@@ -21,7 +21,10 @@ worker:
 	
 test:
 	rm -rf tests/__pycache__
+	python3 -m unittest tests/test_sdk_cli.py
+	rm -rf tests/__pycache__
 	python3 -m unittest tests/*
+	rm -rf app
 
 
 dev-docs:
