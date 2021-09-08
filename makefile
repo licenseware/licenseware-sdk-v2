@@ -39,4 +39,5 @@ dev-sdk-docs:
 	pdoc --http : licenseware
 
 sdk-docs:
-	pdoc --html --output-dir sdk-docs licenseware
+	pdoc --html --output-dir docs licenseware
+	
