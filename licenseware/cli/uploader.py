@@ -13,7 +13,7 @@ def _create_uploader_init_file(path:str, uploader_id:str):
     file_path = os.path.join(path, '__init__.py')
     if not os.path.exists(file_path):
         
-        raw_contents = pkg_resources.read_text(resources, 'uploader__init___.py')
+        raw_contents = pkg_resources.read_text(resources, '_uploader__init___.py')
         tmp = Template(raw_contents)
         file_contents = tmp.render(uploader_id=uploader_id)
         
@@ -27,7 +27,7 @@ def _create_uploader_worker_file(path:str, uploader_id:str):
     file_path = os.path.join(path, 'worker.py')
     if not os.path.exists(file_path):
         
-        raw_contents = pkg_resources.read_text(resources, 'uploader_worker.py')
+        raw_contents = pkg_resources.read_text(resources, '_uploader_worker.py')
         tmp = Template(raw_contents)
         file_contents = tmp.render(uploader_id=uploader_id)
     
@@ -42,7 +42,7 @@ def _create_uploader_validator_file(path:str, uploader_id:str):
     file_path = os.path.join(path, 'validator.py')
     if not os.path.exists(file_path):
         
-        raw_contents = pkg_resources.read_text(resources, 'uploader_validator.py')
+        raw_contents = pkg_resources.read_text(resources, '_uploader_validator.py')
         tmp = Template(raw_contents)
         file_contents = tmp.render(uploader_id=uploader_id)
     

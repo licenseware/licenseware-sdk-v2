@@ -140,7 +140,7 @@ class EditableTable:
             params = urlencode({
                 'distinct_key': metadata['distinct_key'], 
                 'foreign_key' : metadata['foreign_key'],
-                '_id': 'put_device_id_here',
+                '_id': '{entity_id}',
             })
             return f"{self.url}?{params}"
 

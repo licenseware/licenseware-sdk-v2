@@ -2,9 +2,9 @@ from licenseware.common.constants import flags
 from licenseware.app_builder import AppBuilder
 
 
-from app.uploaders.rv_tools428796 import rv_tools428796_uploader
-from app.report_components.virtual_overview430156 import virtual_overview430156_component
-from app.reports.virtualization_details441025 import virtualization_details441025_report
+from app.report_components.virtualization_summary import virtualization_summary_component
+from app.reports.virtualization_details import virtualization_details_report
+from app.uploaders.rv_tools import rv_tools_uploader
 
 
 App = AppBuilder(
@@ -14,7 +14,7 @@ App = AppBuilder(
 )
 
 
-App.register_report(virtualization_details441025_report)
-App.register_report_component(virtual_overview430156_component)
-App.register_uploader(rv_tools428796_uploader)
+App.register_uploader(rv_tools_uploader)
+App.register_report(virtualization_details_report)
+App.register_report_component(virtualization_summary_component)
 

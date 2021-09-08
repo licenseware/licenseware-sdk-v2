@@ -13,7 +13,7 @@ def _create_report_init_file(path:str, report_id:str):
     file_path = os.path.join(path, '__init__.py')
     if not os.path.exists(file_path):         
         
-        raw_contents = pkg_resources.read_text(resources, 'report__init__.py')
+        raw_contents = pkg_resources.read_text(resources, '_report__init__.py')
         tmp = Template(raw_contents)
         file_contents = tmp.render(report_id=report_id)
         
@@ -27,7 +27,7 @@ def _create_report_file(path:str, report_id:str):
     file_path = os.path.join(path, f'{report_id}.py')
     if not os.path.exists(file_path):         
         
-        raw_contents = pkg_resources.read_text(resources, 'report.py')
+        raw_contents = pkg_resources.read_text(resources, '_report.py')
         tmp = Template(raw_contents)
         file_contents = tmp.render(report_id=report_id)
         

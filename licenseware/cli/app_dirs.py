@@ -42,7 +42,7 @@ def _create_app_init_file():
     file_path = os.path.join(app_path, '__init__.py')
     if not os.path.exists(file_path):
 
-        raw_contents = pkg_resources.read_text(resources, 'app__init__.py')
+        raw_contents = pkg_resources.read_text(resources, '_app__init__.py')
         tmp = Template(raw_contents)
         file_contents = tmp.render()
         

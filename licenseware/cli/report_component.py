@@ -13,7 +13,7 @@ def _create_component_init_file(path:str, component_id: str, component_type: str
     file_path = os.path.join(path, '__init__.py')
     if not os.path.exists(file_path): 
         
-        raw_contents = pkg_resources.read_text(resources, 'report_component__init__.py')
+        raw_contents = pkg_resources.read_text(resources, '_report_component__init__.py')
         tmp = Template(raw_contents)
         file_contents = tmp.render(
             component_id=component_id, 
@@ -30,7 +30,7 @@ def _create_component_file(path:str, component_id: str):
     file_path = os.path.join(path, f'{component_id}.py')
     if not os.path.exists(file_path): 
         
-        raw_contents = pkg_resources.read_text(resources, 'report_component.py')
+        raw_contents = pkg_resources.read_text(resources, '_report_component.py')
         tmp = Template(raw_contents)
         file_contents = tmp.render(component_id=component_id)
         

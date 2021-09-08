@@ -1,3 +1,9 @@
+# Licenseware SDK
+
+This is the licenseware **Python3** sdk useful for creating apps quickly. The SDK handles the repetetive actions needed for creating an app (file uploads/validation, background events, api routes and more). It helps you focus on processsing the files provided and creating the reports based on processed data.  
+
+
+
 # Contents
 
 1. [Quickstart](#quickstart)
@@ -16,39 +22,102 @@
 <a name="quickstart"></a>
 # QUICKSTART 
 
+
+## Install Licenseware SDK 
+
+Install latest update for this package using the following pip command:
+```bash
+
+pip3 install git+https://git@github.com/licenseware/licenseware-sdk-python3.git
+
+```
+
+Install from a specific branch
+
+```bash
+
+pip3 install git+https://git@github.com/licenseware/licenseware-sdk-python3.git@branch_name
+
+```
+
+Install from a specific tag
+
+```bash
+
+pip3 install git+https://git@github.com/licenseware/licenseware-sdk-python3.git@tag_name
+
+```
+
+You can use `git+ssh` if you have ssh keys configured. 
+Uninstall with `pip3 uninstall licenseware`.
+
+
+## How to create a release
+
+- In `setup.py` update the package version; 
+- Create a tag with that version ex: `git tag -a v0.0.11`;
+- You can list available tags with `git tag -n`;
+- Push created tag with `git push --tags`
+
+Now you use pip to install it from that specific tag:
+
+```bash
+
+pip3 install git+https://git@github.com/licenseware/licenseware-sdk-python3.git@v0.0.11
+
+```
+
+If you want to add more details regarding this package release you can `Create a new release`
+
+- Click the link `Releases`;
+- Click `Draft a new release`;
+- Click `Tags`;
+- Select latest tag version name;
+- Add title and description for the release;
+
+![](pics/release.gif)
+
+Optionally you can create a wheel for this package:
+```bash
+
+python3 setup.py bdist_wheel sdist
+
+```
+
+And add it to binaries on the release.
+
+
 Bellow is a full working example of almost all features the sdk provides.
 
 Start the services in the following order:
 
 1. `make up` - mongo and redis;
 2. `make mock` - mock dependency server for our app;
-3. `make prod` or `make dev` - start the app server;
+3. `make dev` - start the app server (`make prod` to start it with uwsgi);
 4. `make worker` - start the background worker.
 
 
 ```py
 from dotenv import load_dotenv
-from flask.scaffold import F
+
 load_dotenv()  
 
 from flask import Flask
 from flask_restx import Namespace, Resource
 from marshmallow import Schema, fields
 
-from app.licenseware.common.constants import flags, icons, envs, states, filters
-from app.licenseware.utils.logger import log
+from licenseware.app_builder import AppBuilder
+from licenseware.common.constants import (envs, filters, flags, icons,
+                                              states)
+from licenseware.endpoint_builder import EndpointBuilder
+from licenseware.notifications import notify_upload_status
+from licenseware.report_builder import ReportBuilder
+from licenseware.report_components import BaseReportComponent
+from licenseware.report_components.style_attributes import styles
 
-from app.licenseware.app_builder import AppBuilder
-
-from app.licenseware.uploader_builder import UploaderBuilder
-from app.licenseware.uploader_validator import UploaderValidator
-from app.licenseware.notifications import notify_upload_status
-
-from app.licenseware.report_builder import ReportBuilder
-from app.licenseware.report_components import BaseReportComponent
-from app.licenseware.report_components.style_attributes import style_attributes as styles
-from app.licenseware.endpoint_builder import EndpointBuilder
-
+from licenseware.uploader_builder import UploaderBuilder
+from licenseware.uploader_validator import UploaderValidator
+from licenseware.utils.logger import log
 
 
 
@@ -65,6 +134,7 @@ ifmp_app = AppBuilder(
 
 
 # UPLOADERS
+
 
 
 # Here is the worker function 
@@ -90,6 +160,7 @@ def rv_tools_worker(event_data):
 
 
 # Here we are defining the validation required for each upload
+# If overwriting bellow mentioned methods is not necessary you can use `UploaderValidator` directly 
 
 class RVToolsUploaderValidator(UploaderValidator): 
     # If necessary you can overwrite bellow mentioned methods
@@ -213,7 +284,7 @@ class VirtualOverview(BaseReportComponent):
         }
         
         # or import `style_attributes` dataclass
-        # from app.licenseware.report_components.style_attributes import style_attributes as styles
+        # from licenseware.report_components.style_attributes import style_attributes as styles
         style_attributes = self.build_style_attributes([
             styles.WIDTH_ONE_THIRD
             #etc
@@ -253,9 +324,16 @@ virtual_overview = VirtualOverview(
     component_type='summary'
 )
 
-
+# TODO raise component_id conflict
 # Register component to registry-service (to act as a first class citizen)
 ifmp_app.register_report_component(virtual_overview)
+
+
+
+# Component order is determined by it's position in the list
+report_components=[
+    virtual_overview       
+]
 
 
 # Define a report wich holds one or more report components
@@ -264,9 +342,7 @@ virtualization_details_report = ReportBuilder(
     report_id="virtualization_details",
     description="This report gives you a detailed view of your virtual infrastructure. Deep dive into the infrastructure topology, identify devices with missing host details and capping rules for licensing.",
     connected_apps=['ifmp-service'],
-    report_components=[
-        virtual_overview        
-    ]
+    report_components=report_components
 )
 
 
@@ -338,14 +414,15 @@ custom_schema_endpoint = EndpointBuilder(GetDeviceData)
 ifmp_app.register_endpoint(custom_schema_endpoint)
 
 
-
-# Call init_app at the end
-# ifmp_app.register_app()
-ifmp_app.init_app(app, register=True)
+# Call init_app in the flask function factory 
+ifmp_app.init_app(app)
 
 
-
-if __name__ == "__main__":    
+if __name__ == "__main__":   
+    
+    # Register app to registry-service
+    ifmp_app.register_app()
+    
     app.run(port=4000, debug=True)
 
 
@@ -359,11 +436,14 @@ Make commands:
 - `make dev` - start application with hot reload;
 - `make worker` - start dramatiq worker;
 - `make test` - run all unit tests.
-- `make dev-docs` - start [`pdoc3`](https://pdoc3.github.io/pdoc/) documentation server, which auto generates documentation from markdown doc strings to html.
-- `make docs` - generate `docs` folder with all documantation generated in html format (can be added later to github pages `github.io/python3-licenseware-sdk-docs`)
+- `make dev-docs` - this command will start a pdoc3 http server use for viewing and updating documentation for the app created;
+- `make docs` - this command will generate html docs based on docstrings provided in the app;
+- `make dev-sdk-docs` - this command will start a pdoc3 http server use for viewing and updating licenseware sdk documentation for the app created;
+- `make sdk-docs` - this command will generate html docs based on docstrings provided in the app;
 
+Documentation generated can be added later to github pages.
 
-Documentation automatically generated with [`pdoc3`](https://pdoc3.github.io/pdoc/).
+See more about documentation creation here [`pdoc3`](https://pdoc3.github.io/pdoc/).
 
 
 
@@ -374,7 +454,7 @@ Documentation automatically generated with [`pdoc3`](https://pdoc3.github.io/pdo
 Each Licenseware `App`/`Service` is responsible for:
 
 - processing files submitted by the user;
-- creating custom reports based on prcessed data from files. 
+- creating custom reports based on processed data from files. 
 
 
 Each **APP** has:
@@ -396,6 +476,12 @@ Each **REPORT** has:
 - report components can be attached either to app builder instance or to report builder instance
 
 
+Each **REPORT COMPONENT** has:
+
+- one get_data method;
+- one url where data can be accessed;
+
+
 <a name="set-environment-variables"></a>
 # Set environment variables
 
@@ -406,7 +492,7 @@ Fist make sure you have set the environment variables:
 #.env
 DEBUG=true
 ENVIRONMENT=local
-PERSONAL_SUFFIX=_fdsa
+PERSONAL_SUFFIX=_alin
 
 
 FLASK_APP=main:app
@@ -425,7 +511,7 @@ REGISTRY_SERVICE_URL=http://localhost:5000/registry-service
 
 FILE_UPLOAD_PATH=/tmp/lware
 
-MONGO_ROOT_USERNAME=John
+MONGO_ROOT_USERNAME=Alin
 MONGO_ROOT_PASSWORD=secret
 MONGO_HOSTNAME=localhost
 MONGO_PORT=27017
@@ -479,11 +565,6 @@ ifmp_app = AppBuilder(
 ```
 
 The `ifmp_app` instance is now ready to attach other uploaders, reports, report components (or others) using *ifmp_app.register_X* methods.
-
-
-
-
-
 
 
 
@@ -948,11 +1029,150 @@ if __name__ == "__main__":
 The licenseware sdk provides also some CLI utilities for quick development. 
 You can invoke the cli with by typing licenseware in the terminal followed by --help for docs.
 
-```bash
+```
 
 $ licenseware --help
 
+Usage: licenseware [OPTIONS] COMMAND [ARGS]...
+
+  Useful CLI commands for automatic code generation, files and folders
+  creation.
+
+Options:
+  --install-completion [bash|zsh|fish|powershell|pwsh]
+                                  Install completion for the specified shell.
+  --show-completion [bash|zsh|fish|powershell|pwsh]
+                                  Show completion for the specified shell, to
+                                  copy it or customize the installation.
+
+  --help                          Show this message and exit.
+
+Commands:
+  new-app               Make structure for a new app
+  new-report            Make structure for a new report
+  new-report-component  Make structure for a new report component
+  new-uploader          Make structure for a new uploader
+
+
 ```
+
+## Create the app from CLI 
+
+Create the app from the terminal
+```bash
+
+licenseware new-app
+
+``` 
+
+The entire app structure will be generated 
+
+```bash
+# The cloned github repository
+├── app
+│   ├── common
+│   │   └── __init__.py
+│   ├── controllers
+│   │   └── __init__.py
+│   ├── __init__.py
+│   ├── report_components
+│   │   └── __init__.py   # create a new report component with `licenseware new-report-component component_id` 
+│   ├── reports
+│   │   └── __init__.py   # create a new report with `licenseware new-report report_id`
+│   ├── serializers
+│   │   └── __init__.py
+│   ├── uploaders
+│   │   └── __init__.py   # create a new uploader with `licenseware new-uploader uploader_id`
+│   ├── utils
+│   │    └── __init__.py
+│   └── __init__.py       # here the app is instantiated and the uploaders, reports, report_components are registered to the app
+├── app.log
+├── docker-compose-mongo-redis.yml
+├── main_example.py
+├── main.py
+├── makefile
+├── mock_server.py
+├── README.md
+├── requirements.txt
+├── setup.py
+
+```
+
+All imports will be handled by the CLI when you create a new uploader, report or report_component from the terminal.
+
+
+## Create a new uploader from CLI 
+
+`new-uploader` needs a uploader id
+
+```bash
+
+licenseware new-uploader rv_tools
+
+``` 
+
+```
+.uploaders
+├── __init__.py
+└── rv_tools
+    ├── __init__.py
+    ├── validator.py
+    └── worker.py
+```
+
+Uploader id will be `rv_tools`. Each uploader has a validator and a worker. 
+All imports an routes will be handled by the licenseware sdk.
+To sparse the logic you can create multiple sub-packages/modules.
+
+
+
+
+## Create a new report from CLI 
+
+`new-report` needs a report id
+
+```bash
+
+licenseware new-report virtualization_details
+
+``` 
+
+```
+.reports
+├── __init__.py
+└── virtualization_details
+    ├── __init__.py
+    └── virtualization_details.py
+```
+
+Report id will be `virtualization_details`.
+All imports an routes will be handled by the licenseware sdk.
+To sparse the logic you can create multiple sub-packages/modules.
+
+
+
+
+## Create a new report component from CLI 
+
+`new-report-component` needs a component id and a component type
+
+```bash
+
+licenseware new-report-component virtual_overview summary
+
+``` 
+
+```
+.report_components
+├── __init__.py
+└── virtual_overview
+    ├── __init__.py
+    └── virtual_overview.py
+```
+
+Component id will be `virtual_overview` and it's component type will be `summary`.
+All imports an routes will be handled by the licenseware sdk.
+To sparse the logic you can create multiple sub-packages/modules.
 
 
 

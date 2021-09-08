@@ -22,28 +22,28 @@ app = typer.Typer(
 
 @app.command()
 def new_app():
-    """ Creating boilerplate folders for a new app """
+    """ Make structure for a new app """
     create_app_dirs()
     # typer.echo("App structure created")
     
         
 @app.command()
 def new_uploader(uploader_id: str):
-    """ Creating boilerplate folders for a new uploader """
+    """ Make structure for a new uploader """
     create_uploader(uploader_id)
     # typer.echo("Uploader structure created")
     
     
 @app.command()
 def new_report(report_id: str):
-    """ Creating boilerplate folders for a new report """
+    """ Make structure for a new report """
     create_report(report_id)
     # typer.echo("Report structure created")
     
     
 @app.command()
 def new_report_component(component_id: str, component_type: str):
-    """ Creating boilerplate folders for a new report component """
+    """ Make structure for a new report component """
     create_report_component(component_id, component_type)
     # typer.echo("Report component structure created")
     

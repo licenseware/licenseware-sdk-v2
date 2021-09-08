@@ -27,4 +27,6 @@ See more in docs:
 [resources-docs](https://docs.python.org/3/library/importlib.html#module-importlib.resources)
 
 
+Prefix all `.py` template files with an underscore `_main.py` that's to tell pdoc3 to ignore them. 
+
 """

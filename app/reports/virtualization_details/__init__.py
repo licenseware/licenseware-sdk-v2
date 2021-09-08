@@ -1,0 +1,1 @@
+from .virtualization_details import virtualization_details_report
