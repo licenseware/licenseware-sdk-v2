@@ -9,10 +9,7 @@ from licenseware.auth import Authenticator
 
 class TestAuth(unittest.TestCase):
     
-    def setUp(self):
-        os.environ.pop('TENANT_ID', None)
-        
-    
+
     def test_envs_are_set(self):
         self.assertEqual(os.getenv("LWARE_IDENTITY_USER"), "John")
         

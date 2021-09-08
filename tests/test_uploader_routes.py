@@ -3,20 +3,26 @@ from licenseware.utils.logger import log
 from main import app
 from . import headers
 
-import os, io
+import os, io, re
 from werkzeug.datastructures import FileStorage
 from licenseware.uploader_validator import UploaderValidator
 from licenseware.common.constants import envs
 
- 
 # python3 -m unittest tests/test_uploader_routes.py
+ 
+ 
+ 
+app_routes = [str(rule) for rule in app.url_map.iter_rules()] 
+
+for path in app_routes: 
+    m = re.search(f'/.*/uploads/(.*)/validation', path)
+    if m: 
+        uploader_id = m.group(1)
+        break
  
  
 prefix = envs.APP_ID
 pathto = lambda route: prefix + route
-
-uploader_id = envs.PERSONAL_SUFFIX + 'rv_tools'
-uploader_id = 'rv_tools'
 
 
 upload_validation_path = f"/uploads/{uploader_id}/validation"
