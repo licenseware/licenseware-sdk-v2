@@ -22,20 +22,6 @@ app_dirs = [
 ]
 
 
-boilerplate_filenames = [
-    'main.py',
-    'mock_server.py',
-    'makefile',
-    'env',
-    'gitignore',
-    'docker-compose-mongo-redis.yml',
-    'requirements.txt',
-    'setup.py',
-    'README.md',
-    'main_example.py',
-]
-     
-     
      
 def _create_app_init_file():
     
@@ -74,5 +60,5 @@ def create_app_dirs():
     _create_pkg_init_files(created_paths)
     _create_app_init_file()
     
-    create_root_files(*boilerplate_filenames)
+    create_root_files()
     

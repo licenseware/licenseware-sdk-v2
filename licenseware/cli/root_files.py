@@ -7,17 +7,29 @@ import importlib.resources as pkg_resources
 
 from jinja2 import Template
 
+
+# not sure why only .py files end up in the wheel
+resources_filenames = {
+    '_main_example.py': 'main_example.py',
+    '_main.py': 'main.py',
+    '_mock_server.py': 'mock_server.py',
+    '_setup.py': 'setup.py',
+    '_docker_compose_mongo_redis.py': 'docker-compose-mongo-redis.yml',
+    '_env_file.py': '.env',
+    '_gitignore_file.py': '.gitignore',
+    '_makefile_file.py': 'makefile',
+    '_README.md_file.py': 'README.md',
+    '_requirements.txt_file.py': 'requirements.txt',
+ }
      
-def create_root_files(*filenames):
+     
+     
+def create_root_files():
     
-    for filename in filenames:
-        
-        hidden_file = filename in {'env', 'gitignore'}           
-        file_path = '.' + filename if hidden_file else filename
-        
-        if not os.path.exists(file_path):
-            raw_contents = pkg_resources.read_text(resources, '_' + filename)
+    for rname, fname in resources_filenames.items():  
+        if not os.path.exists(fname):
+            raw_contents = pkg_resources.read_text(resources, rname)
             tmp = Template(raw_contents)
             file_contents = tmp.render()
-            with open(file_path, 'w') as f:
+            with open(fname, 'w') as f:
                 f.write(file_contents)
