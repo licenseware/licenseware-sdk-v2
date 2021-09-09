@@ -29,25 +29,43 @@
 <pre><code class="python">import os
 
 from licenseware.utils.logger import log
+from licenseware.utils.miscellaneous import generate_id
 
 from licenseware import resources
 import importlib.resources as pkg_resources
 
 from jinja2 import Template
 
+
+# not sure why only .py files end up in the wheel
+resources_filenames = {
+    &#39;_main_example.py&#39;: &#39;main_example.py&#39;,
+    &#39;_main.py&#39;: &#39;main.py&#39;,
+    &#39;_mock_server.py&#39;: &#39;mock_server.py&#39;,
+    &#39;_setup.py&#39;: &#39;setup.py&#39;,
+    &#39;_docker_compose_mongo_redis.py&#39;: &#39;docker-compose-mongo-redis.yml&#39;,
+    &#39;_env_file.py&#39;: &#39;.env&#39;,
+    &#39;_gitignore_file.py&#39;: &#39;.gitignore&#39;,
+    &#39;_makefile_file.py&#39;: &#39;makefile&#39;,
+    &#39;_README.md_file.py&#39;: &#39;README.md&#39;,
+    &#39;_requirements.txt_file.py&#39;: &#39;requirements.txt&#39;,
+ }
      
-def create_root_files(*filenames):
+     
+     
+def create_root_files(app_id:str):
     
-    for filename in filenames:
-        
-        hidden_file = filename in {&#39;env&#39;, &#39;gitignore&#39;}           
-        file_path = &#39;.&#39; + filename if hidden_file else filename
-        
-        if not os.path.exists(file_path):
-            raw_contents = pkg_resources.read_text(resources, &#39;_&#39; + filename)
+    for rname, fname in resources_filenames.items():  
+        if not os.path.exists(fname):
+            raw_contents = pkg_resources.read_text(resources, rname)
             tmp = Template(raw_contents)
-            file_contents = tmp.render()
-            with open(file_path, &#39;w&#39;) as f:
+            
+            if fname == &#39;.env&#39; and app_id is not None:
+                file_contents = tmp.render(app_id=app_id, personal_suffix=generate_id(3))
+            else:
+                file_contents = tmp.render()
+            
+            with open(fname, &#39;w&#39;) as f:
                 f.write(file_contents)</code></pre>
 </details>
 </section>
@@ -59,7 +77,7 @@ def create_root_files(*filenames):
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="licenseware.cli.root_files.create_root_files"><code class="name flex">
-<span>def <span class="ident">create_root_files</span></span>(<span>*filenames)</span>
+<span>def <span class="ident">create_root_files</span></span>(<span>app_id: str)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -67,18 +85,19 @@ def create_root_files(*filenames):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def create_root_files(*filenames):
+<pre><code class="python">def create_root_files(app_id:str):
     
-    for filename in filenames:
-        
-        hidden_file = filename in {&#39;env&#39;, &#39;gitignore&#39;}           
-        file_path = &#39;.&#39; + filename if hidden_file else filename
-        
-        if not os.path.exists(file_path):
-            raw_contents = pkg_resources.read_text(resources, &#39;_&#39; + filename)
+    for rname, fname in resources_filenames.items():  
+        if not os.path.exists(fname):
+            raw_contents = pkg_resources.read_text(resources, rname)
             tmp = Template(raw_contents)
-            file_contents = tmp.render()
-            with open(file_path, &#39;w&#39;) as f:
+            
+            if fname == &#39;.env&#39; and app_id is not None:
+                file_contents = tmp.render(app_id=app_id, personal_suffix=generate_id(3))
+            else:
+                file_contents = tmp.render()
+            
+            with open(fname, &#39;w&#39;) as f:
                 f.write(file_contents)</code></pre>
 </details>
 </dd>

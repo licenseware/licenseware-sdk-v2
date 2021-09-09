@@ -50,20 +50,6 @@ app_dirs = [
 ]
 
 
-boilerplate_filenames = [
-    &#39;main.py&#39;,
-    &#39;mock_server.py&#39;,
-    &#39;makefile&#39;,
-    &#39;env&#39;,
-    &#39;gitignore&#39;,
-    &#39;docker-compose-mongo-redis.yml&#39;,
-    &#39;requirements.txt&#39;,
-    &#39;setup.py&#39;,
-    &#39;README.md&#39;,
-    &#39;main_example.py&#39;,
-]
-     
-     
      
 def _create_app_init_file():
     
@@ -91,7 +77,7 @@ def _create_pkg_init_files(created_paths: list):
 
 
 
-def create_app_dirs():
+def create_app_dirs(app_id:str = None):
     
     created_paths = []
     for dir_name in app_dirs:
@@ -102,7 +88,7 @@ def create_app_dirs():
     _create_pkg_init_files(created_paths)
     _create_app_init_file()
     
-    create_root_files(*boilerplate_filenames)
+    create_root_files(app_id)
     </code></pre>
 </details>
 </section>
@@ -114,7 +100,7 @@ def create_app_dirs():
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="licenseware.cli.app_dirs.create_app_dirs"><code class="name flex">
-<span>def <span class="ident">create_app_dirs</span></span>(<span>)</span>
+<span>def <span class="ident">create_app_dirs</span></span>(<span>app_id: str = None)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -122,7 +108,7 @@ def create_app_dirs():
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def create_app_dirs():
+<pre><code class="python">def create_app_dirs(app_id:str = None):
     
     created_paths = []
     for dir_name in app_dirs:
@@ -133,7 +119,7 @@ def create_app_dirs():
     _create_pkg_init_files(created_paths)
     _create_app_init_file()
     
-    create_root_files(*boilerplate_filenames)</code></pre>
+    create_root_files(app_id)</code></pre>
 </details>
 </dd>
 </dl>

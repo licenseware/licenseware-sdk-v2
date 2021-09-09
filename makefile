@@ -49,8 +49,7 @@ sdk-dev-docs:
 
 sdk-docs:
 	pdoc --html --output-dir sdk-docs licenseware
-
-
+	
 install-sdk:
 	pip3 uninstall -y licenseware
 	python3 setup.py bdist_wheel sdist

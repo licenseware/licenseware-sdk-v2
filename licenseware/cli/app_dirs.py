@@ -49,7 +49,7 @@ def _create_pkg_init_files(created_paths: list):
 
 
 
-def create_app_dirs():
+def create_app_dirs(app_id:str = None):
     
     created_paths = []
     for dir_name in app_dirs:
@@ -60,5 +60,5 @@ def create_app_dirs():
     _create_pkg_init_files(created_paths)
     _create_app_init_file()
     
-    create_root_files()
+    create_root_files(app_id)
     

@@ -32,7 +32,9 @@
 Here all cli functions are gathered and decorated with typer app decorator.
 
 &#34;&#34;&#34;
-
+import os
+import time
+import shutil
 import typer
 from .app_dirs import create_app_dirs
 from .report import create_report
@@ -50,32 +52,98 @@ app = typer.Typer(
 
 
 @app.command()
-def new_app():
-    &#34;&#34;&#34; Make structure for a new app &#34;&#34;&#34;
-    create_app_dirs()
+def new_app(app_id:str):
+    &#34;&#34;&#34; 
+        Given app_id make a new app
+        
+        The package structure for the app will be created and the app_id will be added to .env file
+         
+    &#34;&#34;&#34;
+    create_app_dirs(app_id)
     # typer.echo(&#34;App structure created&#34;)
     
         
 @app.command()
 def new_uploader(uploader_id: str):
-    &#34;&#34;&#34; Make structure for a new uploader &#34;&#34;&#34;
+    &#34;&#34;&#34; 
+        Given uploader_id make a new uploader 
+        
+        The package structure for the uploader will be created, imports and registration will be handled also.
+    &#34;&#34;&#34;
     create_uploader(uploader_id)
     # typer.echo(&#34;Uploader structure created&#34;)
     
     
 @app.command()
 def new_report(report_id: str):
-    &#34;&#34;&#34; Make structure for a new report &#34;&#34;&#34;
+    &#34;&#34;&#34; 
+        Given report_id make a new report 
+        
+        The package structure for the report will be created, imports and registration will be handled also.
+    &#34;&#34;&#34;
     create_report(report_id)
     # typer.echo(&#34;Report structure created&#34;)
     
     
 @app.command()
-def new_report_component(component_id: str, component_type: str):
-    &#34;&#34;&#34; Make structure for a new report component &#34;&#34;&#34;
+def new_report_component(component_id: str, component_type: str = None):
+    &#34;&#34;&#34;
+        Given component_id make a new report component 
+        
+        Argument component_type will be taken if not provided from component_id (ex: virtualization_summary -&gt; summary will be the component_type)
+        
+        The package structure for the report component will be created, imports and registration will be handled also.
+        
+    &#34;&#34;&#34;
     create_report_component(component_id, component_type)
     # typer.echo(&#34;Report component structure created&#34;)
     
+    
+
+
+@app.command()
+def make_docs():
+    &#34;&#34;&#34;
+        Make app html docs
+    &#34;&#34;&#34;
+    
+    os.system(&#34;pdoc --html --output-dir app-docs app&#34;)
+    
+    timeout = 10
+    count = 0
+    while not os.path.exists(&#34;app-docs/app&#34;):
+        time.sleep(1)
+        count += 1
+        if count &gt;= timeout:
+            raise Exception(&#34;Make sure pdoc is installed and app package is available&#34;)
+            
+    if os.path.exists(&#34;docs&#34;): shutil.rmtree(&#34;docs&#34;)
+    shutil.move(&#34;app-docs/app&#34;, &#34;docs&#34;)
+    shutil.rmtree(&#34;app-docs&#34;)
+
+
+    
+
+@app.command()
+def make_sdk_docs():
+    &#34;&#34;&#34;
+        Make licenseware sdk html docs
+    &#34;&#34;&#34;
+    
+    os.system(&#34;pdoc --html --output-dir sdk-docs licenseware&#34;)
+    
+    timeout = 10
+    count = 0
+    while not os.path.exists(&#34;sdk-docs/licenseware&#34;):
+        time.sleep(1)
+        count += 1
+        if count &gt;= timeout:
+            raise Exception(&#34;Make sure pdoc is installed and licenseware package is available&#34;)
+            
+    if os.path.exists(&#34;docs&#34;): shutil.rmtree(&#34;docs&#34;)
+    shutil.move(&#34;sdk-docs/licenseware&#34;, &#34;docs&#34;)
+    shutil.rmtree(&#34;sdk-docs&#34;)
+
     </code></pre>
 </details>
 </section>
@@ -86,19 +154,85 @@ def new_report_component(component_id: str, component_type: str):
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="licenseware.cli.cli.new_app"><code class="name flex">
-<span>def <span class="ident">new_app</span></span>(<span>)</span>
+<dt id="licenseware.cli.cli.make_docs"><code class="name flex">
+<span>def <span class="ident">make_docs</span></span>(<span>)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Make structure for a new app</p></div>
+<div class="desc"><p>Make app html docs</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@app.command()
-def new_app():
-    &#34;&#34;&#34; Make structure for a new app &#34;&#34;&#34;
-    create_app_dirs()
+def make_docs():
+    &#34;&#34;&#34;
+        Make app html docs
+    &#34;&#34;&#34;
+    
+    os.system(&#34;pdoc --html --output-dir app-docs app&#34;)
+    
+    timeout = 10
+    count = 0
+    while not os.path.exists(&#34;app-docs/app&#34;):
+        time.sleep(1)
+        count += 1
+        if count &gt;= timeout:
+            raise Exception(&#34;Make sure pdoc is installed and app package is available&#34;)
+            
+    if os.path.exists(&#34;docs&#34;): shutil.rmtree(&#34;docs&#34;)
+    shutil.move(&#34;app-docs/app&#34;, &#34;docs&#34;)
+    shutil.rmtree(&#34;app-docs&#34;)</code></pre>
+</details>
+</dd>
+<dt id="licenseware.cli.cli.make_sdk_docs"><code class="name flex">
+<span>def <span class="ident">make_sdk_docs</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Make licenseware sdk html docs</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@app.command()
+def make_sdk_docs():
+    &#34;&#34;&#34;
+        Make licenseware sdk html docs
+    &#34;&#34;&#34;
+    
+    os.system(&#34;pdoc --html --output-dir sdk-docs licenseware&#34;)
+    
+    timeout = 10
+    count = 0
+    while not os.path.exists(&#34;sdk-docs/licenseware&#34;):
+        time.sleep(1)
+        count += 1
+        if count &gt;= timeout:
+            raise Exception(&#34;Make sure pdoc is installed and licenseware package is available&#34;)
+            
+    if os.path.exists(&#34;docs&#34;): shutil.rmtree(&#34;docs&#34;)
+    shutil.move(&#34;sdk-docs/licenseware&#34;, &#34;docs&#34;)
+    shutil.rmtree(&#34;sdk-docs&#34;)</code></pre>
+</details>
+</dd>
+<dt id="licenseware.cli.cli.new_app"><code class="name flex">
+<span>def <span class="ident">new_app</span></span>(<span>app_id: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Given app_id make a new app</p>
+<p>The package structure for the app will be created and the app_id will be added to .env file</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@app.command()
+def new_app(app_id:str):
+    &#34;&#34;&#34; 
+        Given app_id make a new app
+        
+        The package structure for the app will be created and the app_id will be added to .env file
+         
+    &#34;&#34;&#34;
+    create_app_dirs(app_id)
     # typer.echo(&#34;App structure created&#34;)</code></pre>
 </details>
 </dd>
@@ -106,30 +240,44 @@ def new_app():
 <span>def <span class="ident">new_report</span></span>(<span>report_id: str)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Make structure for a new report</p></div>
+<div class="desc"><p>Given report_id make a new report </p>
+<p>The package structure for the report will be created, imports and registration will be handled also.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@app.command()
 def new_report(report_id: str):
-    &#34;&#34;&#34; Make structure for a new report &#34;&#34;&#34;
+    &#34;&#34;&#34; 
+        Given report_id make a new report 
+        
+        The package structure for the report will be created, imports and registration will be handled also.
+    &#34;&#34;&#34;
     create_report(report_id)
     # typer.echo(&#34;Report structure created&#34;)</code></pre>
 </details>
 </dd>
 <dt id="licenseware.cli.cli.new_report_component"><code class="name flex">
-<span>def <span class="ident">new_report_component</span></span>(<span>component_id: str, component_type: str)</span>
+<span>def <span class="ident">new_report_component</span></span>(<span>component_id: str, component_type: str = None)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Make structure for a new report component</p></div>
+<div class="desc"><p>Given component_id make a new report component </p>
+<p>Argument component_type will be taken if not provided from component_id (ex: virtualization_summary -&gt; summary will be the component_type)</p>
+<p>The package structure for the report component will be created, imports and registration will be handled also.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@app.command()
-def new_report_component(component_id: str, component_type: str):
-    &#34;&#34;&#34; Make structure for a new report component &#34;&#34;&#34;
+def new_report_component(component_id: str, component_type: str = None):
+    &#34;&#34;&#34;
+        Given component_id make a new report component 
+        
+        Argument component_type will be taken if not provided from component_id (ex: virtualization_summary -&gt; summary will be the component_type)
+        
+        The package structure for the report component will be created, imports and registration will be handled also.
+        
+    &#34;&#34;&#34;
     create_report_component(component_id, component_type)
     # typer.echo(&#34;Report component structure created&#34;)</code></pre>
 </details>
@@ -138,14 +286,19 @@ def new_report_component(component_id: str, component_type: str):
 <span>def <span class="ident">new_uploader</span></span>(<span>uploader_id: str)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Make structure for a new uploader</p></div>
+<div class="desc"><p>Given uploader_id make a new uploader </p>
+<p>The package structure for the uploader will be created, imports and registration will be handled also.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@app.command()
 def new_uploader(uploader_id: str):
-    &#34;&#34;&#34; Make structure for a new uploader &#34;&#34;&#34;
+    &#34;&#34;&#34; 
+        Given uploader_id make a new uploader 
+        
+        The package structure for the uploader will be created, imports and registration will be handled also.
+    &#34;&#34;&#34;
     create_uploader(uploader_id)
     # typer.echo(&#34;Uploader structure created&#34;)</code></pre>
 </details>
@@ -168,6 +321,8 @@ def new_uploader(uploader_id: str):
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
+<li><code><a title="licenseware.cli.cli.make_docs" href="#licenseware.cli.cli.make_docs">make_docs</a></code></li>
+<li><code><a title="licenseware.cli.cli.make_sdk_docs" href="#licenseware.cli.cli.make_sdk_docs">make_sdk_docs</a></code></li>
 <li><code><a title="licenseware.cli.cli.new_app" href="#licenseware.cli.cli.new_app">new_app</a></code></li>
 <li><code><a title="licenseware.cli.cli.new_report" href="#licenseware.cli.cli.new_report">new_report</a></code></li>
 <li><code><a title="licenseware.cli.cli.new_report_component" href="#licenseware.cli.cli.new_report_component">new_report_component</a></code></li>

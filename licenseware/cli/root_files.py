@@ -1,6 +1,7 @@
 import os
 
 from licenseware.utils.logger import log
+from licenseware.utils.miscellaneous import generate_id
 
 from licenseware import resources
 import importlib.resources as pkg_resources
@@ -24,12 +25,17 @@ resources_filenames = {
      
      
      
-def create_root_files():
+def create_root_files(app_id:str):
     
     for rname, fname in resources_filenames.items():  
         if not os.path.exists(fname):
             raw_contents = pkg_resources.read_text(resources, rname)
             tmp = Template(raw_contents)
-            file_contents = tmp.render()
+            
+            if fname == '.env' and app_id is not None:
+                file_contents = tmp.render(app_id=app_id, personal_suffix=generate_id(3))
+            else:
+                file_contents = tmp.render()
+            
             with open(fname, 'w') as f:
                 f.write(file_contents)

@@ -13,7 +13,6 @@ from marshmallow_jsonschema import JSONSchema
 from typing import List
 
 from licenseware.utils.logger import log
-from licenseware.common.constants import envs
 
 
 
@@ -63,6 +62,9 @@ swagger_authorization_header = {
 
 
 def get_user_id(tenant_id:str = None):
+
+    from licenseware.common.constants import envs
+
     
     response = requests.get(
         url=envs.AUTH_USERS_URL,

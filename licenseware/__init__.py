@@ -1,7 +1,9 @@
 '''
 # Licenseware SDK
 
-This is the licenseware **Python3** sdk useful for creating apps quickly. The SDK handles the repetetive actions needed for creating an app (file uploads/validation, background events, api routes and more). It helps you focus on processsing the files provided and creating the reports based on processed data.  
+This is the licenseware **Python3** sdk useful for quickly create apps. 
+The SDK handles the repetetive actions needed for creating an app (file uploads/validation, background events, api routes and more). 
+It helps you focus on processsing the files needed and creating reports.  
 
 
 
@@ -21,8 +23,9 @@ This is the licenseware **Python3** sdk useful for creating apps quickly. The SD
 
 
 <a name="quickstart"></a>
-# QUICKSTART 
+# Quickstart 
 
+Here you will see how to install the sdk and what's required in a licenseware app.
 
 ## Install Licenseware SDK 
 
@@ -53,7 +56,7 @@ You can use `git+ssh` if you have ssh keys configured.
 Uninstall with `pip3 uninstall licenseware`.
 
 
-## How to create a release
+## SDK new version release
 
 - In `setup.py` update the package version; 
 - Create a tag with that version ex: `git tag -a v0.0.11`;
@@ -88,6 +91,8 @@ python3 setup.py bdist_wheel sdist
 And add it to binaries on the release.
 
 
+## A minimal app
+
 Bellow is a full working example of almost all features the sdk provides.
 
 Start the services in the following order:
@@ -97,10 +102,14 @@ Start the services in the following order:
 3. `make dev` - start the app server (`make prod` to start it with uwsgi);
 4. `make worker` - start the background worker.
 
+**Attention**
+
+If you perviously started the docker-compose file with redis and mongo you may encounter some issues related to port already in use or docker container names. Keep this in mind on `make up` step.
+
+
 
 ```py
 from dotenv import load_dotenv
-
 load_dotenv()  
 
 from flask import Flask
@@ -325,7 +334,6 @@ virtual_overview = VirtualOverview(
     component_type='summary'
 )
 
-# TODO raise component_id conflict
 # Register component to registry-service (to act as a first class citizen)
 ifmp_app.register_report_component(virtual_overview)
 
@@ -439,8 +447,7 @@ Make commands:
 - `make test` - run all unit tests.
 - `make dev-docs` - this command will start a pdoc3 http server use for viewing and updating documentation for the app created;
 - `make docs` - this command will generate html docs based on docstrings provided in the app;
-- `make dev-sdk-docs` - this command will start a pdoc3 http server use for viewing and updating licenseware sdk documentation for the app created;
-- `make sdk-docs` - this command will generate html docs based on docstrings provided in the app;
+
 
 Documentation generated can be added later to github pages.
 
@@ -593,11 +600,11 @@ Here is the worker function which will process the files in the background.
 from licenseware.notification import notify_upload_status
 from licenseware.utils.logger import log
 
-def rv_tools_worker(event_data):
+def rv_tools_worker(event:dict):
     log.info("Starting working")
-    notify_upload_status(event_data, status=states.RUNNING)
-    log.debug(event_data) # here add the processing file logic
-    notify_upload_status(event_data, status=states.IDLE)
+    notify_upload_status(event, status=states.RUNNING)
+    log.debug(event) # here add the processing file logic
+    notify_upload_status(event, status=states.IDLE)
     log.info("Finished working")
     
 ```
@@ -1025,7 +1032,7 @@ if __name__ == "__main__":
 
 
 <a name="licenseware-cli"></a>
-# LICENSEWARE CLI
+# Licenseware CLI
 
 The licenseware sdk provides also some CLI utilities for quick development. 
 You can invoke the cli with by typing licenseware in the terminal followed by --help for docs.
@@ -1049,20 +1056,44 @@ Options:
   --help                          Show this message and exit.
 
 Commands:
-  new-app               Make structure for a new app
-  new-report            Make structure for a new report
-  new-report-component  Make structure for a new report component
-  new-uploader          Make structure for a new uploader
+  new-app               Given app_id make a new app
+  new-report            Given report_id make a new report
+  new-report-component  Given component_id make a new report component
+  new-uploader          Given uploader_id make a new uploader
 
+```
+
+See help for a command by specifing the command name followed by --help
+
+```
+
+$ licenseware new-report-component --help
+
+Usage: licenseware new-report-component [OPTIONS] COMPONENT_ID
+
+  Given component_id make a new report component
+
+  Argument component_type will be taken if not provided from component_id (ex: virtualization_summary -> summary will be the component_type)
+
+
+Arguments:
+  COMPONENT_ID  [required]
+
+Options:
+  --component-type TEXT
+  --help                 Show this message and exit.
+acmt@acmt:~/Documents/lware/test_sdk$ 
 
 ```
 
 ## Create the app from CLI 
 
-Create the app from the terminal
+Create the app from the terminal. 
+Argument `new-app` requires an `app_id`. The id will be placed in the `.env` file.
+
 ```bash
 
-licenseware new-app
+licenseware new-app ifmp
 
 ``` 
 
@@ -1104,7 +1135,7 @@ All imports will be handled by the CLI when you create a new uploader, report or
 
 ## Create a new uploader from CLI 
 
-`new-uploader` needs a uploader id
+Argument `new-uploader` needs a `uploader_id`
 
 ```bash
 
@@ -1130,7 +1161,7 @@ To sparse the logic you can create multiple sub-packages/modules.
 
 ## Create a new report from CLI 
 
-`new-report` needs a report id
+Argument `new-report` needs a `report_id`
 
 ```bash
 
@@ -1155,7 +1186,8 @@ To sparse the logic you can create multiple sub-packages/modules.
 
 ## Create a new report component from CLI 
 
-`new-report-component` needs a component id and a component type
+Argument `new-report-component` needs a `component_id` and a `component_type`.
+The `component_type` is optional if you provide it as a prefix like `virtual_overview_summary`.
 
 ```bash
 
@@ -1183,19 +1215,15 @@ To sparse the logic you can create multiple sub-packages/modules.
 
 # Load testing
 
-## TODO
-
 [baton docs](https://github.com/americanexpress/baton)
-
 
 ```bash
 baton -u http://localhost:4000 -c 10 -r 10000
 ```
-
-
 '''
 
-
-from dotenv import load_dotenv
-
-load_dotenv()  
+try:
+    from dotenv import load_dotenv
+    load_dotenv()  
+except:
+    pass # envs are just for docs

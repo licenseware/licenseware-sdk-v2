@@ -1,11 +1,11 @@
 DEBUG=true
 ENVIRONMENT=local
-PERSONAL_SUFFIX=_acmt
+PERSONAL_SUFFIX=_{{ personal_suffix }}
 
 
 FLASK_APP=main:app
 
-APP_ID=ifmp
+APP_ID={{ app_id }}
 APP_HOST=http://localhost:5000
 
 LWARE_IDENTITY_USER=John
@@ -27,5 +27,5 @@ MONGO_DATABASE_NAME=db
 MONGO_CONNECTION_STRING=mongodb://${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DATABASE_NAME}
 
 
-REDIS_HOST=redis_db_sdk
+REDIS_HOST=redis_db_dev
 REDIS_PORT=6379
