@@ -65,7 +65,8 @@ class envs:
     REGISTER_REPORT_URL:str = REGISTRY_SERVICE_URL + '/reports'
     REGISTER_REPORT_COMPONENT_URL:str = REGISTER_REPORT_URL + '/components'
     
-    BASE_URL:str = APP_HOST + "/" + APP_ID
+    APP_PATH:str = "/" + APP_ID
+    BASE_URL:str = APP_HOST + APP_PATH
     UPLOAD_PATH:str = '/uploads'
     REPORT_PATH:str = '/reports'
     REPORT_COMPONENT_PATH:str = '/report_components'
