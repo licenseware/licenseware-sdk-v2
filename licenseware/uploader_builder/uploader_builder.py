@@ -106,18 +106,21 @@ class UploaderBuilder:
         
         if status_code == 200:
             
-            event_data = {
-                'tenant_id': flask_request.headers.get("Tenantid"),
-                'filepaths': self.validator_class.get_only_valid_filepaths_from_objects_response(response),
-                'uploader_id': self.uploader_id,
-                'headers':  dict(flask_request.headers) if flask_request.headers else {},
-                'json':  dict(flask_request.json) if flask_request.json else {},
-            }
+            valid_filepaths = self.validator_class.get_only_valid_filepaths_from_objects_response(response)
             
-            log_dict(event_data)
-            self.worker.send(event_data)
-            
-            
+            if valid_filepaths:
+                
+                event = {
+                    'tenant_id': flask_request.headers.get("Tenantid"),
+                    'filepaths': valid_filepaths, 
+                    'uploader_id': self.uploader_id,
+                    'headers':  dict(flask_request.headers) if flask_request.headers else {},
+                    'json':  dict(flask_request.json) if flask_request.json else {},
+                }
+
+                log.warning("Sending event: " + str(event))
+                self.worker.send(event)
+                
         return response, status_code
     
     
