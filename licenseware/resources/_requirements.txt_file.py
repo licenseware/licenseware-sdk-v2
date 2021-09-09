@@ -1,7 +1,7 @@
 redis==3.5.3
 aioredis==1.3.1
 Flask==1.1.4
-flask-restx==0.4.0
+flask-restx==0.5.1
 uWSGI==2.0.19.1
 marshmallow==3.12.1
 pymongo==3.12.0
