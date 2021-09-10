@@ -4,6 +4,10 @@ PERSONAL_SUFFIX=_{{ personal_suffix }}
 
 
 FLASK_APP=main:app
+FLASK_RUN_HOST=localhost
+FLASK_RUN_PORT=4000
+FLASK_DEBUG=true
+
 
 APP_ID={{ app_id }}
 APP_HOST=http://localhost:5000
@@ -29,3 +33,4 @@ MONGO_CONNECTION_STRING=mongodb://${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DATABA
 
 REDIS_HOST=redis_db_dev
 REDIS_PORT=6379
+

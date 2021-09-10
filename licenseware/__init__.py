@@ -1,4 +1,5 @@
 '''
+
 # Licenseware SDK
 
 This is the licenseware **Python3** sdk useful for quickly create apps. 
@@ -98,13 +99,13 @@ Bellow is a full working example of almost all features the sdk provides.
 Start the services in the following order:
 
 1. `make up` - mongo and redis;
-2. `make mock` - mock dependency server for our app;
-3. `make dev` - start the app server (`make prod` to start it with uwsgi);
-4. `make worker` - start the background worker.
+2. `licenseware start-mock-server` - mock dependency server for our app;
+3. `licenseware start-background-worker` - start the app server;
+4. `licenseware start-dev-server` - start the background worker.
 
 **Attention**
 
-If you perviously started the docker-compose file with redis and mongo you may encounter some issues related to port already in use or docker container names. Keep this in mind on `make up` step.
+If you perviously started the docker-compose file with redis and mongo you may encounter some issues related to port already in use or docker container names. It's enough to build the image once `Documents` folder for example, after that you will always have available the mongo and redis databases.
 
 
 
@@ -1255,7 +1256,6 @@ This will start the flask server with auto-reload.
 ```bash
 baton -u http://localhost:4000 -c 10 -r 10000
 ```
-
 '''
 
 try:

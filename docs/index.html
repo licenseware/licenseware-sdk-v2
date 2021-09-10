@@ -93,12 +93,12 @@ python3 setup.py bdist_wheel sdist
 <p>Start the services in the following order:</p>
 <ol>
 <li><code>make up</code> - mongo and redis;</li>
-<li><code>make mock</code> - mock dependency server for our app;</li>
-<li><code>make dev</code> - start the app server (<code>make prod</code> to start it with uwsgi);</li>
-<li><code>make worker</code> - start the background worker.</li>
+<li><code>licenseware start-mock-server</code> - mock dependency server for our app;</li>
+<li><code>licenseware start-background-worker</code> - start the app server;</li>
+<li><code>licenseware start-dev-server</code> - start the background worker.</li>
 </ol>
 <p><strong>Attention</strong></p>
-<p>If you perviously started the docker-compose file with redis and mongo you may encounter some issues related to port already in use or docker container names. Keep this in mind on <code>make up</code> step.</p>
+<p>If you perviously started the docker-compose file with redis and mongo you may encounter some issues related to port already in use or docker container names. It's enough to build the image once <code>Documents</code> folder for example, after that you will always have available the mongo and redis databases.</p>
 <pre><code class="language-py">from dotenv import load_dotenv
 load_dotenv()  
 
@@ -1047,6 +1047,7 @@ licenseware start-dev-server
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#39;&#39;&#39;
+
 # Licenseware SDK
 
 This is the licenseware **Python3** sdk useful for quickly create apps. 
@@ -1146,13 +1147,13 @@ Bellow is a full working example of almost all features the sdk provides.
 Start the services in the following order:
 
 1. `make up` - mongo and redis;
-2. `make mock` - mock dependency server for our app;
-3. `make dev` - start the app server (`make prod` to start it with uwsgi);
-4. `make worker` - start the background worker.
+2. `licenseware start-mock-server` - mock dependency server for our app;
+3. `licenseware start-background-worker` - start the app server;
+4. `licenseware start-dev-server` - start the background worker.
 
 **Attention**
 
-If you perviously started the docker-compose file with redis and mongo you may encounter some issues related to port already in use or docker container names. Keep this in mind on `make up` step.
+If you perviously started the docker-compose file with redis and mongo you may encounter some issues related to port already in use or docker container names. It&#39;s enough to build the image once `Documents` folder for example, after that you will always have available the mongo and redis databases.
 
 
 
@@ -2303,7 +2304,6 @@ This will start the flask server with auto-reload.
 ```bash
 baton -u http://localhost:4000 -c 10 -r 10000
 ```
-
 &#39;&#39;&#39;
 
 try:
