@@ -1040,7 +1040,6 @@ You can invoke the cli with by typing licenseware in the terminal followed by --
 ```
 
 $ licenseware --help
-
 Usage: licenseware [OPTIONS] COMMAND [ARGS]...
 
   Useful CLI commands for automatic code generation, files and folders
@@ -1056,10 +1055,16 @@ Options:
   --help                          Show this message and exit.
 
 Commands:
-  new-app               Given app_id make a new app
-  new-report            Given report_id make a new report
-  new-report-component  Given component_id make a new report component
-  new-uploader          Given uploader_id make a new uploader
+  build-docs               Build app html docs
+  build-sdk-docs           Build licenseware sdk html docs
+  new-app                  Given app_id build a new app The package...
+  new-report               Given report_id build a new report The package...
+  new-report-component     Given component_id build a new report component...
+  new-uploader             Given uploader_id build a new uploader The...
+  start-background-worker  Start the redis background worker with 4...
+  start-dev-server         Start the development server (flask server with...
+  start-mock-server        Start the mock server needed which is a...
+  start-prod-server        Start the production server (uwsgi server with 4...
 
 ```
 
@@ -1210,6 +1215,36 @@ To sparse the logic you can create multiple sub-packages/modules.
 
 
 
+## Start develompent environments servers 
+
+You can start from the terminal the mock server, dev/prod server and the redis background worker.
+
+Open a terminal for each command:
+
+```bash
+
+licenseware start-mock-server
+
+``` 
+This will start the server that will handle mock requests to registry-service and auth-server.
+
+
+
+
+```bash
+
+licenseware start-background-worker
+
+``` 
+This will start the redis background worker server that will handle the events.
+
+
+```bash
+
+licenseware start-dev-server
+
+``` 
+This will start the flask server with auto-reload. 
 
 
 
@@ -1220,6 +1255,7 @@ To sparse the logic you can create multiple sub-packages/modules.
 ```bash
 baton -u http://localhost:4000 -c 10 -r 10000
 ```
+
 '''
 
 try:

@@ -134,18 +134,21 @@ class UploaderBuilder:
         
         if status_code == 200:
             
-            event_data = {
-                &#39;tenant_id&#39;: flask_request.headers.get(&#34;Tenantid&#34;),
-                &#39;filepaths&#39;: self.validator_class.get_only_valid_filepaths_from_objects_response(response),
-                &#39;uploader_id&#39;: self.uploader_id,
-                &#39;headers&#39;:  dict(flask_request.headers) if flask_request.headers else {},
-                &#39;json&#39;:  dict(flask_request.json) if flask_request.json else {},
-            }
+            valid_filepaths = self.validator_class.get_only_valid_filepaths_from_objects_response(response)
             
-            log_dict(event_data)
-            self.worker.send(event_data)
-            
-            
+            if valid_filepaths:
+                
+                event = {
+                    &#39;tenant_id&#39;: flask_request.headers.get(&#34;Tenantid&#34;),
+                    &#39;filepaths&#39;: valid_filepaths, 
+                    &#39;uploader_id&#39;: self.uploader_id,
+                    &#39;headers&#39;:  dict(flask_request.headers) if flask_request.headers else {},
+                    &#39;json&#39;:  dict(flask_request.json) if flask_request.json else {},
+                }
+
+                log.warning(&#34;Sending event: &#34; + str(event))
+                self.worker.send(event)
+                
         return response, status_code
     
     
@@ -315,18 +318,21 @@ status_check_path:str = None - url path/route where gives back the status of the
         
         if status_code == 200:
             
-            event_data = {
-                &#39;tenant_id&#39;: flask_request.headers.get(&#34;Tenantid&#34;),
-                &#39;filepaths&#39;: self.validator_class.get_only_valid_filepaths_from_objects_response(response),
-                &#39;uploader_id&#39;: self.uploader_id,
-                &#39;headers&#39;:  dict(flask_request.headers) if flask_request.headers else {},
-                &#39;json&#39;:  dict(flask_request.json) if flask_request.json else {},
-            }
+            valid_filepaths = self.validator_class.get_only_valid_filepaths_from_objects_response(response)
             
-            log_dict(event_data)
-            self.worker.send(event_data)
-            
-            
+            if valid_filepaths:
+                
+                event = {
+                    &#39;tenant_id&#39;: flask_request.headers.get(&#34;Tenantid&#34;),
+                    &#39;filepaths&#39;: valid_filepaths, 
+                    &#39;uploader_id&#39;: self.uploader_id,
+                    &#39;headers&#39;:  dict(flask_request.headers) if flask_request.headers else {},
+                    &#39;json&#39;:  dict(flask_request.json) if flask_request.json else {},
+                }
+
+                log.warning(&#34;Sending event: &#34; + str(event))
+                self.worker.send(event)
+                
         return response, status_code
     
     
@@ -444,18 +450,21 @@ status_check_path:str = None - url path/route where gives back the status of the
     
     if status_code == 200:
         
-        event_data = {
-            &#39;tenant_id&#39;: flask_request.headers.get(&#34;Tenantid&#34;),
-            &#39;filepaths&#39;: self.validator_class.get_only_valid_filepaths_from_objects_response(response),
-            &#39;uploader_id&#39;: self.uploader_id,
-            &#39;headers&#39;:  dict(flask_request.headers) if flask_request.headers else {},
-            &#39;json&#39;:  dict(flask_request.json) if flask_request.json else {},
-        }
+        valid_filepaths = self.validator_class.get_only_valid_filepaths_from_objects_response(response)
         
-        log_dict(event_data)
-        self.worker.send(event_data)
-        
-        
+        if valid_filepaths:
+            
+            event = {
+                &#39;tenant_id&#39;: flask_request.headers.get(&#34;Tenantid&#34;),
+                &#39;filepaths&#39;: valid_filepaths, 
+                &#39;uploader_id&#39;: self.uploader_id,
+                &#39;headers&#39;:  dict(flask_request.headers) if flask_request.headers else {},
+                &#39;json&#39;:  dict(flask_request.json) if flask_request.json else {},
+            }
+
+            log.warning(&#34;Sending event: &#34; + str(event))
+            self.worker.send(event)
+            
     return response, status_code</code></pre>
 </details>
 </dd>

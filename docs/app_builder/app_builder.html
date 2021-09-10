@@ -171,6 +171,7 @@ class AppBuilder:
         
         # This hides flask_restx `X-fields` from swagger headers  
         app.config[&#39;RESTX_MASK_SWAGGER&#39;] = False
+        app.config[&#39;DEBUG&#39;] = envs.DEBUG
         self.app = app
         
         if not self.uploaders: log.warning(&#34;No uploaders provided&#34;)
@@ -454,6 +455,7 @@ class AppBuilder:
         
         # This hides flask_restx `X-fields` from swagger headers  
         app.config[&#39;RESTX_MASK_SWAGGER&#39;] = False
+        app.config[&#39;DEBUG&#39;] = envs.DEBUG
         self.app = app
         
         if not self.uploaders: log.warning(&#34;No uploaders provided&#34;)
@@ -786,6 +788,7 @@ class AppBuilder:
     
     # This hides flask_restx `X-fields` from swagger headers  
     app.config[&#39;RESTX_MASK_SWAGGER&#39;] = False
+    app.config[&#39;DEBUG&#39;] = envs.DEBUG
     self.app = app
     
     if not self.uploaders: log.warning(&#34;No uploaders provided&#34;)

@@ -101,7 +101,8 @@ class envs:
     REGISTER_REPORT_URL:str = REGISTRY_SERVICE_URL + &#39;/reports&#39;
     REGISTER_REPORT_COMPONENT_URL:str = REGISTER_REPORT_URL + &#39;/components&#39;
     
-    BASE_URL:str = APP_HOST + &#34;/&#34; + APP_ID
+    APP_PATH:str = &#34;/&#34; + APP_ID
+    BASE_URL:str = APP_HOST + APP_PATH
     UPLOAD_PATH:str = &#39;/uploads&#39;
     REPORT_PATH:str = &#39;/reports&#39;
     REPORT_COMPONENT_PATH:str = &#39;/report_components&#39;
@@ -195,10 +196,10 @@ class envs:
 <dl>
 <dt id="licenseware.common.constants.envs.envs"><code class="flex name class">
 <span>class <span class="ident">envs</span></span>
-<span>(</span><span>DEBUG: bool = True, ENVIRONMENT: str = 'local', PERSONAL_SUFFIX: str = '_acmt', APP_ID: str = 'ifmp', APP_HOST: str = 'http://localhost:5000', LWARE_USER: str = 'John', LWARE_PASSWORD: str = 'secret', AUTH_USERS_URL: str = 'http://localhost:5000/auth/users', AUTH_MACHINES_URL: str = 'http://localhost:5000/auth/machines', AUTH_BASE_URL: str = 'http://localhost:5000/auth', AUTH_MACHINES_ROUTE: str = '/machines', AUTH_USERS_ROUTE: str = '/users', AUTH_MACHINE_CHECK_URL: str = 'http://localhost:5000/auth/machine_authorization', AUTH_USER_CHECK_URL: str = 'http://localhost:5000/auth/verify', REGISTRY_SERVICE_URL: str = 'http://localhost:5000/registry-service', REGISTER_APP_URL: str = 'http://localhost:5000/registry-service/apps', REGISTER_UPLOADER_URL: str = 'http://localhost:5000/registry-service/uploaders', REGISTER_UPLOADER_STATUS_URL: str = 'http://localhost:5000/registry-service/uploaders/status', REGISTER_REPORT_URL: str = 'http://localhost:5000/registry-service/reports', REGISTER_REPORT_COMPONENT_URL: str = 'http://localhost:5000/registry-service/reports/components', BASE_URL: str = 'http://localhost:5000/ifmp', UPLOAD_PATH: str = '/uploads', REPORT_PATH: str = '/reports', REPORT_COMPONENT_PATH: str = '/report_components', UPLOAD_URL: str = 'http://localhost:5000/ifmp/uploads', REPORT_URL: str = 'http://localhost:5000/ifmp/reports', REPORT_COMPONENT_URL: str = 'http://localhost:5000/ifmp/report_components', FILE_UPLOAD_PATH: str = '/tmp/lware', MONGO_COLLECTION_DATA_NAME: str = 'IFMPData', MONGO_COLLECTION_UTILIZATION_NAME: str = 'IFMPUtilization', MONGO_COLLECTION_ANALYSIS_NAME: str = 'IFMPAnalysis', MONGO_ROOT_USERNAME: str = 'John', MONGO_ROOT_PASSWORD: str = 'secret', MONGO_DATABASE_NAME: str = 'db', MONGO_HOSTNAME: str = 'localhost', MONGO_PORT: str = '27017', MONGO_CONNECTION_STRING: str = 'mongodb://localhost:27017/db')</span>
+<span>(</span><span>DEBUG: bool = True, ENVIRONMENT: str = 'local', PERSONAL_SUFFIX: str = '_acmt', APP_ID: str = 'ifmp', APP_HOST: str = 'http://localhost:5000', LWARE_USER: str = 'John', LWARE_PASSWORD: str = 'secret', AUTH_USERS_URL: str = 'http://localhost:5000/auth/users', AUTH_MACHINES_URL: str = 'http://localhost:5000/auth/machines', AUTH_BASE_URL: str = 'http://localhost:5000/auth', AUTH_MACHINES_ROUTE: str = '/machines', AUTH_USERS_ROUTE: str = '/users', AUTH_MACHINE_CHECK_URL: str = 'http://localhost:5000/auth/machine_authorization', AUTH_USER_CHECK_URL: str = 'http://localhost:5000/auth/verify', REGISTRY_SERVICE_URL: str = 'http://localhost:5000/registry-service', REGISTER_APP_URL: str = 'http://localhost:5000/registry-service/apps', REGISTER_UPLOADER_URL: str = 'http://localhost:5000/registry-service/uploaders', REGISTER_UPLOADER_STATUS_URL: str = 'http://localhost:5000/registry-service/uploaders/status', REGISTER_REPORT_URL: str = 'http://localhost:5000/registry-service/reports', REGISTER_REPORT_COMPONENT_URL: str = 'http://localhost:5000/registry-service/reports/components', APP_PATH: str = '/ifmp', BASE_URL: str = 'http://localhost:5000/ifmp', UPLOAD_PATH: str = '/uploads', REPORT_PATH: str = '/reports', REPORT_COMPONENT_PATH: str = '/report_components', UPLOAD_URL: str = 'http://localhost:5000/ifmp/uploads', REPORT_URL: str = 'http://localhost:5000/ifmp/reports', REPORT_COMPONENT_URL: str = 'http://localhost:5000/ifmp/report_components', FILE_UPLOAD_PATH: str = '/tmp/lware', MONGO_COLLECTION_DATA_NAME: str = 'IFMPData', MONGO_COLLECTION_UTILIZATION_NAME: str = 'IFMPUtilization', MONGO_COLLECTION_ANALYSIS_NAME: str = 'IFMPAnalysis', MONGO_ROOT_USERNAME: str = 'John', MONGO_ROOT_PASSWORD: str = 'secret', MONGO_DATABASE_NAME: str = 'db', MONGO_HOSTNAME: str = 'localhost', MONGO_PORT: str = '27017', MONGO_CONNECTION_STRING: str = 'mongodb://localhost:27017/db')</span>
 </code></dt>
 <dd>
-<div class="desc"><p>envs(DEBUG: bool = True, ENVIRONMENT: str = 'local', PERSONAL_SUFFIX: str = '_acmt', APP_ID: str = 'ifmp', APP_HOST: str = 'http://localhost:5000', LWARE_USER: str = 'John', LWARE_PASSWORD: str = 'secret', AUTH_USERS_URL: str = 'http://localhost:5000/auth/users', AUTH_MACHINES_URL: str = 'http://localhost:5000/auth/machines', AUTH_BASE_URL: str = 'http://localhost:5000/auth', AUTH_MACHINES_ROUTE: str = '/machines', AUTH_USERS_ROUTE: str = '/users', AUTH_MACHINE_CHECK_URL: str = 'http://localhost:5000/auth/machine_authorization', AUTH_USER_CHECK_URL: str = 'http://localhost:5000/auth/verify', REGISTRY_SERVICE_URL: str = 'http://localhost:5000/registry-service', REGISTER_APP_URL: str = 'http://localhost:5000/registry-service/apps', REGISTER_UPLOADER_URL: str = 'http://localhost:5000/registry-service/uploaders', REGISTER_UPLOADER_STATUS_URL: str = 'http://localhost:5000/registry-service/uploaders/status', REGISTER_REPORT_URL: str = 'http://localhost:5000/registry-service/reports', REGISTER_REPORT_COMPONENT_URL: str = 'http://localhost:5000/registry-service/reports/components', BASE_URL: str = 'http://localhost:5000/ifmp', UPLOAD_PATH: str = '/uploads', REPORT_PATH: str = '/reports', REPORT_COMPONENT_PATH: str = '/report_components', UPLOAD_URL: str = 'http://localhost:5000/ifmp/uploads', REPORT_URL: str = 'http://localhost:5000/ifmp/reports', REPORT_COMPONENT_URL: str = 'http://localhost:5000/ifmp/report_components', FILE_UPLOAD_PATH: str = '/tmp/lware', MONGO_COLLECTION_DATA_NAME: str = 'IFMPData', MONGO_COLLECTION_UTILIZATION_NAME: str = 'IFMPUtilization', MONGO_COLLECTION_ANALYSIS_NAME: str = 'IFMPAnalysis', MONGO_ROOT_USERNAME: str = 'John', MONGO_ROOT_PASSWORD: str = 'secret', MONGO_DATABASE_NAME: str = 'db', MONGO_HOSTNAME: str = 'localhost', MONGO_PORT: str = '27017', MONGO_CONNECTION_STRING: str = 'mongodb://localhost:27017/db')</p></div>
+<div class="desc"><p>envs(DEBUG: bool = True, ENVIRONMENT: str = 'local', PERSONAL_SUFFIX: str = '_acmt', APP_ID: str = 'ifmp', APP_HOST: str = 'http://localhost:5000', LWARE_USER: str = 'John', LWARE_PASSWORD: str = 'secret', AUTH_USERS_URL: str = 'http://localhost:5000/auth/users', AUTH_MACHINES_URL: str = 'http://localhost:5000/auth/machines', AUTH_BASE_URL: str = 'http://localhost:5000/auth', AUTH_MACHINES_ROUTE: str = '/machines', AUTH_USERS_ROUTE: str = '/users', AUTH_MACHINE_CHECK_URL: str = 'http://localhost:5000/auth/machine_authorization', AUTH_USER_CHECK_URL: str = 'http://localhost:5000/auth/verify', REGISTRY_SERVICE_URL: str = 'http://localhost:5000/registry-service', REGISTER_APP_URL: str = 'http://localhost:5000/registry-service/apps', REGISTER_UPLOADER_URL: str = 'http://localhost:5000/registry-service/uploaders', REGISTER_UPLOADER_STATUS_URL: str = 'http://localhost:5000/registry-service/uploaders/status', REGISTER_REPORT_URL: str = 'http://localhost:5000/registry-service/reports', REGISTER_REPORT_COMPONENT_URL: str = 'http://localhost:5000/registry-service/reports/components', APP_PATH: str = '/ifmp', BASE_URL: str = 'http://localhost:5000/ifmp', UPLOAD_PATH: str = '/uploads', REPORT_PATH: str = '/reports', REPORT_COMPONENT_PATH: str = '/report_components', UPLOAD_URL: str = 'http://localhost:5000/ifmp/uploads', REPORT_URL: str = 'http://localhost:5000/ifmp/reports', REPORT_COMPONENT_URL: str = 'http://localhost:5000/ifmp/report_components', FILE_UPLOAD_PATH: str = '/tmp/lware', MONGO_COLLECTION_DATA_NAME: str = 'IFMPData', MONGO_COLLECTION_UTILIZATION_NAME: str = 'IFMPUtilization', MONGO_COLLECTION_ANALYSIS_NAME: str = 'IFMPAnalysis', MONGO_ROOT_USERNAME: str = 'John', MONGO_ROOT_PASSWORD: str = 'secret', MONGO_DATABASE_NAME: str = 'db', MONGO_HOSTNAME: str = 'localhost', MONGO_PORT: str = '27017', MONGO_CONNECTION_STRING: str = 'mongodb://localhost:27017/db')</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -229,7 +230,8 @@ class envs:
     REGISTER_REPORT_URL:str = REGISTRY_SERVICE_URL + &#39;/reports&#39;
     REGISTER_REPORT_COMPONENT_URL:str = REGISTER_REPORT_URL + &#39;/components&#39;
     
-    BASE_URL:str = APP_HOST + &#34;/&#34; + APP_ID
+    APP_PATH:str = &#34;/&#34; + APP_ID
+    BASE_URL:str = APP_HOST + APP_PATH
     UPLOAD_PATH:str = &#39;/uploads&#39;
     REPORT_PATH:str = &#39;/reports&#39;
     REPORT_COMPONENT_PATH:str = &#39;/report_components&#39;
@@ -278,6 +280,10 @@ class envs:
 <div class="desc"></div>
 </dd>
 <dt id="licenseware.common.constants.envs.envs.APP_ID"><code class="name">var <span class="ident">APP_ID</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="licenseware.common.constants.envs.envs.APP_PATH"><code class="name">var <span class="ident">APP_PATH</span> : str</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -509,6 +515,7 @@ def get_auth_token_datetime(cls):
 <ul class="">
 <li><code><a title="licenseware.common.constants.envs.envs.APP_HOST" href="#licenseware.common.constants.envs.envs.APP_HOST">APP_HOST</a></code></li>
 <li><code><a title="licenseware.common.constants.envs.envs.APP_ID" href="#licenseware.common.constants.envs.envs.APP_ID">APP_ID</a></code></li>
+<li><code><a title="licenseware.common.constants.envs.envs.APP_PATH" href="#licenseware.common.constants.envs.envs.APP_PATH">APP_PATH</a></code></li>
 <li><code><a title="licenseware.common.constants.envs.envs.AUTH_BASE_URL" href="#licenseware.common.constants.envs.envs.AUTH_BASE_URL">AUTH_BASE_URL</a></code></li>
 <li><code><a title="licenseware.common.constants.envs.envs.AUTH_MACHINES_ROUTE" href="#licenseware.common.constants.envs.envs.AUTH_MACHINES_ROUTE">AUTH_MACHINES_ROUTE</a></code></li>
 <li><code><a title="licenseware.common.constants.envs.envs.AUTH_MACHINES_URL" href="#licenseware.common.constants.envs.envs.AUTH_MACHINES_URL">AUTH_MACHINES_URL</a></code></li>

@@ -23,7 +23,8 @@
 </header>
 <section id="section-intro">
 <p>Given a list of filenames return validation analysis response</p>
-<p>Notice we are using <code>build_restx_model</code> function to generate the swagger body required for the request.</p>
+<p>Notice we are using <code>build_restx_model</code> function to generate the swagger body required for the request. </p>
+<p>Notice also the separation of creating the resource and the given namespace.</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -32,7 +33,9 @@
 
 Given a list of filenames return validation analysis response
 
-Notice we are using `build_restx_model` function to generate the swagger body required for the request.  
+Notice we are using `build_restx_model` function to generate the swagger body required for the request. 
+
+Notice also the separation of creating the resource and the given namespace. 
 
 &#34;&#34;&#34;
 
@@ -46,35 +49,57 @@ from licenseware.decorators import failsafe
 from licenseware.utils.logger import log
 from licenseware.utils.miscellaneous import build_restx_model
 
+from licenseware.uploader_builder import UploaderBuilder
+from typing import List
+
+
 
 class FilenamesValidationSchema(Schema):
     filenames = fields.List(fields.Str, required=True)
     
     
 
-def get_filenames_validation_namespace(ns: Namespace, uploaders:list):
+def create_uploader_resource(uploader:UploaderBuilder):
+             
+    class FilenameValidate(Resource): 
+        @failsafe(fail_code=500)
+        @authorization_check
+        def post(self):
+            return uploader.validate_filenames(request)
+        
+    return FilenameValidate
+
+
+
+def get_filenames_validation_namespace(ns: Namespace, uploaders:List[UploaderBuilder]):
     
     restx_model = build_restx_model(ns, FilenamesValidationSchema)
     
     for uploader in uploaders:
-                
-        @ns.route(uploader.upload_validation_path)
-        class FilenameValidate(Resource): 
-            @failsafe(fail_code=500)
-            @authorization_check
-            @ns.doc(
-                id=&#39;Validate file name list&#39;,
-                responses={
-                    200 : &#39;Filenames are valid&#39;, 
-                    400 : &#39;Filenames sent for validation must be in a list of strings format&#39;,
-                    402 : &#39;Quota exceeded&#39;,
-                    403 : &#34;Missing `Tenant` or `Authorization` information&#34;,
-                    500 : &#39;Something went wrong while handling the request&#39; 
-                },
-                body=restx_model
-            )
-            def post(self):
-                return uploader.validate_filenames(request)
+        
+        UR = create_uploader_resource(uploader)
+           
+        @ns.doc(
+            id=&#39;Validate file name list&#39;,
+            responses={
+                200 : &#39;Filenames are valid&#39;, 
+                400 : &#39;Filenames sent for validation must be in a list of strings format&#39;,
+                402 : &#39;Quota exceeded&#39;,
+                403 : &#34;Missing `Tenant` or `Authorization` information&#34;,
+                500 : &#39;Something went wrong while handling the request&#39; 
+            },
+            body=restx_model
+        )
+        class TempUploaderResource(UR): ...
+        
+        UploaderResource = type(
+            uploader.uploader_id.replace(&#34;_&#34;, &#34;&#34;).capitalize() + &#39;filenames&#39;,
+            (TempUploaderResource, ),
+            {}
+        )
+        
+        ns.add_resource(UploaderResource, uploader.upload_validation_path) 
+           
 
     return ns
     </code></pre>
@@ -87,8 +112,8 @@ def get_filenames_validation_namespace(ns: Namespace, uploaders:list):
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="licenseware.app_builder.uploads_namespace.filenames_validation_namespace.get_filenames_validation_namespace"><code class="name flex">
-<span>def <span class="ident">get_filenames_validation_namespace</span></span>(<span>ns: flask_restx.namespace.Namespace, uploaders: list)</span>
+<dt id="licenseware.app_builder.uploads_namespace.filenames_validation_namespace.create_uploader_resource"><code class="name flex">
+<span>def <span class="ident">create_uploader_resource</span></span>(<span>uploader: <a title="licenseware.uploader_builder.uploader_builder.UploaderBuilder" href="../../uploader_builder/uploader_builder.html#licenseware.uploader_builder.uploader_builder.UploaderBuilder">UploaderBuilder</a>)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -96,29 +121,55 @@ def get_filenames_validation_namespace(ns: Namespace, uploaders:list):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_filenames_validation_namespace(ns: Namespace, uploaders:list):
+<pre><code class="python">def create_uploader_resource(uploader:UploaderBuilder):
+             
+    class FilenameValidate(Resource): 
+        @failsafe(fail_code=500)
+        @authorization_check
+        def post(self):
+            return uploader.validate_filenames(request)
+        
+    return FilenameValidate</code></pre>
+</details>
+</dd>
+<dt id="licenseware.app_builder.uploads_namespace.filenames_validation_namespace.get_filenames_validation_namespace"><code class="name flex">
+<span>def <span class="ident">get_filenames_validation_namespace</span></span>(<span>ns: flask_restx.namespace.Namespace, uploaders: List[<a title="licenseware.uploader_builder.uploader_builder.UploaderBuilder" href="../../uploader_builder/uploader_builder.html#licenseware.uploader_builder.uploader_builder.UploaderBuilder">UploaderBuilder</a>])</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_filenames_validation_namespace(ns: Namespace, uploaders:List[UploaderBuilder]):
     
     restx_model = build_restx_model(ns, FilenamesValidationSchema)
     
     for uploader in uploaders:
-                
-        @ns.route(uploader.upload_validation_path)
-        class FilenameValidate(Resource): 
-            @failsafe(fail_code=500)
-            @authorization_check
-            @ns.doc(
-                id=&#39;Validate file name list&#39;,
-                responses={
-                    200 : &#39;Filenames are valid&#39;, 
-                    400 : &#39;Filenames sent for validation must be in a list of strings format&#39;,
-                    402 : &#39;Quota exceeded&#39;,
-                    403 : &#34;Missing `Tenant` or `Authorization` information&#34;,
-                    500 : &#39;Something went wrong while handling the request&#39; 
-                },
-                body=restx_model
-            )
-            def post(self):
-                return uploader.validate_filenames(request)
+        
+        UR = create_uploader_resource(uploader)
+           
+        @ns.doc(
+            id=&#39;Validate file name list&#39;,
+            responses={
+                200 : &#39;Filenames are valid&#39;, 
+                400 : &#39;Filenames sent for validation must be in a list of strings format&#39;,
+                402 : &#39;Quota exceeded&#39;,
+                403 : &#34;Missing `Tenant` or `Authorization` information&#34;,
+                500 : &#39;Something went wrong while handling the request&#39; 
+            },
+            body=restx_model
+        )
+        class TempUploaderResource(UR): ...
+        
+        UploaderResource = type(
+            uploader.uploader_id.replace(&#34;_&#34;, &#34;&#34;).capitalize() + &#39;filenames&#39;,
+            (TempUploaderResource, ),
+            {}
+        )
+        
+        ns.add_resource(UploaderResource, uploader.upload_validation_path) 
+           
 
     return ns</code></pre>
 </details>
@@ -229,6 +280,7 @@ fields in the data. Use <code>EXCLUDE</code>, <code>INCLUDE</code> or <code>RAIS
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
+<li><code><a title="licenseware.app_builder.uploads_namespace.filenames_validation_namespace.create_uploader_resource" href="#licenseware.app_builder.uploads_namespace.filenames_validation_namespace.create_uploader_resource">create_uploader_resource</a></code></li>
 <li><code><a title="licenseware.app_builder.uploads_namespace.filenames_validation_namespace.get_filenames_validation_namespace" href="#licenseware.app_builder.uploads_namespace.filenames_validation_namespace.get_filenames_validation_namespace">get_filenames_validation_namespace</a></code></li>
 </ul>
 </li>

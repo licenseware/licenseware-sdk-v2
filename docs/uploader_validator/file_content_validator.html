@@ -136,6 +136,19 @@ class FileContentValidator:
         return validation_response
 
         
+    def get_overall_status_and_message(self, validation_response:list):
+    
+        status  = &#39;success&#39;
+        message = &#39;Files are valid&#39;
+        for res in validation_response:
+            if res[&#39;status&#39;] == &#39;fail&#39;:        
+                status  = &#39;fail&#39;
+                message = &#39;Not all files are valid&#39;
+                break
+            
+        return status, message
+        
+        
     def get_file_objects_response(self, flask_request):
         &#34;&#34;&#34;
             receive flask_request 
@@ -149,13 +162,17 @@ class FileContentValidator:
         file_objects = self.get_file_objects_from_request(flask_request)
         if not isinstance(file_objects, list): return file_objects
         validation_response = self.validate_file_objects(file_objects, tenant_id)
+        status, message = self.get_overall_status_and_message(validation_response)
         
         return {
             &#39;tenant_id&#39;: tenant_id, 
-            &#39;status&#39;: &#39;success&#39;, 
-            &#39;message&#39;: &#39;Files are valid&#39;,
+            &#39;status&#39;: status, 
+            &#39;message&#39;: message,
             &#39;validation&#39;: validation_response
         }, 200
+            
+            
+        
             
             
         </code></pre>
@@ -283,6 +300,19 @@ class FileContentValidator:
         return validation_response
 
         
+    def get_overall_status_and_message(self, validation_response:list):
+    
+        status  = &#39;success&#39;
+        message = &#39;Files are valid&#39;
+        for res in validation_response:
+            if res[&#39;status&#39;] == &#39;fail&#39;:        
+                status  = &#39;fail&#39;
+                message = &#39;Not all files are valid&#39;
+                break
+            
+        return status, message
+        
+        
     def get_file_objects_response(self, flask_request):
         &#34;&#34;&#34;
             receive flask_request 
@@ -296,11 +326,12 @@ class FileContentValidator:
         file_objects = self.get_file_objects_from_request(flask_request)
         if not isinstance(file_objects, list): return file_objects
         validation_response = self.validate_file_objects(file_objects, tenant_id)
+        status, message = self.get_overall_status_and_message(validation_response)
         
         return {
             &#39;tenant_id&#39;: tenant_id, 
-            &#39;status&#39;: &#39;success&#39;, 
-            &#39;message&#39;: &#39;Files are valid&#39;,
+            &#39;status&#39;: status, 
+            &#39;message&#39;: message,
             &#39;validation&#39;: validation_response
         }, 200</code></pre>
 </details>
@@ -359,11 +390,12 @@ create json response</p></div>
     file_objects = self.get_file_objects_from_request(flask_request)
     if not isinstance(file_objects, list): return file_objects
     validation_response = self.validate_file_objects(file_objects, tenant_id)
+    status, message = self.get_overall_status_and_message(validation_response)
     
     return {
         &#39;tenant_id&#39;: tenant_id, 
-        &#39;status&#39;: &#39;success&#39;, 
-        &#39;message&#39;: &#39;Files are valid&#39;,
+        &#39;status&#39;: status, 
+        &#39;message&#39;: message,
         &#39;validation&#39;: validation_response
     }, 200</code></pre>
 </details>
@@ -395,6 +427,28 @@ create json response</p></div>
             file.close()
             
     return validation_file_objects</code></pre>
+</details>
+</dd>
+<dt id="licenseware.uploader_validator.file_content_validator.FileContentValidator.get_overall_status_and_message"><code class="name flex">
+<span>def <span class="ident">get_overall_status_and_message</span></span>(<span>self, validation_response: list)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_overall_status_and_message(self, validation_response:list):
+
+    status  = &#39;success&#39;
+    message = &#39;Files are valid&#39;
+    for res in validation_response:
+        if res[&#39;status&#39;] == &#39;fail&#39;:        
+            status  = &#39;fail&#39;
+            message = &#39;Not all files are valid&#39;
+            break
+        
+    return status, message</code></pre>
 </details>
 </dd>
 <dt id="licenseware.uploader_validator.file_content_validator.FileContentValidator.validate_file_objects"><code class="name flex">
@@ -471,6 +525,7 @@ create json response</p></div>
 <li><code><a title="licenseware.uploader_validator.file_content_validator.FileContentValidator.get_file_objects_from_request" href="#licenseware.uploader_validator.file_content_validator.FileContentValidator.get_file_objects_from_request">get_file_objects_from_request</a></code></li>
 <li><code><a title="licenseware.uploader_validator.file_content_validator.FileContentValidator.get_file_objects_response" href="#licenseware.uploader_validator.file_content_validator.FileContentValidator.get_file_objects_response">get_file_objects_response</a></code></li>
 <li><code><a title="licenseware.uploader_validator.file_content_validator.FileContentValidator.get_only_valid_file_objects" href="#licenseware.uploader_validator.file_content_validator.FileContentValidator.get_only_valid_file_objects">get_only_valid_file_objects</a></code></li>
+<li><code><a title="licenseware.uploader_validator.file_content_validator.FileContentValidator.get_overall_status_and_message" href="#licenseware.uploader_validator.file_content_validator.FileContentValidator.get_overall_status_and_message">get_overall_status_and_message</a></code></li>
 <li><code><a title="licenseware.uploader_validator.file_content_validator.FileContentValidator.validate_file_objects" href="#licenseware.uploader_validator.file_content_validator.FileContentValidator.validate_file_objects">validate_file_objects</a></code></li>
 </ul>
 </li>

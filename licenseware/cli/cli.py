@@ -4,6 +4,7 @@ Here all cli functions are gathered and decorated with typer app decorator.
 
 """
 import os
+import re
 import time
 import shutil
 import typer
@@ -25,7 +26,7 @@ app = typer.Typer(
 @app.command()
 def new_app(app_id:str):
     """ 
-        Given app_id make a new app
+        Given app_id build a new app
         
         The package structure for the app will be created and the app_id will be added to .env file
          
@@ -37,7 +38,7 @@ def new_app(app_id:str):
 @app.command()
 def new_uploader(uploader_id: str):
     """ 
-        Given uploader_id make a new uploader 
+        Given uploader_id build a new uploader 
         
         The package structure for the uploader will be created, imports and registration will be handled also.
     """
@@ -48,7 +49,7 @@ def new_uploader(uploader_id: str):
 @app.command()
 def new_report(report_id: str):
     """ 
-        Given report_id make a new report 
+        Given report_id build a new report 
         
         The package structure for the report will be created, imports and registration will be handled also.
     """
@@ -59,7 +60,7 @@ def new_report(report_id: str):
 @app.command()
 def new_report_component(component_id: str, component_type: str = None):
     """
-        Given component_id make a new report component 
+        Given component_id build a new report component 
         
         Argument component_type will be taken if not provided from component_id (ex: virtualization_summary -> summary will be the component_type)
         
@@ -73,9 +74,9 @@ def new_report_component(component_id: str, component_type: str = None):
 
 
 @app.command()
-def make_docs():
+def build_docs():
     """
-        Make app html docs
+        Build app html docs
     """
     
     os.system("pdoc --html --output-dir app-docs app")
@@ -96,9 +97,9 @@ def make_docs():
     
 
 @app.command()
-def make_sdk_docs():
+def build_sdk_docs():
     """
-        Make licenseware sdk html docs
+        Build licenseware sdk html docs
     """
     
     os.system("pdoc --html --output-dir sdk-docs licenseware")
@@ -114,5 +115,56 @@ def make_sdk_docs():
     if os.path.exists("docs"): shutil.rmtree("docs")
     shutil.move("sdk-docs/licenseware", "docs")
     shutil.rmtree("sdk-docs")
+
+    
+
+
+@app.command()
+def start_mock_server():
+    """
+        Start the mock server needed which is a placeholder for registry-service and auth-service
+    """
+    os.system("uwsgi --http 0.0.0.0:5000 -w mock_server:app --processes 4")
+
+
+
+@app.command()
+def start_dev_server():
+    """
+        Start the development server (flask server with debug on)
+    """
+    os.system("python3 main.py")
+
+
+
+@app.command()
+def start_prod_server():
+    """
+        Start the production server (uwsgi server with 4 processes)
+    """
+    os.system("uwsgi --http 0.0.0.0:4000 -w main:app --processes 4")
+
+    
+    
+@app.command()
+def start_background_worker():
+    """
+        Start the redis background worker with 4 processes and with queue of app id from .env
+    """
+    
+    if not os.path.exists('.env'):
+        raise Exception("Expected '.env' file to be found in this directory")
+        
+    with open('.env', 'r') as f:
+        env_data = f.read()
+        
+    app_id = None
+    m = re.search(r"APP_ID=(.*)", env_data)
+    if m: app_id = m.group(1)
+
+    if app_id:
+        os.system(f"flask worker -p4 -Q{app_id}")
+    else:#listen to all queues
+        os.system(f"flask worker -p4")
 
     

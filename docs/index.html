@@ -888,7 +888,6 @@ if __name__ == &quot;__main__&quot;:
 You can invoke the cli with by typing licenseware in the terminal followed by &ndash;help for docs.</p>
 <pre><code>
 $ licenseware --help
-
 Usage: licenseware [OPTIONS] COMMAND [ARGS]...
 
   Useful CLI commands for automatic code generation, files and folders
@@ -904,10 +903,16 @@ Options:
   --help                          Show this message and exit.
 
 Commands:
-  new-app               Given app_id make a new app
-  new-report            Given report_id make a new report
-  new-report-component  Given component_id make a new report component
-  new-uploader          Given uploader_id make a new uploader
+  build-docs               Build app html docs
+  build-sdk-docs           Build licenseware sdk html docs
+  new-app                  Given app_id build a new app The package...
+  new-report               Given report_id build a new report The package...
+  new-report-component     Given component_id build a new report component...
+  new-uploader             Given uploader_id build a new uploader The...
+  start-background-worker  Start the redis background worker with 4...
+  start-dev-server         Start the development server (flask server with...
+  start-mock-server        Start the mock server needed which is a...
+  start-prod-server        Start the production server (uwsgi server with 4...
 
 </code></pre>
 <p>See help for a command by specifing the command name followed by &ndash;help</p>
@@ -1015,6 +1020,24 @@ licenseware new-report-component virtual_overview summary
 <p>Component id will be <code>virtual_overview</code> and it's component type will be <code>summary</code>.
 All imports an routes will be handled by the licenseware sdk.
 To sparse the logic you can create multiple sub-packages/modules.</p>
+<h2 id="start-develompent-environments-servers">Start develompent environments servers</h2>
+<p>You can start from the terminal the mock server, dev/prod server and the redis background worker.</p>
+<p>Open a terminal for each command:</p>
+<pre><code class="language-bash">
+licenseware start-mock-server
+
+</code></pre>
+<p>This will start the server that will handle mock requests to registry-service and auth-server.</p>
+<pre><code class="language-bash">
+licenseware start-background-worker
+
+</code></pre>
+<p>This will start the redis background worker server that will handle the events.</p>
+<pre><code class="language-bash">
+licenseware start-dev-server
+
+</code></pre>
+<p>This will start the flask server with auto-reload. </p>
 <h1 id="load-testing">Load testing</h1>
 <p><a href="https://github.com/americanexpress/baton">baton docs</a></p>
 <pre><code class="language-bash">baton -u http://localhost:4000 -c 10 -r 10000
@@ -2065,7 +2088,6 @@ You can invoke the cli with by typing licenseware in the terminal followed by --
 ```
 
 $ licenseware --help
-
 Usage: licenseware [OPTIONS] COMMAND [ARGS]...
 
   Useful CLI commands for automatic code generation, files and folders
@@ -2081,10 +2103,16 @@ Options:
   --help                          Show this message and exit.
 
 Commands:
-  new-app               Given app_id make a new app
-  new-report            Given report_id make a new report
-  new-report-component  Given component_id make a new report component
-  new-uploader          Given uploader_id make a new uploader
+  build-docs               Build app html docs
+  build-sdk-docs           Build licenseware sdk html docs
+  new-app                  Given app_id build a new app The package...
+  new-report               Given report_id build a new report The package...
+  new-report-component     Given component_id build a new report component...
+  new-uploader             Given uploader_id build a new uploader The...
+  start-background-worker  Start the redis background worker with 4...
+  start-dev-server         Start the development server (flask server with...
+  start-mock-server        Start the mock server needed which is a...
+  start-prod-server        Start the production server (uwsgi server with 4...
 
 ```
 
@@ -2235,6 +2263,36 @@ To sparse the logic you can create multiple sub-packages/modules.
 
 
 
+## Start develompent environments servers 
+
+You can start from the terminal the mock server, dev/prod server and the redis background worker.
+
+Open a terminal for each command:
+
+```bash
+
+licenseware start-mock-server
+
+``` 
+This will start the server that will handle mock requests to registry-service and auth-server.
+
+
+
+
+```bash
+
+licenseware start-background-worker
+
+``` 
+This will start the redis background worker server that will handle the events.
+
+
+```bash
+
+licenseware start-dev-server
+
+``` 
+This will start the flask server with auto-reload. 
 
 
 
@@ -2245,6 +2303,7 @@ To sparse the logic you can create multiple sub-packages/modules.
 ```bash
 baton -u http://localhost:4000 -c 10 -r 10000
 ```
+
 &#39;&#39;&#39;
 
 try:
@@ -2378,6 +2437,7 @@ We are using jinja2 to fill variables from files …</p></div>
 <li><a href="#create-a-new-uploader-from-cli">Create a new uploader from CLI</a></li>
 <li><a href="#create-a-new-report-from-cli">Create a new report from CLI</a></li>
 <li><a href="#create-a-new-report-component-from-cli">Create a new report component from CLI</a></li>
+<li><a href="#start-develompent-environments-servers">Start develompent environments servers</a></li>
 </ul>
 </li>
 <li><a href="#load-testing">Load testing</a></li>
