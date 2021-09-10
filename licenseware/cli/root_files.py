@@ -32,10 +32,7 @@ def create_root_files(app_id:str):
             raw_contents = pkg_resources.read_text(resources, rname)
             tmp = Template(raw_contents)
             
-            if fname == '.env' and app_id is not None:
-                file_contents = tmp.render(app_id=app_id, personal_suffix=generate_id(3))
-            else:
-                file_contents = tmp.render()
+            file_contents = tmp.render(app_id=app_id, personal_suffix=generate_id(3))
             
             with open(fname, 'w') as f:
                 f.write(file_contents)

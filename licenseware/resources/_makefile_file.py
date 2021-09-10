@@ -17,7 +17,7 @@ dev:
 	python3 main.py
 
 worker:
-	flask worker -p4
+	flask worker -p4 -Q{{ app_id }}
 	
 test:
 	echo create some tests
@@ -49,8 +49,7 @@ sdk-dev-docs:
 
 sdk-docs:
 	pdoc --html --output-dir sdk-docs licenseware
-
-
+	
 install-sdk:
 	pip3 uninstall -y licenseware
 	python3 setup.py bdist_wheel sdist
