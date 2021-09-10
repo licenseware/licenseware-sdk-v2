@@ -14,10 +14,12 @@ from licenseware.decorators import failsafe
 from licenseware.tenants import clear_tenant_data 
 from werkzeug.datastructures import FileStorage
 
+from licenseware.uploader_builder import UploaderBuilder
+from typing import List
 
 
     
-def create_uploader_resource(uploader):
+def create_uploader_resource(uploader:UploaderBuilder):
     
     class FileStreamValidate(Resource): 
         @failsafe(fail_code=500)
@@ -35,7 +37,7 @@ def create_uploader_resource(uploader):
 
     
     
-def get_filestream_validation_namespace(ns: Namespace, uploaders:list):
+def get_filestream_validation_namespace(ns: Namespace, uploaders:List[UploaderBuilder]):
     
     file_upload_parser = ns.parser()
     file_upload_parser.add_argument(
