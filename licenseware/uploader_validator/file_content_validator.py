@@ -108,6 +108,19 @@ class FileContentValidator:
         return validation_response
 
         
+    def get_overall_status_and_message(self, validation_response:list):
+    
+        status  = 'success'
+        message = 'Files are valid'
+        for res in validation_response:
+            if res['status'] == 'fail':        
+                status  = 'fail'
+                message = 'Not all files are valid'
+                break
+            
+        return status, message
+        
+        
     def get_file_objects_response(self, flask_request):
         """
             receive flask_request 
@@ -121,15 +134,8 @@ class FileContentValidator:
         file_objects = self.get_file_objects_from_request(flask_request)
         if not isinstance(file_objects, list): return file_objects
         validation_response = self.validate_file_objects(file_objects, tenant_id)
+        status, message = self.get_overall_status_and_message(validation_response)
         
-        
-        status  = 'success'
-        message = 'Files are valid'
-        for res in validation_response:
-            if res['status'] == 'fail':        
-                status  = 'fail'
-                message = 'Not all files are valid'
-                
         return {
             'tenant_id': tenant_id, 
             'status': status, 
