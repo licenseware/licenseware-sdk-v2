@@ -67,7 +67,7 @@ def get_filestream_validation_namespace(ns: Namespace, uploaders:List[UploaderBu
         class TempUploaderResource(UR): ...
         
         UploaderResource = type(
-            uploader.uploader_id.replace("_", "").capitalize(),
+            uploader.uploader_id.replace("_", "").capitalize() + 'stream',
             (TempUploaderResource, ),
             {}
         )

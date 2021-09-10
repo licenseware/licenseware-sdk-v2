@@ -1,25 +1,24 @@
 import datetime
 from licenseware import mongodata as m
 from licenseware.utils.logger import log
-from licenseware.common.constants import envs
+from licenseware.common.constants import envs, states
 
 
-#TODO close timeout files for tenant_id
 
-def close_timed_out_files(analysis_collection_name:str = None):
+def close_timed_out_files():
     
     time_out_time = datetime.datetime.utcnow() - datetime.timedelta(minutes=30)
     start_time = datetime.datetime.utcnow() - datetime.timedelta(days=360)
 
     
-    _filter = {'files.status': {"$eq": 'Running'},
+    _filter = {'files.status': {"$eq": states.RUNNING},
                 'files.analysis_date': {'$gt': start_time.isoformat(), '$lt': time_out_time.isoformat()}}
 
-    stats_collection = m.get_collection(analysis_collection_name or envs.MONGO_COLLECTION_ANALYSIS_NAME)
+    stats_collection = m.get_collection(envs.MONGO_COLLECTION_ANALYSIS_NAME)
 
     update_data = {
         '$set': {
-            'files.$[file].status': 'Timeout'
+            'files.$[file].status': states.TIMEOUT
         }
     }
     
@@ -27,7 +26,7 @@ def close_timed_out_files(analysis_collection_name:str = None):
         filter=_filter,
         update=update_data,
         upsert=False,
-        array_filters=[{"file.status": {"$eq": 'Running'},
+        array_filters=[{"file.status": {"$eq": states.RUNNING},
                         'file.analysis_date': {
                             '$gt': start_time.isoformat(),
                             '$lt': time_out_time.isoformat()
@@ -41,7 +40,7 @@ def close_timed_out_files(analysis_collection_name:str = None):
     
     
     _filter = {
-        'status': 'Running',
+        'status': states.RUNNING,
         'updated_at': {
             '$gt': start_time.isoformat(),
             '$lt': time_out_time.isoformat()
@@ -50,7 +49,7 @@ def close_timed_out_files(analysis_collection_name:str = None):
 
     update_data = {
         '$set': {
-            'status': 'Timeout'
+            'status': states.TIMEOUT
         }
     }
     

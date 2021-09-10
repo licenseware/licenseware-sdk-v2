@@ -4,26 +4,47 @@ from licenseware.decorators.auth_decorators import machine_check
 from licenseware.decorators import failsafe
 
 
+from licenseware.report_builder import ReportBuilder
+from typing import List
 
-def get_report_register_namespace(ns: Namespace, reports:list):
+
+
+def create_report_resource(report: ReportBuilder):
+    
+    class ReportRegister(Resource):         
+        @failsafe(fail_code=500)   
+        @machine_check
+        def get(self):
+            return report.register_report()
+    
+    return ReportRegister
+    
+
+
+def get_report_register_namespace(ns: Namespace, reports:List[ReportBuilder]):
     
     for report in reports:
-    
-        @ns.route(report.register_report_path)
-        class ReportRegister(Resource):         
-            @failsafe(fail_code=500)   
-            @machine_check
-            @ns.doc(
-                id=f"Register {report.name} report",
-                responses={
-                    200 : "Report registered successfully",
-                    403 : "Missing `Authorization` information",
-                    500 : "Could not register report" 
-                },
-            )
-            def get(self):
-                return report.register_report()
-            
+        
+        RR = create_report_resource(report)
+        
+        @ns.doc(
+            id=f"Register {report.name} report",
+            responses={
+                200 : "Report registered successfully",
+                403 : "Missing `Authorization` information",
+                500 : "Could not register report" 
+            },
+        )
+        class TempReportResource(RR): ...
+        
+        ReportResource = type(
+            report.report_id.replace("_", "").capitalize() + 'register',
+            (TempReportResource, ),
+            {}
+        )
+        
+        ns.add_resource(ReportResource, report.register_report_path) 
+                
     return ns
         
              

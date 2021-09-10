@@ -8,6 +8,7 @@ class states:
     RUNNING:str = 'running'
     SUCCESS:str = 'success'
     FAILED:str = 'failed'
+    TIMEOUT:str = 'timeout'
     
 
 
