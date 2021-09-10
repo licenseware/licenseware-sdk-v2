@@ -33,7 +33,7 @@ from flask import Request
 
 from licenseware.quota import Quota
 from licenseware.utils.logger import log
-from licenseware.common.constants import envs
+from licenseware.common.constants import states
 
 from .filename_validator import FileNameValidator
 from .file_content_validator import FileContentValidator
@@ -125,9 +125,9 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         
         if self.quota_within_limits(tenant_id, current_units_to_process):
             self.update_quota(tenant_id, current_units_to_process)
-            return {&#39;status&#39;: &#39;success&#39;, &#39;message&#39;: &#39;Quota within limits&#39;}, 200
+            return {&#39;status&#39;: states.SUCCESS, &#39;message&#39;: &#39;Quota within limits&#39;}, 200
         
-        return {&#39;status&#39;: &#39;fail&#39;, &#39;message&#39;: &#39;Quota exceeded&#39;}, 402
+        return {&#39;status&#39;: states.FAILED, &#39;message&#39;: &#39;Quota exceeded&#39;}, 402
     
         
     @classmethod
@@ -257,9 +257,9 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         
         if self.quota_within_limits(tenant_id, current_units_to_process):
             self.update_quota(tenant_id, current_units_to_process)
-            return {&#39;status&#39;: &#39;success&#39;, &#39;message&#39;: &#39;Quota within limits&#39;}, 200
+            return {&#39;status&#39;: states.SUCCESS, &#39;message&#39;: &#39;Quota within limits&#39;}, 200
         
-        return {&#39;status&#39;: &#39;fail&#39;, &#39;message&#39;: &#39;Quota exceeded&#39;}, 402
+        return {&#39;status&#39;: states.FAILED, &#39;message&#39;: &#39;Quota exceeded&#39;}, 402
     
         
     @classmethod
@@ -355,9 +355,9 @@ def get_only_valid_filepaths_from_objects_response(cls, file_objects_response):
     
     if self.quota_within_limits(tenant_id, current_units_to_process):
         self.update_quota(tenant_id, current_units_to_process)
-        return {&#39;status&#39;: &#39;success&#39;, &#39;message&#39;: &#39;Quota within limits&#39;}, 200
+        return {&#39;status&#39;: states.SUCCESS, &#39;message&#39;: &#39;Quota within limits&#39;}, 200
     
-    return {&#39;status&#39;: &#39;fail&#39;, &#39;message&#39;: &#39;Quota exceeded&#39;}, 402</code></pre>
+    return {&#39;status&#39;: states.FAILED, &#39;message&#39;: &#39;Quota exceeded&#39;}, 402</code></pre>
 </details>
 </dd>
 <dt id="licenseware.uploader_validator.uploader_validator.UploaderValidator.quota_within_limits"><code class="name flex">

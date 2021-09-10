@@ -1,6 +1,8 @@
+from os import stat
 from typing import List
 from licenseware.common.validators.file_validators import GeneralValidator
 from licenseware.utils.file_utils import save_file
+from licenseware.common.constants import states
 from licenseware.utils.logger import log
 
 
@@ -37,7 +39,7 @@ class FileContentValidator:
         file_objects = flask_request.files.getlist("files[]")
         
         bad_request = {
-            "status": "fail", 
+            "status": states.FAILED, 
             "message": "File list is empty or files are not on 'files[]' key"
         }, 400
         
@@ -54,7 +56,7 @@ class FileContentValidator:
         
         valid_filenames = []
         for response in filenames_validation_response:
-            if response['status'] == 'success':
+            if response['status'] == states.SUCCESS:
                 valid_filenames.append(response['filename'])
                 
         validation_file_objects = []
@@ -91,7 +93,7 @@ class FileContentValidator:
                 filepath = save_file(file, tenant_id)
                 
                 validation_response.append({
-                    'status': 'success',
+                    'status': states.SUCCESS,
                     'filename': file.filename, 
                     'filepath': filepath,
                     'message': self.filename_valid_message
@@ -99,7 +101,7 @@ class FileContentValidator:
                 
             except Exception as err:
                 validation_response.append({
-                    'status': 'fail',
+                    'status': states.FAILED,
                     'filename': file.filename, 
                     'filepath': 'File not saved',
                     'message': self.filename_invalid_message or str(err)
@@ -110,11 +112,11 @@ class FileContentValidator:
         
     def get_overall_status_and_message(self, validation_response:list):
     
-        status  = 'success'
+        status  = states.SUCCESS
         message = 'Files are valid'
         for res in validation_response:
-            if res['status'] == 'fail':        
-                status  = 'fail'
+            if res['status'] == states.FAILED:        
+                status  = states.FAILED
                 message = 'Not all files are valid'
                 break
             

@@ -2,6 +2,7 @@ from typing import List
 from licenseware.utils.logger import log
 from licenseware.common.validators.file_validators import validate_filename
 
+from licenseware.common.constants import states
 
 
 class FileNameValidator:
@@ -41,14 +42,22 @@ class FileNameValidator:
         filenames = flask_request.json
         
         bad_request = {
-            'status': 'fail', 
+            'status': states.FAILED, 
             'message': 'Filenames sent for validation must be in a list of strings format'
         }, 400
         
+    
         if filenames == None: return bad_request
-        if not isinstance(filenames, list): return bad_request
-        if len(filenames) == 0: return bad_request
+        if isinstance(filenames, str): return bad_request
 
+        if isinstance(filenames, list):
+            if len(filenames) == 0: return bad_request
+        
+        if isinstance(filenames, dict):
+            if "filenames" not in filenames: return bad_request 
+            if len(filenames["filenames"]) == 0: return bad_request
+            filenames = filenames["filenames"]
+        
         return filenames
     
     
@@ -68,7 +77,7 @@ class FileNameValidator:
             if filename in self.ignore_filenames:
                 
                 validation_response.append({
-                    'status': 'ignored',
+                    'status': states.SKIPPED,
                     'filename': filename, 
                     'message': self.filename_ignored_message
                 })
@@ -82,13 +91,13 @@ class FileNameValidator:
                     endswith=self.filename_endswith
                 )
                 validation_response.append({
-                    'status': 'success',
+                    'status': states.SUCCESS,
                     'filename': filename, 
                     'message': self.filename_valid_message
                 })
             except Exception as err:
                 validation_response.append({
-                    'status': 'fail',
+                    'status': states.FAILED,
                     'filename': filename, 
                     'message': self.filename_invalid_message or str(err)
                 })
@@ -108,7 +117,7 @@ class FileNameValidator:
         validation_response = self.validate_filenames(filenames)
         
         return {
-            'status': 'success', 
+            'status': states.SUCCESS, 
             'message': 'Filenames are valid',
             'validation': validation_response
         }, 200

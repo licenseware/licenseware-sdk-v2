@@ -9,6 +9,7 @@ class states:
     SUCCESS:str = 'success'
     FAILED:str = 'failed'
     TIMEOUT:str = 'timeout'
+    SKIPPED:str = 'skipped'
     
 
 

@@ -37,6 +37,7 @@ class states:
     SUCCESS:str = &#39;success&#39;
     FAILED:str = &#39;failed&#39;
     TIMEOUT:str = &#39;timeout&#39;
+    SKIPPED:str = &#39;skipped&#39;
     </code></pre>
 </details>
 </section>
@@ -51,10 +52,10 @@ class states:
 <dl>
 <dt id="licenseware.common.constants.states.states"><code class="flex name class">
 <span>class <span class="ident">states</span></span>
-<span>(</span><span>IDLE: str = 'idle', RUNNING: str = 'running', SUCCESS: str = 'success', FAILED: str = 'failed', TIMEOUT: str = 'timeout')</span>
+<span>(</span><span>IDLE: str = 'idle', RUNNING: str = 'running', SUCCESS: str = 'success', FAILED: str = 'failed', TIMEOUT: str = 'timeout', SKIPPED: str = 'skipped')</span>
 </code></dt>
 <dd>
-<div class="desc"><p>states(IDLE: str = 'idle', RUNNING: str = 'running', SUCCESS: str = 'success', FAILED: str = 'failed', TIMEOUT: str = 'timeout')</p></div>
+<div class="desc"><p>states(IDLE: str = 'idle', RUNNING: str = 'running', SUCCESS: str = 'success', FAILED: str = 'failed', TIMEOUT: str = 'timeout', SKIPPED: str = 'skipped')</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -64,7 +65,8 @@ class states:
     RUNNING:str = &#39;running&#39;
     SUCCESS:str = &#39;success&#39;
     FAILED:str = &#39;failed&#39;
-    TIMEOUT:str = &#39;timeout&#39;</code></pre>
+    TIMEOUT:str = &#39;timeout&#39;
+    SKIPPED:str = &#39;skipped&#39;</code></pre>
 </details>
 <h3>Class variables</h3>
 <dl>
@@ -77,6 +79,10 @@ class states:
 <div class="desc"></div>
 </dd>
 <dt id="licenseware.common.constants.states.states.RUNNING"><code class="name">var <span class="ident">RUNNING</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="licenseware.common.constants.states.states.SKIPPED"><code class="name">var <span class="ident">SKIPPED</span> : str</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -108,10 +114,11 @@ class states:
 <ul>
 <li>
 <h4><code><a title="licenseware.common.constants.states.states" href="#licenseware.common.constants.states.states">states</a></code></h4>
-<ul class="">
+<ul class="two-column">
 <li><code><a title="licenseware.common.constants.states.states.FAILED" href="#licenseware.common.constants.states.states.FAILED">FAILED</a></code></li>
 <li><code><a title="licenseware.common.constants.states.states.IDLE" href="#licenseware.common.constants.states.states.IDLE">IDLE</a></code></li>
 <li><code><a title="licenseware.common.constants.states.states.RUNNING" href="#licenseware.common.constants.states.states.RUNNING">RUNNING</a></code></li>
+<li><code><a title="licenseware.common.constants.states.states.SKIPPED" href="#licenseware.common.constants.states.states.SKIPPED">SKIPPED</a></code></li>
 <li><code><a title="licenseware.common.constants.states.states.SUCCESS" href="#licenseware.common.constants.states.states.SUCCESS">SUCCESS</a></code></li>
 <li><code><a title="licenseware.common.constants.states.states.TIMEOUT" href="#licenseware.common.constants.states.states.TIMEOUT">TIMEOUT</a></code></li>
 </ul>

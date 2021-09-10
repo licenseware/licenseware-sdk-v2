@@ -26,9 +26,11 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from typing import List
+<pre><code class="python">from os import stat
+from typing import List
 from licenseware.common.validators.file_validators import GeneralValidator
 from licenseware.utils.file_utils import save_file
+from licenseware.common.constants import states
 from licenseware.utils.logger import log
 
 
@@ -65,7 +67,7 @@ class FileContentValidator:
         file_objects = flask_request.files.getlist(&#34;files[]&#34;)
         
         bad_request = {
-            &#34;status&#34;: &#34;fail&#34;, 
+            &#34;status&#34;: states.FAILED, 
             &#34;message&#34;: &#34;File list is empty or files are not on &#39;files[]&#39; key&#34;
         }, 400
         
@@ -82,7 +84,7 @@ class FileContentValidator:
         
         valid_filenames = []
         for response in filenames_validation_response:
-            if response[&#39;status&#39;] == &#39;success&#39;:
+            if response[&#39;status&#39;] == states.SUCCESS:
                 valid_filenames.append(response[&#39;filename&#39;])
                 
         validation_file_objects = []
@@ -119,7 +121,7 @@ class FileContentValidator:
                 filepath = save_file(file, tenant_id)
                 
                 validation_response.append({
-                    &#39;status&#39;: &#39;success&#39;,
+                    &#39;status&#39;: states.SUCCESS,
                     &#39;filename&#39;: file.filename, 
                     &#39;filepath&#39;: filepath,
                     &#39;message&#39;: self.filename_valid_message
@@ -127,7 +129,7 @@ class FileContentValidator:
                 
             except Exception as err:
                 validation_response.append({
-                    &#39;status&#39;: &#39;fail&#39;,
+                    &#39;status&#39;: states.FAILED,
                     &#39;filename&#39;: file.filename, 
                     &#39;filepath&#39;: &#39;File not saved&#39;,
                     &#39;message&#39;: self.filename_invalid_message or str(err)
@@ -138,11 +140,11 @@ class FileContentValidator:
         
     def get_overall_status_and_message(self, validation_response:list):
     
-        status  = &#39;success&#39;
+        status  = states.SUCCESS
         message = &#39;Files are valid&#39;
         for res in validation_response:
-            if res[&#39;status&#39;] == &#39;fail&#39;:        
-                status  = &#39;fail&#39;
+            if res[&#39;status&#39;] == states.FAILED:        
+                status  = states.FAILED
                 message = &#39;Not all files are valid&#39;
                 break
             
@@ -229,7 +231,7 @@ class FileContentValidator:
         file_objects = flask_request.files.getlist(&#34;files[]&#34;)
         
         bad_request = {
-            &#34;status&#34;: &#34;fail&#34;, 
+            &#34;status&#34;: states.FAILED, 
             &#34;message&#34;: &#34;File list is empty or files are not on &#39;files[]&#39; key&#34;
         }, 400
         
@@ -246,7 +248,7 @@ class FileContentValidator:
         
         valid_filenames = []
         for response in filenames_validation_response:
-            if response[&#39;status&#39;] == &#39;success&#39;:
+            if response[&#39;status&#39;] == states.SUCCESS:
                 valid_filenames.append(response[&#39;filename&#39;])
                 
         validation_file_objects = []
@@ -283,7 +285,7 @@ class FileContentValidator:
                 filepath = save_file(file, tenant_id)
                 
                 validation_response.append({
-                    &#39;status&#39;: &#39;success&#39;,
+                    &#39;status&#39;: states.SUCCESS,
                     &#39;filename&#39;: file.filename, 
                     &#39;filepath&#39;: filepath,
                     &#39;message&#39;: self.filename_valid_message
@@ -291,7 +293,7 @@ class FileContentValidator:
                 
             except Exception as err:
                 validation_response.append({
-                    &#39;status&#39;: &#39;fail&#39;,
+                    &#39;status&#39;: states.FAILED,
                     &#39;filename&#39;: file.filename, 
                     &#39;filepath&#39;: &#39;File not saved&#39;,
                     &#39;message&#39;: self.filename_invalid_message or str(err)
@@ -302,11 +304,11 @@ class FileContentValidator:
         
     def get_overall_status_and_message(self, validation_response:list):
     
-        status  = &#39;success&#39;
+        status  = states.SUCCESS
         message = &#39;Files are valid&#39;
         for res in validation_response:
-            if res[&#39;status&#39;] == &#39;fail&#39;:        
-                status  = &#39;fail&#39;
+            if res[&#39;status&#39;] == states.FAILED:        
+                status  = states.FAILED
                 message = &#39;Not all files are valid&#39;
                 break
             
@@ -355,7 +357,7 @@ class FileContentValidator:
     file_objects = flask_request.files.getlist(&#34;files[]&#34;)
     
     bad_request = {
-        &#34;status&#34;: &#34;fail&#34;, 
+        &#34;status&#34;: states.FAILED, 
         &#34;message&#34;: &#34;File list is empty or files are not on &#39;files[]&#39; key&#34;
     }, 400
     
@@ -416,7 +418,7 @@ create json response</p></div>
     
     valid_filenames = []
     for response in filenames_validation_response:
-        if response[&#39;status&#39;] == &#39;success&#39;:
+        if response[&#39;status&#39;] == states.SUCCESS:
             valid_filenames.append(response[&#39;filename&#39;])
             
     validation_file_objects = []
@@ -440,11 +442,11 @@ create json response</p></div>
 </summary>
 <pre><code class="python">def get_overall_status_and_message(self, validation_response:list):
 
-    status  = &#39;success&#39;
+    status  = states.SUCCESS
     message = &#39;Files are valid&#39;
     for res in validation_response:
-        if res[&#39;status&#39;] == &#39;fail&#39;:        
-            status  = &#39;fail&#39;
+        if res[&#39;status&#39;] == states.FAILED:        
+            status  = states.FAILED
             message = &#39;Not all files are valid&#39;
             break
         
@@ -484,7 +486,7 @@ create json response</p></div>
             filepath = save_file(file, tenant_id)
             
             validation_response.append({
-                &#39;status&#39;: &#39;success&#39;,
+                &#39;status&#39;: states.SUCCESS,
                 &#39;filename&#39;: file.filename, 
                 &#39;filepath&#39;: filepath,
                 &#39;message&#39;: self.filename_valid_message
@@ -492,7 +494,7 @@ create json response</p></div>
             
         except Exception as err:
             validation_response.append({
-                &#39;status&#39;: &#39;fail&#39;,
+                &#39;status&#39;: states.FAILED,
                 &#39;filename&#39;: file.filename, 
                 &#39;filepath&#39;: &#39;File not saved&#39;,
                 &#39;message&#39;: self.filename_invalid_message or str(err)

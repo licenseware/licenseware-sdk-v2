@@ -5,7 +5,7 @@ from flask import Request
 
 from licenseware.quota import Quota
 from licenseware.utils.logger import log
-from licenseware.common.constants import envs
+from licenseware.common.constants import states
 
 from .filename_validator import FileNameValidator
 from .file_content_validator import FileContentValidator
@@ -97,9 +97,9 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         
         if self.quota_within_limits(tenant_id, current_units_to_process):
             self.update_quota(tenant_id, current_units_to_process)
-            return {'status': 'success', 'message': 'Quota within limits'}, 200
+            return {'status': states.SUCCESS, 'message': 'Quota within limits'}, 200
         
-        return {'status': 'fail', 'message': 'Quota exceeded'}, 402
+        return {'status': states.FAILED, 'message': 'Quota exceeded'}, 402
     
         
     @classmethod

@@ -30,6 +30,7 @@
 from licenseware.utils.logger import log
 from licenseware.common.validators.file_validators import validate_filename
 
+from licenseware.common.constants import states
 
 
 class FileNameValidator:
@@ -69,14 +70,22 @@ class FileNameValidator:
         filenames = flask_request.json
         
         bad_request = {
-            &#39;status&#39;: &#39;fail&#39;, 
+            &#39;status&#39;: states.FAILED, 
             &#39;message&#39;: &#39;Filenames sent for validation must be in a list of strings format&#39;
         }, 400
         
+    
         if filenames == None: return bad_request
-        if not isinstance(filenames, list): return bad_request
-        if len(filenames) == 0: return bad_request
+        if isinstance(filenames, str): return bad_request
 
+        if isinstance(filenames, list):
+            if len(filenames) == 0: return bad_request
+        
+        if isinstance(filenames, dict):
+            if &#34;filenames&#34; not in filenames: return bad_request 
+            if len(filenames[&#34;filenames&#34;]) == 0: return bad_request
+            filenames = filenames[&#34;filenames&#34;]
+        
         return filenames
     
     
@@ -96,7 +105,7 @@ class FileNameValidator:
             if filename in self.ignore_filenames:
                 
                 validation_response.append({
-                    &#39;status&#39;: &#39;ignored&#39;,
+                    &#39;status&#39;: states.SKIPPED,
                     &#39;filename&#39;: filename, 
                     &#39;message&#39;: self.filename_ignored_message
                 })
@@ -110,13 +119,13 @@ class FileNameValidator:
                     endswith=self.filename_endswith
                 )
                 validation_response.append({
-                    &#39;status&#39;: &#39;success&#39;,
+                    &#39;status&#39;: states.SUCCESS,
                     &#39;filename&#39;: filename, 
                     &#39;message&#39;: self.filename_valid_message
                 })
             except Exception as err:
                 validation_response.append({
-                    &#39;status&#39;: &#39;fail&#39;,
+                    &#39;status&#39;: states.FAILED,
                     &#39;filename&#39;: filename, 
                     &#39;message&#39;: self.filename_invalid_message or str(err)
                 })
@@ -136,7 +145,7 @@ class FileNameValidator:
         validation_response = self.validate_filenames(filenames)
         
         return {
-            &#39;status&#39;: &#39;success&#39;, 
+            &#39;status&#39;: states.SUCCESS, 
             &#39;message&#39;: &#39;Filenames are valid&#39;,
             &#39;validation&#39;: validation_response
         }, 200</code></pre>
@@ -198,14 +207,22 @@ class FileNameValidator:
         filenames = flask_request.json
         
         bad_request = {
-            &#39;status&#39;: &#39;fail&#39;, 
+            &#39;status&#39;: states.FAILED, 
             &#39;message&#39;: &#39;Filenames sent for validation must be in a list of strings format&#39;
         }, 400
         
+    
         if filenames == None: return bad_request
-        if not isinstance(filenames, list): return bad_request
-        if len(filenames) == 0: return bad_request
+        if isinstance(filenames, str): return bad_request
 
+        if isinstance(filenames, list):
+            if len(filenames) == 0: return bad_request
+        
+        if isinstance(filenames, dict):
+            if &#34;filenames&#34; not in filenames: return bad_request 
+            if len(filenames[&#34;filenames&#34;]) == 0: return bad_request
+            filenames = filenames[&#34;filenames&#34;]
+        
         return filenames
     
     
@@ -225,7 +242,7 @@ class FileNameValidator:
             if filename in self.ignore_filenames:
                 
                 validation_response.append({
-                    &#39;status&#39;: &#39;ignored&#39;,
+                    &#39;status&#39;: states.SKIPPED,
                     &#39;filename&#39;: filename, 
                     &#39;message&#39;: self.filename_ignored_message
                 })
@@ -239,13 +256,13 @@ class FileNameValidator:
                     endswith=self.filename_endswith
                 )
                 validation_response.append({
-                    &#39;status&#39;: &#39;success&#39;,
+                    &#39;status&#39;: states.SUCCESS,
                     &#39;filename&#39;: filename, 
                     &#39;message&#39;: self.filename_valid_message
                 })
             except Exception as err:
                 validation_response.append({
-                    &#39;status&#39;: &#39;fail&#39;,
+                    &#39;status&#39;: states.FAILED,
                     &#39;filename&#39;: filename, 
                     &#39;message&#39;: self.filename_invalid_message or str(err)
                 })
@@ -265,7 +282,7 @@ class FileNameValidator:
         validation_response = self.validate_filenames(filenames)
         
         return {
-            &#39;status&#39;: &#39;success&#39;, 
+            &#39;status&#39;: states.SUCCESS, 
             &#39;message&#39;: &#39;Filenames are valid&#39;,
             &#39;validation&#39;: validation_response
         }, 200</code></pre>
@@ -295,14 +312,22 @@ filename validation request should be a list of filenames</p></div>
     filenames = flask_request.json
     
     bad_request = {
-        &#39;status&#39;: &#39;fail&#39;, 
+        &#39;status&#39;: states.FAILED, 
         &#39;message&#39;: &#39;Filenames sent for validation must be in a list of strings format&#39;
     }, 400
     
-    if filenames == None: return bad_request
-    if not isinstance(filenames, list): return bad_request
-    if len(filenames) == 0: return bad_request
 
+    if filenames == None: return bad_request
+    if isinstance(filenames, str): return bad_request
+
+    if isinstance(filenames, list):
+        if len(filenames) == 0: return bad_request
+    
+    if isinstance(filenames, dict):
+        if &#34;filenames&#34; not in filenames: return bad_request 
+        if len(filenames[&#34;filenames&#34;]) == 0: return bad_request
+        filenames = filenames[&#34;filenames&#34;]
+    
     return filenames</code></pre>
 </details>
 </dd>
@@ -329,7 +354,7 @@ create json response</p></div>
     validation_response = self.validate_filenames(filenames)
     
     return {
-        &#39;status&#39;: &#39;success&#39;, 
+        &#39;status&#39;: states.SUCCESS, 
         &#39;message&#39;: &#39;Filenames are valid&#39;,
         &#39;validation&#39;: validation_response
     }, 200</code></pre>
@@ -364,7 +389,7 @@ because if None will provide the reason why filename validation failed</p></div>
         if filename in self.ignore_filenames:
             
             validation_response.append({
-                &#39;status&#39;: &#39;ignored&#39;,
+                &#39;status&#39;: states.SKIPPED,
                 &#39;filename&#39;: filename, 
                 &#39;message&#39;: self.filename_ignored_message
             })
@@ -378,13 +403,13 @@ because if None will provide the reason why filename validation failed</p></div>
                 endswith=self.filename_endswith
             )
             validation_response.append({
-                &#39;status&#39;: &#39;success&#39;,
+                &#39;status&#39;: states.SUCCESS,
                 &#39;filename&#39;: filename, 
                 &#39;message&#39;: self.filename_valid_message
             })
         except Exception as err:
             validation_response.append({
-                &#39;status&#39;: &#39;fail&#39;,
+                &#39;status&#39;: states.FAILED,
                 &#39;filename&#39;: filename, 
                 &#39;message&#39;: self.filename_invalid_message or str(err)
             })
