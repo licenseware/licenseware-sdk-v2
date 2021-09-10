@@ -7,6 +7,8 @@ class states:
     IDLE:str = 'idle'
     RUNNING:str = 'running'
     SUCCESS:str = 'success'
+    ERROR:str = 'error'
     FAIL:str = 'fail'
+    
 
 
