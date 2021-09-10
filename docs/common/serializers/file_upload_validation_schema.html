@@ -37,12 +37,12 @@ from licenseware.common.constants import states
 
 class FileValidationSchema(Schema):
     filename = fields.Str(required=True, validate=validate.Length(min=5))
-    status   = fields.Str(required=True, validate=validate.OneOf(states.SUCCESS, states.FAIL)) 
+    status   = fields.Str(required=True, validate=validate.OneOf(states.SUCCESS, states.FAILED)) 
     message  = fields.Str(required=True, validate=validate.Length(min=10))
     
 
 class FileUploadValidationSchema(Schema):
-    status = fields.Str(required=True, validate=validate.OneOf(states.SUCCESS, states.FAIL)) 
+    status = fields.Str(required=True, validate=validate.OneOf(states.SUCCESS, states.FAILED)) 
     message = fields.Str(required=True, validate=validate.Length(min=10))
     validation = fields.List(fields.Nested(FileValidationSchema), required=False, allow_none=True)
     units = fields.Int(requred=False, allow_none=True)
@@ -124,7 +124,7 @@ fields in the data. Use <code>EXCLUDE</code>, <code>INCLUDE</code> or <code>RAIS
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class FileUploadValidationSchema(Schema):
-    status = fields.Str(required=True, validate=validate.OneOf(states.SUCCESS, states.FAIL)) 
+    status = fields.Str(required=True, validate=validate.OneOf(states.SUCCESS, states.FAILED)) 
     message = fields.Str(required=True, validate=validate.Length(min=10))
     validation = fields.List(fields.Nested(FileValidationSchema), required=False, allow_none=True)
     units = fields.Int(requred=False, allow_none=True)</code></pre>
@@ -225,7 +225,7 @@ fields in the data. Use <code>EXCLUDE</code>, <code>INCLUDE</code> or <code>RAIS
 </summary>
 <pre><code class="python">class FileValidationSchema(Schema):
     filename = fields.Str(required=True, validate=validate.Length(min=5))
-    status   = fields.Str(required=True, validate=validate.OneOf(states.SUCCESS, states.FAIL)) 
+    status   = fields.Str(required=True, validate=validate.OneOf(states.SUCCESS, states.FAILED)) 
     message  = fields.Str(required=True, validate=validate.Length(min=10))</code></pre>
 </details>
 <h3>Ancestors</h3>
