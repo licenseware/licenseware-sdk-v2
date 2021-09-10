@@ -30,7 +30,8 @@
 from licenseware.common.constants import envs, states
 from licenseware.registry_service.register_uploader import register_uploader
 from licenseware.utils.dramatiq_redis_broker import broker
-from licenseware.utils.logger import log, log_dict
+from licenseware.utils.logger import log
+from licenseware.common.validators import validate_event
 from licenseware.quota import Quota
 
 
@@ -129,7 +130,6 @@ class UploaderBuilder:
         quota_response, quota_status_code = self.validator_class.calculate_quota(flask_request)
         if quota_status_code != 200: return quota_response, quota_status_code
         
-        
         response, status_code = self.validator_class.get_file_objects_response(flask_request)
         
         if status_code == 200:
@@ -138,13 +138,18 @@ class UploaderBuilder:
             
             if valid_filepaths:
                 
+                flask_headers = dict(flask_request.headers) if flask_request.headers else {}
+                flask_body = {dict(flask_request.json)} if flask_request.json else {}
+                
                 event = {
                     &#39;tenant_id&#39;: flask_request.headers.get(&#34;Tenantid&#34;),
                     &#39;filepaths&#39;: valid_filepaths, 
                     &#39;uploader_id&#39;: self.uploader_id,
-                    &#39;headers&#39;:  dict(flask_request.headers) if flask_request.headers else {},
-                    &#39;json&#39;:  dict(flask_request.json) if flask_request.json else {},
+                    &#39;flask_request&#39;:  {**flask_body, **flask_headers},
+                    &#39;validation_response&#39;: response
                 }
+                
+                validate_event(event)
 
                 log.warning(&#34;Sending event: &#34; + str(event))
                 self.worker.send(event)
@@ -313,7 +318,6 @@ status_check_path:str = None - url path/route where gives back the status of the
         quota_response, quota_status_code = self.validator_class.calculate_quota(flask_request)
         if quota_status_code != 200: return quota_response, quota_status_code
         
-        
         response, status_code = self.validator_class.get_file_objects_response(flask_request)
         
         if status_code == 200:
@@ -322,13 +326,18 @@ status_check_path:str = None - url path/route where gives back the status of the
             
             if valid_filepaths:
                 
+                flask_headers = dict(flask_request.headers) if flask_request.headers else {}
+                flask_body = {dict(flask_request.json)} if flask_request.json else {}
+                
                 event = {
                     &#39;tenant_id&#39;: flask_request.headers.get(&#34;Tenantid&#34;),
                     &#39;filepaths&#39;: valid_filepaths, 
                     &#39;uploader_id&#39;: self.uploader_id,
-                    &#39;headers&#39;:  dict(flask_request.headers) if flask_request.headers else {},
-                    &#39;json&#39;:  dict(flask_request.json) if flask_request.json else {},
+                    &#39;flask_request&#39;:  {**flask_body, **flask_headers},
+                    &#39;validation_response&#39;: response
                 }
+                
+                validate_event(event)
 
                 log.warning(&#34;Sending event: &#34; + str(event))
                 self.worker.send(event)
@@ -445,7 +454,6 @@ status_check_path:str = None - url path/route where gives back the status of the
     quota_response, quota_status_code = self.validator_class.calculate_quota(flask_request)
     if quota_status_code != 200: return quota_response, quota_status_code
     
-    
     response, status_code = self.validator_class.get_file_objects_response(flask_request)
     
     if status_code == 200:
@@ -454,13 +462,18 @@ status_check_path:str = None - url path/route where gives back the status of the
         
         if valid_filepaths:
             
+            flask_headers = dict(flask_request.headers) if flask_request.headers else {}
+            flask_body = {dict(flask_request.json)} if flask_request.json else {}
+            
             event = {
                 &#39;tenant_id&#39;: flask_request.headers.get(&#34;Tenantid&#34;),
                 &#39;filepaths&#39;: valid_filepaths, 
                 &#39;uploader_id&#39;: self.uploader_id,
-                &#39;headers&#39;:  dict(flask_request.headers) if flask_request.headers else {},
-                &#39;json&#39;:  dict(flask_request.json) if flask_request.json else {},
+                &#39;flask_request&#39;:  {**flask_body, **flask_headers},
+                &#39;validation_response&#39;: response
             }
+            
+            validate_event(event)
 
             log.warning(&#34;Sending event: &#34; + str(event))
             self.worker.send(event)

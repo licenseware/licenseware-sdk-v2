@@ -168,21 +168,21 @@ ifmp_app = AppBuilder(
 
 # Here is the worker function 
 # which will process the files in the background
-def rv_tools_worker(event_data):
+def rv_tools_worker(event:dict):
     
     # Event data will contain the following information
-    # event_data = {
-    #     'tenant_id': 'the tenant_id from request',
-    #     'filepaths': 'absolute file paths to the files uploaded',
-    #     'uploader_id': 'the uploader id in our case rv_tools'
-    #     'headers':  'flask request headers',
-    #     'json':  'flask request json data',
+    # event = {
+    #     'tenant_id': flask_request.headers.get("Tenantid"),
+    #     'filepaths': valid_filepaths, 
+    #     'uploader_id': self.uploader_id,
+    #     'flask_request':  {**flask_body, **flask_headers},
+    #     'validation_response': response
     # }
-    
+
     log.info("Starting working")
-    notify_upload_status(event_data, status=states.RUNNING)
-    log.debug(event_data) # here add the processing file logic
-    notify_upload_status(event_data, status=states.IDLE)
+    notify_upload_status(event, status=states.RUNNING)
+    log.debug(event) # here add the processing file logic
+    notify_upload_status(event, status=states.IDLE)
     log.info("Finished working")
     
 
@@ -627,21 +627,21 @@ def rv_tools_worker(event:dict):
     
 ```
 
-The `event_data` will be a dictionary with the following contents:
+The `event` will be a dictionary with the following contents:
 
 ```js
 
 {
-    'tenant_id': "uuid4 tenant id from flask request.headers",
-    'filepaths': ["absolute/path/to/files/uploaded"],
-    'uploader_id': 'the uploader id in our case rv_tools'
-    'headers':  'flask request.headers',
-    'json':  'flask request.json',
+    'tenant_id': flask_request.headers.get("Tenantid"),
+    'filepaths': valid_filepaths, 
+    'uploader_id': uploader_id,
+    'flask_request':  {**flask_body, **flask_headers},
+    'validation_response': 'response from validator class'
 }
 
 ```
 
-Based on given `event_data` the `worker_function` will process the files.
+Based on given `event` the `worker_function` will process the files.
 
 
 ## Creating the `validator_class`

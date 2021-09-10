@@ -32,10 +32,11 @@ from licenseware.common.validators import validate_uuid4
 
 class EventSchema(Schema):
     tenant_id = fields.Str(required=True, validate=validate_uuid4)
-    files = fields.Str(required=True, validate=validate.Length(min=5))
+    filepaths = fields.List(fields.Str, required=True)
     uploader_id = fields.Str(required=True, validate=validate.Length(min=3))
-    device_name = fields.Str(required=False, allow_none=True)
-    database_name = fields.Str(required=False, allow_none=True)</code></pre>
+    flask_request = fields.Dict(required=False, allow_none=True)
+    validation_response = fields.Dict(required=False, allow_none=True)
+    </code></pre>
 </details>
 </section>
 <section>
@@ -114,10 +115,10 @@ fields in the data. Use <code>EXCLUDE</code>, <code>INCLUDE</code> or <code>RAIS
 </summary>
 <pre><code class="python">class EventSchema(Schema):
     tenant_id = fields.Str(required=True, validate=validate_uuid4)
-    files = fields.Str(required=True, validate=validate.Length(min=5))
+    filepaths = fields.List(fields.Str, required=True)
     uploader_id = fields.Str(required=True, validate=validate.Length(min=3))
-    device_name = fields.Str(required=False, allow_none=True)
-    database_name = fields.Str(required=False, allow_none=True)</code></pre>
+    flask_request = fields.Dict(required=False, allow_none=True)
+    validation_response = fields.Dict(required=False, allow_none=True)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -126,15 +127,11 @@ fields in the data. Use <code>EXCLUDE</code>, <code>INCLUDE</code> or <code>RAIS
 </ul>
 <h3>Class variables</h3>
 <dl>
-<dt id="licenseware.common.serializers.event_schema.EventSchema.database_name"><code class="name">var <span class="ident">database_name</span></code></dt>
+<dt id="licenseware.common.serializers.event_schema.EventSchema.filepaths"><code class="name">var <span class="ident">filepaths</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="licenseware.common.serializers.event_schema.EventSchema.device_name"><code class="name">var <span class="ident">device_name</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="licenseware.common.serializers.event_schema.EventSchema.files"><code class="name">var <span class="ident">files</span></code></dt>
+<dt id="licenseware.common.serializers.event_schema.EventSchema.flask_request"><code class="name">var <span class="ident">flask_request</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -147,6 +144,10 @@ fields in the data. Use <code>EXCLUDE</code>, <code>INCLUDE</code> or <code>RAIS
 <div class="desc"></div>
 </dd>
 <dt id="licenseware.common.serializers.event_schema.EventSchema.uploader_id"><code class="name">var <span class="ident">uploader_id</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="licenseware.common.serializers.event_schema.EventSchema.validation_response"><code class="name">var <span class="ident">validation_response</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -171,12 +172,12 @@ fields in the data. Use <code>EXCLUDE</code>, <code>INCLUDE</code> or <code>RAIS
 <li>
 <h4><code><a title="licenseware.common.serializers.event_schema.EventSchema" href="#licenseware.common.serializers.event_schema.EventSchema">EventSchema</a></code></h4>
 <ul class="two-column">
-<li><code><a title="licenseware.common.serializers.event_schema.EventSchema.database_name" href="#licenseware.common.serializers.event_schema.EventSchema.database_name">database_name</a></code></li>
-<li><code><a title="licenseware.common.serializers.event_schema.EventSchema.device_name" href="#licenseware.common.serializers.event_schema.EventSchema.device_name">device_name</a></code></li>
-<li><code><a title="licenseware.common.serializers.event_schema.EventSchema.files" href="#licenseware.common.serializers.event_schema.EventSchema.files">files</a></code></li>
+<li><code><a title="licenseware.common.serializers.event_schema.EventSchema.filepaths" href="#licenseware.common.serializers.event_schema.EventSchema.filepaths">filepaths</a></code></li>
+<li><code><a title="licenseware.common.serializers.event_schema.EventSchema.flask_request" href="#licenseware.common.serializers.event_schema.EventSchema.flask_request">flask_request</a></code></li>
 <li><code><a title="licenseware.common.serializers.event_schema.EventSchema.opts" href="#licenseware.common.serializers.event_schema.EventSchema.opts">opts</a></code></li>
 <li><code><a title="licenseware.common.serializers.event_schema.EventSchema.tenant_id" href="#licenseware.common.serializers.event_schema.EventSchema.tenant_id">tenant_id</a></code></li>
 <li><code><a title="licenseware.common.serializers.event_schema.EventSchema.uploader_id" href="#licenseware.common.serializers.event_schema.EventSchema.uploader_id">uploader_id</a></code></li>
+<li><code><a title="licenseware.common.serializers.event_schema.EventSchema.validation_response" href="#licenseware.common.serializers.event_schema.EventSchema.validation_response">validation_response</a></code></li>
 </ul>
 </li>
 </ul>

@@ -2,7 +2,8 @@ from typing import Callable, Type
 from licenseware.common.constants import envs, states
 from licenseware.registry_service.register_uploader import register_uploader
 from licenseware.utils.dramatiq_redis_broker import broker
-from licenseware.utils.logger import log, log_dict
+from licenseware.utils.logger import log
+from licenseware.common.validators import validate_event
 from licenseware.quota import Quota
 
 
@@ -101,7 +102,6 @@ class UploaderBuilder:
         quota_response, quota_status_code = self.validator_class.calculate_quota(flask_request)
         if quota_status_code != 200: return quota_response, quota_status_code
         
-        
         response, status_code = self.validator_class.get_file_objects_response(flask_request)
         
         if status_code == 200:
@@ -110,13 +110,18 @@ class UploaderBuilder:
             
             if valid_filepaths:
                 
+                flask_headers = dict(flask_request.headers) if flask_request.headers else {}
+                flask_body = {dict(flask_request.json)} if flask_request.json else {}
+                
                 event = {
                     'tenant_id': flask_request.headers.get("Tenantid"),
                     'filepaths': valid_filepaths, 
                     'uploader_id': self.uploader_id,
-                    'headers':  dict(flask_request.headers) if flask_request.headers else {},
-                    'json':  dict(flask_request.json) if flask_request.json else {},
+                    'flask_request':  {**flask_body, **flask_headers},
+                    'validation_response': response
                 }
+                
+                validate_event(event)
 
                 log.warning("Sending event: " + str(event))
                 self.worker.send(event)
