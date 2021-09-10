@@ -8,7 +8,7 @@ class states:
     RUNNING:str = 'running'
     SUCCESS:str = 'success'
     ERROR:str = 'error'
-    FAIL:str = 'fail'
+    FAILED:str = 'failed'
     
 
 
