@@ -42,8 +42,23 @@ It helps you focus on processsing the files needed and creating reports.
 </ol>
 <p><a name="quickstart"></a></p>
 <h1 id="quickstart">Quickstart</h1>
-<p>Here you will see how to install the sdk and what's required in a licenseware app.</p>
-<h2 id="install-licenseware-sdk">Install Licenseware SDK</h2>
+<p>Here are the steps needed for local development of an app:</p>
+<ul>
+<li>Install the sdk : <code>pip3 install git+https://git@github.com/licenseware/licenseware-sdk-python3.git</code>;</li>
+<li>Clone the repo for your service;</li>
+<li>CD in the cloned repo locally;</li>
+<li>Create a new app : <code>licenseware new-app odb</code>;</li>
+<li>Create a new uploader: <code>licenseware new-uploader lms_options</code>;</li>
+<li>Update modules <code>validator.py</code> <code>worker.py</code> as per processing requirements needs for <code>lms_options</code> uploader_id. Modules created will be found here: <code>app/uploaders/lms_options</code></li>
+<li>Open the first terminal start the mock-server : <code>licenseware start-mock-server</code>;</li>
+<li>Open the second terminal start the redis background worker: <code>licenseware start-background-worker</code>;</li>
+<li>Open the third terminal start the development server: <code>licenseware start-dev-server</code>;</li>
+<li>Copy <code>docker-compose-mongo-redis.yml</code> file to <code>Documents</code> folder start the databases with:</li>
+</ul>
+<pre><code>docker-compose -f docker-compose-mongo-redis.yml up -d --remove-orphans --force-recreate
+</code></pre>
+<p>You will have mongoexpress running at: <code>http://localhost:8081/</code></p>
+<h2 id="installation">Installation</h2>
 <p>Install latest update for this package using the following pip command:</p>
 <pre><code class="language-bash">
 pip3 install git+https://git@github.com/licenseware/licenseware-sdk-python3.git
@@ -470,15 +485,20 @@ if __name__ == &quot;__main__&quot;:
 <p><a name="set-environment-variables"></a></p>
 <h1 id="set-environment-variables">Set environment variables</h1>
 <p>Fist make sure you have set the environment variables:</p>
-<pre><code class="language-bash">#.env
+<pre><code>
+#.env
+
 DEBUG=true
 ENVIRONMENT=local
-PERSONAL_SUFFIX=_alin
+PERSONAL_SUFFIX=_222
 
 
 FLASK_APP=main:app
+FLASK_RUN_HOST=localhost
+FLASK_RUN_PORT=4000
+FLASK_DEBUG=true
 
-APP_ID=ifmp
+APP_ID=odb
 APP_HOST=http://localhost:5000
 
 LWARE_IDENTITY_USER=John
@@ -492,15 +512,14 @@ REGISTRY_SERVICE_URL=http://localhost:5000/registry-service
 
 FILE_UPLOAD_PATH=/tmp/lware
 
-MONGO_ROOT_USERNAME=Alin
+MONGO_ROOT_USERNAME=John
 MONGO_ROOT_PASSWORD=secret
 MONGO_HOSTNAME=localhost
 MONGO_PORT=27017
 MONGO_DATABASE_NAME=db
 MONGO_CONNECTION_STRING=mongodb://${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DATABASE_NAME}
 
-
-REDIS_HOST=redis_db_sdk
+REDIS_HOST=redis_db_dev
 REDIS_PORT=6379
 
 </code></pre>
@@ -1074,9 +1093,29 @@ It helps you focus on processsing the files needed and creating reports.
 &lt;a name=&#34;quickstart&#34;&gt;&lt;/a&gt;
 # Quickstart 
 
-Here you will see how to install the sdk and what&#39;s required in a licenseware app.
+Here are the steps needed for local development of an app:
 
-## Install Licenseware SDK 
+- Install the sdk : `pip3 install git+https://git@github.com/licenseware/licenseware-sdk-python3.git`;
+- Clone the repo for your service;
+- CD in the cloned repo locally;
+- Create a new app : `licenseware new-app odb`;
+- Create a new uploader: `licenseware new-uploader lms_options`;
+- Update modules `validator.py` `worker.py` as per processing requirements needs for `lms_options` uploader_id. Modules created will be found here: `app/uploaders/lms_options`
+- Open the first terminal start the mock-server : `licenseware start-mock-server`;
+- Open the second terminal start the redis background worker: `licenseware start-background-worker`;
+- Open the third terminal start the development server: `licenseware start-dev-server`;
+- Copy `docker-compose-mongo-redis.yml` file to `Documents` folder start the databases with:
+
+```
+docker-compose -f docker-compose-mongo-redis.yml up -d --remove-orphans --force-recreate
+```
+
+You will have mongoexpress running at: `http://localhost:8081/`
+
+
+
+
+## Installation 
 
 Install latest update for this package using the following pip command:
 ```bash
@@ -1545,16 +1584,21 @@ Each **REPORT COMPONENT** has:
 
 Fist make sure you have set the environment variables:
 
-```bash
+```
+
 #.env
+
 DEBUG=true
 ENVIRONMENT=local
-PERSONAL_SUFFIX=_alin
+PERSONAL_SUFFIX=_222
 
 
 FLASK_APP=main:app
+FLASK_RUN_HOST=localhost
+FLASK_RUN_PORT=4000
+FLASK_DEBUG=true
 
-APP_ID=ifmp
+APP_ID=odb
 APP_HOST=http://localhost:5000
 
 LWARE_IDENTITY_USER=John
@@ -1568,15 +1612,14 @@ REGISTRY_SERVICE_URL=http://localhost:5000/registry-service
 
 FILE_UPLOAD_PATH=/tmp/lware
 
-MONGO_ROOT_USERNAME=Alin
+MONGO_ROOT_USERNAME=John
 MONGO_ROOT_PASSWORD=secret
 MONGO_HOSTNAME=localhost
 MONGO_PORT=27017
 MONGO_DATABASE_NAME=db
 MONGO_CONNECTION_STRING=mongodb://${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DATABASE_NAME}
 
-
-REDIS_HOST=redis_db_sdk
+REDIS_HOST=redis_db_dev
 REDIS_PORT=6379
 
 ```
@@ -1586,11 +1629,6 @@ Start `redis` and `mongo` databases:
 ```bash
 make up
 ```
-
-
-
-
-
 
 
 
@@ -2304,6 +2342,8 @@ This will start the flask server with auto-reload.
 ```bash
 baton -u http://localhost:4000 -c 10 -r 10000
 ```
+
+
 &#39;&#39;&#39;
 
 try:
@@ -2411,7 +2451,7 @@ We are using jinja2 to fill variables from files …</p></div>
 <li><a href="#licenseware-sdk">Licenseware SDK</a></li>
 <li><a href="#contents">Contents</a></li>
 <li><a href="#quickstart">Quickstart</a><ul>
-<li><a href="#install-licenseware-sdk">Install Licenseware SDK</a></li>
+<li><a href="#installation">Installation</a></li>
 <li><a href="#sdk-new-version-release">SDK new version release</a></li>
 <li><a href="#a-minimal-app">A minimal app</a></li>
 </ul>

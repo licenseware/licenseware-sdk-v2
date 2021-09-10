@@ -31,10 +31,10 @@ from licenseware.utils.logger import log
 from licenseware.common.constants import envs
 from .close_timeout_files import close_timed_out_files
 
+from licenseware.common.constants import states
 
 
-
-def get_processing_status(tenant_id:str, analysis_collection_name:str = None):
+def get_processing_status(tenant_id:str):
     &#34;&#34;&#34;
         Get processing status for a tenant_id from all uploaders
     &#34;&#34;&#34;
@@ -45,28 +45,28 @@ def get_processing_status(tenant_id:str, analysis_collection_name:str = None):
         &#39;tenant_id&#39;: tenant_id, 
         &#39;$or&#39;: [
             {
-                &#39;files.status&#39;: &#39;Running&#39;
+                &#39;files.status&#39;: states.RUNNING
             },
             {
-                &#39;status&#39;: &#39;Running&#39;
+                &#39;status&#39;: states.RUNNING
             }
     ]}
     
     results = m.document_count(
         match=query, 
-        collection=analysis_collection_name or envs.MONGO_ANALYSIS_NAME
+        collection=envs.MONGO_ANALYSIS_NAME
     )
     
     log.info(results)
 
     if results &gt; 0:
-        return {&#39;status&#39;: &#39;Running&#39;}, 200
-    return {&#39;status&#39;: &#39;Idle&#39;}, 200
+        return {&#39;status&#39;: states.RUNNING}, 200
+    return {&#39;status&#39;: states.IDLE}, 200
 
 
 
 
-def get_uploader_status(tenant_id:str, uploader_id:str, analysis_collection_name:str = None):
+def get_uploader_status(tenant_id:str, uploader_id:str):
     &#34;&#34;&#34;
         Get processing status for a tenant_id and the specified uploader
     &#34;&#34;&#34;
@@ -75,27 +75,27 @@ def get_uploader_status(tenant_id:str, uploader_id:str, analysis_collection_name
 
     query = {
         &#39;tenant_id&#39;: tenant_id,
-        &#39;file_type&#39;: uploader_id,
+        &#39;uploader_id&#39;: uploader_id,
         &#39;$or&#39;: [
             {
-                &#39;files.status&#39;: &#39;Running&#39;
+                &#39;files.status&#39;: states.RUNNING
             },
             {
-                &#39;status&#39;: &#39;Running&#39;
+                &#39;status&#39;: states.RUNNING
             }
         ]
     }
 
     results = m.document_count(
         match=query, 
-        collection=analysis_collection_name or envs.MONGO_ANALYSIS_NAME
+        collection=envs.MONGO_ANALYSIS_NAME
     )
     
     log.info(results)
 
     if results &gt; 0:
-        return {&#39;status&#39;: &#39;Running&#39;}, 200
-    return {&#39;status&#39;: &#39;Idle&#39;}, 200</code></pre>
+        return {&#39;status&#39;: states.RUNNING}, 200
+    return {&#39;status&#39;: states.IDLE}, 200</code></pre>
 </details>
 </section>
 <section>
@@ -106,7 +106,7 @@ def get_uploader_status(tenant_id:str, uploader_id:str, analysis_collection_name
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="licenseware.tenants.processing_status.get_processing_status"><code class="name flex">
-<span>def <span class="ident">get_processing_status</span></span>(<span>tenant_id: str, analysis_collection_name: str = None)</span>
+<span>def <span class="ident">get_processing_status</span></span>(<span>tenant_id: str)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get processing status for a tenant_id from all uploaders</p></div>
@@ -114,7 +114,7 @@ def get_uploader_status(tenant_id:str, uploader_id:str, analysis_collection_name
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_processing_status(tenant_id:str, analysis_collection_name:str = None):
+<pre><code class="python">def get_processing_status(tenant_id:str):
     &#34;&#34;&#34;
         Get processing status for a tenant_id from all uploaders
     &#34;&#34;&#34;
@@ -125,27 +125,27 @@ def get_uploader_status(tenant_id:str, uploader_id:str, analysis_collection_name
         &#39;tenant_id&#39;: tenant_id, 
         &#39;$or&#39;: [
             {
-                &#39;files.status&#39;: &#39;Running&#39;
+                &#39;files.status&#39;: states.RUNNING
             },
             {
-                &#39;status&#39;: &#39;Running&#39;
+                &#39;status&#39;: states.RUNNING
             }
     ]}
     
     results = m.document_count(
         match=query, 
-        collection=analysis_collection_name or envs.MONGO_ANALYSIS_NAME
+        collection=envs.MONGO_ANALYSIS_NAME
     )
     
     log.info(results)
 
     if results &gt; 0:
-        return {&#39;status&#39;: &#39;Running&#39;}, 200
-    return {&#39;status&#39;: &#39;Idle&#39;}, 200</code></pre>
+        return {&#39;status&#39;: states.RUNNING}, 200
+    return {&#39;status&#39;: states.IDLE}, 200</code></pre>
 </details>
 </dd>
 <dt id="licenseware.tenants.processing_status.get_uploader_status"><code class="name flex">
-<span>def <span class="ident">get_uploader_status</span></span>(<span>tenant_id: str, uploader_id: str, analysis_collection_name: str = None)</span>
+<span>def <span class="ident">get_uploader_status</span></span>(<span>tenant_id: str, uploader_id: str)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get processing status for a tenant_id and the specified uploader</p></div>
@@ -153,7 +153,7 @@ def get_uploader_status(tenant_id:str, uploader_id:str, analysis_collection_name
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_uploader_status(tenant_id:str, uploader_id:str, analysis_collection_name:str = None):
+<pre><code class="python">def get_uploader_status(tenant_id:str, uploader_id:str):
     &#34;&#34;&#34;
         Get processing status for a tenant_id and the specified uploader
     &#34;&#34;&#34;
@@ -162,27 +162,27 @@ def get_uploader_status(tenant_id:str, uploader_id:str, analysis_collection_name
 
     query = {
         &#39;tenant_id&#39;: tenant_id,
-        &#39;file_type&#39;: uploader_id,
+        &#39;uploader_id&#39;: uploader_id,
         &#39;$or&#39;: [
             {
-                &#39;files.status&#39;: &#39;Running&#39;
+                &#39;files.status&#39;: states.RUNNING
             },
             {
-                &#39;status&#39;: &#39;Running&#39;
+                &#39;status&#39;: states.RUNNING
             }
         ]
     }
 
     results = m.document_count(
         match=query, 
-        collection=analysis_collection_name or envs.MONGO_ANALYSIS_NAME
+        collection=envs.MONGO_ANALYSIS_NAME
     )
     
     log.info(results)
 
     if results &gt; 0:
-        return {&#39;status&#39;: &#39;Running&#39;}, 200
-    return {&#39;status&#39;: &#39;Idle&#39;}, 200</code></pre>
+        return {&#39;status&#39;: states.RUNNING}, 200
+    return {&#39;status&#39;: states.IDLE}, 200</code></pre>
 </details>
 </dd>
 </dl>

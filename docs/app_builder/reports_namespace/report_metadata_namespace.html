@@ -31,28 +31,51 @@ from flask_restx import Namespace, Resource
 from licenseware.decorators.auth_decorators import authorization_check
 from licenseware.decorators import failsafe
 
+from licenseware.report_builder import ReportBuilder
+from typing import List
 
 
-def get_report_metadata_namespace(ns: Namespace, reports:list):
+
+def create_report_resource(report: ReportBuilder):
+    
+    class ReportController(Resource):
+        @failsafe(fail_code=500)
+        @authorization_check
+        def get(self):
+            return report.return_json_payload()
+        
+    return ReportController
+    
+
+
+def get_report_metadata_namespace(ns: Namespace, reports:List[ReportBuilder]):
     
     for report in reports:
         
-        @ns.route(report.report_path)
-        class ReportController(Resource):
-            @failsafe(fail_code=500)
-            @authorization_check
-            @ns.doc(
-                id=&#34;Get components metadata&#34;,
-                responses={
-                    200 : &#39;Success&#39;,
-                    403 : &#34;Missing `Tenantid` or `Authorization` information&#34;,
-                    500 : &#39;Something went wrong while handling the request&#39; 
-                },
-            )
-            def get(self):
-                return report.return_json_payload()
-            
+        RR = create_report_resource(report)
+        
+        @ns.doc(
+            id=&#34;Get components metadata&#34;,
+            responses={
+                200 : &#39;Success&#39;,
+                403 : &#34;Missing `Tenantid` or `Authorization` information&#34;,
+                500 : &#39;Something went wrong while handling the request&#39; 
+            },
+        )
+        class TempReportResource(RR): ...
+        
+        ReportResource = type(
+            report.report_id.replace(&#34;_&#34;, &#34;&#34;).capitalize() + &#39;metadata&#39;,
+            (TempReportResource, ),
+            {}
+        )
+        
+        ns.add_resource(ReportResource, report.report_path) 
+                
     return ns
+
+
+
         
             </code></pre>
 </details>
@@ -64,8 +87,8 @@ def get_report_metadata_namespace(ns: Namespace, reports:list):
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="licenseware.app_builder.reports_namespace.report_metadata_namespace.get_report_metadata_namespace"><code class="name flex">
-<span>def <span class="ident">get_report_metadata_namespace</span></span>(<span>ns: flask_restx.namespace.Namespace, reports: list)</span>
+<dt id="licenseware.app_builder.reports_namespace.report_metadata_namespace.create_report_resource"><code class="name flex">
+<span>def <span class="ident">create_report_resource</span></span>(<span>report: <a title="licenseware.report_builder.report_builder.ReportBuilder" href="../../report_builder/report_builder.html#licenseware.report_builder.report_builder.ReportBuilder">ReportBuilder</a>)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -73,25 +96,50 @@ def get_report_metadata_namespace(ns: Namespace, reports:list):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_report_metadata_namespace(ns: Namespace, reports:list):
+<pre><code class="python">def create_report_resource(report: ReportBuilder):
+    
+    class ReportController(Resource):
+        @failsafe(fail_code=500)
+        @authorization_check
+        def get(self):
+            return report.return_json_payload()
+        
+    return ReportController</code></pre>
+</details>
+</dd>
+<dt id="licenseware.app_builder.reports_namespace.report_metadata_namespace.get_report_metadata_namespace"><code class="name flex">
+<span>def <span class="ident">get_report_metadata_namespace</span></span>(<span>ns: flask_restx.namespace.Namespace, reports: List[<a title="licenseware.report_builder.report_builder.ReportBuilder" href="../../report_builder/report_builder.html#licenseware.report_builder.report_builder.ReportBuilder">ReportBuilder</a>])</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_report_metadata_namespace(ns: Namespace, reports:List[ReportBuilder]):
     
     for report in reports:
         
-        @ns.route(report.report_path)
-        class ReportController(Resource):
-            @failsafe(fail_code=500)
-            @authorization_check
-            @ns.doc(
-                id=&#34;Get components metadata&#34;,
-                responses={
-                    200 : &#39;Success&#39;,
-                    403 : &#34;Missing `Tenantid` or `Authorization` information&#34;,
-                    500 : &#39;Something went wrong while handling the request&#39; 
-                },
-            )
-            def get(self):
-                return report.return_json_payload()
-            
+        RR = create_report_resource(report)
+        
+        @ns.doc(
+            id=&#34;Get components metadata&#34;,
+            responses={
+                200 : &#39;Success&#39;,
+                403 : &#34;Missing `Tenantid` or `Authorization` information&#34;,
+                500 : &#39;Something went wrong while handling the request&#39; 
+            },
+        )
+        class TempReportResource(RR): ...
+        
+        ReportResource = type(
+            report.report_id.replace(&#34;_&#34;, &#34;&#34;).capitalize() + &#39;metadata&#39;,
+            (TempReportResource, ),
+            {}
+        )
+        
+        ns.add_resource(ReportResource, report.report_path) 
+                
     return ns</code></pre>
 </details>
 </dd>
@@ -113,6 +161,7 @@ def get_report_metadata_namespace(ns: Namespace, reports:list):
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
+<li><code><a title="licenseware.app_builder.reports_namespace.report_metadata_namespace.create_report_resource" href="#licenseware.app_builder.reports_namespace.report_metadata_namespace.create_report_resource">create_report_resource</a></code></li>
 <li><code><a title="licenseware.app_builder.reports_namespace.report_metadata_namespace.get_report_metadata_namespace" href="#licenseware.app_builder.reports_namespace.report_metadata_namespace.get_report_metadata_namespace">get_report_metadata_namespace</a></code></li>
 </ul>
 </li>

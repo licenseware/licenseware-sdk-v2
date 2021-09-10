@@ -26,9 +26,29 @@ It helps you focus on processsing the files needed and creating reports.
 <a name="quickstart"></a>
 # Quickstart 
 
-Here you will see how to install the sdk and what's required in a licenseware app.
+Here are the steps needed for local development of an app:
 
-## Install Licenseware SDK 
+- Install the sdk : `pip3 install git+https://git@github.com/licenseware/licenseware-sdk-python3.git`;
+- Clone the repo for your service;
+- CD in the cloned repo locally;
+- Create a new app : `licenseware new-app odb`;
+- Create a new uploader: `licenseware new-uploader lms_options`;
+- Update modules `validator.py` `worker.py` as per processing requirements needs for `lms_options` uploader_id. Modules created will be found here: `app/uploaders/lms_options`
+- Open the first terminal start the mock-server : `licenseware start-mock-server`;
+- Open the second terminal start the redis background worker: `licenseware start-background-worker`;
+- Open the third terminal start the development server: `licenseware start-dev-server`;
+- Copy `docker-compose-mongo-redis.yml` file to `Documents` folder start the databases with:
+
+```
+docker-compose -f docker-compose-mongo-redis.yml up -d --remove-orphans --force-recreate
+```
+
+You will have mongoexpress running at: `http://localhost:8081/`
+
+
+
+
+## Installation 
 
 Install latest update for this package using the following pip command:
 ```bash
@@ -497,16 +517,21 @@ Each **REPORT COMPONENT** has:
 
 Fist make sure you have set the environment variables:
 
-```bash
+```
+
 #.env
+
 DEBUG=true
 ENVIRONMENT=local
-PERSONAL_SUFFIX=_alin
+PERSONAL_SUFFIX=_222
 
 
 FLASK_APP=main:app
+FLASK_RUN_HOST=localhost
+FLASK_RUN_PORT=4000
+FLASK_DEBUG=true
 
-APP_ID=ifmp
+APP_ID=odb
 APP_HOST=http://localhost:5000
 
 LWARE_IDENTITY_USER=John
@@ -520,15 +545,14 @@ REGISTRY_SERVICE_URL=http://localhost:5000/registry-service
 
 FILE_UPLOAD_PATH=/tmp/lware
 
-MONGO_ROOT_USERNAME=Alin
+MONGO_ROOT_USERNAME=John
 MONGO_ROOT_PASSWORD=secret
 MONGO_HOSTNAME=localhost
 MONGO_PORT=27017
 MONGO_DATABASE_NAME=db
 MONGO_CONNECTION_STRING=mongodb://${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DATABASE_NAME}
 
-
-REDIS_HOST=redis_db_sdk
+REDIS_HOST=redis_db_dev
 REDIS_PORT=6379
 
 ```
@@ -538,11 +562,6 @@ Start `redis` and `mongo` databases:
 ```bash
 make up
 ```
-
-
-
-
-
 
 
 
@@ -1256,6 +1275,8 @@ This will start the flask server with auto-reload.
 ```bash
 baton -u http://localhost:4000 -c 10 -r 10000
 ```
+
+
 '''
 
 try:

@@ -34,38 +34,61 @@ from marshmallow import Schema, fields
 from licenseware.utils.miscellaneous import build_restx_model
 
 
+from licenseware.report_builder import ReportBuilder
+from licenseware.report_components import BaseReportComponent
+from typing import List
+
+
 class ComponentFilterSchema(Schema):
     field_name   = fields.String(required=True)
     filter_type  =  fields.String(required=True)
     filter_value = fields.List(fields.String, required=False)
 
 
-def get_report_components_namespace(ns: Namespace, reports:list):
+
+def create_report_component_resource(component: BaseReportComponent):
+    
+    class ComponentResource(Resource):
+        @failsafe(fail_code=500)
+        @authorization_check
+        def post(self):
+            return component.get_data(request)
+        
+    return ComponentResource
+    
+
+
+def get_report_components_namespace(ns: Namespace, reports:List[ReportBuilder]):
     
     restx_model = build_restx_model(ns, ComponentFilterSchema)
     
     for report in reports:
         for component in report.components:
             
-            @ns.route(report.report_path + component.path)
-            class BaseResourcePost(Resource):
-                
-                @failsafe(fail_code=500)
-                @authorization_check
-                @ns.doc(
-                    id=&#34;Get components data with an optional filter payload&#34;,
-                    responses={
-                        200 : &#39;Success&#39;,
-                        403 : &#34;Missing `Tenantid` or `Authorization` information&#34;,
-                        500 : &#39;Something went wrong while handling the request&#39; 
-                    },
-                    body=restx_model
-                )
-                def post(self):
-                    return component.get_data(request)
+            RC = create_report_component_resource(component)
+            
+            @ns.doc(
+                id=&#34;Get components data with an optional filter payload&#34;,
+                responses={
+                    200 : &#39;Success&#39;,
+                    403 : &#34;Missing `Tenantid` or `Authorization` information&#34;,
+                    500 : &#39;Something went wrong while handling the request&#39; 
+                },
+                body=restx_model
+            )
+            class TempReportComponentResource(RC): ...
+            
+            ReportComponentResource = type(
+                report.report_id.replace(&#34;_&#34;, &#34;&#34;).capitalize() + &#39;component&#39;,
+                (TempReportComponentResource, ),
+                {}
+            )
+            
+            ns.add_resource(ReportComponentResource, report.report_path + component.path) 
             
     return ns
         
+       
        
        
        </code></pre>
@@ -78,8 +101,8 @@ def get_report_components_namespace(ns: Namespace, reports:list):
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="licenseware.app_builder.reports_namespace.report_components_namespace.get_report_components_namespace"><code class="name flex">
-<span>def <span class="ident">get_report_components_namespace</span></span>(<span>ns: flask_restx.namespace.Namespace, reports: list)</span>
+<dt id="licenseware.app_builder.reports_namespace.report_components_namespace.create_report_component_resource"><code class="name flex">
+<span>def <span class="ident">create_report_component_resource</span></span>(<span>component: <a title="licenseware.report_components.base_report_component.BaseReportComponent" href="../../report_components/base_report_component.html#licenseware.report_components.base_report_component.BaseReportComponent">BaseReportComponent</a>)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -87,29 +110,53 @@ def get_report_components_namespace(ns: Namespace, reports:list):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_report_components_namespace(ns: Namespace, reports:list):
+<pre><code class="python">def create_report_component_resource(component: BaseReportComponent):
+    
+    class ComponentResource(Resource):
+        @failsafe(fail_code=500)
+        @authorization_check
+        def post(self):
+            return component.get_data(request)
+        
+    return ComponentResource</code></pre>
+</details>
+</dd>
+<dt id="licenseware.app_builder.reports_namespace.report_components_namespace.get_report_components_namespace"><code class="name flex">
+<span>def <span class="ident">get_report_components_namespace</span></span>(<span>ns: flask_restx.namespace.Namespace, reports: List[<a title="licenseware.report_builder.report_builder.ReportBuilder" href="../../report_builder/report_builder.html#licenseware.report_builder.report_builder.ReportBuilder">ReportBuilder</a>])</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_report_components_namespace(ns: Namespace, reports:List[ReportBuilder]):
     
     restx_model = build_restx_model(ns, ComponentFilterSchema)
     
     for report in reports:
         for component in report.components:
             
-            @ns.route(report.report_path + component.path)
-            class BaseResourcePost(Resource):
-                
-                @failsafe(fail_code=500)
-                @authorization_check
-                @ns.doc(
-                    id=&#34;Get components data with an optional filter payload&#34;,
-                    responses={
-                        200 : &#39;Success&#39;,
-                        403 : &#34;Missing `Tenantid` or `Authorization` information&#34;,
-                        500 : &#39;Something went wrong while handling the request&#39; 
-                    },
-                    body=restx_model
-                )
-                def post(self):
-                    return component.get_data(request)
+            RC = create_report_component_resource(component)
+            
+            @ns.doc(
+                id=&#34;Get components data with an optional filter payload&#34;,
+                responses={
+                    200 : &#39;Success&#39;,
+                    403 : &#34;Missing `Tenantid` or `Authorization` information&#34;,
+                    500 : &#39;Something went wrong while handling the request&#39; 
+                },
+                body=restx_model
+            )
+            class TempReportComponentResource(RC): ...
+            
+            ReportComponentResource = type(
+                report.report_id.replace(&#34;_&#34;, &#34;&#34;).capitalize() + &#39;component&#39;,
+                (TempReportComponentResource, ),
+                {}
+            )
+            
+            ns.add_resource(ReportComponentResource, report.report_path + component.path) 
             
     return ns</code></pre>
 </details>
@@ -230,6 +277,7 @@ fields in the data. Use <code>EXCLUDE</code>, <code>INCLUDE</code> or <code>RAIS
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
+<li><code><a title="licenseware.app_builder.reports_namespace.report_components_namespace.create_report_component_resource" href="#licenseware.app_builder.reports_namespace.report_components_namespace.create_report_component_resource">create_report_component_resource</a></code></li>
 <li><code><a title="licenseware.app_builder.reports_namespace.report_components_namespace.get_report_components_namespace" href="#licenseware.app_builder.reports_namespace.report_components_namespace.get_report_components_namespace">get_report_components_namespace</a></code></li>
 </ul>
 </li>

@@ -30,30 +30,52 @@
 from flask_restx import Namespace, Resource
 from licenseware.decorators.auth_decorators import authorization_check
 from licenseware.decorators import failsafe
-from licenseware.tenants.processing_status import get_processing_status
+from licenseware.tenants.processing_status import get_uploader_status
+
+
+from licenseware.uploader_builder import UploaderBuilder
+from typing import List
 
 
 
-def get_status_namespace(ns: Namespace, uploaders:list):
+def create_uploader_resource(uploader: UploaderBuilder):
+    
+    class UploaderStatus(Resource): 
+        @failsafe(fail_code=500)
+        @authorization_check
+        def get(self):
+            return get_uploader_status(request.headers.get(&#34;Tenantid&#34;), uploader.uploader_id) 
+    
+    return UploaderStatus
+
+
+
+def get_status_namespace(ns: Namespace, uploaders:List[UploaderBuilder]):
         
     for uploader in uploaders:
-                
-        @ns.route(uploader.status_check_path)
-        class UploaderStatus(Resource): 
-            @failsafe(fail_code=500)
-            @authorization_check
-            @ns.doc(
-                id=&#39;Get processing status of files uploaded&#39;,
-                responses={
-                    # 200 : &#39;&#39;,
-                    400 : &#34;Tenantid not provided&#34;,
-                    403 : &#34;Missing `Tenant` or `Authorization` information&#34;,
-                    500 : &#39;Something went wrong while handling the request&#39; 
-                },
-            ) 
-            def get(self):
-                return get_processing_status(request.headers.get(&#34;Tenantid&#34;)) 
-            
+        
+        UR = create_uploader_resource(uploader)
+        
+        @ns.doc(
+            id=&#39;Get processing status of files uploaded&#39;,
+            responses={
+                200 : &#39;idle or running&#39;,
+                400 : &#34;Tenantid not provided&#34;,
+                403 : &#34;Missing `Tenant` or `Authorization` information&#34;,
+                500 : &#39;Something went wrong while handling the request&#39; 
+            },
+        ) 
+        class TempUploaderResource(UR): ...
+        
+        UploaderResource = type(
+            uploader.uploader_id.replace(&#34;_&#34;, &#34;&#34;).capitalize() + &#39;status&#39;,
+            (TempUploaderResource, ),
+            {}
+        )
+        
+        ns.add_resource(UploaderResource, uploader.status_check_path) 
+        
+        
     return ns</code></pre>
 </details>
 </section>
@@ -64,8 +86,8 @@ def get_status_namespace(ns: Namespace, uploaders:list):
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="licenseware.app_builder.uploads_namespace.status_namespace.get_status_namespace"><code class="name flex">
-<span>def <span class="ident">get_status_namespace</span></span>(<span>ns: flask_restx.namespace.Namespace, uploaders: list)</span>
+<dt id="licenseware.app_builder.uploads_namespace.status_namespace.create_uploader_resource"><code class="name flex">
+<span>def <span class="ident">create_uploader_resource</span></span>(<span>uploader: <a title="licenseware.uploader_builder.uploader_builder.UploaderBuilder" href="../../uploader_builder/uploader_builder.html#licenseware.uploader_builder.uploader_builder.UploaderBuilder">UploaderBuilder</a>)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -73,26 +95,52 @@ def get_status_namespace(ns: Namespace, uploaders:list):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_status_namespace(ns: Namespace, uploaders:list):
+<pre><code class="python">def create_uploader_resource(uploader: UploaderBuilder):
+    
+    class UploaderStatus(Resource): 
+        @failsafe(fail_code=500)
+        @authorization_check
+        def get(self):
+            return get_uploader_status(request.headers.get(&#34;Tenantid&#34;), uploader.uploader_id) 
+    
+    return UploaderStatus</code></pre>
+</details>
+</dd>
+<dt id="licenseware.app_builder.uploads_namespace.status_namespace.get_status_namespace"><code class="name flex">
+<span>def <span class="ident">get_status_namespace</span></span>(<span>ns: flask_restx.namespace.Namespace, uploaders: List[<a title="licenseware.uploader_builder.uploader_builder.UploaderBuilder" href="../../uploader_builder/uploader_builder.html#licenseware.uploader_builder.uploader_builder.UploaderBuilder">UploaderBuilder</a>])</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_status_namespace(ns: Namespace, uploaders:List[UploaderBuilder]):
         
     for uploader in uploaders:
-                
-        @ns.route(uploader.status_check_path)
-        class UploaderStatus(Resource): 
-            @failsafe(fail_code=500)
-            @authorization_check
-            @ns.doc(
-                id=&#39;Get processing status of files uploaded&#39;,
-                responses={
-                    # 200 : &#39;&#39;,
-                    400 : &#34;Tenantid not provided&#34;,
-                    403 : &#34;Missing `Tenant` or `Authorization` information&#34;,
-                    500 : &#39;Something went wrong while handling the request&#39; 
-                },
-            ) 
-            def get(self):
-                return get_processing_status(request.headers.get(&#34;Tenantid&#34;)) 
-            
+        
+        UR = create_uploader_resource(uploader)
+        
+        @ns.doc(
+            id=&#39;Get processing status of files uploaded&#39;,
+            responses={
+                200 : &#39;idle or running&#39;,
+                400 : &#34;Tenantid not provided&#34;,
+                403 : &#34;Missing `Tenant` or `Authorization` information&#34;,
+                500 : &#39;Something went wrong while handling the request&#39; 
+            },
+        ) 
+        class TempUploaderResource(UR): ...
+        
+        UploaderResource = type(
+            uploader.uploader_id.replace(&#34;_&#34;, &#34;&#34;).capitalize() + &#39;status&#39;,
+            (TempUploaderResource, ),
+            {}
+        )
+        
+        ns.add_resource(UploaderResource, uploader.status_check_path) 
+        
+        
     return ns</code></pre>
 </details>
 </dd>
@@ -114,6 +162,7 @@ def get_status_namespace(ns: Namespace, uploaders:list):
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
+<li><code><a title="licenseware.app_builder.uploads_namespace.status_namespace.create_uploader_resource" href="#licenseware.app_builder.uploads_namespace.status_namespace.create_uploader_resource">create_uploader_resource</a></code></li>
 <li><code><a title="licenseware.app_builder.uploads_namespace.status_namespace.get_status_namespace" href="#licenseware.app_builder.uploads_namespace.status_namespace.get_status_namespace">get_status_namespace</a></code></li>
 </ul>
 </li>

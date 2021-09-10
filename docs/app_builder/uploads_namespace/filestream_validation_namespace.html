@@ -99,7 +99,7 @@ def get_filestream_validation_namespace(ns: Namespace, uploaders:List[UploaderBu
         class TempUploaderResource(UR): ...
         
         UploaderResource = type(
-            uploader.uploader_id.replace(&#34;_&#34;, &#34;&#34;).capitalize(),
+            uploader.uploader_id.replace(&#34;_&#34;, &#34;&#34;).capitalize() + &#39;stream&#39;,
             (TempUploaderResource, ),
             {}
         )
@@ -180,7 +180,7 @@ def get_filestream_validation_namespace(ns: Namespace, uploaders:List[UploaderBu
         class TempUploaderResource(UR): ...
         
         UploaderResource = type(
-            uploader.uploader_id.replace(&#34;_&#34;, &#34;&#34;).capitalize(),
+            uploader.uploader_id.replace(&#34;_&#34;, &#34;&#34;).capitalize() + &#39;stream&#39;,
             (TempUploaderResource, ),
             {}
         )
