@@ -122,12 +122,23 @@ class FileContentValidator:
         if not isinstance(file_objects, list): return file_objects
         validation_response = self.validate_file_objects(file_objects, tenant_id)
         
+        
+        status  = 'success'
+        message = 'Files are valid'
+        for res in validation_response:
+            if res['status'] == 'fail':        
+                status  = 'fail'
+                message = 'Not all files are valid'
+                
         return {
             'tenant_id': tenant_id, 
-            'status': 'success', 
-            'message': 'Files are valid',
+            'status': status, 
+            'message': message,
             'validation': validation_response
         }, 200
+            
+            
+        
             
             
         
