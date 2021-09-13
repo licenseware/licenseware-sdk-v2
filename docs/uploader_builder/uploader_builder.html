@@ -158,10 +158,15 @@ class UploaderBuilder:
                     &#39;validation_response&#39;: response
                 })
                 
-                validate_event(event)
-                log.warning(&#34;Sending event: &#34; + str(event))
+                if not validate_event(event, raise_error=False):
+                    log.error(event)
+                    notify_upload_status(event, status=states.IDLE)
+                    return {&#39;status&#39;: states.FAILED, &#39;message&#39;: &#39;Event not valid&#39;, &#39;event_data&#39;: event}, 400
+                
+                log.info(&#34;Sending event: &#34; + str(event))
                 self.worker.send(event)
                 
+        notify_upload_status(event, status=states.IDLE)
         return response, status_code
     
     
@@ -352,10 +357,15 @@ status_check_path:str = None - url path/route where gives back the status of the
                     &#39;validation_response&#39;: response
                 })
                 
-                validate_event(event)
-                log.warning(&#34;Sending event: &#34; + str(event))
+                if not validate_event(event, raise_error=False):
+                    log.error(event)
+                    notify_upload_status(event, status=states.IDLE)
+                    return {&#39;status&#39;: states.FAILED, &#39;message&#39;: &#39;Event not valid&#39;, &#39;event_data&#39;: event}, 400
+                
+                log.info(&#34;Sending event: &#34; + str(event))
                 self.worker.send(event)
                 
+        notify_upload_status(event, status=states.IDLE)
         return response, status_code
     
     
@@ -494,10 +504,15 @@ status_check_path:str = None - url path/route where gives back the status of the
                 &#39;validation_response&#39;: response
             })
             
-            validate_event(event)
-            log.warning(&#34;Sending event: &#34; + str(event))
+            if not validate_event(event, raise_error=False):
+                log.error(event)
+                notify_upload_status(event, status=states.IDLE)
+                return {&#39;status&#39;: states.FAILED, &#39;message&#39;: &#39;Event not valid&#39;, &#39;event_data&#39;: event}, 400
+            
+            log.info(&#34;Sending event: &#34; + str(event))
             self.worker.send(event)
             
+    notify_upload_status(event, status=states.IDLE)
     return response, status_code</code></pre>
 </details>
 </dd>

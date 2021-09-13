@@ -32,7 +32,7 @@ from .schema_validator import schema_validator
 
 
 def validate_event(payload:dict, raise_error=True):
-    schema_validator(EventSchema, payload, raise_error=raise_error)
+    return schema_validator(EventSchema, payload, raise_error=raise_error)
     </code></pre>
 </details>
 </section>
@@ -53,7 +53,7 @@ def validate_event(payload:dict, raise_error=True):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def validate_event(payload:dict, raise_error=True):
-    schema_validator(EventSchema, payload, raise_error=raise_error)</code></pre>
+    return schema_validator(EventSchema, payload, raise_error=raise_error)</code></pre>
 </details>
 </dd>
 </dl>

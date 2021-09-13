@@ -166,7 +166,6 @@ def rv_tools_worker(event:dict):
     # }
 
     log.info(&quot;Starting working&quot;)
-    notify_upload_status(event, status=states.RUNNING)
     log.debug(event) # here add the processing file logic
     notify_upload_status(event, status=states.IDLE)
     log.info(&quot;Finished working&quot;)
@@ -569,7 +568,6 @@ from licenseware.utils.logger import log
 
 def rv_tools_worker(event:dict):
     log.info(&quot;Starting working&quot;)
-    notify_upload_status(event, status=states.RUNNING)
     log.debug(event) # here add the processing file logic
     notify_upload_status(event, status=states.IDLE)
     log.info(&quot;Finished working&quot;)
@@ -1248,7 +1246,6 @@ def rv_tools_worker(event:dict):
     # }
 
     log.info(&#34;Starting working&#34;)
-    notify_upload_status(event, status=states.RUNNING)
     log.debug(event) # here add the processing file logic
     notify_upload_status(event, status=states.IDLE)
     log.info(&#34;Finished working&#34;)
@@ -1688,7 +1685,6 @@ from licenseware.utils.logger import log
 
 def rv_tools_worker(event:dict):
     log.info(&#34;Starting working&#34;)
-    notify_upload_status(event, status=states.RUNNING)
     log.debug(event) # here add the processing file logic
     notify_upload_status(event, status=states.IDLE)
     log.info(&#34;Finished working&#34;)
@@ -2341,6 +2337,7 @@ This will start the flask server with auto-reload.
 ```bash
 baton -u http://localhost:4000 -c 10 -r 10000
 ```
+
 
 &#39;&#39;&#39;
 
