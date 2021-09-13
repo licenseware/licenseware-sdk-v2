@@ -1,11 +1,11 @@
 from licenseware.utils.logger import log
 from licenseware.common.constants import states
 from licenseware.notifications import notify_upload_status
+from licenseware.common.types import Event
 
 
 
-
-def {{ uploader_id }}_worker(event:dict):
+def {{ uploader_id }}_worker(event:Event):
     # This is the worker entrypoint  
     
     log.info("Starting working")
