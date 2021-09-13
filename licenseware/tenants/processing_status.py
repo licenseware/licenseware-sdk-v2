@@ -26,7 +26,7 @@ def get_processing_status(tenant_id:str):
     
     results = m.document_count(
         match=query, 
-        collection=envs.MONGO_ANALYSIS_NAME
+        collection=envs.MONGO_COLLECTION_ANALYSIS_NAME
     )
     
     log.info(results)
@@ -60,7 +60,7 @@ def get_uploader_status(tenant_id:str, uploader_id:str):
 
     results = m.document_count(
         match=query, 
-        collection=envs.MONGO_ANALYSIS_NAME
+        collection=envs.MONGO_COLLECTION_ANALYSIS_NAME
     )
     
     log.info(results)

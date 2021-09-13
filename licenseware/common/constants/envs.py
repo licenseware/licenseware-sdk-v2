@@ -91,7 +91,7 @@ class envs:
     
     # Environment variables added later by the app
     # envs.method_name() - calls the variable dynamically 
-    # you can access class vars with cls.attr_name ex: cls.MONGO_ANALYSIS_NAME
+    # you can access class vars with cls.attr_name ex: cls.MONGO_COLLECTION_DATA_NAME
     @classmethod
     def get_auth_token(cls):
         return os.getenv('AUTH_TOKEN')
