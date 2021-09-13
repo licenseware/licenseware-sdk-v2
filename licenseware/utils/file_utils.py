@@ -2,8 +2,6 @@ import os, re
 import shutil
 from werkzeug.utils import secure_filename as werkzeug_secure_filename
 from licenseware.common.constants import envs
-from .miscellaneous import generate_id
-
 
 
 
@@ -65,27 +63,5 @@ def unzip(file_path):
     shutil.unpack_archive(file_path, extract_path)
     
     return extract_path
-
-
-
-def get_filepaths_from_event(event):
-    """
-        :event - redis event similar to the one bellow:
-            event = {
-                'tenant_id': '2ac111c7-fd19-463e-96c2-1493aea18bed', 
-                'files': 'filename1,filename2',
-                'event_type': 'ofmw_archive' # for normalization purposes 'event_type' is the same as 'unit_type' and 'file_type'
-            }
-
-        returns a list of filepaths or list of folder paths if an archive is found in 'files' 
-
-    """
-
-    filepath = lambda filename: os.path.join(envs.FILE_UPLOAD_PATH, event['tenant_id'], filename)
-    filenames = event['files'].split(",")
-
-    return [unzip(filepath(filename)) for filename in filenames]
-
-
 
 
