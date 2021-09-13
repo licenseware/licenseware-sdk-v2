@@ -47,7 +47,8 @@ class UploaderBuilder:
         upload_validation_path:str = None,
         quota_validation_path:str = None,
         status_check_path:str = None,
-        **kwargs
+        max_retries:int = 0,
+        **options
     ):
         
         #Passing variables to validator class
@@ -60,7 +61,7 @@ class UploaderBuilder:
         self.description = description
         self.validator_class = validator_class
         self.app_id = envs.APP_ID
-        self.worker = broker.actor(worker_function, max_retries=3, actor_name=self.uploader_id, queue_name=envs.APP_ID)
+        self.worker = broker.actor(worker_function, max_retries=max_retries, actor_name=self.uploader_id, queue_name=envs.APP_ID)
         self.accepted_file_types = accepted_file_types
         self.flags = flags
         self.status = status
@@ -78,7 +79,7 @@ class UploaderBuilder:
         self.quota_validation_url = envs.UPLOAD_URL + self.quota_validation_path
         self.status_check_url = envs.UPLOAD_URL + self.status_check_path
         
-        self.kwargs = kwargs
+        self.options = options
         
         self.uploader_vars = vars(self)
         
