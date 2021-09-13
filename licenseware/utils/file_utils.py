@@ -75,7 +75,7 @@ def recursive_unzip(file_path:str):
     elif file_path.endswith(('.zip', '.tar.bz2')):
         unziped_base = unzip(file_path)
     
-    for root, dirnames, filenames in os.walk(unziped_base):
+    for root, dirs, filenames in os.walk(unziped_base):
         for filename in filenames:
             file_path = os.path.join(root, filename)
             if not os.path.exists(file_path): continue
@@ -84,3 +84,4 @@ def recursive_unzip(file_path:str):
                 os.remove(file_path)
                 recursive_unzip(file_path)
             
+    return unziped_base
