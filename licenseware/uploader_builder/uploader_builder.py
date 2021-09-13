@@ -5,6 +5,8 @@ from licenseware.utils.dramatiq_redis_broker import broker
 from licenseware.utils.logger import log
 from licenseware.common.validators import validate_event
 from licenseware.quota import Quota
+from licenseware.notifications import notify_upload_status
+
 
 
 
@@ -99,8 +101,17 @@ class UploaderBuilder:
         
     def upload_files(self, flask_request):
         
+        event = {
+            'tenant_id': flask_request.headers.get("Tenantid"),
+            'uploader_id': self.uploader_id
+        }
+        
+        notify_upload_status(event, status=states.RUNNING)
+        
         quota_response, quota_status_code = self.validator_class.calculate_quota(flask_request)
-        if quota_status_code != 200: return quota_response, quota_status_code
+        if quota_status_code != 200: 
+            notify_upload_status(event, status=states.IDLE)
+            return quota_response, quota_status_code
         
         response, status_code = self.validator_class.get_file_objects_response(flask_request)
         
@@ -113,19 +124,21 @@ class UploaderBuilder:
                 flask_headers = dict(flask_request.headers) if flask_request.headers else {}
                 flask_body = {dict(flask_request.json)} if flask_request.json else {}
                 
-                event = {
-                    'tenant_id': flask_request.headers.get("Tenantid"),
+                event.update({
                     'filepaths': valid_filepaths, 
-                    'uploader_id': self.uploader_id,
                     'flask_request':  {**flask_body, **flask_headers},
                     'validation_response': response
-                }
+                })
                 
-                validate_event(event)
-
-                log.warning("Sending event: " + str(event))
+                if not validate_event(event, raise_error=False):
+                    log.error(event)
+                    notify_upload_status(event, status=states.IDLE)
+                    return {'status': states.FAILED, 'message': 'Event not valid', 'event_data': event}, 400
+                
+                log.info("Sending event: " + str(event))
                 self.worker.send(event)
                 
+        notify_upload_status(event, status=states.IDLE)
         return response, status_code
     
     

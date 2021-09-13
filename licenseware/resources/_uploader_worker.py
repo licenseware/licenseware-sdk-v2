@@ -9,7 +9,6 @@ def {{ uploader_id }}_worker(event:dict):
     # This is the worker entrypoint  
     
     log.info("Starting working")
-    notify_upload_status(event, status=states.RUNNING)
     
     # Here add the processing file logic
     # Worker logic doesn't have to be all in this function. 
@@ -17,7 +16,8 @@ def {{ uploader_id }}_worker(event:dict):
     
     log.debug(event) 
     
-    
+    # we need to send an IDLE status after file processing is finished
+    # the RUNNING status was already sent by UploaderBuilder
     notify_upload_status(event, status=states.IDLE)
     log.info("Finished working")
     
