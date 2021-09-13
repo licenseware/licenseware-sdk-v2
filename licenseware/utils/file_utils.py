@@ -26,7 +26,6 @@ def secure_filename(fname):
 def save_file(file, tenant_id=None, path=None):
     """
         Save to disk flask file stream
-        
     """
     
     filename = secure_filename(file.filename)
@@ -45,7 +44,7 @@ def save_file(file, tenant_id=None, path=None):
 
 
 
-def unzip(file_path):
+def unzip(file_path:str):
 
     """
         Extracts: “zip”, “tar”, “gztar”, “bztar”, or “xztar”.    
@@ -65,3 +64,23 @@ def unzip(file_path):
     return extract_path
 
 
+
+def recursive_unzip(file_path:str):
+    """
+        Iterate over an archive and recursively extract all archives using unzip function
+    """
+    
+    if os.path.exists(file_path + '_extracted'):
+        unziped_base = file_path + '_extracted'
+    elif file_path.endswith(('.zip', '.tar.bz2')):
+        unziped_base = unzip(file_path)
+    
+    for root, dirnames, filenames in os.walk(unziped_base):
+        for filename in filenames:
+            file_path = os.path.join(root, filename)
+            if not os.path.exists(file_path): continue
+            if file_path.endswith(('.zip', '.tar.bz2')):
+                unzip(file_path)
+                os.remove(file_path)
+                recursive_unzip(file_path)
+            
