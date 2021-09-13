@@ -33,8 +33,9 @@ def save_file(file, tenant_id=None, path=None):
     
     filename = secure_filename(file.filename)
 
-    dir_id = generate_id() # doing this to avoid overwriting already uploaded files 
-    save_path = path or os.path.join(envs.FILE_UPLOAD_PATH, tenant_id, dir_id)
+    # dir_id = generate_id() # doing this to avoid overwriting already uploaded files 
+    # dir_id works only for uploaders with one file sent for processing
+    save_path = path or os.path.join(envs.FILE_UPLOAD_PATH, tenant_id)
     if not os.path.exists(save_path): os.makedirs(save_path) 
     
     file.seek(0)  # move cursor to 0 (stream left it on last read)
