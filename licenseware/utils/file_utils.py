@@ -4,6 +4,61 @@ from werkzeug.utils import secure_filename as werkzeug_secure_filename
 from licenseware.common.constants import envs
 
 
+accepted_archives = ('.zip', '.tar','.tar.bz2', )
+
+
+def unzip(file_path:str):
+
+    """
+        Extracts: “zip”, “tar”, “gztar”, “bztar”, or “xztar”.    
+        Returns the path where the file was extracted
+    """
+
+    if not file_path.endswith(accepted_archives):
+        raise ValueError(f"Only {accepted_archives} archives are accepted")
+        
+    file_name = os.path.basename(file_path)
+    file_dir  = os.path.dirname(file_path)
+
+    extract_path = os.path.join(file_dir, file_name + "_extracted")
+    
+    shutil.unpack_archive(file_path, extract_path)
+    
+    return extract_path
+
+
+
+def recursive_unzip(file_path:str):
+    """
+        Iterate over an archive and recursively extract all archives using unzip function
+    """
+ 
+    if file_path.endswith(accepted_archives):
+        unziped_base = unzip(file_path)
+    else:
+        unziped_base = file_path
+    
+    archives_found = False
+    for root, dirs, filenames in os.walk(unziped_base):
+        for filename in filenames:
+            
+            fpath = os.path.join(root, filename)
+            
+            if not fpath.endswith(accepted_archives): continue
+            if not os.path.exists(fpath): continue
+            
+            unzip(fpath)
+            os.remove(fpath)
+            archives_found = True
+    
+    file_path = file_path + '_extracted' if not file_path.endswith('_extracted') else file_path
+    
+    if archives_found: 
+        recursive_unzip(file_path)    
+        
+    return file_path
+    
+
 
 def secure_filename(fname):
     """
@@ -42,56 +97,3 @@ def save_file(file, tenant_id=None, path=None):
     
     return file_path
 
-
-
-def unzip(file_path:str):
-
-    """
-        Extracts: “zip”, “tar”, “gztar”, “bztar”, or “xztar”.    
-        Returns the path where the file was extracted
-    """
-
-    if not file_path.endswith(('.zip', '.tar.bz2')):
-        raise ValueError("Only '.zip', '.tar.bz2' archives are accepted")
-        
-    file_name = os.path.basename(file_path)
-    file_dir  = os.path.dirname(file_path)
-
-    extract_path = os.path.join(file_dir, file_name + "_extracted")
-    
-    shutil.unpack_archive(file_path, extract_path)
-    
-    return extract_path
-
-
-
-def recursive_unzip(file_path:str):
-    """
-        Iterate over an archive and recursively extract all archives using unzip function
-    """
- 
-    if file_path.endswith(('.zip', '.tar.bz2')):
-        unziped_base = unzip(file_path)
-    else:
-        unziped_base = file_path
-    
-    archives_found = False
-    for root, dirs, filenames in os.walk(unziped_base):
-        for filename in filenames:
-            
-            fpath = os.path.join(root, filename)
-            
-            if not fpath.endswith(('.zip', '.tar.bz2')): continue
-            if not os.path.exists(fpath): continue
-            
-            unzip(fpath)
-            os.remove(fpath)
-            archives_found = True
-    
-    file_path = file_path + '_extracted' if not file_path.endswith('_extracted') else file_path
-    
-    if archives_found: 
-        recursive_unzip(file_path)    
-        
-    return file_path
-    
