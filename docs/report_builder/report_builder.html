@@ -26,10 +26,9 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">import itertools
-
-from licenseware.common.constants.envs import envs
+<pre><code class="python">from licenseware.common.constants.envs import envs
 from licenseware.registry_service import register_report
+from licenseware.report_components.build_match_expression import condition_switcher
 from licenseware.utils.logger import log
 
 
@@ -113,11 +112,50 @@ class ReportBuilder:
             metadata[&#39;type&#39;] = metadata.pop(&#39;component_type&#39;) 
             
             if metadata[&#34;filters&#34;]:
-                self.filters.append(metadata[&#34;filters&#34;])
-                self.filters = list(itertools.chain.from_iterable(self.filters))
-            
+                self.filters.extend(metadata[&#34;filters&#34;])
+                
             self.report_components.append(metadata)
-            </code></pre>
+            
+            
+            
+    def register_filters(self, filters:list):
+        log.info(&#34;Component filters not set on this component (probably you&#39;ve set them on the report)&#34;)
+        self.filters.extend(filters)
+        
+
+    @classmethod
+    def build_filter(cls, column:str, allowed_filters:list, visible_name:str, validate:bool = True):
+        &#34;&#34;&#34;
+            Will return a dictionary similar to the one bellow:
+            
+            {
+                &#34;column&#34;: &#34;version.edition&#34;,
+                &#34;allowed_filters&#34;: [
+                    &#34;equals&#34;, &#34;contains&#34;, &#34;in_list&#34;
+                ],
+                &#34;visible_name&#34;: &#34;Product Edition&#34;
+            }
+            
+            The dictionary build will be used to filter mongo 
+            
+        &#34;&#34;&#34;
+        
+        if validate:
+            
+            if &#34; &#34; in column: 
+                raise ValueError(&#34;Parameter `column` can&#39;t contain spaces and must be all lowercase like `device_name`&#34;)
+
+            for f in allowed_filters:
+                if f not in condition_switcher.keys():
+                    raise ValueError(f&#34;Filter {f} not in {condition_switcher.keys()}&#34;)
+            
+        
+        return dict(
+            column = column,
+            allowed_filters = allowed_filters,
+            visible_name = visible_name
+        )
+        </code></pre>
 </details>
 </section>
 <section>
@@ -223,11 +261,104 @@ class ReportBuilder:
             metadata[&#39;type&#39;] = metadata.pop(&#39;component_type&#39;) 
             
             if metadata[&#34;filters&#34;]:
-                self.filters.append(metadata[&#34;filters&#34;])
-                self.filters = list(itertools.chain.from_iterable(self.filters))
+                self.filters.extend(metadata[&#34;filters&#34;])
+                
+            self.report_components.append(metadata)
             
-            self.report_components.append(metadata)</code></pre>
+            
+            
+    def register_filters(self, filters:list):
+        log.info(&#34;Component filters not set on this component (probably you&#39;ve set them on the report)&#34;)
+        self.filters.extend(filters)
+        
+
+    @classmethod
+    def build_filter(cls, column:str, allowed_filters:list, visible_name:str, validate:bool = True):
+        &#34;&#34;&#34;
+            Will return a dictionary similar to the one bellow:
+            
+            {
+                &#34;column&#34;: &#34;version.edition&#34;,
+                &#34;allowed_filters&#34;: [
+                    &#34;equals&#34;, &#34;contains&#34;, &#34;in_list&#34;
+                ],
+                &#34;visible_name&#34;: &#34;Product Edition&#34;
+            }
+            
+            The dictionary build will be used to filter mongo 
+            
+        &#34;&#34;&#34;
+        
+        if validate:
+            
+            if &#34; &#34; in column: 
+                raise ValueError(&#34;Parameter `column` can&#39;t contain spaces and must be all lowercase like `device_name`&#34;)
+
+            for f in allowed_filters:
+                if f not in condition_switcher.keys():
+                    raise ValueError(f&#34;Filter {f} not in {condition_switcher.keys()}&#34;)
+            
+        
+        return dict(
+            column = column,
+            allowed_filters = allowed_filters,
+            visible_name = visible_name
+        )</code></pre>
 </details>
+<h3>Static methods</h3>
+<dl>
+<dt id="licenseware.report_builder.report_builder.ReportBuilder.build_filter"><code class="name flex">
+<span>def <span class="ident">build_filter</span></span>(<span>column: str, allowed_filters: list, visible_name: str, validate: bool = True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Will return a dictionary similar to the one bellow:</p>
+<p>{
+"column": "version.edition",
+"allowed_filters": [
+"equals", "contains", "in_list"
+],
+"visible_name": "Product Edition"
+}</p>
+<p>The dictionary build will be used to filter mongo</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def build_filter(cls, column:str, allowed_filters:list, visible_name:str, validate:bool = True):
+    &#34;&#34;&#34;
+        Will return a dictionary similar to the one bellow:
+        
+        {
+            &#34;column&#34;: &#34;version.edition&#34;,
+            &#34;allowed_filters&#34;: [
+                &#34;equals&#34;, &#34;contains&#34;, &#34;in_list&#34;
+            ],
+            &#34;visible_name&#34;: &#34;Product Edition&#34;
+        }
+        
+        The dictionary build will be used to filter mongo 
+        
+    &#34;&#34;&#34;
+    
+    if validate:
+        
+        if &#34; &#34; in column: 
+            raise ValueError(&#34;Parameter `column` can&#39;t contain spaces and must be all lowercase like `device_name`&#34;)
+
+        for f in allowed_filters:
+            if f not in condition_switcher.keys():
+                raise ValueError(f&#34;Filter {f} not in {condition_switcher.keys()}&#34;)
+        
+    
+    return dict(
+        column = column,
+        allowed_filters = allowed_filters,
+        visible_name = visible_name
+    )</code></pre>
+</details>
+</dd>
+</dl>
 <h3>Methods</h3>
 <dl>
 <dt id="licenseware.report_builder.report_builder.ReportBuilder.register_components"><code class="name flex">
@@ -253,10 +384,23 @@ class ReportBuilder:
         metadata[&#39;type&#39;] = metadata.pop(&#39;component_type&#39;) 
         
         if metadata[&#34;filters&#34;]:
-            self.filters.append(metadata[&#34;filters&#34;])
-            self.filters = list(itertools.chain.from_iterable(self.filters))
-        
+            self.filters.extend(metadata[&#34;filters&#34;])
+            
         self.report_components.append(metadata)</code></pre>
+</details>
+</dd>
+<dt id="licenseware.report_builder.report_builder.ReportBuilder.register_filters"><code class="name flex">
+<span>def <span class="ident">register_filters</span></span>(<span>self, filters: list)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def register_filters(self, filters:list):
+    log.info(&#34;Component filters not set on this component (probably you&#39;ve set them on the report)&#34;)
+    self.filters.extend(filters)</code></pre>
 </details>
 </dd>
 <dt id="licenseware.report_builder.report_builder.ReportBuilder.register_report"><code class="name flex">
@@ -317,7 +461,9 @@ class ReportBuilder:
 <li>
 <h4><code><a title="licenseware.report_builder.report_builder.ReportBuilder" href="#licenseware.report_builder.report_builder.ReportBuilder">ReportBuilder</a></code></h4>
 <ul class="">
+<li><code><a title="licenseware.report_builder.report_builder.ReportBuilder.build_filter" href="#licenseware.report_builder.report_builder.ReportBuilder.build_filter">build_filter</a></code></li>
 <li><code><a title="licenseware.report_builder.report_builder.ReportBuilder.register_components" href="#licenseware.report_builder.report_builder.ReportBuilder.register_components">register_components</a></code></li>
+<li><code><a title="licenseware.report_builder.report_builder.ReportBuilder.register_filters" href="#licenseware.report_builder.report_builder.ReportBuilder.register_filters">register_filters</a></code></li>
 <li><code><a title="licenseware.report_builder.report_builder.ReportBuilder.register_report" href="#licenseware.report_builder.report_builder.ReportBuilder.register_report">register_report</a></code></li>
 <li><code><a title="licenseware.report_builder.report_builder.ReportBuilder.return_json_payload" href="#licenseware.report_builder.report_builder.ReportBuilder.return_json_payload">return_json_payload</a></code></li>
 </ul>

@@ -174,7 +174,7 @@ def parse_match(match):
 mongo_connection = None
 
 
-def return_db(db_name):
+def get_db_name(db_name):
     if db_name:
         return db_name
     default_db = os.getenv(&#34;MONGO_DB_NAME&#34;) or os.getenv(
@@ -234,7 +234,7 @@ def insert(schema, collection, data, db_name=None):
         returns a list of ids inserted in the database in the order they were added
         If something fails will return a string with the error message.
     &#34;&#34;&#34;
-    db_name = return_db(db_name)
+    db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
     with Connect.get_connection() as mongo_connection:
         collection = mongo_connection[db_name][collection_name]
@@ -276,7 +276,7 @@ def fetch(match, collection, as_list=True, db_name=None):
 
     match = parse_match(match)
 
-    db_name = return_db(db_name)
+    db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
     with Connect.get_connection() as mongo_connection:
         collection = mongo_connection[db_name][collection_name]
@@ -322,7 +322,7 @@ def aggregate(pipeline, collection, as_list=True, db_name=None):
         If something fails will return a string with the error message.
 
     &#34;&#34;&#34;
-    db_name = return_db(db_name)
+    db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
     with Connect.get_connection() as mongo_connection:
         collection = mongo_connection[db_name][collection_name]
@@ -389,7 +389,7 @@ def update(schema, match, new_data, collection, append=False, db_name=None):
         If something fails will return a string with the error message.
 
     &#34;&#34;&#34;
-    db_name = return_db(db_name)
+    db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
     with Connect.get_connection() as mongo_connection:
         collection = mongo_connection[db_name][collection_name]
@@ -425,7 +425,7 @@ def delete(match, collection, db_name=None):
         If something fails will return a string with the error message.
 
     &#34;&#34;&#34;
-    db_name = return_db(db_name)
+    db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
     with Connect.get_connection() as mongo_connection:
         collection = mongo_connection[db_name][collection_name]
@@ -446,7 +446,7 @@ def delete_collection(collection, db_name=None):
     &#34;&#34;&#34;
         Delete a collection from the database.
     &#34;&#34;&#34;
-    db_name = return_db(db_name)
+    db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
     with Connect.get_connection() as mongo_connection:
         collection = mongo_connection[db_name][collection_name]
@@ -463,7 +463,7 @@ def document_count(match, collection, db_name=None):
     &#34;&#34;&#34;
         Delete a collection from the database.
     &#34;&#34;&#34;
-    db_name = return_db(db_name)
+    db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
     with Connect.get_connection() as mongo_connection:
         collection = mongo_connection[db_name][collection_name]
@@ -513,7 +513,7 @@ def document_count(match, collection, db_name=None):
         If something fails will return a string with the error message.
 
     &#34;&#34;&#34;
-    db_name = return_db(db_name)
+    db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
     with Connect.get_connection() as mongo_connection:
         collection = mongo_connection[db_name][collection_name]
@@ -561,7 +561,7 @@ def document_count(match, collection, db_name=None):
         If something fails will return a string with the error message.
 
     &#34;&#34;&#34;
-    db_name = return_db(db_name)
+    db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
     with Connect.get_connection() as mongo_connection:
         collection = mongo_connection[db_name][collection_name]
@@ -590,7 +590,7 @@ def document_count(match, collection, db_name=None):
     &#34;&#34;&#34;
         Delete a collection from the database.
     &#34;&#34;&#34;
-    db_name = return_db(db_name)
+    db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
     with Connect.get_connection() as mongo_connection:
         collection = mongo_connection[db_name][collection_name]
@@ -615,7 +615,7 @@ def document_count(match, collection, db_name=None):
     &#34;&#34;&#34;
         Delete a collection from the database.
     &#34;&#34;&#34;
-    db_name = return_db(db_name)
+    db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
     with Connect.get_connection() as mongo_connection:
         collection = mongo_connection[db_name][collection_name]
@@ -663,7 +663,7 @@ def document_count(match, collection, db_name=None):
 
     match = parse_match(match)
 
-    db_name = return_db(db_name)
+    db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
     with Connect.get_connection() as mongo_connection:
         collection = mongo_connection[db_name][collection_name]
@@ -730,6 +730,23 @@ def document_count(match, collection, db_name=None):
         return collection</code></pre>
 </details>
 </dd>
+<dt id="licenseware.mongodata.mongodata.get_db_name"><code class="name flex">
+<span>def <span class="ident">get_db_name</span></span>(<span>db_name)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_db_name(db_name):
+    if db_name:
+        return db_name
+    default_db = os.getenv(&#34;MONGO_DB_NAME&#34;) or os.getenv(
+        &#34;MONGO_DATABASE_NAME&#34;) or &#34;db&#34;
+    return default_db</code></pre>
+</details>
+</dd>
 <dt id="licenseware.mongodata.mongodata.insert"><code class="name flex">
 <span>def <span class="ident">insert</span></span>(<span>schema, collection, data, db_name=None)</span>
 </code></dt>
@@ -760,7 +777,7 @@ If something fails will return a string with the error message.</p></div>
         returns a list of ids inserted in the database in the order they were added
         If something fails will return a string with the error message.
     &#34;&#34;&#34;
-    db_name = return_db(db_name)
+    db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
     with Connect.get_connection() as mongo_connection:
         collection = mongo_connection[db_name][collection_name]
@@ -882,23 +899,6 @@ If something fails will return a string with the error message.</p></div>
     return collection or default_collection</code></pre>
 </details>
 </dd>
-<dt id="licenseware.mongodata.mongodata.return_db"><code class="name flex">
-<span>def <span class="ident">return_db</span></span>(<span>db_name)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def return_db(db_name):
-    if db_name:
-        return db_name
-    default_db = os.getenv(&#34;MONGO_DB_NAME&#34;) or os.getenv(
-        &#34;MONGO_DATABASE_NAME&#34;) or &#34;db&#34;
-    return default_db</code></pre>
-</details>
-</dd>
 <dt id="licenseware.mongodata.mongodata.update"><code class="name flex">
 <span>def <span class="ident">update</span></span>(<span>schema, match, new_data, collection, append=False, db_name=None)</span>
 </code></dt>
@@ -938,7 +938,7 @@ If something fails will return a string with the error message.</p></div>
         If something fails will return a string with the error message.
 
     &#34;&#34;&#34;
-    db_name = return_db(db_name)
+    db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
     with Connect.get_connection() as mongo_connection:
         collection = mongo_connection[db_name][collection_name]
@@ -1075,12 +1075,12 @@ def get_connection():
 <li><code><a title="licenseware.mongodata.mongodata.document_count" href="#licenseware.mongodata.mongodata.document_count">document_count</a></code></li>
 <li><code><a title="licenseware.mongodata.mongodata.fetch" href="#licenseware.mongodata.mongodata.fetch">fetch</a></code></li>
 <li><code><a title="licenseware.mongodata.mongodata.get_collection" href="#licenseware.mongodata.mongodata.get_collection">get_collection</a></code></li>
+<li><code><a title="licenseware.mongodata.mongodata.get_db_name" href="#licenseware.mongodata.mongodata.get_db_name">get_db_name</a></code></li>
 <li><code><a title="licenseware.mongodata.mongodata.insert" href="#licenseware.mongodata.mongodata.insert">insert</a></code></li>
 <li><code><a title="licenseware.mongodata.mongodata.parse_doc" href="#licenseware.mongodata.mongodata.parse_doc">parse_doc</a></code></li>
 <li><code><a title="licenseware.mongodata.mongodata.parse_match" href="#licenseware.mongodata.mongodata.parse_match">parse_match</a></code></li>
 <li><code><a title="licenseware.mongodata.mongodata.parse_oid" href="#licenseware.mongodata.mongodata.parse_oid">parse_oid</a></code></li>
 <li><code><a title="licenseware.mongodata.mongodata.return_collection_name" href="#licenseware.mongodata.mongodata.return_collection_name">return_collection_name</a></code></li>
-<li><code><a title="licenseware.mongodata.mongodata.return_db" href="#licenseware.mongodata.mongodata.return_db">return_db</a></code></li>
 <li><code><a title="licenseware.mongodata.mongodata.update" href="#licenseware.mongodata.mongodata.update">update</a></code></li>
 <li><code><a title="licenseware.mongodata.mongodata.valid_object_id" href="#licenseware.mongodata.mongodata.valid_object_id">valid_object_id</a></code></li>
 <li><code><a title="licenseware.mongodata.mongodata.valid_uuid" href="#licenseware.mongodata.mongodata.valid_uuid">valid_uuid</a></code></li>

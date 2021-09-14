@@ -30,9 +30,62 @@
 import shutil
 from werkzeug.utils import secure_filename as werkzeug_secure_filename
 from licenseware.common.constants import envs
-from .miscellaneous import generate_id
 
 
+accepted_archives = (&#39;.zip&#39;, &#39;.tar&#39;,&#39;.tar.bz2&#39;, )
+
+
+def unzip(file_path:str):
+
+    &#34;&#34;&#34;
+        Extracts: “zip”, “tar”, “gztar”, “bztar”, or “xztar”.    
+        Returns the path where the file was extracted
+    &#34;&#34;&#34;
+
+    if not file_path.endswith(accepted_archives):
+        raise ValueError(f&#34;Only {accepted_archives} archives are accepted&#34;)
+        
+    file_name = os.path.basename(file_path)
+    file_dir  = os.path.dirname(file_path)
+
+    extract_path = os.path.join(file_dir, file_name + &#34;_extracted&#34;)
+    
+    shutil.unpack_archive(file_path, extract_path)
+    
+    return extract_path
+
+
+
+def recursive_unzip(file_path:str):
+    &#34;&#34;&#34;
+        Iterate over an archive and recursively extract all archives using unzip function
+    &#34;&#34;&#34;
+ 
+    if file_path.endswith(accepted_archives):
+        unziped_base = unzip(file_path)
+    else:
+        unziped_base = file_path
+    
+    archives_found = False
+    for root, dirs, filenames in os.walk(unziped_base):
+        for filename in filenames:
+            
+            fpath = os.path.join(root, filename)
+            
+            if not fpath.endswith(accepted_archives): continue
+            if not os.path.exists(fpath): continue
+            
+            unzip(fpath)
+            os.remove(fpath)
+            archives_found = True
+    
+    file_path = file_path + &#39;_extracted&#39; if not file_path.endswith(&#39;_extracted&#39;) else file_path
+    
+    if archives_found: 
+        recursive_unzip(file_path)    
+        
+    return file_path
+    
 
 
 def secure_filename(fname):
@@ -56,13 +109,13 @@ def secure_filename(fname):
 def save_file(file, tenant_id=None, path=None):
     &#34;&#34;&#34;
         Save to disk flask file stream
-        
     &#34;&#34;&#34;
     
     filename = secure_filename(file.filename)
 
-    dir_id = generate_id() # doing this to avoid overwriting already uploaded files 
-    save_path = path or os.path.join(envs.FILE_UPLOAD_PATH, tenant_id, dir_id)
+    # dir_id = generate_id() # doing this to avoid overwriting already uploaded files 
+    # dir_id works only for uploaders with one file sent for processing
+    save_path = path or os.path.join(envs.FILE_UPLOAD_PATH, tenant_id)
     if not os.path.exists(save_path): os.makedirs(save_path) 
     
     file.seek(0)  # move cursor to 0 (stream left it on last read)
@@ -70,48 +123,7 @@ def save_file(file, tenant_id=None, path=None):
     file.save(file_path)
     file.close()
     
-    return file_path
-
-
-
-def unzip(file_path):
-
-    &#34;&#34;&#34;
-        Extracts: “zip”, “tar”, “gztar”, “bztar”, or “xztar”.    
-        Returns the path where the file was extracted
-    &#34;&#34;&#34;
-
-    if not file_path.endswith((&#39;.zip&#39;, &#39;.tar.bz2&#39;)):
-        return file_path
-        
-    file_name = os.path.basename(file_path)
-    file_dir  = os.path.dirname(file_path)
-
-    extract_path = os.path.join(file_dir, file_name + &#34;_extracted&#34;)
-    
-    shutil.unpack_archive(file_path, extract_path)
-    
-    return extract_path
-
-
-
-def get_filepaths_from_event(event):
-    &#34;&#34;&#34;
-        :event - redis event similar to the one bellow:
-            event = {
-                &#39;tenant_id&#39;: &#39;2ac111c7-fd19-463e-96c2-1493aea18bed&#39;, 
-                &#39;files&#39;: &#39;filename1,filename2&#39;,
-                &#39;event_type&#39;: &#39;ofmw_archive&#39; # for normalization purposes &#39;event_type&#39; is the same as &#39;unit_type&#39; and &#39;file_type&#39;
-            }
-
-        returns a list of filepaths or list of folder paths if an archive is found in &#39;files&#39; 
-
-    &#34;&#34;&#34;
-
-    filepath = lambda filename: os.path.join(envs.FILE_UPLOAD_PATH, event[&#39;tenant_id&#39;], filename)
-    filenames = event[&#39;files&#39;].split(&#34;,&#34;)
-
-    return [unzip(filepath(filename)) for filename in filenames]</code></pre>
+    return file_path</code></pre>
 </details>
 </section>
 <section>
@@ -121,38 +133,44 @@ def get_filepaths_from_event(event):
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="licenseware.utils.file_utils.get_filepaths_from_event"><code class="name flex">
-<span>def <span class="ident">get_filepaths_from_event</span></span>(<span>event)</span>
+<dt id="licenseware.utils.file_utils.recursive_unzip"><code class="name flex">
+<span>def <span class="ident">recursive_unzip</span></span>(<span>file_path: str)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>:event - redis event similar to the one bellow:
-event = {
-'tenant_id': '2ac111c7-fd19-463e-96c2-1493aea18bed',
-'files': 'filename1,filename2',
-'event_type': 'ofmw_archive' # for normalization purposes 'event_type' is the same as 'unit_type' and 'file_type'
-}</p>
-<p>returns a list of filepaths or list of folder paths if an archive is found in 'files'</p></div>
+<div class="desc"><p>Iterate over an archive and recursively extract all archives using unzip function</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_filepaths_from_event(event):
+<pre><code class="python">def recursive_unzip(file_path:str):
     &#34;&#34;&#34;
-        :event - redis event similar to the one bellow:
-            event = {
-                &#39;tenant_id&#39;: &#39;2ac111c7-fd19-463e-96c2-1493aea18bed&#39;, 
-                &#39;files&#39;: &#39;filename1,filename2&#39;,
-                &#39;event_type&#39;: &#39;ofmw_archive&#39; # for normalization purposes &#39;event_type&#39; is the same as &#39;unit_type&#39; and &#39;file_type&#39;
-            }
-
-        returns a list of filepaths or list of folder paths if an archive is found in &#39;files&#39; 
-
+        Iterate over an archive and recursively extract all archives using unzip function
     &#34;&#34;&#34;
-
-    filepath = lambda filename: os.path.join(envs.FILE_UPLOAD_PATH, event[&#39;tenant_id&#39;], filename)
-    filenames = event[&#39;files&#39;].split(&#34;,&#34;)
-
-    return [unzip(filepath(filename)) for filename in filenames]</code></pre>
+ 
+    if file_path.endswith(accepted_archives):
+        unziped_base = unzip(file_path)
+    else:
+        unziped_base = file_path
+    
+    archives_found = False
+    for root, dirs, filenames in os.walk(unziped_base):
+        for filename in filenames:
+            
+            fpath = os.path.join(root, filename)
+            
+            if not fpath.endswith(accepted_archives): continue
+            if not os.path.exists(fpath): continue
+            
+            unzip(fpath)
+            os.remove(fpath)
+            archives_found = True
+    
+    file_path = file_path + &#39;_extracted&#39; if not file_path.endswith(&#39;_extracted&#39;) else file_path
+    
+    if archives_found: 
+        recursive_unzip(file_path)    
+        
+    return file_path</code></pre>
 </details>
 </dd>
 <dt id="licenseware.utils.file_utils.save_file"><code class="name flex">
@@ -167,13 +185,13 @@ event = {
 <pre><code class="python">def save_file(file, tenant_id=None, path=None):
     &#34;&#34;&#34;
         Save to disk flask file stream
-        
     &#34;&#34;&#34;
     
     filename = secure_filename(file.filename)
 
-    dir_id = generate_id() # doing this to avoid overwriting already uploaded files 
-    save_path = path or os.path.join(envs.FILE_UPLOAD_PATH, tenant_id, dir_id)
+    # dir_id = generate_id() # doing this to avoid overwriting already uploaded files 
+    # dir_id works only for uploaders with one file sent for processing
+    save_path = path or os.path.join(envs.FILE_UPLOAD_PATH, tenant_id)
     if not os.path.exists(save_path): os.makedirs(save_path) 
     
     file.seek(0)  # move cursor to 0 (stream left it on last read)
@@ -212,7 +230,7 @@ Added an exception for review lite files <code>~</code> char</p></div>
 </details>
 </dd>
 <dt id="licenseware.utils.file_utils.unzip"><code class="name flex">
-<span>def <span class="ident">unzip</span></span>(<span>file_path)</span>
+<span>def <span class="ident">unzip</span></span>(<span>file_path: str)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Extracts: “zip”, “tar”, “gztar”, “bztar”, or “xztar”.
@@ -222,15 +240,15 @@ Returns the path where the file was extracted</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def unzip(file_path):
+<pre><code class="python">def unzip(file_path:str):
 
     &#34;&#34;&#34;
         Extracts: “zip”, “tar”, “gztar”, “bztar”, or “xztar”.    
         Returns the path where the file was extracted
     &#34;&#34;&#34;
 
-    if not file_path.endswith((&#39;.zip&#39;, &#39;.tar.bz2&#39;)):
-        return file_path
+    if not file_path.endswith(accepted_archives):
+        raise ValueError(f&#34;Only {accepted_archives} archives are accepted&#34;)
         
     file_name = os.path.basename(file_path)
     file_dir  = os.path.dirname(file_path)
@@ -260,7 +278,7 @@ Returns the path where the file was extracted</p></div>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="licenseware.utils.file_utils.get_filepaths_from_event" href="#licenseware.utils.file_utils.get_filepaths_from_event">get_filepaths_from_event</a></code></li>
+<li><code><a title="licenseware.utils.file_utils.recursive_unzip" href="#licenseware.utils.file_utils.recursive_unzip">recursive_unzip</a></code></li>
 <li><code><a title="licenseware.utils.file_utils.save_file" href="#licenseware.utils.file_utils.save_file">save_file</a></code></li>
 <li><code><a title="licenseware.utils.file_utils.secure_filename" href="#licenseware.utils.file_utils.secure_filename">secure_filename</a></code></li>
 <li><code><a title="licenseware.utils.file_utils.unzip" href="#licenseware.utils.file_utils.unzip">unzip</a></code></li>

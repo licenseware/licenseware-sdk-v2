@@ -32,6 +32,7 @@ from licenseware.common.constants import envs
 from licenseware.utils.miscellaneous import flat_dict
 from licenseware.report_components.build_match_expression import build_match_expression, condition_switcher
 from licenseware.registry_service import register_component
+
 from licenseware.report_components.attributes import (
     attributes_bar_vertical,
     attributes_pie,
@@ -40,7 +41,7 @@ from licenseware.report_components.attributes import (
 )
 
 
-component_attributes_funcs = {
+component_attributes_mapper = {
     &#39;bar_vertical&#39;:attributes_bar_vertical,
     &#39;pie&#39;: attributes_pie,
     &#39;summary&#39;: attributes_summary,
@@ -112,14 +113,11 @@ class BaseReportComponent:
         )
         
         
-        
-        
-        
     def build_attributes(self, *args, **kwargs):
         &#34;&#34;&#34;
             See `report_components.attributes` functions for more info
         &#34;&#34;&#34;
-        return component_attributes_funcs[self.component_type](*args, **kwargs)
+        return component_attributes_mapper[self.component_type](*args, **kwargs)
 
 
     def build_style_attributes(self, *args, **kwargs):
@@ -175,9 +173,9 @@ class BaseReportComponent:
         raise NotImplementedError(&#34;Please overwrite method `set_style_attributes`&#34;)
     
     def set_allowed_filters(self):
-        log.warning(&#34;Component filters not set&#34;)
-        # raise NotImplementedError(&#34;Please overwrite method `set_allowed_filters`&#34;)
-    
+        log.info(&#34;Component filters not set on this component (probably you&#39;ve set them on the report)&#34;)
+        
+        
     def get_registration_payload(self):
         
         if not self.attributes:
@@ -304,14 +302,11 @@ class BaseReportComponent:
         )
         
         
-        
-        
-        
     def build_attributes(self, *args, **kwargs):
         &#34;&#34;&#34;
             See `report_components.attributes` functions for more info
         &#34;&#34;&#34;
-        return component_attributes_funcs[self.component_type](*args, **kwargs)
+        return component_attributes_mapper[self.component_type](*args, **kwargs)
 
 
     def build_style_attributes(self, *args, **kwargs):
@@ -367,9 +362,9 @@ class BaseReportComponent:
         raise NotImplementedError(&#34;Please overwrite method `set_style_attributes`&#34;)
     
     def set_allowed_filters(self):
-        log.warning(&#34;Component filters not set&#34;)
-        # raise NotImplementedError(&#34;Please overwrite method `set_allowed_filters`&#34;)
-    
+        log.info(&#34;Component filters not set on this component (probably you&#39;ve set them on the report)&#34;)
+        
+        
     def get_registration_payload(self):
         
         if not self.attributes:
@@ -423,7 +418,7 @@ class BaseReportComponent:
     &#34;&#34;&#34;
         See `report_components.attributes` functions for more info
     &#34;&#34;&#34;
-    return component_attributes_funcs[self.component_type](*args, **kwargs)</code></pre>
+    return component_attributes_mapper[self.component_type](*args, **kwargs)</code></pre>
 </details>
 </dd>
 <dt id="licenseware.report_components.base_report_component.BaseReportComponent.build_filter"><code class="name flex">
@@ -623,8 +618,7 @@ custom pipeline
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def set_allowed_filters(self):
-    log.warning(&#34;Component filters not set&#34;)
-    # raise NotImplementedError(&#34;Please overwrite method `set_allowed_filters`&#34;)</code></pre>
+    log.info(&#34;Component filters not set on this component (probably you&#39;ve set them on the report)&#34;)</code></pre>
 </details>
 </dd>
 <dt id="licenseware.report_components.base_report_component.BaseReportComponent.set_attributes"><code class="name flex">

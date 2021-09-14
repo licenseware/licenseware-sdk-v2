@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>licenseware.common API documentation</title>
+<title>licenseware.common.types.event_type API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,37 +19,81 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>licenseware.common</code></h1>
+<h1 class="title">Module <code>licenseware.common.types.event_type</code></h1>
 </header>
 <section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from typing import NamedTuple
+
+
+
+class Event(NamedTuple):
+    tenant_id:str 
+    uploader_id:str
+    filepaths:list
+    flask_request:dict
+    validation_response:dict
+    </code></pre>
+</details>
 </section>
 <section>
-<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt><code class="name"><a title="licenseware.common.constants" href="constants/index.html">licenseware.common.constants</a></code></dt>
+<dt id="licenseware.common.types.event_type.Event"><code class="flex name class">
+<span>class <span class="ident">Event</span></span>
+<span>(</span><span>tenant_id: str, uploader_id: str, filepaths: list, flask_request: dict, validation_response: dict)</span>
+</code></dt>
 <dd>
-<div class="desc"><p>Here add dataclasses for commun data used in the app …</p></div>
+<div class="desc"><p>Event(tenant_id, uploader_id, filepaths, flask_request, validation_response)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Event(NamedTuple):
+    tenant_id:str 
+    uploader_id:str
+    filepaths:list
+    flask_request:dict
+    validation_response:dict</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.tuple</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="licenseware.common.types.event_type.Event.filepaths"><code class="name">var <span class="ident">filepaths</span> : list</code></dt>
+<dd>
+<div class="desc"><p>Alias for field number 2</p></div>
 </dd>
-<dt><code class="name"><a title="licenseware.common.serializers" href="serializers/index.html">licenseware.common.serializers</a></code></dt>
+<dt id="licenseware.common.types.event_type.Event.flask_request"><code class="name">var <span class="ident">flask_request</span> : dict</code></dt>
 <dd>
-<div class="desc"><p>Here add serializers for each dictioary/list used by the app
-That way we have a consistent output, each change to serializers should be discussed …</p></div>
+<div class="desc"><p>Alias for field number 3</p></div>
 </dd>
-<dt><code class="name"><a title="licenseware.common.types" href="types/index.html">licenseware.common.types</a></code></dt>
+<dt id="licenseware.common.types.event_type.Event.tenant_id"><code class="name">var <span class="ident">tenant_id</span> : str</code></dt>
 <dd>
-<div class="desc"><p>In this package we are creating some common types, useful for type hints</p></div>
+<div class="desc"><p>Alias for field number 0</p></div>
 </dd>
-<dt><code class="name"><a title="licenseware.common.validators" href="validators/index.html">licenseware.common.validators</a></code></dt>
+<dt id="licenseware.common.types.event_type.Event.uploader_id"><code class="name">var <span class="ident">uploader_id</span> : str</code></dt>
 <dd>
-<div class="desc"><p>Here are various data validators that can be used for validatin marshmallow schemas or data.</p></div>
+<div class="desc"><p>Alias for field number 1</p></div>
+</dd>
+<dt id="licenseware.common.types.event_type.Event.validation_response"><code class="name">var <span class="ident">validation_response</span> : dict</code></dt>
+<dd>
+<div class="desc"><p>Alias for field number 4</p></div>
 </dd>
 </dl>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
+</dd>
+</dl>
 </section>
 </article>
 <nav id="sidebar">
@@ -60,15 +104,21 @@ That way we have a consistent output, each change to serializers should be discu
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="licenseware" href="../index.html">licenseware</a></code></li>
+<li><code><a title="licenseware.common.types" href="index.html">licenseware.common.types</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-submodules">Sub-modules</a></h3>
+<li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
-<li><code><a title="licenseware.common.constants" href="constants/index.html">licenseware.common.constants</a></code></li>
-<li><code><a title="licenseware.common.serializers" href="serializers/index.html">licenseware.common.serializers</a></code></li>
-<li><code><a title="licenseware.common.types" href="types/index.html">licenseware.common.types</a></code></li>
-<li><code><a title="licenseware.common.validators" href="validators/index.html">licenseware.common.validators</a></code></li>
+<li>
+<h4><code><a title="licenseware.common.types.event_type.Event" href="#licenseware.common.types.event_type.Event">Event</a></code></h4>
+<ul class="">
+<li><code><a title="licenseware.common.types.event_type.Event.filepaths" href="#licenseware.common.types.event_type.Event.filepaths">filepaths</a></code></li>
+<li><code><a title="licenseware.common.types.event_type.Event.flask_request" href="#licenseware.common.types.event_type.Event.flask_request">flask_request</a></code></li>
+<li><code><a title="licenseware.common.types.event_type.Event.tenant_id" href="#licenseware.common.types.event_type.Event.tenant_id">tenant_id</a></code></li>
+<li><code><a title="licenseware.common.types.event_type.Event.uploader_id" href="#licenseware.common.types.event_type.Event.uploader_id">uploader_id</a></code></li>
+<li><code><a title="licenseware.common.types.event_type.Event.validation_response" href="#licenseware.common.types.event_type.Event.validation_response">validation_response</a></code></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

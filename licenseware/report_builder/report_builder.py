@@ -1,7 +1,6 @@
-import itertools
-
 from licenseware.common.constants.envs import envs
 from licenseware.registry_service import register_report
+from licenseware.report_components.build_match_expression import condition_switcher
 from licenseware.utils.logger import log
 
 
@@ -85,8 +84,47 @@ class ReportBuilder:
             metadata['type'] = metadata.pop('component_type') 
             
             if metadata["filters"]:
-                self.filters.append(metadata["filters"])
-                self.filters = list(itertools.chain.from_iterable(self.filters))
-            
+                self.filters.extend(metadata["filters"])
+                
             self.report_components.append(metadata)
             
+            
+            
+    def register_filters(self, filters:list):
+        log.info("Component filters not set on this component (probably you've set them on the report)")
+        self.filters.extend(filters)
+        
+
+    @classmethod
+    def build_filter(cls, column:str, allowed_filters:list, visible_name:str, validate:bool = True):
+        """
+            Will return a dictionary similar to the one bellow:
+            
+            {
+                "column": "version.edition",
+                "allowed_filters": [
+                    "equals", "contains", "in_list"
+                ],
+                "visible_name": "Product Edition"
+            }
+            
+            The dictionary build will be used to filter mongo 
+            
+        """
+        
+        if validate:
+            
+            if " " in column: 
+                raise ValueError("Parameter `column` can't contain spaces and must be all lowercase like `device_name`")
+
+            for f in allowed_filters:
+                if f not in condition_switcher.keys():
+                    raise ValueError(f"Filter {f} not in {condition_switcher.keys()}")
+            
+        
+        return dict(
+            column = column,
+            allowed_filters = allowed_filters,
+            visible_name = visible_name
+        )
+        
