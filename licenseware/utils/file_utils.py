@@ -52,7 +52,7 @@ def unzip(file_path:str):
     """
 
     if not file_path.endswith(('.zip', '.tar.bz2')):
-        return file_path
+        raise ValueError("Only '.zip', '.tar.bz2' archives are accepted")
         
     file_name = os.path.basename(file_path)
     file_dir  = os.path.dirname(file_path)
@@ -69,19 +69,29 @@ def recursive_unzip(file_path:str):
     """
         Iterate over an archive and recursively extract all archives using unzip function
     """
-    
-    if os.path.exists(file_path + '_extracted'):
-        unziped_base = file_path + '_extracted'
-    elif file_path.endswith(('.zip', '.tar.bz2')):
+ 
+    if file_path.endswith(('.zip', '.tar.bz2')):
         unziped_base = unzip(file_path)
+    else:
+        unziped_base = file_path
     
+    archives_found = False
     for root, dirs, filenames in os.walk(unziped_base):
         for filename in filenames:
-            file_path = os.path.join(root, filename)
-            if not os.path.exists(file_path): continue
-            if file_path.endswith(('.zip', '.tar.bz2')):
-                unzip(file_path)
-                os.remove(file_path)
-                recursive_unzip(file_path)
             
-    return unziped_base
+            fpath = os.path.join(root, filename)
+            
+            if not fpath.endswith(('.zip', '.tar.bz2')): continue
+            if not os.path.exists(fpath): continue
+            
+            unzip(fpath)
+            os.remove(fpath)
+            archives_found = True
+    
+    file_path = file_path + '_extracted' if not file_path.endswith('_extracted') else file_path
+    
+    if archives_found: 
+        recursive_unzip(file_path)    
+        
+    return file_path
+    
