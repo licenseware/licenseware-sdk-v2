@@ -1,5 +1,5 @@
 from licenseware.utils.logger import log
-from licenseware.common.constants import icons, filters
+from licenseware.common.constants import icons, filters, envs
 
 from licenseware.report_components.style_attributes import styles 
 from licenseware.report_components import BaseReportComponent

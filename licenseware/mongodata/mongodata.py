@@ -129,7 +129,7 @@ def parse_match(match):
 mongo_connection = None
 
 
-def return_db(db_name):
+def get_db_name(db_name):
     if db_name:
         return db_name
     default_db = os.getenv("MONGO_DB_NAME") or os.getenv(
@@ -189,7 +189,7 @@ def insert(schema, collection, data, db_name=None):
         returns a list of ids inserted in the database in the order they were added
         If something fails will return a string with the error message.
     """
-    db_name = return_db(db_name)
+    db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
     with Connect.get_connection() as mongo_connection:
         collection = mongo_connection[db_name][collection_name]
@@ -231,7 +231,7 @@ def fetch(match, collection, as_list=True, db_name=None):
 
     match = parse_match(match)
 
-    db_name = return_db(db_name)
+    db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
     with Connect.get_connection() as mongo_connection:
         collection = mongo_connection[db_name][collection_name]
@@ -277,7 +277,7 @@ def aggregate(pipeline, collection, as_list=True, db_name=None):
         If something fails will return a string with the error message.
 
     """
-    db_name = return_db(db_name)
+    db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
     with Connect.get_connection() as mongo_connection:
         collection = mongo_connection[db_name][collection_name]
@@ -344,7 +344,7 @@ def update(schema, match, new_data, collection, append=False, db_name=None):
         If something fails will return a string with the error message.
 
     """
-    db_name = return_db(db_name)
+    db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
     with Connect.get_connection() as mongo_connection:
         collection = mongo_connection[db_name][collection_name]
@@ -380,7 +380,7 @@ def delete(match, collection, db_name=None):
         If something fails will return a string with the error message.
 
     """
-    db_name = return_db(db_name)
+    db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
     with Connect.get_connection() as mongo_connection:
         collection = mongo_connection[db_name][collection_name]
@@ -401,7 +401,7 @@ def delete_collection(collection, db_name=None):
     """
         Delete a collection from the database.
     """
-    db_name = return_db(db_name)
+    db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
     with Connect.get_connection() as mongo_connection:
         collection = mongo_connection[db_name][collection_name]
@@ -418,7 +418,7 @@ def document_count(match, collection, db_name=None):
     """
         Delete a collection from the database.
     """
-    db_name = return_db(db_name)
+    db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
     with Connect.get_connection() as mongo_connection:
         collection = mongo_connection[db_name][collection_name]
