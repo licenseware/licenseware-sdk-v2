@@ -144,8 +144,7 @@ class BaseReportComponent:
     def set_style_attributes(self):
         raise NotImplementedError("Please overwrite method `set_style_attributes`")
     
-    def set_allowed_filters(self):
-        log.info("Component filters not set on this component (probably you've set them on the report)")
+    def set_allowed_filters(self): ... # Component filters are optional, Report filters are needed
         
         
     def get_registration_payload(self):
@@ -163,6 +162,7 @@ class BaseReportComponent:
             if allowed_filters: self.filters = allowed_filters
         
         return {
+            "app_id": envs.APP_ID,
             "title": self.title,
             "order": self.order,
             "component_id": self.component_id,

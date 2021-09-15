@@ -91,11 +91,10 @@ class ReportBuilder:
             
             
     def register_filters(self, filters:list):
-        log.info("Component filters not set on this component (probably you've set them on the report)")
         self.filters.extend(filters)
         
 
-    @classmethod
+    @classmethod # same func as in base_report_component
     def build_filter(cls, column:str, allowed_filters:list, visible_name:str, validate:bool = True):
         """
             Will return a dictionary similar to the one bellow:

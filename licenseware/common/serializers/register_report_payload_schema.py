@@ -1,22 +1,11 @@
-from licenseware.common.serializers.report_component_filter_schema import FilterSchema
 from marshmallow import (
     Schema, 
     fields, 
     validate,    
 )
 
-
-class ComponentSchema(Schema):
-    component_id = fields.Str(required=True)
-    title = fields.Str(required=True) 
-    url = fields.Url(required=True)
-    order = fields.Int(required=True)
-    style_attributes = fields.Dict(required=True)
-    attributes = fields.Dict(required=True)
-    type = fields.Str(required=True)
-    icon = fields.Str(required=False) #is icon only on series?
-    filters = fields.List(fields.Nested(FilterSchema), required=False)
-    
+from .report_component_filter_schema import FilterSchema
+from .report_component_schema import ComponentSchema
 
 
 class ReportSchema(Schema):
