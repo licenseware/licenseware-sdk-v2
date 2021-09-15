@@ -7,7 +7,7 @@ from licenseware.report_components import BaseReportComponent
 
 
 
-class {{ component_id.replace('_', '').capitalize() }}(BaseReportComponent):
+class {{ component_id.split('_') | map('title') | join('') }}(BaseReportComponent):
             
     def __init__(
         self, 

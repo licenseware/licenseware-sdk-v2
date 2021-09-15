@@ -9,7 +9,7 @@ report_components=[
 
 
 {{ report_id }}_report = ReportBuilder(
-    name="{{ report_id.replace('_', ' ').capitalize() }}",
+    name="{{ report_id.split('_') | map('title') | join(' ') }}",
     report_id="{{ report_id }}",
     description="Add report description here",
     connected_apps=[],
