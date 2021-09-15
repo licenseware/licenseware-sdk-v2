@@ -90,8 +90,5 @@ def build_match_expression(filter_payload: List[dict]) -> dict:
             )
         )
         
-    return {
-        '$match': parsed_filter
-    }
-
+    return parsed_filter
     
