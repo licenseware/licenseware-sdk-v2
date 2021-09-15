@@ -26,9 +26,16 @@ class {{ component_id.split('_') | map('title') | join('') }}(BaseReportComponen
         
         match_filters = self.get_mongo_match_filters(flask_request)
         
-        log.info(match_filters)
+        pipeline = [
+            {
+                '$match': match_filters
+            }, #TODO
+        ]
 
-        return ['TODO']
+        data = mongodata.aggregate(pipeline, collection=envs.MONGO_COLLECTION_DATA_NAME)
+
+        return data
+        
     
     
     def set_attributes(self):
