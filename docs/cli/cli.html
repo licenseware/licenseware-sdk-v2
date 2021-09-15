@@ -87,13 +87,18 @@ def new_report(report_id: str):
     
     
 @app.command()
-def new_report_component(component_id: str, component_type: str = None):
+def new_report_component(component_id: str, component_type: str):
     &#34;&#34;&#34;
-        Given component_id build a new report component 
-        
-        Argument component_type will be taken if not provided from component_id (ex: virtualization_summary -&gt; summary will be the component_type)
-        
-        The package structure for the report component will be created, imports and registration will be handled also.
+        Given component_id and component_type build a new report component 
+
+        Some component types are:
+        - summary
+        - pie
+        - bar_vertical
+        - table
+    
+    
+        The package structure for the report component will be created, imports and registration will be handled manually.
         
     &#34;&#34;&#34;
     create_report_component(component_id, component_type)
@@ -310,24 +315,33 @@ def new_report(report_id: str):
 </details>
 </dd>
 <dt id="licenseware.cli.cli.new_report_component"><code class="name flex">
-<span>def <span class="ident">new_report_component</span></span>(<span>component_id: str, component_type: str = None)</span>
+<span>def <span class="ident">new_report_component</span></span>(<span>component_id: str, component_type: str)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Given component_id build a new report component </p>
-<p>Argument component_type will be taken if not provided from component_id (ex: virtualization_summary -&gt; summary will be the component_type)</p>
-<p>The package structure for the report component will be created, imports and registration will be handled also.</p></div>
+<div class="desc"><p>Given component_id and component_type build a new report component </p>
+<p>Some component types are:
+- summary
+- pie
+- bar_vertical
+- table</p>
+<p>The package structure for the report component will be created, imports and registration will be handled manually.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@app.command()
-def new_report_component(component_id: str, component_type: str = None):
+def new_report_component(component_id: str, component_type: str):
     &#34;&#34;&#34;
-        Given component_id build a new report component 
-        
-        Argument component_type will be taken if not provided from component_id (ex: virtualization_summary -&gt; summary will be the component_type)
-        
-        The package structure for the report component will be created, imports and registration will be handled also.
+        Given component_id and component_type build a new report component 
+
+        Some component types are:
+        - summary
+        - pie
+        - bar_vertical
+        - table
+    
+    
+        The package structure for the report component will be created, imports and registration will be handled manually.
         
     &#34;&#34;&#34;
     create_report_component(component_id, component_type)

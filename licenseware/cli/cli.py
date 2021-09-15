@@ -58,13 +58,18 @@ def new_report(report_id: str):
     
     
 @app.command()
-def new_report_component(component_id: str, component_type: str = None):
+def new_report_component(component_id: str, component_type: str):
     """
-        Given component_id build a new report component 
-        
-        Argument component_type will be taken if not provided from component_id (ex: virtualization_summary -> summary will be the component_type)
-        
-        The package structure for the report component will be created, imports and registration will be handled also.
+        Given component_id and component_type build a new report component 
+
+        Some component types are:
+        - summary
+        - pie
+        - bar_vertical
+        - table
+    
+    
+        The package structure for the report component will be created, imports and registration will be handled manually.
         
     """
     create_report_component(component_id, component_type)

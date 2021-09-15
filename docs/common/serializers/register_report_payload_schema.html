@@ -26,25 +26,14 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from licenseware.common.serializers.report_component_filter_schema import FilterSchema
-from marshmallow import (
+<pre><code class="python">from marshmallow import (
     Schema, 
     fields, 
     validate,    
 )
 
-
-class ComponentSchema(Schema):
-    component_id = fields.Str(required=True)
-    title = fields.Str(required=True) 
-    url = fields.Url(required=True)
-    order = fields.Int(required=True)
-    style_attributes = fields.Dict(required=True)
-    attributes = fields.Dict(required=True)
-    type = fields.Str(required=True)
-    icon = fields.Str(required=False) #is icon only on series?
-    filters = fields.List(fields.Nested(FilterSchema), required=False)
-    
+from .report_component_filter_schema import FilterSchema
+from .report_component_schema import ComponentSchema
 
 
 class ReportSchema(Schema):
@@ -76,131 +65,6 @@ class RegisterReportPayloadSchema(Schema):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="licenseware.common.serializers.register_report_payload_schema.ComponentSchema"><code class="flex name class">
-<span>class <span class="ident">ComponentSchema</span></span>
-<span>(</span><span>*, only: Union[Sequence[str], Set[str], None] = None, exclude: Union[Sequence[str], Set[str]] = (), many: bool = False, context: Optional[Dict[~KT, ~VT]] = None, load_only: Union[Sequence[str], Set[str]] = (), dump_only: Union[Sequence[str], Set[str]] = (), partial: Union[bool, Sequence[str], Set[str]] = False, unknown: Optional[str] = None)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Base schema class with which to define custom schemas.</p>
-<p>Example usage:</p>
-<p>.. code-block:: python</p>
-<pre><code>import datetime as dt
-from dataclasses import dataclass
-
-from marshmallow import Schema, fields
-
-
-@dataclass
-class Album:
-    title: str
-    release_date: dt.date
-
-
-class AlbumSchema(Schema):
-    title = fields.Str()
-    release_date = fields.Date()
-
-
-album = Album("Beggars Banquet", dt.date(1968, 12, 6))
-schema = AlbumSchema()
-data = schema.dump(album)
-data  # {'release_date': '1968-12-06', 'title': 'Beggars Banquet'}
-</code></pre>
-<p>:param only: Whitelist of the declared fields to select when
-instantiating the Schema. If None, all fields are used. Nested fields
-can be represented with dot delimiters.
-:param exclude: Blacklist of the declared fields to exclude
-when instantiating the Schema. If a field appears in both <code>only</code> and
-<code>exclude</code>, it is not used. Nested fields can be represented with dot
-delimiters.
-:param many: Should be set to <code>True</code> if <code>obj</code> is a collection
-so that the object will be serialized to a list.
-:param context: Optional context passed to :class:<code>fields.Method</code> and
-:class:<code>fields.Function</code> fields.
-:param load_only: Fields to skip during serialization (write-only fields)
-:param dump_only: Fields to skip during deserialization (read-only fields)
-:param partial: Whether to ignore missing fields and not require
-any fields declared. Propagates down to <code>Nested</code> fields as well. If
-its value is an iterable, only missing fields listed in that iterable
-will be ignored. Use dot delimiters to specify nested fields.
-:param unknown: Whether to exclude, include, or raise an error for unknown
-fields in the data. Use <code>EXCLUDE</code>, <code>INCLUDE</code> or <code>RAISE</code>.</p>
-<div class="admonition versionchanged">
-<p class="admonition-title">Changed in version:&ensp;3.0.0</p>
-<p><code>prefix</code> parameter removed.</p>
-</div>
-<div class="admonition versionchanged">
-<p class="admonition-title">Changed in version:&ensp;2.0.0</p>
-<p><code>__validators__</code>, <code>__preprocessors__</code>, and <code>__data_handlers__</code> are removed in favor of
-<code>marshmallow.decorators.validates_schema</code>,
-<code>marshmallow.decorators.pre_load</code> and <code>marshmallow.decorators.post_dump</code>.
-<code>__accessor__</code> and <code>__error_handler__</code> are deprecated. Implement the
-<code>handle_error</code> and <code>get_attribute</code> methods instead.</p>
-</div></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class ComponentSchema(Schema):
-    component_id = fields.Str(required=True)
-    title = fields.Str(required=True) 
-    url = fields.Url(required=True)
-    order = fields.Int(required=True)
-    style_attributes = fields.Dict(required=True)
-    attributes = fields.Dict(required=True)
-    type = fields.Str(required=True)
-    icon = fields.Str(required=False) #is icon only on series?
-    filters = fields.List(fields.Nested(FilterSchema), required=False)</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>marshmallow.schema.Schema</li>
-<li>marshmallow.base.SchemaABC</li>
-</ul>
-<h3>Class variables</h3>
-<dl>
-<dt id="licenseware.common.serializers.register_report_payload_schema.ComponentSchema.attributes"><code class="name">var <span class="ident">attributes</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="licenseware.common.serializers.register_report_payload_schema.ComponentSchema.component_id"><code class="name">var <span class="ident">component_id</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="licenseware.common.serializers.register_report_payload_schema.ComponentSchema.filters"><code class="name">var <span class="ident">filters</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="licenseware.common.serializers.register_report_payload_schema.ComponentSchema.icon"><code class="name">var <span class="ident">icon</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="licenseware.common.serializers.register_report_payload_schema.ComponentSchema.opts"><code class="name">var <span class="ident">opts</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="licenseware.common.serializers.register_report_payload_schema.ComponentSchema.order"><code class="name">var <span class="ident">order</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="licenseware.common.serializers.register_report_payload_schema.ComponentSchema.style_attributes"><code class="name">var <span class="ident">style_attributes</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="licenseware.common.serializers.register_report_payload_schema.ComponentSchema.title"><code class="name">var <span class="ident">title</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="licenseware.common.serializers.register_report_payload_schema.ComponentSchema.type"><code class="name">var <span class="ident">type</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="licenseware.common.serializers.register_report_payload_schema.ComponentSchema.url"><code class="name">var <span class="ident">url</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-</dl>
-</dd>
 <dt id="licenseware.common.serializers.register_report_payload_schema.RegisterReportPayloadSchema"><code class="flex name class">
 <span>class <span class="ident">RegisterReportPayloadSchema</span></span>
 <span>(</span><span>*, only: Union[Sequence[str], Set[str], None] = None, exclude: Union[Sequence[str], Set[str]] = (), many: bool = False, context: Optional[Dict[~KT, ~VT]] = None, load_only: Union[Sequence[str], Set[str]] = (), dump_only: Union[Sequence[str], Set[str]] = (), partial: Union[bool, Sequence[str], Set[str]] = False, unknown: Optional[str] = None)</span>
@@ -427,21 +291,6 @@ fields in the data. Use <code>EXCLUDE</code>, <code>INCLUDE</code> or <code>RAIS
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
-<li>
-<h4><code><a title="licenseware.common.serializers.register_report_payload_schema.ComponentSchema" href="#licenseware.common.serializers.register_report_payload_schema.ComponentSchema">ComponentSchema</a></code></h4>
-<ul class="two-column">
-<li><code><a title="licenseware.common.serializers.register_report_payload_schema.ComponentSchema.attributes" href="#licenseware.common.serializers.register_report_payload_schema.ComponentSchema.attributes">attributes</a></code></li>
-<li><code><a title="licenseware.common.serializers.register_report_payload_schema.ComponentSchema.component_id" href="#licenseware.common.serializers.register_report_payload_schema.ComponentSchema.component_id">component_id</a></code></li>
-<li><code><a title="licenseware.common.serializers.register_report_payload_schema.ComponentSchema.filters" href="#licenseware.common.serializers.register_report_payload_schema.ComponentSchema.filters">filters</a></code></li>
-<li><code><a title="licenseware.common.serializers.register_report_payload_schema.ComponentSchema.icon" href="#licenseware.common.serializers.register_report_payload_schema.ComponentSchema.icon">icon</a></code></li>
-<li><code><a title="licenseware.common.serializers.register_report_payload_schema.ComponentSchema.opts" href="#licenseware.common.serializers.register_report_payload_schema.ComponentSchema.opts">opts</a></code></li>
-<li><code><a title="licenseware.common.serializers.register_report_payload_schema.ComponentSchema.order" href="#licenseware.common.serializers.register_report_payload_schema.ComponentSchema.order">order</a></code></li>
-<li><code><a title="licenseware.common.serializers.register_report_payload_schema.ComponentSchema.style_attributes" href="#licenseware.common.serializers.register_report_payload_schema.ComponentSchema.style_attributes">style_attributes</a></code></li>
-<li><code><a title="licenseware.common.serializers.register_report_payload_schema.ComponentSchema.title" href="#licenseware.common.serializers.register_report_payload_schema.ComponentSchema.title">title</a></code></li>
-<li><code><a title="licenseware.common.serializers.register_report_payload_schema.ComponentSchema.type" href="#licenseware.common.serializers.register_report_payload_schema.ComponentSchema.type">type</a></code></li>
-<li><code><a title="licenseware.common.serializers.register_report_payload_schema.ComponentSchema.url" href="#licenseware.common.serializers.register_report_payload_schema.ComponentSchema.url">url</a></code></li>
-</ul>
-</li>
 <li>
 <h4><code><a title="licenseware.common.serializers.register_report_payload_schema.RegisterReportPayloadSchema" href="#licenseware.common.serializers.register_report_payload_schema.RegisterReportPayloadSchema">RegisterReportPayloadSchema</a></code></h4>
 <ul class="">

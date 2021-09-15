@@ -66,9 +66,6 @@ def _add_component_import_to_app_init_file(component_id:str):
 
 def create_report_component(component_id: str, component_type: str):
     
-    if component_type is None:
-        component_type = component_id.split('_')[-1]
-    
     if not os.path.exists(os.path.join(app_path, 'report_components')): 
         create_app_dirs()
         

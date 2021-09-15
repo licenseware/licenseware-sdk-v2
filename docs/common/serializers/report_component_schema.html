@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>licenseware.common.serializers.register_report_component_payload API documentation</title>
+<title>licenseware.common.serializers.report_component_schema API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,7 +19,7 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>licenseware.common.serializers.register_report_component_payload</code></h1>
+<h1 class="title">Module <code>licenseware.common.serializers.report_component_schema</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
@@ -27,12 +27,22 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">from marshmallow import Schema, fields
-from .report_component_schema import ComponentSchema
+from .report_component_filter_schema import FilterSchema
 
-    
-    
-class RegisterReportComponentPayloadSchema(Schema):
-    data = fields.List(fields.Nested(ComponentSchema), required=True)</code></pre>
+
+
+
+class ComponentSchema(Schema):
+    app_id = fields.Str(required=True)
+    component_id = fields.Str(required=True)
+    title = fields.Str(required=True) 
+    url = fields.Url(required=True)
+    order = fields.Int(required=True, allow_none=True)
+    style_attributes = fields.Dict(required=True)
+    attributes = fields.Dict(required=True)
+    type = fields.Str(required=True)
+    filters = fields.List(fields.Nested(FilterSchema), required=False, allow_none=True)
+    </code></pre>
 </details>
 </section>
 <section>
@@ -44,8 +54,8 @@ class RegisterReportComponentPayloadSchema(Schema):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="licenseware.common.serializers.register_report_component_payload.RegisterReportComponentPayloadSchema"><code class="flex name class">
-<span>class <span class="ident">RegisterReportComponentPayloadSchema</span></span>
+<dt id="licenseware.common.serializers.report_component_schema.ComponentSchema"><code class="flex name class">
+<span>class <span class="ident">ComponentSchema</span></span>
 <span>(</span><span>*, only: Union[Sequence[str], Set[str], None] = None, exclude: Union[Sequence[str], Set[str]] = (), many: bool = False, context: Optional[Dict[~KT, ~VT]] = None, load_only: Union[Sequence[str], Set[str]] = (), dump_only: Union[Sequence[str], Set[str]] = (), partial: Union[bool, Sequence[str], Set[str]] = False, unknown: Optional[str] = None)</span>
 </code></dt>
 <dd>
@@ -109,8 +119,16 @@ fields in the data. Use <code>EXCLUDE</code>, <code>INCLUDE</code> or <code>RAIS
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class RegisterReportComponentPayloadSchema(Schema):
-    data = fields.List(fields.Nested(ComponentSchema), required=True)</code></pre>
+<pre><code class="python">class ComponentSchema(Schema):
+    app_id = fields.Str(required=True)
+    component_id = fields.Str(required=True)
+    title = fields.Str(required=True) 
+    url = fields.Url(required=True)
+    order = fields.Int(required=True, allow_none=True)
+    style_attributes = fields.Dict(required=True)
+    attributes = fields.Dict(required=True)
+    type = fields.Str(required=True)
+    filters = fields.List(fields.Nested(FilterSchema), required=False, allow_none=True)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -119,11 +137,43 @@ fields in the data. Use <code>EXCLUDE</code>, <code>INCLUDE</code> or <code>RAIS
 </ul>
 <h3>Class variables</h3>
 <dl>
-<dt id="licenseware.common.serializers.register_report_component_payload.RegisterReportComponentPayloadSchema.data"><code class="name">var <span class="ident">data</span></code></dt>
+<dt id="licenseware.common.serializers.report_component_schema.ComponentSchema.app_id"><code class="name">var <span class="ident">app_id</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="licenseware.common.serializers.register_report_component_payload.RegisterReportComponentPayloadSchema.opts"><code class="name">var <span class="ident">opts</span></code></dt>
+<dt id="licenseware.common.serializers.report_component_schema.ComponentSchema.attributes"><code class="name">var <span class="ident">attributes</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="licenseware.common.serializers.report_component_schema.ComponentSchema.component_id"><code class="name">var <span class="ident">component_id</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="licenseware.common.serializers.report_component_schema.ComponentSchema.filters"><code class="name">var <span class="ident">filters</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="licenseware.common.serializers.report_component_schema.ComponentSchema.opts"><code class="name">var <span class="ident">opts</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="licenseware.common.serializers.report_component_schema.ComponentSchema.order"><code class="name">var <span class="ident">order</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="licenseware.common.serializers.report_component_schema.ComponentSchema.style_attributes"><code class="name">var <span class="ident">style_attributes</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="licenseware.common.serializers.report_component_schema.ComponentSchema.title"><code class="name">var <span class="ident">title</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="licenseware.common.serializers.report_component_schema.ComponentSchema.type"><code class="name">var <span class="ident">type</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="licenseware.common.serializers.report_component_schema.ComponentSchema.url"><code class="name">var <span class="ident">url</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -146,10 +196,18 @@ fields in the data. Use <code>EXCLUDE</code>, <code>INCLUDE</code> or <code>RAIS
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="licenseware.common.serializers.register_report_component_payload.RegisterReportComponentPayloadSchema" href="#licenseware.common.serializers.register_report_component_payload.RegisterReportComponentPayloadSchema">RegisterReportComponentPayloadSchema</a></code></h4>
-<ul class="">
-<li><code><a title="licenseware.common.serializers.register_report_component_payload.RegisterReportComponentPayloadSchema.data" href="#licenseware.common.serializers.register_report_component_payload.RegisterReportComponentPayloadSchema.data">data</a></code></li>
-<li><code><a title="licenseware.common.serializers.register_report_component_payload.RegisterReportComponentPayloadSchema.opts" href="#licenseware.common.serializers.register_report_component_payload.RegisterReportComponentPayloadSchema.opts">opts</a></code></li>
+<h4><code><a title="licenseware.common.serializers.report_component_schema.ComponentSchema" href="#licenseware.common.serializers.report_component_schema.ComponentSchema">ComponentSchema</a></code></h4>
+<ul class="two-column">
+<li><code><a title="licenseware.common.serializers.report_component_schema.ComponentSchema.app_id" href="#licenseware.common.serializers.report_component_schema.ComponentSchema.app_id">app_id</a></code></li>
+<li><code><a title="licenseware.common.serializers.report_component_schema.ComponentSchema.attributes" href="#licenseware.common.serializers.report_component_schema.ComponentSchema.attributes">attributes</a></code></li>
+<li><code><a title="licenseware.common.serializers.report_component_schema.ComponentSchema.component_id" href="#licenseware.common.serializers.report_component_schema.ComponentSchema.component_id">component_id</a></code></li>
+<li><code><a title="licenseware.common.serializers.report_component_schema.ComponentSchema.filters" href="#licenseware.common.serializers.report_component_schema.ComponentSchema.filters">filters</a></code></li>
+<li><code><a title="licenseware.common.serializers.report_component_schema.ComponentSchema.opts" href="#licenseware.common.serializers.report_component_schema.ComponentSchema.opts">opts</a></code></li>
+<li><code><a title="licenseware.common.serializers.report_component_schema.ComponentSchema.order" href="#licenseware.common.serializers.report_component_schema.ComponentSchema.order">order</a></code></li>
+<li><code><a title="licenseware.common.serializers.report_component_schema.ComponentSchema.style_attributes" href="#licenseware.common.serializers.report_component_schema.ComponentSchema.style_attributes">style_attributes</a></code></li>
+<li><code><a title="licenseware.common.serializers.report_component_schema.ComponentSchema.title" href="#licenseware.common.serializers.report_component_schema.ComponentSchema.title">title</a></code></li>
+<li><code><a title="licenseware.common.serializers.report_component_schema.ComponentSchema.type" href="#licenseware.common.serializers.report_component_schema.ComponentSchema.type">type</a></code></li>
+<li><code><a title="licenseware.common.serializers.report_component_schema.ComponentSchema.url" href="#licenseware.common.serializers.report_component_schema.ComponentSchema.url">url</a></code></li>
 </ul>
 </li>
 </ul>

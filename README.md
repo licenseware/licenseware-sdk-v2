@@ -1087,23 +1087,7 @@ Commands:
 See help for a command by specifing the command name followed by --help
 
 ```
-
 $ licenseware new-report-component --help
-
-Usage: licenseware new-report-component [OPTIONS] COMPONENT_ID
-
-  Given component_id make a new report component
-
-  Argument component_type will be taken if not provided from component_id (ex: virtualization_summary -> summary will be the component_type)
-
-
-Arguments:
-  COMPONENT_ID  [required]
-
-Options:
-  --component-type TEXT
-  --help                 Show this message and exit.
-acmt@acmt:~/Documents/lware/test_sdk$ 
 
 ```
 
@@ -1208,7 +1192,6 @@ To sparse the logic you can create multiple sub-packages/modules.
 ## Create a new report component from CLI 
 
 Argument `new-report-component` needs a `component_id` and a `component_type`.
-The `component_type` is optional if you provide it as a prefix like `virtual_overview_summary`.
 
 ```bash
 

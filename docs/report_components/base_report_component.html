@@ -172,8 +172,7 @@ class BaseReportComponent:
     def set_style_attributes(self):
         raise NotImplementedError(&#34;Please overwrite method `set_style_attributes`&#34;)
     
-    def set_allowed_filters(self):
-        log.info(&#34;Component filters not set on this component (probably you&#39;ve set them on the report)&#34;)
+    def set_allowed_filters(self): ... # Component filters are optional, Report filters are needed
         
         
     def get_registration_payload(self):
@@ -191,6 +190,7 @@ class BaseReportComponent:
             if allowed_filters: self.filters = allowed_filters
         
         return {
+            &#34;app_id&#34;: envs.APP_ID,
             &#34;title&#34;: self.title,
             &#34;order&#34;: self.order,
             &#34;component_id&#34;: self.component_id,
@@ -361,8 +361,7 @@ class BaseReportComponent:
     def set_style_attributes(self):
         raise NotImplementedError(&#34;Please overwrite method `set_style_attributes`&#34;)
     
-    def set_allowed_filters(self):
-        log.info(&#34;Component filters not set on this component (probably you&#39;ve set them on the report)&#34;)
+    def set_allowed_filters(self): ... # Component filters are optional, Report filters are needed
         
         
     def get_registration_payload(self):
@@ -380,6 +379,7 @@ class BaseReportComponent:
             if allowed_filters: self.filters = allowed_filters
         
         return {
+            &#34;app_id&#34;: envs.APP_ID,
             &#34;title&#34;: self.title,
             &#34;order&#34;: self.order,
             &#34;component_id&#34;: self.component_id,
@@ -575,6 +575,7 @@ custom pipeline
         if allowed_filters: self.filters = allowed_filters
     
     return {
+        &#34;app_id&#34;: envs.APP_ID,
         &#34;title&#34;: self.title,
         &#34;order&#34;: self.order,
         &#34;component_id&#34;: self.component_id,
@@ -617,8 +618,7 @@ custom pipeline
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def set_allowed_filters(self):
-    log.info(&#34;Component filters not set on this component (probably you&#39;ve set them on the report)&#34;)</code></pre>
+<pre><code class="python">def set_allowed_filters(self): ... # Component filters are optional, Report filters are needed</code></pre>
 </details>
 </dd>
 <dt id="licenseware.report_components.base_report_component.BaseReportComponent.set_attributes"><code class="name flex">

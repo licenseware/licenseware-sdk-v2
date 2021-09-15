@@ -94,9 +94,6 @@ def _add_component_import_to_app_init_file(component_id:str):
 
 def create_report_component(component_id: str, component_type: str):
     
-    if component_type is None:
-        component_type = component_id.split(&#39;_&#39;)[-1]
-    
     if not os.path.exists(os.path.join(app_path, &#39;report_components&#39;)): 
         create_app_dirs()
         
@@ -126,9 +123,6 @@ def create_report_component(component_id: str, component_type: str):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def create_report_component(component_id: str, component_type: str):
-    
-    if component_type is None:
-        component_type = component_id.split(&#39;_&#39;)[-1]
     
     if not os.path.exists(os.path.join(app_path, &#39;report_components&#39;)): 
         create_app_dirs()

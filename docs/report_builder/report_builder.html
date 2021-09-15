@@ -102,7 +102,7 @@ class ReportBuilder:
         
         for order, component in enumerate(self.components):
             for registered_component in self.report_components:
-                if registered_component.component_id == component.component_id:
+                if registered_component[&#39;component_id&#39;] == component.component_id:
                     raise Exception(f&#34;Component id &#39;{component.component_id}&#39; was already declared&#34;)
             
             metadata = component.get_registration_payload()
@@ -119,11 +119,10 @@ class ReportBuilder:
             
             
     def register_filters(self, filters:list):
-        log.info(&#34;Component filters not set on this component (probably you&#39;ve set them on the report)&#34;)
         self.filters.extend(filters)
         
 
-    @classmethod
+    @classmethod # same func as in base_report_component
     def build_filter(cls, column:str, allowed_filters:list, visible_name:str, validate:bool = True):
         &#34;&#34;&#34;
             Will return a dictionary similar to the one bellow:
@@ -251,7 +250,7 @@ class ReportBuilder:
         
         for order, component in enumerate(self.components):
             for registered_component in self.report_components:
-                if registered_component.component_id == component.component_id:
+                if registered_component[&#39;component_id&#39;] == component.component_id:
                     raise Exception(f&#34;Component id &#39;{component.component_id}&#39; was already declared&#34;)
             
             metadata = component.get_registration_payload()
@@ -268,11 +267,10 @@ class ReportBuilder:
             
             
     def register_filters(self, filters:list):
-        log.info(&#34;Component filters not set on this component (probably you&#39;ve set them on the report)&#34;)
         self.filters.extend(filters)
         
 
-    @classmethod
+    @classmethod # same func as in base_report_component
     def build_filter(cls, column:str, allowed_filters:list, visible_name:str, validate:bool = True):
         &#34;&#34;&#34;
             Will return a dictionary similar to the one bellow:
@@ -324,7 +322,7 @@ class ReportBuilder:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@classmethod
+<pre><code class="python">@classmethod # same func as in base_report_component
 def build_filter(cls, column:str, allowed_filters:list, visible_name:str, validate:bool = True):
     &#34;&#34;&#34;
         Will return a dictionary similar to the one bellow:
@@ -374,7 +372,7 @@ def build_filter(cls, column:str, allowed_filters:list, visible_name:str, valida
     
     for order, component in enumerate(self.components):
         for registered_component in self.report_components:
-            if registered_component.component_id == component.component_id:
+            if registered_component[&#39;component_id&#39;] == component.component_id:
                 raise Exception(f&#34;Component id &#39;{component.component_id}&#39; was already declared&#34;)
         
         metadata = component.get_registration_payload()
@@ -399,7 +397,6 @@ def build_filter(cls, column:str, allowed_filters:list, visible_name:str, valida
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def register_filters(self, filters:list):
-    log.info(&#34;Component filters not set on this component (probably you&#39;ve set them on the report)&#34;)
     self.filters.extend(filters)</code></pre>
 </details>
 </dd>
