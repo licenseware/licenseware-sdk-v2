@@ -74,7 +74,7 @@ class ReportBuilder:
         
         for order, component in enumerate(self.components):
             for registered_component in self.report_components:
-                if registered_component.component_id == component.component_id:
+                if registered_component['component_id'] == component.component_id:
                     raise Exception(f"Component id '{component.component_id}' was already declared")
             
             metadata = component.get_registration_payload()
