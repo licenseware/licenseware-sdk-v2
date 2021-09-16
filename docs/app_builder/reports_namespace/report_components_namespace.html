@@ -49,10 +49,17 @@ class ComponentFilterSchema(Schema):
 def create_report_component_resource(component: BaseReportComponent):
     
     class ComponentResource(Resource):
+        
         @failsafe(fail_code=500)
         @authorization_check
         def post(self):
             return component.get_data(request)
+        
+        @failsafe(fail_code=500)
+        @authorization_check
+        def get(self):
+            return component.get_data(request)
+        
         
     return ComponentResource
     
@@ -113,10 +120,17 @@ def get_report_components_namespace(ns: Namespace, reports:List[ReportBuilder]):
 <pre><code class="python">def create_report_component_resource(component: BaseReportComponent):
     
     class ComponentResource(Resource):
+        
         @failsafe(fail_code=500)
         @authorization_check
         def post(self):
             return component.get_data(request)
+        
+        @failsafe(fail_code=500)
+        @authorization_check
+        def get(self):
+            return component.get_data(request)
+        
         
     return ComponentResource</code></pre>
 </details>

@@ -118,10 +118,7 @@ def build_match_expression(filter_payload: List[dict]) -&gt; dict:
             )
         )
         
-    return {
-        &#39;$match&#39;: parsed_filter
-    }
-
+    return parsed_filter
     </code></pre>
 </details>
 </section>
@@ -186,9 +183,7 @@ filter_value: "the device name"
             )
         )
         
-    return {
-        &#39;$match&#39;: parsed_filter
-    }</code></pre>
+    return parsed_filter</code></pre>
 </details>
 </dd>
 <dt id="licenseware.report_components.build_match_expression.contains_expression_builder"><code class="name flex">

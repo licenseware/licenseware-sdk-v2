@@ -26,7 +26,8 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from flask import request
+<pre><code class="python">from licenseware.report_components.base_report_component import BaseReportComponent
+from flask import request
 from flask_restx import Namespace, Resource
 from licenseware.decorators.auth_decorators import authorization_check
 from licenseware.decorators import failsafe
@@ -40,29 +41,53 @@ class ComponentFilterSchema(Schema):
     filter_value = fields.List(fields.String, required=False)
 
 
+
+def create_individual_report_component_resource(component: BaseReportComponent):
+    
+    class ReportComponent(Resource):
+        
+        @failsafe(fail_code=500)
+        @authorization_check        
+        def post(self):
+            return component.get_data(request)
+    
+        @failsafe(fail_code=500)
+        @authorization_check        
+        def get(self):
+            return component.get_data(request)
+        
+    return ReportComponent
+    
+    
+    
+
 def get_report_individual_components_namespace(ns: Namespace, report_components:list):
     
     restx_model = build_restx_model(ns, ComponentFilterSchema)
 
     for comp in report_components:
-            
-        @ns.route(comp.component_path)
-        class ReportComponent(Resource):
-            
-            @failsafe(fail_code=500)
-            @authorization_check
-            @ns.doc(
-                id=&#34;Get component data with an optional filter payload&#34;,
-                responses={
-                    200 : &#39;Success&#39;,
-                    403 : &#34;Missing `Tenantid` or `Authorization` information&#34;,
-                    500 : &#39;Something went wrong while handling the request&#39; 
-                },
-                body=restx_model
-            )
-            def post(self):
-                return comp.get_data(request)
         
+        IRC = create_individual_report_component_resource(comp)
+            
+        @ns.doc(
+            id=&#34;Get component data with an optional filter payload&#34;,
+            responses={
+                200 : &#39;Success&#39;,
+                403 : &#34;Missing `Tenantid` or `Authorization` information&#34;,
+                500 : &#39;Something went wrong while handling the request&#39; 
+            },
+            body=restx_model
+        )
+        class TempIndvReportComponentResource(IRC): ...
+            
+        IndvReportComponentResource = type(
+            comp.component_id.replace(&#34;_&#34;, &#34;&#34;).capitalize() + &#39;individual_component&#39;,
+            (TempIndvReportComponentResource, ),
+            {}
+        )
+        
+        ns.add_resource(IndvReportComponentResource, comp.component_path) 
+    
     return ns
         
        
@@ -77,6 +102,32 @@ def get_report_individual_components_namespace(ns: Namespace, report_components:
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
+<dt id="licenseware.app_builder.report_components_namespace.report_individual_components_namespace.create_individual_report_component_resource"><code class="name flex">
+<span>def <span class="ident">create_individual_report_component_resource</span></span>(<span>component: <a title="licenseware.report_components.base_report_component.BaseReportComponent" href="../../report_components/base_report_component.html#licenseware.report_components.base_report_component.BaseReportComponent">BaseReportComponent</a>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def create_individual_report_component_resource(component: BaseReportComponent):
+    
+    class ReportComponent(Resource):
+        
+        @failsafe(fail_code=500)
+        @authorization_check        
+        def post(self):
+            return component.get_data(request)
+    
+        @failsafe(fail_code=500)
+        @authorization_check        
+        def get(self):
+            return component.get_data(request)
+        
+    return ReportComponent</code></pre>
+</details>
+</dd>
 <dt id="licenseware.app_builder.report_components_namespace.report_individual_components_namespace.get_report_individual_components_namespace"><code class="name flex">
 <span>def <span class="ident">get_report_individual_components_namespace</span></span>(<span>ns: flask_restx.namespace.Namespace, report_components: list)</span>
 </code></dt>
@@ -91,24 +142,28 @@ def get_report_individual_components_namespace(ns: Namespace, report_components:
     restx_model = build_restx_model(ns, ComponentFilterSchema)
 
     for comp in report_components:
-            
-        @ns.route(comp.component_path)
-        class ReportComponent(Resource):
-            
-            @failsafe(fail_code=500)
-            @authorization_check
-            @ns.doc(
-                id=&#34;Get component data with an optional filter payload&#34;,
-                responses={
-                    200 : &#39;Success&#39;,
-                    403 : &#34;Missing `Tenantid` or `Authorization` information&#34;,
-                    500 : &#39;Something went wrong while handling the request&#39; 
-                },
-                body=restx_model
-            )
-            def post(self):
-                return comp.get_data(request)
         
+        IRC = create_individual_report_component_resource(comp)
+            
+        @ns.doc(
+            id=&#34;Get component data with an optional filter payload&#34;,
+            responses={
+                200 : &#39;Success&#39;,
+                403 : &#34;Missing `Tenantid` or `Authorization` information&#34;,
+                500 : &#39;Something went wrong while handling the request&#39; 
+            },
+            body=restx_model
+        )
+        class TempIndvReportComponentResource(IRC): ...
+            
+        IndvReportComponentResource = type(
+            comp.component_id.replace(&#34;_&#34;, &#34;&#34;).capitalize() + &#39;individual_component&#39;,
+            (TempIndvReportComponentResource, ),
+            {}
+        )
+        
+        ns.add_resource(IndvReportComponentResource, comp.component_path) 
+    
     return ns</code></pre>
 </details>
 </dd>
@@ -228,6 +283,7 @@ fields in the data. Use <code>EXCLUDE</code>, <code>INCLUDE</code> or <code>RAIS
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
+<li><code><a title="licenseware.app_builder.report_components_namespace.report_individual_components_namespace.create_individual_report_component_resource" href="#licenseware.app_builder.report_components_namespace.report_individual_components_namespace.create_individual_report_component_resource">create_individual_report_component_resource</a></code></li>
 <li><code><a title="licenseware.app_builder.report_components_namespace.report_individual_components_namespace.get_report_individual_components_namespace" href="#licenseware.app_builder.report_components_namespace.report_individual_components_namespace.get_report_individual_components_namespace">get_report_individual_components_namespace</a></code></li>
 </ul>
 </li>
