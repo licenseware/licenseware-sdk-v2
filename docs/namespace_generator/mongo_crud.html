@@ -70,18 +70,26 @@ class MongoCrud:
             payload = self.request_obj.json
         return payload
 
+    def validate_tenant_id(self, tenant:dict):
+        
+        if &#39;tenant_id&#39; in self.params:
+            if self.params[&#39;tenant_id&#39;] != tenant[&#39;tenant_id&#39;]:
+                raise Exception(&#34;The &#39;tenant_id&#39; provided in query parameter is not the same as the one from headers&#34;)
+            
+        if &#39;tenant_id&#39; in self.payload:
+            if self.payload[&#39;tenant_id&#39;] != tenant[&#39;tenant_id&#39;]:
+                raise Exception(&#34;The &#39;tenant_id&#39; provided in query parameter is not the same as the one from headers&#34;)
+
     @property
     def query(self):
         tenant = {&#39;tenant_id&#39;: self.request_obj.headers.get(&#34;Tenantid&#34;)}
     
-        if self.params[&#39;tenant_id&#39;] != tenant[&#39;tenant_id&#39;]:
-            raise Exception(&#34;The &#39;tenant_id&#39; provided in query parameter is not the same as the one from headers&#34;)
-            
-        if self.payload[&#39;tenant_id&#39;] != tenant[&#39;tenant_id&#39;]:
-            raise Exception(&#34;The &#39;tenant_id&#39; provided in query parameter is not the same as the one from headers&#34;)
-
+        self.validate_tenant_id(tenant)
+        
         query = {**tenant, **self.params, **self.payload}
-        # log.warning(f&#34;CRUD Request: {query}&#34;)
+        
+        log.info(f&#34;Schema CRUD Request: {query}&#34;)
+        
         return query
 
     def create_indexes(self):
@@ -223,18 +231,26 @@ Indexes are provided on serializer metadata (simple_indexes, compound_indexes).<
             payload = self.request_obj.json
         return payload
 
+    def validate_tenant_id(self, tenant:dict):
+        
+        if &#39;tenant_id&#39; in self.params:
+            if self.params[&#39;tenant_id&#39;] != tenant[&#39;tenant_id&#39;]:
+                raise Exception(&#34;The &#39;tenant_id&#39; provided in query parameter is not the same as the one from headers&#34;)
+            
+        if &#39;tenant_id&#39; in self.payload:
+            if self.payload[&#39;tenant_id&#39;] != tenant[&#39;tenant_id&#39;]:
+                raise Exception(&#34;The &#39;tenant_id&#39; provided in query parameter is not the same as the one from headers&#34;)
+
     @property
     def query(self):
         tenant = {&#39;tenant_id&#39;: self.request_obj.headers.get(&#34;Tenantid&#34;)}
     
-        if self.params[&#39;tenant_id&#39;] != tenant[&#39;tenant_id&#39;]:
-            raise Exception(&#34;The &#39;tenant_id&#39; provided in query parameter is not the same as the one from headers&#34;)
-            
-        if self.payload[&#39;tenant_id&#39;] != tenant[&#39;tenant_id&#39;]:
-            raise Exception(&#34;The &#39;tenant_id&#39; provided in query parameter is not the same as the one from headers&#34;)
-
+        self.validate_tenant_id(tenant)
+        
         query = {**tenant, **self.params, **self.payload}
-        # log.warning(f&#34;CRUD Request: {query}&#34;)
+        
+        log.info(f&#34;Schema CRUD Request: {query}&#34;)
+        
         return query
 
     def create_indexes(self):
@@ -376,14 +392,12 @@ def payload(self):
 def query(self):
     tenant = {&#39;tenant_id&#39;: self.request_obj.headers.get(&#34;Tenantid&#34;)}
 
-    if self.params[&#39;tenant_id&#39;] != tenant[&#39;tenant_id&#39;]:
-        raise Exception(&#34;The &#39;tenant_id&#39; provided in query parameter is not the same as the one from headers&#34;)
-        
-    if self.payload[&#39;tenant_id&#39;] != tenant[&#39;tenant_id&#39;]:
-        raise Exception(&#34;The &#39;tenant_id&#39; provided in query parameter is not the same as the one from headers&#34;)
-
+    self.validate_tenant_id(tenant)
+    
     query = {**tenant, **self.params, **self.payload}
-    # log.warning(f&#34;CRUD Request: {query}&#34;)
+    
+    log.info(f&#34;Schema CRUD Request: {query}&#34;)
+    
     return query</code></pre>
 </details>
 </dd>
@@ -524,6 +538,26 @@ def query(self):
     return &#34;SUCCESS&#34;</code></pre>
 </details>
 </dd>
+<dt id="licenseware.namespace_generator.mongo_crud.MongoCrud.validate_tenant_id"><code class="name flex">
+<span>def <span class="ident">validate_tenant_id</span></span>(<span>self, tenant: dict)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def validate_tenant_id(self, tenant:dict):
+    
+    if &#39;tenant_id&#39; in self.params:
+        if self.params[&#39;tenant_id&#39;] != tenant[&#39;tenant_id&#39;]:
+            raise Exception(&#34;The &#39;tenant_id&#39; provided in query parameter is not the same as the one from headers&#34;)
+        
+    if &#39;tenant_id&#39; in self.payload:
+        if self.payload[&#39;tenant_id&#39;] != tenant[&#39;tenant_id&#39;]:
+            raise Exception(&#34;The &#39;tenant_id&#39; provided in query parameter is not the same as the one from headers&#34;)</code></pre>
+</details>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -554,6 +588,7 @@ def query(self):
 <li><code><a title="licenseware.namespace_generator.mongo_crud.MongoCrud.query" href="#licenseware.namespace_generator.mongo_crud.MongoCrud.query">query</a></code></li>
 <li><code><a title="licenseware.namespace_generator.mongo_crud.MongoCrud.request_obj" href="#licenseware.namespace_generator.mongo_crud.MongoCrud.request_obj">request_obj</a></code></li>
 <li><code><a title="licenseware.namespace_generator.mongo_crud.MongoCrud.update_data" href="#licenseware.namespace_generator.mongo_crud.MongoCrud.update_data">update_data</a></code></li>
+<li><code><a title="licenseware.namespace_generator.mongo_crud.MongoCrud.validate_tenant_id" href="#licenseware.namespace_generator.mongo_crud.MongoCrud.validate_tenant_id">validate_tenant_id</a></code></li>
 </ul>
 </li>
 </ul>

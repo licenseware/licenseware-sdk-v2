@@ -58,6 +58,16 @@ def flat_dict(li: List[dict]) -&gt; dict:
     return {k: v for dict_ in li for k, v in dict_.items()}  
 
 
+def get_json_schema(schema: Schema):
+    &#34;&#34;&#34;
+        Generate json schema from marshmallow schema class
+    &#34;&#34;&#34;
+    
+    json_schema = JSONSchema().dump(schema())[&#34;definitions&#34;][schema.__name__]
+    
+    return json_schema
+
+
 def build_restx_model(ns: Namespace, schema: Schema, model_name:str = None):
     &#34;&#34;&#34; 
         Convert a marshmallow schema to a flask restx model 
@@ -66,7 +76,7 @@ def build_restx_model(ns: Namespace, schema: Schema, model_name:str = None):
     
     model_name = model_name or schema.__name__
     
-    json_schema = JSONSchema().dump(schema())[&#34;definitions&#34;][schema.__name__]
+    json_schema = get_json_schema(schema)
     restx_model = ns.schema_model(model_name, json_schema) 
     
     return restx_model
@@ -134,7 +144,7 @@ Resulted restx model can be used for swagger (body, marshal_with, expect, etc)</
     
     model_name = model_name or schema.__name__
     
-    json_schema = JSONSchema().dump(schema())[&#34;definitions&#34;][schema.__name__]
+    json_schema = get_json_schema(schema)
     restx_model = ns.schema_model(model_name, json_schema) 
     
     return restx_model</code></pre>
@@ -172,6 +182,25 @@ Resulted restx model can be used for swagger (body, marshal_with, expect, etc)</
 <pre><code class="python">def generate_id(length=6):
     &#34;&#34;&#34; Create a random series of digits of length specified &#34;&#34;&#34;
     return &#34;&#34;.join([random.choice(list(string.digits)) for _ in range(length)])</code></pre>
+</details>
+</dd>
+<dt id="licenseware.utils.miscellaneous.get_json_schema"><code class="name flex">
+<span>def <span class="ident">get_json_schema</span></span>(<span>schema: marshmallow.schema.Schema)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Generate json schema from marshmallow schema class</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_json_schema(schema: Schema):
+    &#34;&#34;&#34;
+        Generate json schema from marshmallow schema class
+    &#34;&#34;&#34;
+    
+    json_schema = JSONSchema().dump(schema())[&#34;definitions&#34;][schema.__name__]
+    
+    return json_schema</code></pre>
 </details>
 </dd>
 <dt id="licenseware.utils.miscellaneous.get_user_id"><code class="name flex">
@@ -222,6 +251,7 @@ Resulted restx model can be used for swagger (body, marshal_with, expect, etc)</
 <li><code><a title="licenseware.utils.miscellaneous.build_restx_model" href="#licenseware.utils.miscellaneous.build_restx_model">build_restx_model</a></code></li>
 <li><code><a title="licenseware.utils.miscellaneous.flat_dict" href="#licenseware.utils.miscellaneous.flat_dict">flat_dict</a></code></li>
 <li><code><a title="licenseware.utils.miscellaneous.generate_id" href="#licenseware.utils.miscellaneous.generate_id">generate_id</a></code></li>
+<li><code><a title="licenseware.utils.miscellaneous.get_json_schema" href="#licenseware.utils.miscellaneous.get_json_schema">get_json_schema</a></code></li>
 <li><code><a title="licenseware.utils.miscellaneous.get_user_id" href="#licenseware.utils.miscellaneous.get_user_id">get_user_id</a></code></li>
 </ul>
 </li>

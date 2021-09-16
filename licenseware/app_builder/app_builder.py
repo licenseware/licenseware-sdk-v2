@@ -318,6 +318,10 @@ class AppBuilder:
         self.custom_namespaces.append((ns, path))
 
     def init_namespaces(self):
+        
+        # for schema_ns in self.editable_tables_schemas:
+        #     self.api.add_namespace(schema_ns())
+            
         for namespace in self.custom_namespaces:
             self.api.add_namespace(*namespace)
         

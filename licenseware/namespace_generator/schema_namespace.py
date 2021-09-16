@@ -109,7 +109,7 @@ class SchemaNamespace(MongoRequest):
 
         resource_list = []
         for http_verb, dict_ in self.http_methods.items():
-
+            
             @self.ns.doc(**dict_['docs'])
             class BaseResource(Resource): ...
             
@@ -118,7 +118,9 @@ class SchemaNamespace(MongoRequest):
                 (BaseResource,), 
                 {http_verb: dict_['method']}
             )
-
+            
+            #TODO add all http methods on one resource
+            
             base_route = self.path + '/' + http_verb.lower()
             routes = [base_route]
 

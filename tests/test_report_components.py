@@ -135,10 +135,6 @@ class TestReportComponents(unittest.TestCase):
                 ]
                 
 
-                
-                
-                
-        
         virtual_overview = VirtualOverview(
             title="Overview",
             component_id="virtual_overview",
@@ -148,7 +144,7 @@ class TestReportComponents(unittest.TestCase):
         
         match_filters = virtual_overview.get_mongo_match_filters(flask_request)
         
-        self.assertDictEqual(match_filters, {'$match': {'name': 'the device name', 'tenant_id': '3d1fdc6b-04bc-44c8-ae7c-5fa5b9122f1a'}})
+        self.assertDictEqual(match_filters, {'name': 'the device name', 'tenant_id': '3d1fdc6b-04bc-44c8-ae7c-5fa5b9122f1a'})
         
         # data method
         data = virtual_overview.get_data(flask_request)

@@ -47,6 +47,9 @@ def namespace(**dkwargs):
                                 tenant_id = request.headers.get(&#34;TenantId&#34;)
                                 _id = request.args.get(&#34;_id&#34;)
                                 return DeviceService.delete_one(_id=_id, tenant_id=tenant_id)
+    
+    
+                App.add_namespace(DeviceNamespace())
                 
         &#34;&#34;&#34;
 
@@ -79,7 +82,8 @@ class DeviceNamespace:</p>
             tenant_id = request.headers.get("TenantId")
             _id = request.args.get("_id")
             return DeviceService.delete_one(_id=_id, tenant_id=tenant_id)
-</code></pre></div>
+</code></pre>
+<p>App.add_namespace(DeviceNamespace())</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -101,6 +105,9 @@ class DeviceNamespace:</p>
                                 tenant_id = request.headers.get(&#34;TenantId&#34;)
                                 _id = request.args.get(&#34;_id&#34;)
                                 return DeviceService.delete_one(_id=_id, tenant_id=tenant_id)
+    
+    
+                App.add_namespace(DeviceNamespace())
                 
         &#34;&#34;&#34;
 

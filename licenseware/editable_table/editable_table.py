@@ -4,6 +4,8 @@ from licenseware.common.constants import envs
 from urllib.parse import urlencode
 from typing import List
 
+from licenseware.utils.logger import log
+
 
 class EditableTable:
 
@@ -21,6 +23,7 @@ class EditableTable:
         {
             "component_id": "ifmp_devices",
             "url": "base_url/device/get", 
+            "path": "",
             "order": 1,
             "style_attributes": {'width': 'full'},
             "title": "All Devices",
@@ -62,7 +65,8 @@ class EditableTable:
     
         self.component_id = component_id or self.component_id_from_schema()
         self.title = title or self.title_from_schema()
-        self.url = envs.BASE_URL + (url or self.url_from_schema())
+        self.path = (url or self.url_from_schema())
+        self.url = envs.BASE_URL + self.path
         self.table_type = table_type
         self.order = order
         self.style_attributes = style_attributes
@@ -70,7 +74,9 @@ class EditableTable:
         
         
     def url_from_schema(self):
-        return f'/{self.schema_name}/get'
+        #TODO fix duplicate path url
+        path_schema_name = self.schema.__name__.replace('Schema', '')
+        return f'/{path_schema_name}/{self.schema_name}/get'
 
     def title_from_schema(self):
         return 'All ' + self.names
@@ -100,6 +106,7 @@ class EditableTable:
         return {
             "component_id": self.component_id,
             "url": self.url, 
+            "path": self.path,
             "order": self.order,
             "style_attributes": self.style_attributes,
             "title": self.title,
@@ -120,13 +127,13 @@ class EditableTable:
                 "required": self.col_required(field_data),
                 "visible": self.col_visible(field_name, field_data),
                 "entities_url": self.col_entities_url(field_data),
-                # "validation": "Not defined", ?
+                "entities_path": self.col_entities_path(field_data),
             })
 
         return columns_list
 
 
-    def col_entities_url(self, field_data):
+    def col_entities_url(self, field_data, _get_only_path=False):
         """
             _id - device(doc) id which contains foreign_keys to get the distinct_keys
             distinct_key - mongo's unique_key
@@ -140,12 +147,20 @@ class EditableTable:
             params = urlencode({
                 'distinct_key': metadata['distinct_key'], 
                 'foreign_key' : metadata['foreign_key'],
-                '_id': '{entity_id}',
+                '_id': '{entity_id}'
             })
-            return f"{self.url}?{params}"
+            
+            return f"{self.path}?{params}" if _get_only_path else f"{self.url}?{params}"
 
-        return None
-
+        # Create query params with just _id
+        params = urlencode({'_id': '{entity_id}'})
+        
+        return f"{self.path}?{params}" if _get_only_path else f"{self.url}?{params}"
+    
+    
+    def col_entities_path(self, field_data):
+        return self.col_entities_url(field_data, _get_only_path=True)
+        
 
     def col_required(self, field_data):
         return field_data['required']
@@ -193,15 +208,12 @@ class EditableTable:
             invalid_message = field_data['error_messages']['invalid']
             return re.search(r'Not a valid (.*?)\.', invalid_message).group(1).lower()
         except:...
-
-
-
+        
+    
     def field_metadata(self, field_data):
         if 'metadata' in field_data:
             return field_data['metadata']
         return ""
-
-
 
 
 def editable_tables_from_schemas(schemas_list: List[Schema]) -> List[dict]:

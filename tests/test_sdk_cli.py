@@ -23,7 +23,7 @@ class TestCLI(unittest.TestCase):
     #     shutil.rmtree(app_path)
     
     def test_create_app(self):
-        result = self.runner.invoke(app, ["new-app"])
+        result = self.runner.invoke(app, ["new-app", "ifmp"])
         # log.debug(result.stdout)
         assert result.exit_code == 0
         assert os.path.exists(app_path)

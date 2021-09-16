@@ -42,18 +42,26 @@ class MongoCrud:
             payload = self.request_obj.json
         return payload
 
+    def validate_tenant_id(self, tenant:dict):
+        
+        if 'tenant_id' in self.params:
+            if self.params['tenant_id'] != tenant['tenant_id']:
+                raise Exception("The 'tenant_id' provided in query parameter is not the same as the one from headers")
+            
+        if 'tenant_id' in self.payload:
+            if self.payload['tenant_id'] != tenant['tenant_id']:
+                raise Exception("The 'tenant_id' provided in query parameter is not the same as the one from headers")
+
     @property
     def query(self):
         tenant = {'tenant_id': self.request_obj.headers.get("Tenantid")}
     
-        if self.params['tenant_id'] != tenant['tenant_id']:
-            raise Exception("The 'tenant_id' provided in query parameter is not the same as the one from headers")
-            
-        if self.payload['tenant_id'] != tenant['tenant_id']:
-            raise Exception("The 'tenant_id' provided in query parameter is not the same as the one from headers")
-
+        self.validate_tenant_id(tenant)
+        
         query = {**tenant, **self.params, **self.payload}
-        # log.warning(f"CRUD Request: {query}")
+        
+        log.info(f"Schema CRUD Request: {query}")
+        
         return query
 
     def create_indexes(self):

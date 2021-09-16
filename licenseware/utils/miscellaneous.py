@@ -29,6 +29,16 @@ def flat_dict(li: List[dict]) -> dict:
     return {k: v for dict_ in li for k, v in dict_.items()}  
 
 
+def get_json_schema(schema: Schema):
+    """
+        Generate json schema from marshmallow schema class
+    """
+    
+    json_schema = JSONSchema().dump(schema())["definitions"][schema.__name__]
+    
+    return json_schema
+
+
 def build_restx_model(ns: Namespace, schema: Schema, model_name:str = None):
     """ 
         Convert a marshmallow schema to a flask restx model 
@@ -37,7 +47,7 @@ def build_restx_model(ns: Namespace, schema: Schema, model_name:str = None):
     
     model_name = model_name or schema.__name__
     
-    json_schema = JSONSchema().dump(schema())["definitions"][schema.__name__]
+    json_schema = get_json_schema(schema)
     restx_model = ns.schema_model(model_name, json_schema) 
     
     return restx_model

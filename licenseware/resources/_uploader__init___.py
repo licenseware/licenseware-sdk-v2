@@ -5,7 +5,7 @@ from licenseware.uploader_builder import UploaderBuilder
 
 
 {{ uploader_id }}_uploader = UploaderBuilder(
-    name="Set uploader name here", 
+    name="{{ uploader_id.split('_') | map('title') | join('') }}", 
     uploader_id = "{{ uploader_id }}",
     description="Set uploader description", 
     accepted_file_types=['.xls', '.xlsx'],

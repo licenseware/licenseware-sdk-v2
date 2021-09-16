@@ -19,6 +19,9 @@ def namespace(**dkwargs):
 				tenant_id = request.headers.get("TenantId")
 				_id = request.args.get("_id")
 				return DeviceService.delete_one(_id=_id, tenant_id=tenant_id)
+    
+    
+		App.add_namespace(DeviceNamespace())
 		
 	"""
 
