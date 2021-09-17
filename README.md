@@ -57,7 +57,7 @@ make install-sdk
 
 ```
 
-Alternatively you can install it with pip:
+Or install it with pip:
 
 ```bash
 
@@ -65,9 +65,13 @@ pip3 install wheel_sdk/licenseware-2.0.0-py3-none-any.whl
 
 ```
 
+Or download the sdk wheel from [this link](https://github.com/licenseware/licenseware-sdk-v2/raw/main/wheel_sdk/licenseware-2.0.0-py3-none-any.whl
+) and install it with pip.
+
+
+
 I repository is public you can install it straight from github.
 
-Install latest update for this package using the following pip command:
 ```bash
 
 pip3 install git+https://git@github.com/licenseware/licenseware-sdk-python3.git

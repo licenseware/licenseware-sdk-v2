@@ -19,6 +19,7 @@ It helps you focus on processsing the files needed and creating reports.
 8. [Endpoints from simple functions](#endpoints-from-simple-functions)
 9. [The `main` file](#the-main-file)
 10. [Licenseware CLI](#licenseware-cli) 
+11. [Working on SDK](#working-on-sdk) 
 
 
 
@@ -49,7 +50,29 @@ You will have mongoexpress running at: `http://localhost:8081/`
 
 ## Installation 
 
-Install latest update for this package using the following pip command:
+Clone the repo, and install the sdk with
+
+```bash
+
+make install-sdk
+
+```
+
+Or install it with pip:
+
+```bash
+
+pip3 install wheel_sdk/licenseware-2.0.0-py3-none-any.whl
+
+```
+
+Or download the sdk wheel from [this link](https://github.com/licenseware/licenseware-sdk-v2/raw/main/wheel_sdk/licenseware-2.0.0-py3-none-any.whl
+) and install it with pip.
+
+
+
+I repository is public you can install it straight from github.
+
 ```bash
 
 pip3 install git+https://git@github.com/licenseware/licenseware-sdk-python3.git
@@ -1248,6 +1271,17 @@ This will start the flask server with auto-reload.
 
 
 
+
+<a name="working-on-sdk"></a>
+# Working on SDK
+
+
+# TODO
+
+
+
+
+
 # Load testing
 
 [baton docs](https://github.com/americanexpress/baton)
@@ -1255,6 +1289,13 @@ This will start the flask server with auto-reload.
 ```bash
 baton -u http://localhost:4000 -c 10 -r 10000
 ```
+
+
+# TODO
+
+
+
+
 '''
 
 try:
