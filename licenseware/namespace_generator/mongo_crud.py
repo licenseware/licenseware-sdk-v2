@@ -25,99 +25,63 @@ class MongoCrud:
 
     """
 
-    request_obj = None  # This will be updated when a http request is made (see MongoRequest)
-
-    @property
-    def params(self):
+    def get_params(self, request_obj):
         params = {}
-        if self.request_obj.args is None: return params
-        params = dict(self.request_obj.args) or {}
+        if request_obj.args is None: return params
+        params = dict(request_obj.args) or {}
         return params
 
-    @property
-    def payload(self):
+    def get_payload(self, request_obj):
         payload = {}
-        if self.request_obj.json is None: return payload
-        if isinstance(self.request_obj.json, dict):
-            payload = self.request_obj.json
+        if request_obj.json is None: return payload
+        if isinstance(request_obj.json, dict):
+            payload = request_obj.json
         return payload
 
-    def validate_tenant_id(self, tenant:dict):
+
+    def validate_tenant_id(self, tenant, params, payload):
         
-        if 'tenant_id' in self.params:
-            if self.params['tenant_id'] != tenant['tenant_id']:
+        if 'tenant_id' in params:
+            if params['tenant_id'] != tenant['tenant_id']:
                 raise Exception("The 'tenant_id' provided in query parameter is not the same as the one from headers")
             
-        if 'tenant_id' in self.payload:
-            if self.payload['tenant_id'] != tenant['tenant_id']:
+        if 'tenant_id' in payload:
+            if payload['tenant_id'] != tenant['tenant_id']:
                 raise Exception("The 'tenant_id' provided in query parameter is not the same as the one from headers")
 
-    @property
-    def query(self):
-        tenant = {'tenant_id': self.request_obj.headers.get("Tenantid")}
-    
-        self.validate_tenant_id(tenant)
+
+    def get_query(self, request_obj):
         
-        query = {**tenant, **self.params, **self.payload}
+        tenant = {'tenant_id': request_obj.headers.get("Tenantid")}
         
-        log.info(f"Schema CRUD Request: {query}")
+        params = self.get_params(request_obj)
+        payload = self.get_payload(request_obj)
+        
+        self.validate_tenant_id(tenant, params, payload)
+        
+        query = {**tenant, **params, **payload}
+        
+        log.info(f"Mongo CRUD Request: {query}")
         
         return query
 
-    def create_indexes(self):
-        coll = m.get_collection(self.collection)
+
+    def get_data(self, request_obj):
         
-        try:
-            for i in self.schema.Meta.simple_indexes:
-                coll.create_index(i)
-        except AttributeError:
-            # log.info("No simple indexes declared")
-            pass
+        query = self.get_query(request_obj)
         
-        try:
-            for ci in self.schema.Meta.compound_indexes:
-                col_list = [(ci_m, 1) for ci_m in ci]
-                coll.create_index(col_list, unique=True)
-        except AttributeError:
-            # log.info("No compound indexes declared")
-            pass
+        results = m.fetch(match=query, collection=self.collection)
 
-    def fetch_data(self, request_obj):
-        self.request_obj = request_obj
-
-        results = m.fetch(match=self.query, collection=self.collection)
-
-        if isinstance(results, str):
-            abort(500, reason=results)
-
-        if not results:
-            abort(404, reason='Requested data not found')
+        if not results: abort(404, reason='Requested data not found')
 
         return results
 
-    def update_data(self, request_obj):
-        self.request_obj = request_obj
 
-        updated_docs = m.update(
-            schema=self.schema,
-            match=self.query,
-            new_data=dict(self.query, **{"updated_at": datetime.datetime.utcnow().isoformat()}),
-            collection=self.collection,
-            append=False
-        )
+    def post_data(self, request_obj):
 
-        if updated_docs == 0:
-            abort(404, reason='Query had no match')
+        query = self.get_query(request_obj)
 
-        if isinstance(updated_docs, str):
-            abort(500, reason=updated_docs)
-
-        return "SUCCESS"
-
-    def insert_data(self, request_obj):
-        self.request_obj = request_obj
-
-        data = dict(self.query, **{
+        data = dict(query, **{
             "updated_at": datetime.datetime.utcnow().isoformat()}
         )
 
@@ -127,23 +91,34 @@ class MongoCrud:
             data=data
         )
 
-        if len(inserted_docs) == 0:
-            abort(404, reason='Could not insert data')
-
-        if isinstance(inserted_docs, str):
-            abort(500, reason=inserted_docs)
+        if len(inserted_docs) == 0: abort(404, reason='Could not insert data')
 
         return "SUCCESS"
 
+
+    def put_data(self, request_obj):
+        
+        query = self.get_query(request_obj)
+        
+        updated_docs = m.update(
+            schema=self.schema,
+            match=query,
+            new_data=dict(self.query, **{"updated_at": datetime.datetime.utcnow().isoformat()}),
+            collection=self.collection,
+            append=False
+        )
+
+        if updated_docs == 0: abort(404, reason='Query had no match')
+
+        return "SUCCESS"
+
+
     def delete_data(self, request_obj):
-        self.request_obj = request_obj
 
-        deleted_docs = m.delete(match=self.query, collection=self.collection)
+        query = self.get_query(request_obj)
 
-        if deleted_docs == 0:
-            abort(404, reason='Query had no match')
+        deleted_docs = m.delete(match=query, collection=self.collection)
 
-        if isinstance(deleted_docs, str):
-            abort(500, reason=deleted_docs)
+        if deleted_docs == 0: abort(404, reason='Query had no match')
 
         return "SUCCESS"

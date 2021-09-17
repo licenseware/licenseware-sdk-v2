@@ -1,15 +1,39 @@
+"""
+# TODO docs
+
+This class creates the Namespace object from Schema 
+
+DeviceNamespace = SchemaNamespace(
+    schema=DeviceSchema, 
+    collection='IFMPData', 
+    methods=['GET', 'POST']
+)
+
+
+
+"""
+
+
 import re
 from inspect import signature
 
 from marshmallow import Schema, fields
 from marshmallow_jsonschema import JSONSchema
 from flask_restx import Namespace, Resource
+from pymongo import collection
 
 from licenseware.common.validators import validate_uuid4
 from licenseware.decorators.auth_decorators import authorization_check
 from licenseware.utils.miscellaneous import swagger_authorization_header, http_methods
+from licenseware import mongodata
 
-from .mongo_request import MongoRequest
+# from .mongo_request import MongoRequest
+from flask import request
+from .mongo_crud import MongoCrud
+
+
+
+
 
 
 # Every api namespace generated with SchemaNamespace must have `tenant_id` and `updated_at` fields
@@ -19,18 +43,11 @@ class BaseSchema(Schema):
 
 
 
-class SchemaNamespace(MongoRequest):
-    """
-        This class creates the Namespace object from Schema 
-        
-        DeviceNamespace = SchemaNamespace(
-            schema=DeviceSchema, 
-            collection='IFMPData', 
-            methods=['GET', 'POST']
-        )
 
-    """
 
+
+class SchemaNamespace:
+    
     # Used by namespace decorator
     schema = None
     collection = None
@@ -56,6 +73,7 @@ class SchemaNamespace(MongoRequest):
         )
         
         self.collection = self.collection or collection
+        assert isinstance(self.collection, str) 
         self.decorators = self.decorators or decorators
         self.methods = self.methods or methods
         self.authorizations = self.authorizations or authorizations
@@ -82,21 +100,17 @@ class SchemaNamespace(MongoRequest):
     def initialize(self) -> Namespace:
         """ Create restx api namespace from schema """
 
-        self.ns = self.ns or self.create_namespace()
         self.create_indexes()
         self.make_json_schema()
-        self.model = self.ns.schema_model(self.name, self.json_schema)  
-        self.attach_http_methods()
-        self.attach_http_docs()
+        ns = self.create_resources()
         
-        self.resources = self.create_resources()
-        self.attach_resources()
+        return ns
 
-        return self.ns
 
     def create_namespace(self) -> Namespace:        
         ns = Namespace(
             name = self.name, 
+            path = self.path,
             description = f"API is generated from {self.schema_name}",
             decorators = self.decorators, 
             authorizations = self.authorizations,
@@ -106,90 +120,68 @@ class SchemaNamespace(MongoRequest):
 
 
     def create_resources(self) -> list:
-
-        resource_list = []
-        for http_verb, dict_ in self.http_methods.items():
-            
-            @self.ns.doc(**dict_['docs'])
-            class BaseResource(Resource): ...
-            
-            resource = type(
-                self.name + http_verb.capitalize(), 
-                (BaseResource,), 
-                {http_verb: dict_['method']}
-            )
-            
-            #TODO add all http methods on one resource
-            
-            base_route = self.path + '/' + http_verb.lower()
-            routes = [base_route]
-
-            # TODO parameters from function parameters
-            # if 'params' in dict_['docs']:
-            #     print("-------- params:", dict_['docs']['params'])
-            #     for param in dict_['docs']['params']:
-            #         routes.append(base_route + '/' + param)
-
-            resource_list.append((resource, *routes))
-
-        return resource_list
-
-
-    def attach_resources(self):
-        for resource in self.resources:
-            self.ns.add_resource(*resource)
-
-
-    def attach_http_methods(self):
-     
-        if self.http_methods: return
-
-        methods = [m.lower() for m in self.methods]
         
-        self.http_methods = {}
-        for method in methods:
-            if method == 'get':
-                self.http_methods[method] = {'method': self.get, 'docs': None}
-            if method == 'post':
-                self.http_methods[method] = {'method': self.post, 'docs': None}
-            if method == 'put':
-                self.http_methods[method] = {'method': self.put, 'docs': None}
-            if method == 'delete':
-                self.http_methods[method] = {'method': self.delete, 'docs': None}
+        ns = self.create_namespace()
+        resource_fields = ns.schema_model(self.name, self.json_schema)  
         
-
-    def attach_http_docs(self):
-
-        for k in self.http_methods.keys():
-            self.http_methods[k]['docs'] = {
-                'id': f'{k.upper()} request for {self.name}',
-                'description': f'Make a {k.upper()} request on {self.name} data.',
-                'responses':{
-                    200: 'SUCCESS',
-                    500: 'INTERNAL SERVER ERROR',
-                    401: 'UNAUTHORIZED',
-                    405: 'METHOD NOT ALLOWED',
-                },
-                'model':self.model,
-                'security': list(self.authorizations.keys())
-            }
-
-            if k in ['post', 'put', 'delete']:
-                self.http_methods[k]['docs'].update({'body':self.model})
-
-            sig = signature(self.http_methods[k]['method'])
-            raw_params = list(dict(sig.parameters).keys())
+        mongo_collection_name = self.collection
+        
+        @ns.route("")
+        class SchemaResource(Resource, MongoCrud):
             
-            if raw_params:
-                self.http_methods[k]['docs'].update({"params": {}})
-                for param_name in raw_params:
-                    param_type = re.search(r"<class '(.*?)'>", str(sig.parameters[param_name].annotation)).group(1)
-                    param_type = 'str' if param_type == 'inspect._empty' else param_type
-                    self.http_methods[k]['docs']["params"].update(
-                        { param_name:  f"Query parameter ({param_type})"}
-                    )
+            collection = mongo_collection_name
+                    
+            @ns.doc(id="Make a GET request to FETCH some data")
+            @ns.param('_id', 'get data by id')
+            @ns.marshal_list_with(resource_fields)
+            def get(self, _id=None):
+                if 'GET' in self.methods: 
+                    return self.get_data(request) 
+                return "METHOD NOT ALLOWED", 405
 
+            @ns.doc(id="Make a POST request to INSERT some data")
+            @ns.expect(resource_fields)
+            def post(self):
+                if 'POST' in self.methods:
+                    return self.post_data(request) 
+                return "METHOD NOT ALLOWED", 405
                 
+            @ns.doc(id="Make a PUT request to UPDATE some data")
+            @ns.expect(resource_fields)
+            def put(self):
+                if 'PUT' in self.methods:
+                    return self.put_data(request) 
+                return "METHOD NOT ALLOWED", 405
+                
+            @ns.doc(id="Make a DELETE request to DELETE some data")
+            @ns.expect(resource_fields)
+            def delete(self, _id=None):
+                if 'DELETE' in self.methods:
+                    return self.delete_data(request) 
+                return "METHOD NOT ALLOWED", 405
+
+        return ns
+        
+    def create_indexes(self):
+        
+        coll = mongodata.get_collection(self.collection)
+        
+        try:
+            for i in self.schema.Meta.simple_indexes:
+                coll.create_index(i)
+        except AttributeError:
+            # log.info("No simple indexes declared")
+            pass
+        
+        try:
+            for ci in self.schema.Meta.compound_indexes:
+                col_list = [(ci_m, 1) for ci_m in ci]
+                coll.create_index(col_list, unique=True)
+        except AttributeError:
+            # log.info("No compound indexes declared")
+            pass
+
+
     def make_json_schema(self) -> dict:
         self.json_schema = JSONSchema().dump(self.schema())["definitions"][self.schema_name]
 

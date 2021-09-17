@@ -166,8 +166,6 @@ def get_collection(collection, db_name=None):
         collection = collection or default_collection
         db_name = db_name or default_db
 
-        # print(db_name, collection, os.getenv("MONGO_CONNECTION_STRING"), mongo_connection)
-
         if not all([db_name, collection, mongo_connection]):
             raise Exception("Can't create connection to mongo.")
 

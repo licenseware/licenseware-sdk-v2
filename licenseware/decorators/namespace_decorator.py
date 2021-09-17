@@ -11,14 +11,7 @@ def namespace(**dkwargs):
 		@namespace(schema=DeviceSchema, collection='IFMPData')
 		class DeviceNamespace:
 
-			def post(self):
-				tenant_id = request.headers.get("TenantId")
-				return DeviceService.replace_one(json_data=request.json, tenant_id=tenant_id)
-
-			def delete(self, _id=None):
-				tenant_id = request.headers.get("TenantId")
-				_id = request.args.get("_id")
-				return DeviceService.delete_one(_id=_id, tenant_id=tenant_id)
+			#TODO docs
     
     
 		App.add_namespace(DeviceNamespace())

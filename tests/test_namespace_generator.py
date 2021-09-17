@@ -1,5 +1,3 @@
-from logging import log
-import re
 import unittest
 from marshmallow import Schema, fields
 from licenseware.utils.logger import log
@@ -25,6 +23,7 @@ class TestNamespaceGenerator(unittest.TestCase):
         
         
         class UserSchema(Schema):
+            
             class Meta:
                 collection_name = envs.MONGO_COLLECTION_DATA_NAME
                 
@@ -33,9 +32,22 @@ class TestNamespaceGenerator(unittest.TestCase):
         
     
         UserNs = SchemaNamespace(
-            schema=UserSchema
+            schema=UserSchema,
+            collection="TestCol",
+            decorators=[]
         )
         
-        log.debug(UserNs)
+        ns = UserNs()
+        
+        self.assertEqual(len(ns.resources), 1)
+        self.assertEqual(ns.resources[0].urls, ('/user',))
+        self.assertEqual(
+            sorted(ns.resources[0].resource.methods), 
+            sorted({'DELETE', 'PUT', 'POST', 'GET'})
+        )
+        
+        
+        
+        
         
         
