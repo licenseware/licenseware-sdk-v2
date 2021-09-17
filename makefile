@@ -38,17 +38,17 @@ sdk-dev:
 	python3 main.py
 	
 sdk-test:
+	echo "Make sure to start mock_server first and you have test_files folder available"
 	rm -rf tests/__pycache__
 	python3 -m unittest tests/test_sdk_cli.py
 	rm -rf tests/__pycache__
 	python3 -m unittest tests/*
 	rm -rf docker-compose-mongo-redis.yml
 	rm -rf main_example.py
-	rm -rf mock_server.py
+	rm -rf main.py
 	rm -rf app.log
 	rm -rf app
-	licenseware build-sdk-docs
-
+	
 
 sdk-dev-docs:
 	pdoc --http : licenseware
