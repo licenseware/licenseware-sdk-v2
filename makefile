@@ -56,20 +56,17 @@ sdk-dev-docs:
 sdk-docs:
 	pdoc --html --output-dir sdk-docs licenseware
 	
+
 install-sdk:
 	pip3 uninstall -y licenseware
 	python3 setup.py bdist_wheel sdist
 	pip3 install ./dist/licenseware-2.0.0-py3-none-any.whl
-	rm -rf dist
 	rm -rf build
 	rm -rf licenseware.egg-info 
 
+
 build-wheel:
-	pip3 uninstall -y licenseware
 	python3 setup.py bdist_wheel sdist
-	pip3 install ./dist/licenseware-2.0.0-py3-none-any.whl
-	
-clean-wheel-build:
-	rm -rf dist
 	rm -rf build
 	rm -rf licenseware.egg-info 
+	mv dist wheel_sdk 
