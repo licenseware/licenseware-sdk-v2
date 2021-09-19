@@ -27,7 +27,7 @@ It helps you focus on processsing the files needed and creating reports.
 
 Here are the steps needed for local development of an app:
 
-- Install the sdk : `pip3 install git+https://git@github.com/licenseware/licenseware-sdk-python3.git`;
+- Install the sdk : `pip3 install git+https://git@github.com/licenseware/licenseware-sdk-v2.git`;
 - Clone the repo for your service;
 - CD in the cloned repo locally;
 - Create a new app : `licenseware new-app odb`;
