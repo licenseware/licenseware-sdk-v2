@@ -426,7 +426,7 @@ ifmp_app.add_namespace(user_ns)
 class DeviceTableSchema(Schema):
     
     class Meta:
-        collection_name = envs.MONGO_COLLECTION_DATA_NAME
+        collection = envs.MONGO_COLLECTION_DATA_NAME
         methods = ['GET', 'PUT']
     
     
