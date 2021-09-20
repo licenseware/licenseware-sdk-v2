@@ -9,44 +9,6 @@ from licenseware.utils.logger import log
 
 class EditableTable:
 
-    """   
-        editable_table = EditableTable(
-            schema=DeviceSchema, 
-            component_id="ifmp_devices", 
-            title="All Devices"
-        )
-
-        editable_table.get_specifications() or editable_table.specs
-
-        The result editable_table will have the following shape:
-
-        {
-            "component_id": "ifmp_devices",
-            "url": "base_url/device/get", 
-            "path": "",
-            "order": 1,
-            "style_attributes": {'width': 'full'},
-            "title": "All Devices",
-            "type": "editable_table",
-            "columns": [{
-                "name": self.col_name(field_name), 
-                "prop": self.col_prop(field_name),
-                "editable": self.col_editable(field_data),
-                "type": self.col_type(field_data),
-                "values": self.col_enum_values(field_data),
-                "required": self.col_required(field_data),
-                "visible": self.col_visible(field_data),
-                "entities_url": self.col_entities_url(field_data),
-                "validation": "Not defined",
-            },
-            etc
-            ]
-        }
-
-        Columns contain metadata about schema fields.
-
-    """
-
     def __init__(
         self, 
         schema: Schema, 
@@ -58,6 +20,10 @@ class EditableTable:
         style_attributes: dict = {'width': 'full'}
     ):
         self.schema = schema
+        
+        if not "Table" in self.schema.__name__:
+            raise ValueError("Schema provided to editable tables must contain in it's name 'Table' keyword (ex: DeviceTableSchema)")
+        
         self.schema_name = self.schema.__name__.replace('Schema', '').lower()
         self.names = self.schema_name
         if not self.names.endswith('s'):
@@ -74,9 +40,7 @@ class EditableTable:
         
         
     def url_from_schema(self):
-        #TODO fix duplicate path url
-        path_schema_name = self.schema.__name__.replace('Schema', '')
-        return f'/{path_schema_name}/{self.schema_name}/get'
+        return f'/{self.schema_name}'
 
     def title_from_schema(self):
         return 'All ' + self.names
@@ -168,7 +132,9 @@ class EditableTable:
     def col_visible(self, field_name, field_data):
         metadata = self.field_metadata(field_data)
         if 'visible' in metadata: return metadata['visible']
-        return not(field_name.startswith('_')) 
+        if field_name.startswith('_'): return False
+        if field_name in ['tenant_id', '_id']: return False
+        return False
 
     def col_enum_values(self, field_data):
         try:

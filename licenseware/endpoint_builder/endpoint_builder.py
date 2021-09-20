@@ -1,6 +1,7 @@
 from typing import Any
 from flask_restx import Namespace, Resource
 from licenseware.utils.miscellaneous import http_methods
+from licenseware.utils.logger import log
 from licenseware.schema_namespace import SchemaNamespace
 import inspect
 
@@ -57,8 +58,7 @@ class EndpointBuilder:
             schema_ns = SchemaNamespace(
                 schema = self.handler,
                 collection = self.handler.Meta.collection_name,
-                namespace = ns,
-                methods=[self.http_method]
+                namespace = ns
             ).initialize()
             
             return schema_ns

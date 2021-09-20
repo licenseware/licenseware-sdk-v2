@@ -1,7 +1,6 @@
 import datetime
 from licenseware import mongodata as m
 from licenseware.utils.logger import log
-from flask_restx import abort
 
 
 
@@ -72,7 +71,7 @@ class MongoCrud:
         
         results = m.fetch(match=query, collection=MongoCrud.collection)
 
-        if not results: abort(404, reason='Requested data not found')
+        if not results: 'Requested data not found', 404
 
         return results
 
@@ -91,9 +90,10 @@ class MongoCrud:
             data=data
         )
 
-        if len(inserted_docs) == 0: abort(404, reason='Could not insert data')
+        if len(inserted_docs) == 0: 'Could not insert data', 400
 
         return "SUCCESS"
+
 
     @staticmethod
     def put_data(flask_request):
@@ -108,7 +108,7 @@ class MongoCrud:
             append=False
         )
 
-        if updated_docs == 0: abort(404, reason='Query had no match')
+        if updated_docs == 0: 'Query had no match', 404
 
         return "SUCCESS"
 
@@ -120,6 +120,6 @@ class MongoCrud:
 
         deleted_docs = m.delete(match=query, collection=MongoCrud.collection)
 
-        if deleted_docs == 0: abort(404, reason='Query had no match')
+        if deleted_docs == 0: 'Query had no match', 404
 
         return "SUCCESS"

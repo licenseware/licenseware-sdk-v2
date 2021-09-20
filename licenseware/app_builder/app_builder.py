@@ -7,7 +7,9 @@ Notice that history report route/path is provided but is not implemented that's 
 """
 
 from dataclasses import dataclass
+from typing import List
 from flask_restx.resource import Resource
+from marshmallow.schema import Schema
 from licenseware.common.constants.envs import envs
 from typing import Callable
 from flask import Flask
@@ -18,6 +20,8 @@ from licenseware.utils.logger import log
 from licenseware.auth import Authenticator
 from licenseware.utils.dramatiq_redis_broker import broker
 from licenseware.utils.miscellaneous import swagger_authorization_header
+from licenseware.editable_table import EditableTable
+from licenseware.schema_namespace import SchemaNamespace
 
 from .refresh_registration_route import add_refresh_registration_route
 from .editable_tables_route import add_editable_tables_route
@@ -69,7 +73,7 @@ class AppBuilder:
         name: str, 
         description: str,
         flags: list = [],
-        editable_tables_schemas:list = [],
+        editable_tables:List[EditableTable] = [],
         activated_tenants_func: Callable = get_activated_tenants, 
         tenants_with_data_func: Callable = get_tenants_with_data,
         app_activation_path: str = None,
@@ -81,7 +85,8 @@ class AppBuilder:
         icon: str ="default.png",
         doc_authorizations: dict = swagger_authorization_header,
         api_decorators: list = None,
-        **kwargs
+        editable_tables_schemas:List[Schema] = [],
+        **options
     ):
         
  
@@ -89,6 +94,7 @@ class AppBuilder:
         self.description = description
         self.flags = flags
         self.icon = icon
+        self.editable_tables = editable_tables
         self.editable_tables_schemas = editable_tables_schemas
         
         # Add to self activated tenants and tenants with data
@@ -120,8 +126,8 @@ class AppBuilder:
         self.authorizations = doc_authorizations
         self.decorators = api_decorators
         # parameters with default values provided can be added stright to __init__  
-        # otherwise added them to kwargs until apps are actualized
-        self.kwargs = kwargs    
+        # otherwise added them to options until apps are actualized
+        self.options = options    
         
         # TODO version needs to be added to all urls + '/v' + self.version
         self.prefix = '/' + envs.APP_ID 
@@ -205,6 +211,7 @@ class AppBuilder:
         self.add_uploads_routes()
         self.add_reports_routes()
         self.add_report_components_routes()
+        self.add_editables_routes()
         
     
     
@@ -247,10 +254,16 @@ class AppBuilder:
             self.add_namespace(
                 func(ns=report_components_namespace, report_components=self.report_components)
             )
-        
-        
+            
     
+    def add_editables_routes(self):
+        
+        for editable in self.editable_tables:
+            ns = SchemaNamespace(schema=editable.schema).initialize()
+            self.add_namespace(ns)
+            
                     
+                        
     def register_app(self):
         """
             Sending registration payloads to registry-service
@@ -314,14 +327,22 @@ class AppBuilder:
         self.add_namespace(ns)
     
     
+    def register_editable_table(self, editable_table_instance: EditableTable):
+        
+        for registered_table in self.editable_tables:
+            registered_table : EditableTable
+            if registered_table.schema.__name__ == editable_table_instance.schema.__name__:
+                raise Exception(f"Editable table '{registered_table.schema.__name__}' already registered")
+            
+        self.editable_tables.append(editable_table_instance)
+        self.editable_tables_schemas.append(editable_table_instance.schema)
+            
+
+        
     def add_namespace(self, ns:Namespace, path:str = None):
         self.custom_namespaces.append((ns, path))
 
     def init_namespaces(self):
-        
-        # for schema_ns in self.editable_tables_schemas:
-        #     self.api.add_namespace(schema_ns())
-            
         for namespace in self.custom_namespaces:
             self.api.add_namespace(*namespace)
         
