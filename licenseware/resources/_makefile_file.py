@@ -17,7 +17,7 @@ dev:
 	python3 main.py
 
 worker:
-	flask worker -p4 -Q{{ app_id }}
+	flask worker -p4
 	
 test:
 	echo create some tests
@@ -38,11 +38,17 @@ sdk-dev:
 	python3 main.py
 	
 sdk-test:
+	echo "Make sure to start mock_server first and you have test_files folder available"
 	rm -rf tests/__pycache__
 	python3 -m unittest tests/test_sdk_cli.py
 	rm -rf tests/__pycache__
 	python3 -m unittest tests/*
+	rm -rf docker-compose-mongo-redis.yml
+	rm -rf main_example.py
+	rm -rf main.py
+	rm -rf app.log
 	rm -rf app
+	
 
 sdk-dev-docs:
 	pdoc --http : licenseware
@@ -50,20 +56,19 @@ sdk-dev-docs:
 sdk-docs:
 	pdoc --html --output-dir sdk-docs licenseware
 	
+
 install-sdk:
 	pip3 uninstall -y licenseware
 	python3 setup.py bdist_wheel sdist
 	pip3 install ./dist/licenseware-2.0.0-py3-none-any.whl
-	rm -rf dist
 	rm -rf build
-	rm -rf licenseware.egg-info 
+	rm -rf licenseware.egg-info
+	rm -rf wheel_sdk
+	mv dist wheel_sdk 
+
 
 build-wheel:
-	pip3 uninstall -y licenseware
 	python3 setup.py bdist_wheel sdist
-	pip3 install ./dist/licenseware-2.0.0-py3-none-any.whl
-	
-clean-wheel-build:
-	rm -rf dist
 	rm -rf build
 	rm -rf licenseware.egg-info 
+	mv dist wheel_sdk 

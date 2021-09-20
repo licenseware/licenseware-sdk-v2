@@ -153,8 +153,6 @@ If you perviously started the docker-compose file with redis and mongo you may e
 
 ```py
 
-
-
 from dataclasses import dataclass
 from dotenv import load_dotenv
 
@@ -578,6 +576,7 @@ ifmp_app.add_namespace(user_ns)
 # "foreign_key":str  ?
 
 
+# Using the method bellow routes will be created with SchemaNamespace class 
 
 
 class DeviceTableSchema(Schema):
@@ -663,6 +662,58 @@ ifmp_app.register_editable_table(devices_editable_table)
 
 
 
+# Overwrite editable tables default crud methods from SchemaNamespace
+
+# In the case the default crud methods provided by SchemaNamespace class do not fit our case we can overwrite the method needed.
+
+
+
+# custom handling of data
+class InfraService:
+    
+    def __init__(self, schema:Schema, collection:str):
+        self.schema = schema
+        self.collection = collection
+        
+    def replace_one(self, json_data:dict):
+        #custom handling of json_data
+        return []
+    
+
+# inherits from MongoCrud and overwrites `put_data` method (always a static method)
+class DeviceOp(MongoCrud):
+    
+    @staticmethod
+    def put_data(flask_request):
+        
+        query = DeviceOp.get_query(flask_request)
+        
+        return InfraService(
+            schema=DeviceTableSchema, 
+            collection=envs.MONGO_COLLECTION_DATA_NAME
+        ).replace_one(json_data=query)
+        
+    
+    
+# creating the restx namespace
+DeviceNs = SchemaNamespace(
+    schema=DeviceTableSchema,
+    collection=envs.MONGO_COLLECTION_DATA_NAME,
+    mongo_crud_class=DeviceOp  # feeding the custom crud class to SchemaNamespace 
+).initialize()
+
+
+# instantiating the editable tables
+devices_table = EditableTable(
+    title="All Devices",
+    schema=DeviceTableSchema,
+    namespace=DeviceNs # here we provide our custom namespace
+)
+ 
+# same as up register the editable table
+# ifmp_app.register_editable_table(devices_table)
+
+
 
 
 
@@ -681,6 +732,8 @@ if __name__ == "__main__":
     
 # Userid / Tenantid
 # 3d1fdc6b-04bc-44c8-ae7c-5fa5b9122f1a
+
+
 
 
 

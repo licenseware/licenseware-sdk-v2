@@ -1,4 +1,5 @@
 import os, re, itertools
+from flask_restx.namespace import Namespace
 from marshmallow import Schema
 from licenseware.common.constants import envs
 from urllib.parse import urlencode
@@ -12,6 +13,7 @@ class EditableTable:
     def __init__(
         self, 
         schema: Schema, 
+        namespace: Namespace = None,
         component_id: str = None, 
         title: str = None,
         url: str = None, 
@@ -20,6 +22,7 @@ class EditableTable:
         style_attributes: dict = {'width': 'full'}
     ):
         self.schema = schema
+        self.namespace = namespace
         
         if not "Table" in self.schema.__name__:
             raise ValueError("Schema provided to editable tables must contain in it's name 'Table' keyword (ex: DeviceTableSchema)")

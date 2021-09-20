@@ -1,5 +1,7 @@
-from licenseware.mongodata import mongodata
+from dataclasses import dataclass
 from dotenv import load_dotenv
+
+from licenseware import endpoint_builder
 
 load_dotenv()  
 
@@ -8,6 +10,8 @@ import datetime
 from flask import Flask
 from flask_restx import Namespace, Resource
 from marshmallow import Schema, fields
+
+from licenseware.mongodata import mongodata
 
 from licenseware.app_builder import AppBuilder
 from licenseware.common.constants import (envs, filters, flags, icons,
@@ -21,8 +25,8 @@ from licenseware.uploader_builder import UploaderBuilder
 from licenseware.uploader_validator import UploaderValidator
 from licenseware.utils.logger import log
 
-from licenseware.decorators.failsafe_decorator import failsafe
-from licenseware.schema_namespace import SchemaNamespace, MongoCrud
+from licenseware.schema_namespace import SchemaNamespace, MongoCrud, metaspecs
+from licenseware.editable_table import EditableTable
 
 
 
@@ -308,6 +312,7 @@ class DeviceData(Schema):
     
     class Meta:
         collection_name = envs.MONGO_COLLECTION_DATA_NAME
+        methods = ['GET', 'PUT']
     
     tenant_id = fields.Str(required=False)
     updated_at = fields.Str(required=False)
@@ -404,6 +409,156 @@ ifmp_app.add_namespace(user_ns)
 
 
 
+# Editable tables
+# In the case we need to have on the front-end an datatable which can be modified by the user the `EditableTable` class can help us create a crud workflow from a marshmellow schema
+# We can provide information about columns using the `metadata` parameter available on marshmellog `fields` object
+
+# The metadata dict can hold the following values: 
+
+# "editable":bool tell front-end if values from this column can be modified by the user 
+# "visible": bool tell front-end if it should render column to be visible to the user
+# "distinct_key":str ?
+# "foreign_key":str  ?
+
+
+# Using the method bellow routes will be created with SchemaNamespace class 
+
+
+class DeviceTableSchema(Schema):
+    
+    class Meta:
+        collection = envs.MONGO_COLLECTION_DATA_NAME
+        methods = ['GET', 'PUT']
+    
+    
+    _id = fields.Str(required=False, unique=True)
+    tenant_id = fields.Str(required=True)
+    updated_at = fields.Str(required=False)
+    raw_data = fields.Str(required=False, allow_none=True)
+    
+    name = fields.Str(required=True, 
+        metadata=metaspecs(editable=True, visible=True)
+    )
+    
+    is_parent_to = fields.List(
+        fields.Str(), required=False, allow_none=True,
+        metadata=metaspecs(
+            editable=True, 
+            visible=True, 
+            distinct_key='name', 
+            foreign_key='name'
+        )  
+    )
+
+    is_child_to = fields.Str(
+        required=False, allow_none=True,
+        metadata=metaspecs(
+            editable=True, 
+            visible=True, 
+            distinct_key='name', 
+            foreign_key='name'
+        )  
+    )
+
+    is_part_of_cluster_with =  fields.List(
+        fields.Str(), required=False, allow_none=True,
+        metadata=metaspecs(
+            editable=True, 
+            visible=True, 
+            distinct_key='name', 
+            foreign_key='name'
+        )  
+    )
+    
+    is_dr_with =  fields.List(
+        fields.Str(), required=False, allow_none=True,
+        metadata=metaspecs(
+            editable=True, 
+            visible=True, 
+            distinct_key='name', 
+            foreign_key='name'
+        )  
+    )
+    
+    capped = fields.Boolean(
+        required=True, allow_none=False, 
+        metadata=metaspecs(editable=True)
+    )
+    
+    total_number_of_processors = fields.Integer(
+        required=False, allow_none=True, 
+        metadata=metaspecs(editable=True)
+    )
+    
+    oracle_core_factor = fields.Float(
+        required=False, allow_none=True, 
+        metadata=metaspecs(editable=True)
+    )
+    
+    
+
+devices_editable_table = EditableTable(
+    title="All Devices",
+    schema=DeviceTableSchema
+)
+ 
+
+ifmp_app.register_editable_table(devices_editable_table)
+
+
+
+# Overwrite editable tables default crud methods from SchemaNamespace
+
+# In the case the default crud methods provided by SchemaNamespace class do not fit our case we can overwrite the method needed.
+
+
+
+# custom handling of data
+class InfraService:
+    
+    def __init__(self, schema:Schema, collection:str):
+        self.schema = schema
+        self.collection = collection
+        
+    def replace_one(self, json_data:dict):
+        #custom handling of json_data
+        return []
+    
+
+# inherits from MongoCrud and overwrites `put_data` method (always a static method)
+class DeviceOp(MongoCrud):
+    
+    @staticmethod
+    def put_data(flask_request):
+        
+        query = DeviceOp.get_query(flask_request)
+        
+        return InfraService(
+            schema=DeviceTableSchema, 
+            collection=envs.MONGO_COLLECTION_DATA_NAME
+        ).replace_one(json_data=query)
+        
+    
+    
+# creating the restx namespace
+DeviceNs = SchemaNamespace(
+    schema=DeviceTableSchema,
+    collection=envs.MONGO_COLLECTION_DATA_NAME,
+    mongo_crud_class=DeviceOp  # feeding the custom crud class to SchemaNamespace 
+).initialize()
+
+
+# instantiating the editable tables
+devices_table = EditableTable(
+    title="All Devices",
+    schema=DeviceTableSchema,
+    namespace=DeviceNs # here we provide our custom namespace
+)
+ 
+# same as up register the editable table
+# ifmp_app.register_editable_table(devices_table)
+
+
 
 
 
@@ -417,3 +572,8 @@ if __name__ == "__main__":
     ifmp_app.register_app()
     
     app.run(port=4000, debug=True)
+    
+    
+    
+# Userid / Tenantid
+# 3d1fdc6b-04bc-44c8-ae7c-5fa5b9122f1a

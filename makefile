@@ -62,7 +62,9 @@ install-sdk:
 	python3 setup.py bdist_wheel sdist
 	pip3 install ./dist/licenseware-2.0.0-py3-none-any.whl
 	rm -rf build
-	rm -rf licenseware.egg-info 
+	rm -rf licenseware.egg-info
+	rm -rf wheel_sdk
+	mv dist wheel_sdk 
 
 
 build-wheel:

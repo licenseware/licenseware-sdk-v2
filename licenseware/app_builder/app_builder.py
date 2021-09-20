@@ -259,9 +259,12 @@ class AppBuilder:
     def add_editables_routes(self):
         
         for editable in self.editable_tables:
-            ns = SchemaNamespace(schema=editable.schema).initialize()
-            self.add_namespace(ns)
-            
+            if editable.namespace:
+                self.add_namespace(editable.namespace)
+            else:
+                ns = SchemaNamespace(schema=editable.schema).initialize()
+                self.add_namespace(ns)
+                
                     
                         
     def register_app(self):
