@@ -74,7 +74,7 @@ I repository is public you can install it straight from github.
 
 ```bash
 
-pip3 install git+https://git@github.com/licenseware/licenseware-sdk-python3.git
+pip3 install git+https://git@github.com/licenseware/licenseware-sdk-v2.git
 
 ```
 
@@ -82,7 +82,7 @@ Install from a specific branch
 
 ```bash
 
-pip3 install git+https://git@github.com/licenseware/licenseware-sdk-python3.git@branch_name
+pip3 install git+https://git@github.com/licenseware/licenseware-sdk-v2.git@branch_name
 
 ```
 
@@ -90,7 +90,7 @@ Install from a specific tag
 
 ```bash
 
-pip3 install git+https://git@github.com/licenseware/licenseware-sdk-python3.git@tag_name
+pip3 install git+https://git@github.com/licenseware/licenseware-sdk-v2.git@tag_name
 
 ```
 
@@ -109,7 +109,7 @@ Now you use pip to install it from that specific tag:
 
 ```bash
 
-pip3 install git+https://git@github.com/licenseware/licenseware-sdk-python3.git@v0.0.11
+pip3 install git+https://git@github.com/licenseware/licenseware-sdk-v2.git@v0.0.11
 
 ```
 
@@ -151,8 +151,12 @@ If you perviously started the docker-compose file with redis and mongo you may e
 
 
 ```py
+from licenseware.mongodata import mongodata
 from dotenv import load_dotenv
+
 load_dotenv()  
+
+import datetime
 
 from flask import Flask
 from flask_restx import Namespace, Resource
@@ -166,10 +170,12 @@ from licenseware.notifications import notify_upload_status
 from licenseware.report_builder import ReportBuilder
 from licenseware.report_components import BaseReportComponent
 from licenseware.report_components.style_attributes import styles
-
 from licenseware.uploader_builder import UploaderBuilder
 from licenseware.uploader_validator import UploaderValidator
 from licenseware.utils.logger import log
+
+from licenseware.decorators.failsafe_decorator import failsafe
+from licenseware.schema_namespace import SchemaNamespace, MongoCrud
 
 
 
@@ -191,20 +197,21 @@ ifmp_app = AppBuilder(
 
 # Here is the worker function 
 # which will process the files in the background
-def rv_tools_worker(event:dict):
+def rv_tools_worker(event_data):
     
     # Event data will contain the following information
-    # event = {
-    #     'tenant_id': flask_request.headers.get("Tenantid"),
-    #     'filepaths': valid_filepaths, 
-    #     'uploader_id': self.uploader_id,
-    #     'flask_request':  {**flask_body, **flask_headers},
-    #     'validation_response': response
+    # event_data = {
+    #     'tenant_id': 'the tenant_id from request',
+    #     'filepaths': 'absolute file paths to the files uploaded',
+    #     'uploader_id': 'the uploader id in our case rv_tools'
+    #     'headers':  'flask request headers',
+    #     'json':  'flask request json data',
     # }
-
+    
     log.info("Starting working")
-    log.debug(event) # here add the processing file logic
-    notify_upload_status(event, status=states.IDLE)
+    notify_upload_status(event_data, status=states.RUNNING)
+    log.debug(event_data) # here add the processing file logic
+    notify_upload_status(event_data, status=states.IDLE)
     log.info("Finished working")
     
 
@@ -375,6 +382,7 @@ virtual_overview = VirtualOverview(
     component_type='summary'
 )
 
+# TODO raise component_id conflict
 # Register component to registry-service (to act as a first class citizen)
 ifmp_app.register_report_component(virtual_overview)
 
@@ -445,23 +453,111 @@ custom_func_endpoint = EndpointBuilder(get_custom_data_from_mongo)
 
 ifmp_app.register_endpoint(custom_func_endpoint)
 
-# Here we are using a schema to generate an endpoint
 
-class GetDeviceData(Schema):
+
+# Here we are using a marshmellow schema to generate an endpoint
+
+class DeviceData(Schema):
     
     class Meta:
         collection_name = envs.MONGO_COLLECTION_DATA_NAME
     
     tenant_id = fields.Str(required=False)
     updated_at = fields.Str(required=False)
-    name = fields.Str(required=True)
-    occupation = fields.Str(required=False)
+    device_name = fields.Str(required=True)
+    device_model = fields.Str(required=False)
     
     
-custom_schema_endpoint = EndpointBuilder(GetDeviceData)
-
+custom_schema_endpoint = EndpointBuilder(DeviceData)
 
 ifmp_app.register_endpoint(custom_schema_endpoint)
+
+
+
+# Namespace from marshmallow schema using SchemaNamespace class
+
+
+# Defining our schema
+class UserSchema(Schema):
+    name = fields.Str(required=True)
+    occupation = fields.Str(required=True)
+
+
+# Overwritting mongo crud methods (ONLY static methods must be used)
+class UserOperations(MongoCrud):
+    
+    @staticmethod
+    def get_data(flask_request):
+        
+        query = UserOperations.get_query(flask_request)
+        
+        results = mongodata.fetch(match=query, collection=UserOperations.collection)
+
+        return {"status": states.SUCCESS, "message": results}, 200
+    
+    @staticmethod
+    def post_data(flask_request):
+
+        query = UserOperations.get_query(flask_request)
+
+        data = dict(query, **{
+            "updated_at": datetime.datetime.utcnow().isoformat()}
+        )
+
+        inserted_docs = mongodata.insert(
+            schema=UserOperations.schema,
+            collection=UserOperations.collection,
+            data=data
+        )
+
+        return inserted_docs
+    
+    
+    @staticmethod
+    def put_data(flask_request):
+        
+        query = UserOperations.get_query(flask_request)
+        
+        updated_docs = mongodata.update(
+            schema=UserOperations.schema,
+            match=query,
+            new_data=dict(query, **{"updated_at": datetime.datetime.utcnow().isoformat()}),
+            collection=UserOperations.collection,
+            append=False
+        )
+        
+        if updated_docs == 0:
+            return {"status": states.SUCCESS, "message": "Query didn't matched any data"}, 400
+        
+        return {"status": states.SUCCESS, "message": ""}, 200
+        
+    
+    @staticmethod
+    def delete_data(flask_request):
+
+        query = UserOperations.get_query(flask_request)
+
+        deleted_docs = mongodata.delete(match=query, collection=UserOperations.collection)
+
+        return deleted_docs
+
+    
+    
+# A restx namespace is generated on instantiation
+UserNs = SchemaNamespace(
+    schema=UserSchema,
+    collection="CustomCollection",
+    mongo_crud_class=UserOperations,
+    decorators=[]
+)
+
+# Adding the namespace generated from schema to our App
+user_ns = UserNs.initialize()
+ifmp_app.add_namespace(user_ns)
+
+
+
+
 
 
 # Call init_app in the flask function factory 
@@ -474,8 +570,6 @@ if __name__ == "__main__":
     ifmp_app.register_app()
     
     app.run(port=4000, debug=True)
-
-
 ```
 
 

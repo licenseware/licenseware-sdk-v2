@@ -37,10 +37,9 @@ class TestNamespaceGenerator(unittest.TestCase):
             decorators=[]
         )
         
-        ns = UserNs()
+        ns = UserNs.initialize()
         
         self.assertEqual(len(ns.resources), 1)
-        self.assertEqual(ns.resources[0].urls, ('/user',))
         self.assertEqual(
             sorted(ns.resources[0].resource.methods), 
             sorted({'DELETE', 'PUT', 'POST', 'GET'})

@@ -3,7 +3,7 @@ from licenseware.uploader_validator import UploaderValidator
 
 
 # If overwriting bellow mentioned methods is not necessary you can use `UploaderValidator` directly 
-class RvTools723908UploaderValidator(UploaderValidator): 
+class RvTools491412UploaderValidator(UploaderValidator): 
     ...
     
     # def calculate_quota(self, flask_request) -> Tuple[dict, int]:
@@ -21,7 +21,7 @@ class RvTools723908UploaderValidator(UploaderValidator):
     
     
 # Fill parameters as per uploader needs 
-rv_tools723908_validator = RvTools723908UploaderValidator(
+rv_tools491412_validator = RvTools491412UploaderValidator(
     filename_contains = ['RV', 'Tools'],
     filename_endswith = ['.xls', '.xlsx'],
     ignore_filenames  = ['skip_this_file.csv'],

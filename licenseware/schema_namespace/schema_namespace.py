@@ -18,16 +18,18 @@ import re
 from inspect import signature
 
 from marshmallow import Schema, fields
+import marshmallow
 from marshmallow_jsonschema import JSONSchema
 from flask_restx import Namespace, Resource
-from pymongo import collection
 
 from licenseware.common.validators import validate_uuid4
 from licenseware.decorators.auth_decorators import authorization_check
+from licenseware.decorators.failsafe_decorator import failsafe
 from licenseware.utils.miscellaneous import swagger_authorization_header, http_methods
+from licenseware.utils.logger import log
 from licenseware import mongodata
 
-# from .mongo_request import MongoRequest
+
 from flask import request
 from .mongo_crud import MongoCrud
 
@@ -43,27 +45,18 @@ class BaseSchema(Schema):
 
 
 
-
-
-
 class SchemaNamespace:
     
-    # Used by namespace decorator
-    schema = None
-    collection = None
-    decorators = [authorization_check]
-    methods = http_methods # allowed methods(the rest will get a 405)
-    authorizations = swagger_authorization_header 
-
     def __init__(self, 
     schema: Schema = None, 
     collection: str = None, 
     methods: list = http_methods, 
     decorators: list = [authorization_check],
     authorizations: dict = swagger_authorization_header,
-    namespace:Namespace = None
+    mongo_crud_class: type = MongoCrud,
+    namespace: Namespace = None
     ):
-        self.schema = self.schema or schema
+        self.schema = schema
         
         # Adding `tenant_id` and `updated_at` fields to received schema
         self.schema = type(
@@ -72,20 +65,19 @@ class SchemaNamespace:
             {}
         )
         
-        self.collection = self.collection or collection
+        self.collection = collection
         assert isinstance(self.collection, str) 
-        self.decorators = self.decorators or decorators
-        self.methods = self.methods or methods
-        self.authorizations = self.authorizations or authorizations
+        self.decorators = decorators
+        self.methods = methods
+        self.authorizations = authorizations
+        self.mongo_crud_class = mongo_crud_class
+        self.namespace = namespace
 
         self.schema_name = self.schema.__name__
         self.name = self.schema_name.replace("Schema", "")
         self.path = "/" + self.name.lower()
         self.json_schema = None
-        self.ns = namespace
-        self.model = None
-        self.resources = None
-        self.http_methods = None
+
         
 
     @classmethod
@@ -93,10 +85,7 @@ class SchemaNamespace:
         c = cls(cls.schema, cls.decorators, cls.authorizations)
         return c.initialize()
 
-    def __call__(self):
-        newcls = type(self.name, (SchemaNamespace,), {**self.__dict__})
-        return newcls._initialize()
-    
+
     def initialize(self) -> Namespace:
         """ Create restx api namespace from schema """
 
@@ -124,21 +113,23 @@ class SchemaNamespace:
         ns = self.create_namespace()
         resource_fields = ns.schema_model(self.name, self.json_schema)  
         
-        mongo_collection_name = self.collection
+        self.mongo_crud_class.schema = self.schema
+        self.mongo_crud_class.collection = self.collection
         
-        @ns.route("")
-        class SchemaResource(Resource, MongoCrud):
-            
-            collection = mongo_collection_name
-                    
+        CrudClass = self.mongo_crud_class
+        
+        class SchemaResource(Resource, CrudClass):
+        
+            @failsafe(fail_code=500)
             @ns.doc(id="Make a GET request to FETCH some data")
             @ns.param('_id', 'get data by id')
             @ns.marshal_list_with(resource_fields)
-            def get(self, _id=None):
+            def get(self):
                 if 'GET' in self.methods: 
                     return self.get_data(request) 
                 return "METHOD NOT ALLOWED", 405
 
+            @failsafe(fail_code=500)
             @ns.doc(id="Make a POST request to INSERT some data")
             @ns.expect(resource_fields)
             def post(self):
@@ -146,6 +137,7 @@ class SchemaNamespace:
                     return self.post_data(request) 
                 return "METHOD NOT ALLOWED", 405
                 
+            @failsafe(fail_code=500)
             @ns.doc(id="Make a PUT request to UPDATE some data")
             @ns.expect(resource_fields)
             def put(self):
@@ -153,12 +145,16 @@ class SchemaNamespace:
                     return self.put_data(request) 
                 return "METHOD NOT ALLOWED", 405
                 
+            @failsafe(fail_code=500)
             @ns.doc(id="Make a DELETE request to DELETE some data")
             @ns.expect(resource_fields)
             def delete(self, _id=None):
                 if 'DELETE' in self.methods:
                     return self.delete_data(request) 
                 return "METHOD NOT ALLOWED", 405
+            
+            
+        ns.add_resource(SchemaResource, "")
 
         return ns
         

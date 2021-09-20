@@ -7,7 +7,7 @@ from licenseware.report_components import BaseReportComponent
 
 
 
-class VirtualOverview173226(BaseReportComponent):
+class VirtualOverview621512(BaseReportComponent):
             
     def __init__(
         self, 

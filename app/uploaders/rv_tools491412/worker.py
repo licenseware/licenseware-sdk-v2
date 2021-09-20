@@ -5,7 +5,7 @@ from licenseware.common.types import Event
 
 
 
-def rv_tools723908_worker(event:Event):
+def rv_tools491412_worker(event:Event):
     # This is the worker entrypoint  
     
     log.info("Starting working")

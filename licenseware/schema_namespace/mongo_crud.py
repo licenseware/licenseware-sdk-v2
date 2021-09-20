@@ -4,42 +4,42 @@ from licenseware.utils.logger import log
 from flask_restx import abort
 
 
-# TODO
-# ONE TO ONE
-# ONE TO MANY
-# MANY TO MANY
-# All Child objects should be deleted when their owning Parent is deleted.
+
 
 
 class MongoCrud:
     """
-        This class provides get, post, put, delete http methods.
-
-        Needs a TenantId in the request header.
-        Decorator authorization_check makes sure that TenantId and auth_token are provided
-
-        Query params are taken from request.args, '_id' parameter is just for swagger documentation.
-
+        In this class we are defnining basic crud operations to mongodb
+        
+        All methods must use `staticmethod` decorator
+        
         Create indexes will assume simple_indexes are not unique and compound_indexes are unique.
         Indexes are provided on serializer metadata (simple_indexes, compound_indexes).
 
     """
+    
+    # This vars will be filled in schema_namespace (ex: MongoCrud.schema = marshmellow_schema )
+    schema = None 
+    collection = None 
 
-    def get_params(self, request_obj):
+
+    @staticmethod
+    def get_params(flask_request):
         params = {}
-        if request_obj.args is None: return params
-        params = dict(request_obj.args) or {}
+        if flask_request.args is None: return params
+        params = dict(flask_request.args) or {}
         return params
 
-    def get_payload(self, request_obj):
+    @staticmethod
+    def get_payload(flask_request):
         payload = {}
-        if request_obj.json is None: return payload
-        if isinstance(request_obj.json, dict):
-            payload = request_obj.json
+        if flask_request.json is None: return payload
+        if isinstance(flask_request.json, dict):
+            payload = flask_request.json
         return payload
 
-
-    def validate_tenant_id(self, tenant, params, payload):
+    @staticmethod
+    def validate_tenant_id(tenant, params, payload):
         
         if 'tenant_id' in params:
             if params['tenant_id'] != tenant['tenant_id']:
@@ -49,15 +49,15 @@ class MongoCrud:
             if payload['tenant_id'] != tenant['tenant_id']:
                 raise Exception("The 'tenant_id' provided in query parameter is not the same as the one from headers")
 
-
-    def get_query(self, request_obj):
+    @staticmethod
+    def get_query(flask_request):
         
-        tenant = {'tenant_id': request_obj.headers.get("Tenantid")}
+        tenant = {'tenant_id': flask_request.headers.get("Tenantid")}
         
-        params = self.get_params(request_obj)
-        payload = self.get_payload(request_obj)
+        params = MongoCrud.get_params(flask_request)
+        payload = MongoCrud.get_payload(flask_request)
         
-        self.validate_tenant_id(tenant, params, payload)
+        MongoCrud.validate_tenant_id(tenant, params, payload)
         
         query = {**tenant, **params, **payload}
         
@@ -65,29 +65,29 @@ class MongoCrud:
         
         return query
 
-
-    def get_data(self, request_obj):
+    @staticmethod
+    def get_data(flask_request):
         
-        query = self.get_query(request_obj)
+        query = MongoCrud.get_query(flask_request)
         
-        results = m.fetch(match=query, collection=self.collection)
+        results = m.fetch(match=query, collection=MongoCrud.collection)
 
         if not results: abort(404, reason='Requested data not found')
 
         return results
 
+    @staticmethod
+    def post_data(flask_request):
 
-    def post_data(self, request_obj):
-
-        query = self.get_query(request_obj)
+        query = MongoCrud.get_query(flask_request)
 
         data = dict(query, **{
             "updated_at": datetime.datetime.utcnow().isoformat()}
         )
 
         inserted_docs = m.insert(
-            schema=self.schema,
-            collection=self.collection,
+            schema=MongoCrud.schema,
+            collection=MongoCrud.collection,
             data=data
         )
 
@@ -95,16 +95,16 @@ class MongoCrud:
 
         return "SUCCESS"
 
-
-    def put_data(self, request_obj):
+    @staticmethod
+    def put_data(flask_request):
         
-        query = self.get_query(request_obj)
+        query = MongoCrud.get_query(flask_request)
         
         updated_docs = m.update(
-            schema=self.schema,
+            schema=MongoCrud.schema,
             match=query,
-            new_data=dict(self.query, **{"updated_at": datetime.datetime.utcnow().isoformat()}),
-            collection=self.collection,
+            new_data=dict(query, **{"updated_at": datetime.datetime.utcnow().isoformat()}),
+            collection=MongoCrud.collection,
             append=False
         )
 
@@ -113,11 +113,12 @@ class MongoCrud:
         return "SUCCESS"
 
 
-    def delete_data(self, request_obj):
+    @staticmethod
+    def delete_data(flask_request):
 
-        query = self.get_query(request_obj)
+        query = MongoCrud.get_query(flask_request)
 
-        deleted_docs = m.delete(match=query, collection=self.collection)
+        deleted_docs = m.delete(match=query, collection=MongoCrud.collection)
 
         if deleted_docs == 0: abort(404, reason='Query had no match')
 

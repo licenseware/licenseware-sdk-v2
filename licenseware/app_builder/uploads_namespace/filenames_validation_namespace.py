@@ -56,9 +56,9 @@ def get_filenames_validation_namespace(ns: Namespace, uploaders:List[UploaderBui
                 402 : 'Quota exceeded',
                 403 : "Missing `Tenant` or `Authorization` information",
                 500 : 'Something went wrong while handling the request' 
-            },
-            body=restx_model
+            }
         )
+        @ns.expect(restx_model)
         class TempUploaderResource(UR): ...
         
         UploaderResource = type(

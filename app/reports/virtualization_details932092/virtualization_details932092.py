@@ -8,9 +8,9 @@ report_components=[
 ]
 
 
-virtualization_details203484_report = ReportBuilder(
-    name="Virtualization Details203484",
-    report_id="virtualization_details203484",
+virtualization_details932092_report = ReportBuilder(
+    name="Virtualization Details932092",
+    report_id="virtualization_details932092",
     description="Add report description here",
     connected_apps=[],
     report_components=report_components

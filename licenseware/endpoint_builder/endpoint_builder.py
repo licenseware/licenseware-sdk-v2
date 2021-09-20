@@ -53,6 +53,7 @@ class EndpointBuilder:
             return ns
         
         if '_Schema__apply_nested_option' in dir(self.handler):
+            
             schema_ns = SchemaNamespace(
                 schema = self.handler,
                 collection = self.handler.Meta.collection_name,
