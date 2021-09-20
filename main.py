@@ -19,7 +19,7 @@ from licenseware.uploader_validator import UploaderValidator
 from licenseware.utils.logger import log
 
 from licenseware.decorators.namespace_decorator import namespace
-from licenseware.namespace_generator import SchemaNamespace
+from licenseware.schema_namespace import SchemaNamespace
 
 
 

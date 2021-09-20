@@ -2,11 +2,11 @@ import unittest
 from marshmallow import Schema, fields
 from licenseware.utils.logger import log
 from licenseware.common.constants import envs
-from licenseware.namespace_generator import SchemaNamespace
+from licenseware.schema_namespace import SchemaNamespace
 from main import app
 
 
-# python3 -m unittest tests/test_namespace_generator.py
+# python3 -m unittest tests/test_schema_namespace.py
 
 
 class TestNamespaceGenerator(unittest.TestCase):
@@ -19,7 +19,7 @@ class TestNamespaceGenerator(unittest.TestCase):
         self.app = app.test_client()
     
     
-    def test_namespace_generator(self):
+    def test_schema_namespace(self):
         
         
         class UserSchema(Schema):

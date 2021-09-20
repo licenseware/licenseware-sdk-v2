@@ -1,7 +1,7 @@
 from typing import Any
 from flask_restx import Namespace, Resource
 from licenseware.utils.miscellaneous import http_methods
-from licenseware.namespace_generator import SchemaNamespace
+from licenseware.schema_namespace import SchemaNamespace
 import inspect
 
 

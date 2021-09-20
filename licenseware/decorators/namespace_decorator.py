@@ -1,4 +1,4 @@
-from licenseware.namespace_generator.schema_namespace import SchemaNamespace
+from licenseware.schema_namespace import SchemaNamespace
 
 
 

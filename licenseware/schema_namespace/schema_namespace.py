@@ -162,6 +162,7 @@ class SchemaNamespace:
 
         return ns
         
+        
     def create_indexes(self):
         
         coll = mongodata.get_collection(self.collection)
