@@ -1,3 +1,245 @@
+"""
+
+EditableTable provided in this package is used to generate table metadata from a marshmallow Schema
+
+
+From the schema provided `EditableTable(schema).specs` will return a list of editable tables metadata similar to this:
+
+```js
+[
+  {
+    "component_id": "ifmp_devicetables",
+    "url": "http://localhost:5000/ifmp/devicetable",
+    "path": "/devicetable",
+    "order": 1,
+    "style_attributes": {
+      "width": "full"
+    },
+    "title": "All devicetables",
+    "type": "editable_table",
+    "columns": [
+      {
+        "name": "Id",
+        "prop": "_id",
+        "editable": false,
+        "type": "string",
+        "values": null,
+        "required": false,
+        "visible": false,
+        "entities_url": "http://localhost:5000/ifmp/devicetable?_id=%7Bentity_id%7D",
+        "entities_path": "/devicetable?_id=%7Bentity_id%7D"
+      },
+      {
+        "name": "Is Parent To",
+        "prop": "is_parent_to",
+        "editable": true,
+        "type": "entity",
+        "values": null,
+        "required": false,
+        "visible": false,
+        "entities_url": "http://localhost:5000/ifmp/devicetable?distinct_key=name&foreign_key=name&_id=%7Bentity_id%7D",
+        "entities_path": "/devicetable?distinct_key=name&foreign_key=name&_id=%7Bentity_id%7D"
+      },
+      {
+        "name": "Device Type",
+        "prop": "device_type",
+        "editable": false,
+        "type": "enum",
+        "values": [
+          "Cluster",
+          "Domain",
+          "Physical",
+          "Pool",
+          "Unknown",
+          "Virtual"
+        ],
+        "required": true,
+        "visible": false,
+        "entities_url": "http://localhost:5000/ifmp/devicetable?_id=%7Bentity_id%7D",
+        "entities_path": "/devicetable?_id=%7Bentity_id%7D"
+      },
+    ]
+  }
+]
+
+```
+
+From the information provided up the front-end will know how to render each column based on: datatype(type), editable, required, visible parameters.
+
+
+# TODO add pagination
+
+By making a get request to the root url (`"url": "http://localhost:5000/ifmp/devicetable"`) all data will be returned from mongo. 
+
+
+A get request with the `_id` query parameter will return the coresponding document from mongo.
+`"entities_url": "http://localhost:5000/ifmp/devicetable?_id=%7Bentity_id%7D"` (`%7D` it's `}` with urlencode)
+
+
+A post/put/delete request to root url with the modified/new document will modifiy the document.
+   
+**NOTE** 
+The query params and payload will be merged and used as a mongo query! 
+Any data manipulation operation can be done from the front-end.   
+
+
+# TODO explore security risks
+
+
+
+Bellow we have an example of using a schema to generate an editable table metadata and it's coresponding api.
+
+
+We provide the information required for generating editable metadata in the `metadata` parameter.
+Column names will be created from field names and other informations such as datatype, values(in case of `enum` datatype) etc will be taken from marshmallow `fields` specifications.
+
+
+For metadata you can use either a dict or `metaspecs` function which has autocomplete.
+
+
+```py
+
+from marshmallow import Schema, fields, validate
+
+from licenseware.common.constants import envs
+from licenseware.editable_table import EditableTable
+from licenseware.schema_namespace import MongoCrud, SchemaNamespace, metaspecs
+
+from app.common.infrastructure_service import InfraService
+
+
+
+
+class DeviceTableSchema(Schema):
+    
+    class Meta:
+    
+        compound_indexes = [
+            ['tenant_id', 'name'],
+            ['tenant_id', 'name', 'device_type']
+        ]
+        simple_indexes = ['_id', 'tenant_id', 'name',
+                   'is_parent_to', 'is_child_to',
+                   'is_part_of_cluster_with', 'is_dr_with',
+                   'device_type', 'virtualization_type',
+                   'cpu_model'
+                   ]
+
+
+    _id = fields.Str(required=False, unique=True)
+    tenant_id = fields.Str(required=True)
+    
+    name = fields.Str(required=True, unique=False, metadata=metaspecs(editable=True))
+
+    is_parent_to = fields.List(
+        fields.Str(), required=False, allow_none=True,
+        metadata={'editable': True, 'distinct_key': 'name', 'foreign_key': 'name'}
+    )
+
+    is_child_to = fields.Str(
+        required=False, allow_none=True,
+        metadata=metaspecs(editable=True, distinct_key='name', foreign_key='name') 
+    )
+
+    is_part_of_cluster_with =  fields.List(
+        fields.Str(), required=False, allow_none=True,
+        metadata={'editable': True, 'distinct_key': 'name', 'foreign_key': 'name'}
+    )
+    is_dr_with =  fields.List(
+        fields.Str(), required=False, allow_none=True,
+        metadata={'editable': True, 'distinct_key': 'name', 'foreign_key': 'name'}
+    )
+
+    capped = fields.Boolean(required=True, allow_none=False, metadata={'editable': True})
+    total_number_of_processors = fields.Integer(required=False, allow_none=True, metadata={'editable': True})
+
+    manufacturer = fields.Str(required=False, allow_none=True, metadata={'editable': True})
+    model = fields.Str(required=False, allow_none=True, metadata={'editable': True})
+    updated_at = fields.Str(required=False)
+    raw_data = fields.Str(required=False, allow_none=True)
+
+    source = fields.Str(required=False, allow_none=True, metadata={'editable': True})
+    source_system_id = fields.Str(required=False, allow_none=True, metadata={'editable': True})
+
+
+
+
+
+# here we are inheriting from `MongoCrud` class which has default crud methods
+# we are overwriting the `put_data` method
+class DeviceOp(MongoCrud):
+    
+    def __init__(self, schema: Schema, collection: str):
+        self.schema = schema
+        self.collection = collection
+        super().__init__(schema, collection)
+    
+    
+    def put_data(self, flask_request):
+        
+        query = self.get_query(flask_request)
+        
+        return InfraService(
+            schema=self.schema, 
+            collection=self.collection
+        ).replace_one(json_data=query)
+        
+    
+# Here we are creating a restx namespace using the schema
+DeviceNs = SchemaNamespace(
+    schema=DeviceTableSchema,
+    collection=envs.MONGO_COLLECTION_DATA_NAME, #default can be skipped
+    methods=['GET', 'PUT', 'DELETE'], #default is ['GET', 'PUT', 'POST', 'DELETE'] 
+    mongo_crud_class = DeviceOp # here we provide the modified crud operations class
+).initialize()
+
+
+# In the case of a crud operation overwrite we need to provide to `EditableTable` the restx namespace created up 
+devices_table = EditableTable(
+    title="All Devices",
+    schema=DeviceTableSchema,
+    namespace=DeviceNs # needed in case of an overwrite
+)
+ 
+
+# If no overwrites are necessary providing just the schema will be suficient 
+devices_table = EditableTable(
+    title="All Devices",
+    schema=DeviceTableSchema
+)
+ 
+ 
+```
+
+Later, in the base `__init__.py` file import the `EditableTable` instance and register it to the main `App`.
+
+
+```py
+from licenseware.common.constants import flags
+from licenseware.app_builder import AppBuilder
+
+
+from app.controllers.device_editable_controller import devices_table
+
+
+
+App = AppBuilder(
+    name = 'Infrastructure Mapper',
+    description = 'IFMP (Infrastructure Mapper) is the ideal tool to help you get a complete picture of your entire infrastructure topology with comprehensive CPU, virtualization, and relationship details. You can combine IFMP data with data from other apps like ODBM (Oracle Database Manager) to generate consolidated reports showing your actual license utilization across your infrastructure.',
+    flags = [flags.BETA]
+)
+
+
+App.register_editable_table(devices_table)
+
+```
+
+"""
+
+
+
+
+
 import os, re, itertools
 from flask_restx.namespace import Namespace
 from marshmallow import Schema
