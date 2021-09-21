@@ -137,7 +137,10 @@ class UploaderBuilder:
                     return {'status': states.FAILED, 'message': 'Event not valid', 'event_data': event}, 400
                 
                 log.info("Sending event: " + str(event))
-                self.worker.send(event)
+                
+                if envs.USE_BACKGROUND_WORKER: self.worker.send(event)
+                else: self.worker(event)
+                    
                 
         notify_upload_status(event, status=states.IDLE)
         return response, status_code

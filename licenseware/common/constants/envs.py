@@ -43,6 +43,7 @@ class envs:
 
     # Environment variables available at startup
     DEBUG:bool = os.environ['DEBUG'] == 'true'
+    USE_BACKGROUND_WORKER:bool = os.environ['USE_BACKGROUND_WORKER'] == 'true'
     ENVIRONMENT:str = os.environ["ENVIRONMENT"]
     PERSONAL_SUFFIX:str = os.environ["PERSONAL_SUFFIX"]
     APP_ID:str = os.environ["APP_ID"]

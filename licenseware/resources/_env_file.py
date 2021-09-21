@@ -7,6 +7,7 @@ FLASK_APP=main:app
 FLASK_RUN_HOST=localhost
 FLASK_RUN_PORT=4000
 FLASK_DEBUG=true
+USE_BACKGROUND_WORKER=true
 
 
 APP_ID={{ app_id }}
