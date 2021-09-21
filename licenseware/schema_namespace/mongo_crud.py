@@ -17,28 +17,28 @@ class MongoCrud:
 
     """
     
-    # This vars will be filled in schema_namespace (ex: MongoCrud.schema = marshmellow_schema )
+    # This vars will be filled in schema_namespace (ex: self.schema = marshmallow_schema )
     schema = None 
     collection = None 
 
 
-    @staticmethod
-    def get_params(flask_request):
+
+    def get_params(self, flask_request):
         params = {}
         if flask_request.args is None: return params
         params = dict(flask_request.args) or {}
         return params
 
-    @staticmethod
-    def get_payload(flask_request):
+    
+    def get_payload(self, flask_request):
         payload = {}
         if flask_request.json is None: return payload
         if isinstance(flask_request.json, dict):
             payload = flask_request.json
         return payload
 
-    @staticmethod
-    def validate_tenant_id(tenant, params, payload):
+    
+    def validate_tenant_id(self, tenant, params, payload):
         
         if 'tenant_id' in params:
             if params['tenant_id'] != tenant['tenant_id']:
@@ -48,45 +48,44 @@ class MongoCrud:
             if payload['tenant_id'] != tenant['tenant_id']:
                 raise Exception("The 'tenant_id' provided in query parameter is not the same as the one from headers")
 
-    @staticmethod
-    def get_query(flask_request):
+    
+    def get_query(self, flask_request):
         
         tenant = {'tenant_id': flask_request.headers.get("Tenantid")}
         
-        params = MongoCrud.get_params(flask_request)
-        payload = MongoCrud.get_payload(flask_request)
+        params = self.get_params(flask_request)
+        payload = self.get_payload(flask_request)
         
-        MongoCrud.validate_tenant_id(tenant, params, payload)
+        self.validate_tenant_id(tenant, params, payload)
         
         query = {**tenant, **params, **payload}
         
-        log.info(f"Mongo CRUD Request: {query}")
+        log.info(f"Mongo CRUD Request: {query} (schema: {self.schema}, collection: {self.collection})")
         
         return query
 
-    @staticmethod
-    def get_data(flask_request):
+    def get_data(self, flask_request):
         
-        query = MongoCrud.get_query(flask_request)
+        query = self.get_query(flask_request)
         
-        results = m.fetch(match=query, collection=MongoCrud.collection)
+        results = m.fetch(match=query, collection=self.collection)
 
         if not results: 'Requested data not found', 404
 
         return results
 
-    @staticmethod
-    def post_data(flask_request):
+    
+    def post_data(self, flask_request):
 
-        query = MongoCrud.get_query(flask_request)
+        query = self.get_query(flask_request)
 
         data = dict(query, **{
             "updated_at": datetime.datetime.utcnow().isoformat()}
         )
 
         inserted_docs = m.insert(
-            schema=MongoCrud.schema,
-            collection=MongoCrud.collection,
+            schema=self.schema,
+            collection=self.collection,
             data=data
         )
 
@@ -95,16 +94,16 @@ class MongoCrud:
         return "SUCCESS"
 
 
-    @staticmethod
-    def put_data(flask_request):
+    
+    def put_data(self, flask_request):
         
-        query = MongoCrud.get_query(flask_request)
+        query = self.get_query(flask_request)
         
         updated_docs = m.update(
-            schema=MongoCrud.schema,
+            schema=self.schema,
             match=query,
             new_data=dict(query, **{"updated_at": datetime.datetime.utcnow().isoformat()}),
-            collection=MongoCrud.collection,
+            collection=self.collection,
             append=False
         )
 
@@ -113,12 +112,12 @@ class MongoCrud:
         return "SUCCESS"
 
 
-    @staticmethod
-    def delete_data(flask_request):
+    
+    def delete_data(self, flask_request):
 
-        query = MongoCrud.get_query(flask_request)
+        query = self.get_query(flask_request)
 
-        deleted_docs = m.delete(match=query, collection=MongoCrud.collection)
+        deleted_docs = m.delete(match=query, collection=self.collection)
 
         if deleted_docs == 0: 'Query had no match', 404
 

@@ -68,7 +68,7 @@ class SchemaNamespace:
         
     
         try: self.collection = self.schema.Meta.collection
-        except: self.collection = envs.MONGO_COLLECTION_DATA_NAME
+        except: self.collection = collection or envs.MONGO_COLLECTION_DATA_NAME
         
         try: self.methods = self.schema.Meta.methods
         except: self.methods = methods
