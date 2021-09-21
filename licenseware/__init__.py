@@ -154,12 +154,7 @@ If you perviously started the docker-compose file with redis and mongo you may e
 ```py
 
 
-
-from dataclasses import dataclass
 from dotenv import load_dotenv
-
-from licenseware import endpoint_builder
-
 load_dotenv()  
 
 import datetime
@@ -182,8 +177,8 @@ from licenseware.uploader_builder import UploaderBuilder
 from licenseware.uploader_validator import UploaderValidator
 from licenseware.utils.logger import log
 
-from licenseware.schema_namespace import SchemaNamespace, MongoCrud, metaspecs
-from licenseware.editable_table import EditableTable
+from licenseware.schema_namespace import SchemaNamespace, MongoCrud
+from licenseware.editable_table import EditableTable, metaspecs
 
 
 
@@ -488,24 +483,29 @@ ifmp_app.register_endpoint(custom_schema_endpoint)
 
 # Defining our schema
 class UserSchema(Schema):
+    """ Here is some Namespace docs for user """
     name = fields.Str(required=True)
     occupation = fields.Str(required=True)
 
 
-# Overwritting mongo crud methods (ONLY static methods must be used)
+# Overwritting mongo crud methods 
 class UserOperations(MongoCrud):
     
-    @staticmethod
-    def get_data(flask_request):
+    def __init__(self, schema: Schema, collection: str):
+        self.schema = schema
+        self.collection = collection
+        super().__init__(schema, collection)
+    
+    def get_data(self, flask_request):
         
-        query = UserOperations.get_query(flask_request)
+        query = self.get_query(flask_request)
         
-        results = mongodata.fetch(match=query, collection=UserOperations.collection)
+        results = mongodata.fetch(match=query, collection=self.collection)
 
         return {"status": states.SUCCESS, "message": results}, 200
     
-    @staticmethod
-    def post_data(flask_request):
+    
+    def post_data(self, flask_request):
 
         query = UserOperations.get_query(flask_request)
 
@@ -514,24 +514,23 @@ class UserOperations(MongoCrud):
         )
 
         inserted_docs = mongodata.insert(
-            schema=UserOperations.schema,
-            collection=UserOperations.collection,
+            schema=self.schema,
+            collection=self.collection,
             data=data
         )
 
         return inserted_docs
     
     
-    @staticmethod
-    def put_data(flask_request):
+    def put_data(self, flask_request):
         
-        query = UserOperations.get_query(flask_request)
+        query = self.get_query(flask_request)
         
         updated_docs = mongodata.update(
-            schema=UserOperations.schema,
+            schema=self.schema,
             match=query,
             new_data=dict(query, **{"updated_at": datetime.datetime.utcnow().isoformat()}),
-            collection=UserOperations.collection,
+            collection=self.collection,
             append=False
         )
         
@@ -541,12 +540,11 @@ class UserOperations(MongoCrud):
         return {"status": states.SUCCESS, "message": ""}, 200
         
     
-    @staticmethod
-    def delete_data(flask_request):
+    def delete_data(self, flask_request):
 
-        query = UserOperations.get_query(flask_request)
+        query = self.get_query(flask_request)
 
-        deleted_docs = mongodata.delete(match=query, collection=UserOperations.collection)
+        deleted_docs = mongodata.delete(match=query, collection=self.collection)
 
         return deleted_docs
 
@@ -746,11 +744,6 @@ if __name__ == "__main__":
     
 # Userid / Tenantid
 # 3d1fdc6b-04bc-44c8-ae7c-5fa5b9122f1a
-
-
-
-
-
 
 
 

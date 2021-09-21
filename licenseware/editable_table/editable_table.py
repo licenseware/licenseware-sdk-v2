@@ -102,8 +102,8 @@ For metadata you can use either a dict or `metaspecs` function which has autocom
 from marshmallow import Schema, fields, validate
 
 from licenseware.common.constants import envs
-from licenseware.editable_table import EditableTable
-from licenseware.schema_namespace import MongoCrud, SchemaNamespace, metaspecs
+from licenseware.editable_table import EditableTable, metaspecs
+from licenseware.schema_namespace import MongoCrud, SchemaNamespace
 
 from app.common.infrastructure_service import InfraService
 
@@ -111,6 +111,8 @@ from app.common.infrastructure_service import InfraService
 
 
 class DeviceTableSchema(Schema):
+
+    ''' IFMP devices editable table ''' # this will be the api doc
     
     class Meta:
     
