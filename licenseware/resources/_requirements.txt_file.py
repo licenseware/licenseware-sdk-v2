@@ -1,4 +1,4 @@
-git+https://git@github.com/licenseware/licenseware-sdk-python3.git
+git+https://git@github.com/licenseware/licenseware-sdk-v2.git
 
 # redis==3.5.3
 # aioredis==1.3.1
@@ -20,3 +20,5 @@ git+https://git@github.com/licenseware/licenseware-sdk-python3.git
 # typer==0.4.0
 # pdoc3==0.10.0
 # python-dotenv==0.19.0
+# honcho==1.0.1
+# flask-dramatiq==0.6.0
