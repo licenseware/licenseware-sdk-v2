@@ -152,6 +152,8 @@ If you perviously started the docker-compose file with redis and mongo you may e
 
 ```py
 
+
+
 from dataclasses import dataclass
 from dotenv import load_dotenv
 
@@ -575,6 +577,7 @@ ifmp_app.add_namespace(user_ns)
 # "foreign_key":str  ?
 
 
+# Using the method bellow routes will be created with SchemaNamespace class 
 
 
 class DeviceTableSchema(Schema):
@@ -660,6 +663,70 @@ ifmp_app.register_editable_table(devices_editable_table)
 
 
 
+# Overwrite editable tables default crud methods from SchemaNamespace
+
+# In the case the default crud methods provided by SchemaNamespace class do not fit our case we can overwrite the method needed.
+
+
+# Same schema but with another name to avoid colisions
+class ProcessorsTableSchema(DeviceTableSchema): ...
+
+
+# custom handling of data
+class InfraService:
+    
+    def __init__(self, schema:Schema, collection:str):
+        self.schema = schema
+        self.collection = collection
+        
+    def replace_one(self, json_data:dict):
+        #custom handling of json_data
+        return ["the overwritten put_data method results"]
+    
+
+
+# inherits from MongoCrud and overwrites `put_data` and `get_data` methods 
+class ProcessorOp(MongoCrud):
+    
+    def __init__(self, schema: Schema, collection: str):
+        self.schema = schema
+        self.collection = collection
+        super().__init__(schema, collection)
+    
+    
+    def get_data(self, flask_request):
+        return str(flask_request)
+    
+    def put_data(self, flask_request):
+        
+        query = self.get_query(flask_request)
+        
+        return InfraService(
+            schema=ProcessorsTableSchema, 
+            collection=envs.MONGO_COLLECTION_DATA_NAME
+        ).replace_one(json_data=query)
+        
+    
+    
+# creating the restx namespace
+ProcessorNs = SchemaNamespace(
+    schema=ProcessorsTableSchema,
+    collection=envs.MONGO_COLLECTION_DATA_NAME,
+    mongo_crud_class=ProcessorOp  # feeding the custom crud class to SchemaNamespace 
+).initialize()
+
+
+# instantiating the editable tables
+processor_table = EditableTable(
+    title="All Processors",
+    schema=ProcessorsTableSchema,
+    namespace=ProcessorNs # here we provide our custom namespace
+)
+ 
+# same as up register the editable table
+ifmp_app.register_editable_table(processor_table)
+
+
 
 
 
@@ -678,6 +745,11 @@ if __name__ == "__main__":
     
 # Userid / Tenantid
 # 3d1fdc6b-04bc-44c8-ae7c-5fa5b9122f1a
+
+
+
+
+
 
 
 

@@ -512,6 +512,9 @@ ifmp_app.register_editable_table(devices_editable_table)
 # In the case the default crud methods provided by SchemaNamespace class do not fit our case we can overwrite the method needed.
 
 
+# Same schema but with another name to avoid colisions
+class ProcessorsTableSchema(DeviceTableSchema): ...
+
 
 # custom handling of data
 class InfraService:
@@ -522,41 +525,50 @@ class InfraService:
         
     def replace_one(self, json_data:dict):
         #custom handling of json_data
-        return []
+        return ["the overwritten put_data method results"]
     
 
-# inherits from MongoCrud and overwrites `put_data` method (always a static method)
-class DeviceOp(MongoCrud):
+
+# inherits from MongoCrud and overwrites `put_data` and `get_data` methods 
+class ProcessorOp(MongoCrud):
     
-    @staticmethod
-    def put_data(flask_request):
+    def __init__(self, schema: Schema, collection: str):
+        self.schema = schema
+        self.collection = collection
+        super().__init__(schema, collection)
+    
+    
+    def get_data(self, flask_request):
+        return str(flask_request)
+    
+    def put_data(self, flask_request):
         
-        query = DeviceOp.get_query(flask_request)
+        query = self.get_query(flask_request)
         
         return InfraService(
-            schema=DeviceTableSchema, 
+            schema=ProcessorsTableSchema, 
             collection=envs.MONGO_COLLECTION_DATA_NAME
         ).replace_one(json_data=query)
         
     
     
 # creating the restx namespace
-DeviceNs = SchemaNamespace(
-    schema=DeviceTableSchema,
+ProcessorNs = SchemaNamespace(
+    schema=ProcessorsTableSchema,
     collection=envs.MONGO_COLLECTION_DATA_NAME,
-    mongo_crud_class=DeviceOp  # feeding the custom crud class to SchemaNamespace 
+    mongo_crud_class=ProcessorOp  # feeding the custom crud class to SchemaNamespace 
 ).initialize()
 
 
 # instantiating the editable tables
-devices_table = EditableTable(
-    title="All Devices",
-    schema=DeviceTableSchema,
-    namespace=DeviceNs # here we provide our custom namespace
+processor_table = EditableTable(
+    title="All Processors",
+    schema=ProcessorsTableSchema,
+    namespace=ProcessorNs # here we provide our custom namespace
 )
  
 # same as up register the editable table
-# ifmp_app.register_editable_table(devices_table)
+ifmp_app.register_editable_table(processor_table)
 
 
 

@@ -17,10 +17,11 @@ DeviceNamespace = SchemaNamespace(
 import re
 from inspect import signature
 
-from marshmallow import Schema, fields
+from marshmallow import Schema, fields, schema
 import marshmallow
 from marshmallow_jsonschema import JSONSchema
 from flask_restx import Namespace, Resource
+from pymongo import collation, collection
 
 from licenseware.common.validators import validate_uuid4
 from licenseware.common.constants import envs
@@ -110,46 +111,46 @@ class SchemaNamespace:
         
         ns = self.create_namespace()
         resource_fields = ns.schema_model(self.name, self.json_schema)  
-        
-        self.mongo_crud_class.schema = self.schema
-        self.mongo_crud_class.collection = self.collection
         allowed_methods = self.methods
+        data_service = self.mongo_crud_class(schema=self.schema, collection=self.collection)
         
-        CrudClass = self.mongo_crud_class
-        
-        class SchemaResource(Resource, CrudClass):
+        class SchemaResource(Resource):
         
             @failsafe(fail_code=500)
             @ns.doc(id="Make a GET request to FETCH some data")
             @ns.param('_id', 'get data by id')
-            @ns.marshal_list_with(resource_fields)
+            @ns.response(code=200, description="A list of:", model=resource_fields)
+            @ns.response(code=404, description="Requested data not found")
             def get(self):
                 if 'GET' in allowed_methods: 
-                    return self.get_data(request) 
+                    return data_service.get_data(request) 
                 return "METHOD NOT ALLOWED", 405
 
             @failsafe(fail_code=500)
             @ns.doc(id="Make a POST request to INSERT some data")
             @ns.expect(resource_fields)
+            @ns.response(code=400, description="Could not insert data")
             def post(self):
                 if 'POST' in allowed_methods:
-                    return self.post_data(request) 
+                    return data_service.post_data(request) 
                 return "METHOD NOT ALLOWED", 405
                 
             @failsafe(fail_code=500)
             @ns.doc(id="Make a PUT request to UPDATE some data")
             @ns.expect(resource_fields)
+            @ns.response(code=404, description="Query had no match")
             def put(self):
                 if 'PUT' in allowed_methods:
-                    return self.put_data(request) 
+                    return data_service.put_data(request) 
                 return "METHOD NOT ALLOWED", 405
             
             @failsafe(fail_code=500)
             @ns.doc(id="Make a DELETE request to DELETE some data")
             @ns.expect(resource_fields)
+            @ns.response(code=404, description="Query had no match")
             def delete(self, _id=None):
                 if 'DELETE' in allowed_methods:
-                    return self.delete_data(request) 
+                    return data_service.delete_data(request) 
                 return "METHOD NOT ALLOWED", 405
             
         

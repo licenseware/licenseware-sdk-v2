@@ -1,4 +1,6 @@
 import datetime
+
+from marshmallow.schema import Schema
 from licenseware import mongodata as m
 from licenseware.utils.logger import log
 
@@ -17,10 +19,10 @@ class MongoCrud:
 
     """
     
-    # This vars will be filled in schema_namespace (ex: self.schema = marshmallow_schema )
-    schema = None 
-    collection = None 
-
+    def __init__(self, schema: Schema, collection: str):
+        
+        self.schema = schema 
+        self.collection = collection 
 
 
     def get_params(self, flask_request):
@@ -60,7 +62,7 @@ class MongoCrud:
         
         query = {**tenant, **params, **payload}
         
-        log.info(f"Mongo CRUD Request: {query} (schema: {self.schema}, collection: {self.collection})")
+        log.info(f"Mongo CRUD Request: {query} (schema: {self.schema.__name__}, collection: {self.collection})")
         
         return query
 
@@ -70,7 +72,7 @@ class MongoCrud:
         
         results = m.fetch(match=query, collection=self.collection)
 
-        if not results: 'Requested data not found', 404
+        if len(results) == 0: return  'Requested data not found', 404
 
         return results
 
@@ -89,7 +91,7 @@ class MongoCrud:
             data=data
         )
 
-        if len(inserted_docs) == 0: 'Could not insert data', 400
+        if len(inserted_docs) == 0: return 'Could not insert data', 400
 
         return "SUCCESS"
 
@@ -107,7 +109,7 @@ class MongoCrud:
             append=False
         )
 
-        if updated_docs == 0: 'Query had no match', 404
+        if updated_docs == 0: return 'Query had no match', 404
 
         return "SUCCESS"
 
@@ -119,6 +121,6 @@ class MongoCrud:
 
         deleted_docs = m.delete(match=query, collection=self.collection)
 
-        if deleted_docs == 0: 'Query had no match', 404
+        if deleted_docs == 0: return 'Query had no match', 404
 
         return "SUCCESS"
