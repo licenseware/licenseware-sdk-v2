@@ -110,14 +110,15 @@ class EditableTable:
 
         metadata = self.field_metadata(field_data)
 
-        if 'distinct_key' and 'foreign_key' in metadata: 
-            params = urlencode({
-                'distinct_key': metadata['distinct_key'], 
-                'foreign_key' : metadata['foreign_key'],
-                '_id': '{entity_id}'
-            })
-            
-            return f"{self.path}?{params}" if _get_only_path else f"{self.url}?{params}"
+        if 'distinct_key' and 'foreign_key' in metadata:
+            if metadata['distinct_key'] != None and metadata['foreign_key'] != None: 
+                params = urlencode({
+                    'distinct_key': metadata['distinct_key'], 
+                    'foreign_key' : metadata['foreign_key'],
+                    '_id': '{entity_id}'
+                })
+                
+                return f"{self.path}?{params}" if _get_only_path else f"{self.url}?{params}"
 
         # Create query params with just _id
         params = urlencode({'_id': '{entity_id}'})
