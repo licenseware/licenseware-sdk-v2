@@ -30,6 +30,7 @@ class Authenticator:
 
     """
 
+    #TODO just machine auth remove users auth
     
     def __init__(self):
 

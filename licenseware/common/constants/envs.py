@@ -70,7 +70,7 @@ class envs:
     BASE_URL:str = APP_HOST + APP_PATH
     UPLOAD_PATH:str = '/uploads'
     REPORT_PATH:str = '/reports'
-    REPORT_COMPONENT_PATH:str = '/report_components'
+    REPORT_COMPONENT_PATH:str = '/report-components'
     UPLOAD_URL:str = BASE_URL + UPLOAD_PATH
     REPORT_URL:str = BASE_URL + REPORT_PATH
     REPORT_COMPONENT_URL:str = BASE_URL + REPORT_COMPONENT_PATH
@@ -82,11 +82,11 @@ class envs:
     MONGO_COLLECTION_ANALYSIS_NAME:str = APP_ID.upper() + "Analysis"
     
     # Mongo connection data
-    MONGO_ROOT_USERNAME:str = os.environ["MONGO_ROOT_USERNAME"]
-    MONGO_ROOT_PASSWORD:str = os.environ["MONGO_ROOT_PASSWORD"]
+    # MONGO_ROOT_USERNAME:str = os.environ["MONGO_ROOT_USERNAME"]
+    # MONGO_ROOT_PASSWORD:str = os.environ["MONGO_ROOT_PASSWORD"]
     MONGO_DATABASE_NAME:str = os.environ["MONGO_DATABASE_NAME"]
-    MONGO_HOSTNAME:str = os.environ["MONGO_HOSTNAME"]
-    MONGO_PORT:str = os.environ["MONGO_PORT"] 
+    # MONGO_HOSTNAME:str = os.environ["MONGO_HOSTNAME"]
+    # MONGO_PORT:str = os.environ["MONGO_PORT"] 
     MONGO_CONNECTION_STRING:str = os.environ['MONGO_CONNECTION_STRING']
 
     
