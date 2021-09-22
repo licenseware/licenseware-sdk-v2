@@ -9,14 +9,11 @@ APP_HOST=http://localhost:5000
 LWARE_IDENTITY_USER=John
 LWARE_IDENTITY_PASSWORD=secret
 
-AUTH_SERVICE_URL=http://localhost:5000/auth
-
-REGISTRY_SERVICE_URL=http://localhost:5000/registry-service
+AUTH_SERVICE_URL=http://localhost:4000/auth
+REGISTRY_SERVICE_URL=http://localhost:4000/registry-service
 
 FILE_UPLOAD_PATH=/tmp/lware
 
 MONGO_DATABASE_NAME=db
 MONGO_CONNECTION_STRING=mongodb://localhost:27017/db
 REDIS_CONNECTION_STRING=redis://localhost:6379/0
-
-

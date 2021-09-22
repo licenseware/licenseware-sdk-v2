@@ -8,10 +8,10 @@ down:
 
 
 prod:	
-	uwsgi --http 0.0.0.0:4000 -w main:app --processes 4
+	uwsgi --http 0.0.0.0:5000 -w main:app --processes 4
 
 mock:
-	uwsgi --http 0.0.0.0:5000 -w mock_server:app --processes 4
+	uwsgi --http 0.0.0.0:4000 -w mock_server:app --processes 4
 
 dev:
 	python3 main.py
