@@ -142,6 +142,9 @@ class Dramatiq:
         self.url = url
         self.actors = []
         
+        #Removing prometheus middleware
+        default_middleware.pop(0)
+        
         if middleware is None: middleware = [m() for m in default_middleware]
         self.middleware = middleware
 
