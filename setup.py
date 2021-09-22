@@ -44,6 +44,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     install_requires=REQUIREMENTS,
+    include_package_data=True,
     packages=find_packages(
         where=".",
         exclude=["tests"]

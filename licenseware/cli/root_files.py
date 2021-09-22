@@ -27,12 +27,14 @@ resources_filenames = {
      
 def create_root_files(app_id:str):
     
+    personal_suffix = generate_id(3)
+    
     for rname, fname in resources_filenames.items():  
         if not os.path.exists(fname):
             raw_contents = pkg_resources.read_text(resources, rname)
             tmp = Template(raw_contents)
             
-            file_contents = tmp.render(app_id=app_id, personal_suffix=generate_id(3))
+            file_contents = tmp.render(app_id=app_id, personal_suffix=personal_suffix)
             
             with open(fname, 'w') as f:
                 f.write(file_contents)
