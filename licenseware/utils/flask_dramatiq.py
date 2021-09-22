@@ -64,6 +64,7 @@ from dramatiq import actor as register_actor
 from dramatiq.middleware import default_middleware
 from dramatiq.brokers.redis import RedisBroker
 
+from .logger import log
 
 
 # PREPS
@@ -166,8 +167,20 @@ class Dramatiq:
             actor.register(broker=self.broker)
             
         set_broker(self.broker)
-    
+        
+        self.show_registered_actors()
+        
         return self.broker
+ 
+ 
+    def show_registered_actors(self):
+        
+        registered_actors = []    
+        for uploader_id, actor_obj in self.broker.actors.items():
+            registered_actors.append(f"{uploader_id}/{actor_obj.queue_name}")
+            
+        log.info("-------- Dramatiq Actors: " + " : ".join(registered_actors) + "---------")
+        
  
     
     def actor(self, fn=None, **kw):

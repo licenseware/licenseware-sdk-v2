@@ -17,3 +17,8 @@ FILE_UPLOAD_PATH=/tmp/lware
 MONGO_DATABASE_NAME=db
 MONGO_CONNECTION_STRING=mongodb://localhost:27017/db
 REDIS_CONNECTION_STRING=redis://localhost:6379/0
+
+# Dramatiq Prometheus
+dramatiq_prom_host=0.0.0.0
+dramatiq_prom_port=9523
+

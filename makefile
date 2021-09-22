@@ -20,7 +20,8 @@ worker:
 	dramatiq main:App.broker -p4 --watch ./
 	
 test:
-	echo create some tests
+	rm -rf tests/__pycache__
+	python3 -m unittest tests/*
 
 dev-docs:
 	pdoc --http : app
