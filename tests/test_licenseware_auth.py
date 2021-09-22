@@ -18,7 +18,6 @@ class TestAuth(unittest.TestCase):
 
         self.assertEqual(envs.LWARE_USER, "John")
         self.assertEqual(envs.LWARE_PASSWORD, "secret")
-        self.assertEqual(envs.AUTH_USERS_URL, 'http://localhost:5000/auth/users')
         self.assertEqual(envs.AUTH_MACHINES_URL, 'http://localhost:5000/auth/machines')
         
     

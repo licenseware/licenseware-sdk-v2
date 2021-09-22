@@ -162,8 +162,8 @@ class AppBuilder:
         
         
     def init_dramatiq_broker(self, app:Flask = None):
-        # Add middleware if needed
-        broker.init_app(app or self.app)
+        broker_instance = broker.init_app(app or self.app)
+        self.broker = broker_instance
         
     
     def authenticate_app(self):

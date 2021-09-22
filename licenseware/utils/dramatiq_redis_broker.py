@@ -1,3 +1,7 @@
-from flask_dramatiq import Dramatiq
+import os
+from .flask_dramatiq import Dramatiq
 
-broker = Dramatiq(broker_cls='dramatiq.brokers.redis:RedisBroker')
+
+broker = Dramatiq(
+    url = os.getenv('REDIS_CONNECTION_STRING')
+)

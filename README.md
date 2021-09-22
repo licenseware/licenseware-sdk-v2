@@ -25,6 +25,17 @@ It helps you focus on processsing the files needed and creating reports.
 <a name="quickstart"></a>
 # Quickstart 
 
+
+Basic app flow:
+
+- User sends list of file names;
+- App through the validator function of the uploader checks which files are relevant and returns a list of validated file names;
+- User uploads the actual files, filtered based on the list provided by the uploader (the front-end does this);
+- The uploader receives the files, runs the validation on the actual file contents (before it only had the file names), and sends the valid files to the worker_function;
+- The worker function processes the files and saves them to mongo based on the structure in the serializers;
+- Once the data is fully analyzed, the user can either view data as reports or as editable tables.
+
+
 Here are the steps needed for local development of an app:
 
 - Install the sdk : `pip3 install git+https://git@github.com/licenseware/licenseware-sdk-v2.git`;
@@ -151,8 +162,6 @@ If you perviously started the docker-compose file with redis and mongo you may e
 
 
 ```py
-
-
 from dotenv import load_dotenv
 load_dotenv()  
 
@@ -186,7 +195,7 @@ app = Flask(__name__)
 
 # APP
 
-ifmp_app = AppBuilder(
+App = AppBuilder(
     name = 'Infrastructure Mapper',
     description = 'Overview of devices and networks',
     flags = [flags.BETA]
@@ -272,7 +281,7 @@ rv_tools_uploader = UploaderBuilder(
 # Here we are:
 # - adding the uploader to the main app (uploaders list)
 # - sending uploader information to registry-service
-ifmp_app.register_uploader(rv_tools_uploader)
+App.register_uploader(rv_tools_uploader)
 
 
 
@@ -386,7 +395,7 @@ virtual_overview = VirtualOverview(
 
 # TODO raise component_id conflict
 # Register component to registry-service (to act as a first class citizen)
-ifmp_app.register_report_component(virtual_overview)
+App.register_report_component(virtual_overview)
 
 
 
@@ -406,7 +415,7 @@ virtualization_details_report = ReportBuilder(
 )
 
 
-ifmp_app.register_report(virtualization_details_report)
+App.register_report(virtualization_details_report)
 
 
 
@@ -429,7 +438,7 @@ class CustomApiRoute(Resource):
     
 # Add it to main app 
 # it will have the same namespace prefix /ifmp/v1/ + ns-prefix/custom-api-route
-ifmp_app.add_namespace(custom_ns, path='/ns-prefix')
+App.add_namespace(custom_ns, path='/ns-prefix')
 
 # If the namespace defined up it's used on all apps 
 # add it to licenseware sdk in app_builder default routes
@@ -453,7 +462,7 @@ def get_custom_data_from_mongo(flask_request):
 
 custom_func_endpoint = EndpointBuilder(get_custom_data_from_mongo)
 
-ifmp_app.register_endpoint(custom_func_endpoint)
+App.register_endpoint(custom_func_endpoint)
 
 
 
@@ -473,7 +482,7 @@ class DeviceData(Schema):
     
 custom_schema_endpoint = EndpointBuilder(DeviceData)
 
-ifmp_app.register_endpoint(custom_schema_endpoint)
+App.register_endpoint(custom_schema_endpoint)
 
 
 
@@ -559,7 +568,7 @@ UserNs = SchemaNamespace(
 
 # Adding the namespace generated from schema to our App
 user_ns = UserNs.initialize()
-ifmp_app.add_namespace(user_ns)
+App.add_namespace(user_ns)
 
 
 
@@ -657,7 +666,7 @@ devices_editable_table = EditableTable(
 )
  
 
-ifmp_app.register_editable_table(devices_editable_table)
+App.register_editable_table(devices_editable_table)
 
 
 
@@ -722,20 +731,19 @@ processor_table = EditableTable(
 )
  
 # same as up register the editable table
-ifmp_app.register_editable_table(processor_table)
-
+App.register_editable_table(processor_table)
 
 
 
 
 # Call init_app in the flask function factory 
-ifmp_app.init_app(app)
+App.init_app(app)
 
 
 if __name__ == "__main__":   
     
     # Register app to registry-service
-    ifmp_app.register_app()
+    App.register_app()
     
     app.run(port=4000, debug=True)
     
@@ -743,7 +751,7 @@ if __name__ == "__main__":
     
 # Userid / Tenantid
 # 3d1fdc6b-04bc-44c8-ae7c-5fa5b9122f1a
-
+# dramatiq main:App.broker -p4 --watch ./ --queues odb
 
 
 

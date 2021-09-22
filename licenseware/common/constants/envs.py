@@ -21,43 +21,23 @@ import os
 from dataclasses import dataclass
 
 
-def get_auth_users_url():
-    
-    if os.environ['AUTH_SERVICE_URL'] and os.environ['AUTH_SERVICE_USERS_URL_PATH']:
-        return os.environ['AUTH_SERVICE_URL'] + os.environ['AUTH_SERVICE_USERS_URL_PATH']
-    
-    return None
-
-
-def get_auth_machines_url():
-
-    if os.environ['AUTH_SERVICE_URL'] and os.environ['AUTH_SERVICE_MACHINES_URL_PATH']:
-        return os.environ['AUTH_SERVICE_URL'] + os.environ['AUTH_SERVICE_MACHINES_URL_PATH']
-        
-    return None
-
-
 
 @dataclass
 class envs:
 
     # Environment variables available at startup
-    DEBUG:bool = os.environ['DEBUG'] == 'true'
-    USE_BACKGROUND_WORKER:bool = os.environ['USE_BACKGROUND_WORKER'] == 'true'
-    ENVIRONMENT:str = os.environ["ENVIRONMENT"]
-    PERSONAL_SUFFIX:str = os.environ["PERSONAL_SUFFIX"]
     APP_ID:str = os.environ["APP_ID"]
-    APP_HOST:str = os.environ['APP_HOST']
     LWARE_USER:str = os.environ['LWARE_IDENTITY_USER']
     LWARE_PASSWORD:str = os.environ['LWARE_IDENTITY_PASSWORD']
+    PERSONAL_SUFFIX:str = os.getenv("PERSONAL_SUFFIX", "")
+    ENVIRONMENT:str = os.getenv("ENVIRONMENT", 'production')
+    DEBUG:bool = os.getenv('DEBUG') == 'true'
+    USE_BACKGROUND_WORKER:bool = os.getenv('USE_BACKGROUND_WORKER', 'true') == 'true'
     
-    AUTH_USERS_URL:str = get_auth_users_url()
-    AUTH_MACHINES_URL:str = get_auth_machines_url()
-    AUTH_BASE_URL:str = os.environ['AUTH_SERVICE_URL']
-    AUTH_MACHINES_ROUTE:str = os.environ['AUTH_SERVICE_MACHINES_URL_PATH']
-    AUTH_USERS_ROUTE:str = os.environ['AUTH_SERVICE_USERS_URL_PATH']
-    AUTH_MACHINE_CHECK_URL:str = os.environ['AUTH_SERVICE_URL'] + '/machine_authorization'
-    AUTH_USER_CHECK_URL:str = os.environ['AUTH_SERVICE_URL'] + '/verify'
+    AUTH_SERVICE_URL:str = os.environ['AUTH_SERVICE_URL']
+    AUTH_MACHINES_URL:str = AUTH_SERVICE_URL + '/machines'
+    AUTH_MACHINE_CHECK_URL:str = AUTH_SERVICE_URL + '/machine_authorization'
+    
     
     REGISTRY_SERVICE_URL:str = os.environ['REGISTRY_SERVICE_URL']
     REGISTER_APP_URL:str = REGISTRY_SERVICE_URL + '/apps'
@@ -66,7 +46,8 @@ class envs:
     REGISTER_REPORT_URL:str = REGISTRY_SERVICE_URL + '/reports'
     REGISTER_REPORT_COMPONENT_URL:str = REGISTER_REPORT_URL + '/components'
     
-    APP_PATH:str = "/" + APP_ID
+    APP_HOST:str = os.environ['APP_HOST']
+    APP_PATH:str = "/" + APP_ID if '-service' not in APP_ID else  "/" + APP_ID.replace('-service', '')
     BASE_URL:str = APP_HOST + APP_PATH
     UPLOAD_PATH:str = '/uploads'
     REPORT_PATH:str = '/reports'
@@ -76,19 +57,20 @@ class envs:
     REPORT_COMPONENT_URL:str = BASE_URL + REPORT_COMPONENT_PATH
     FILE_UPLOAD_PATH:str = os.getenv("FILE_UPLOAD_PATH", 'tmp/lware')
     
-    # Base mongo collection names
-    MONGO_COLLECTION_DATA_NAME:str = APP_ID.upper() + "Data" 
-    MONGO_COLLECTION_UTILIZATION_NAME:str = APP_ID.upper() + "Utilization"
-    MONGO_COLLECTION_ANALYSIS_NAME:str = APP_ID.upper() + "Analysis"
+    # Mongo connection
+    MONGO_DATABASE_NAME:str = os.getenv("MONGO_DATABASE_NAME") or os.getenv("MONGO_DB_NAME") or 'db'
+    MONGO_CONNECTION_STRING:str = os.environ['MONGO_CONNECTION_STRING'] or 'mongodb://localhost:27017/db'
     
-    # Mongo connection data
-    # MONGO_ROOT_USERNAME:str = os.environ["MONGO_ROOT_USERNAME"]
-    # MONGO_ROOT_PASSWORD:str = os.environ["MONGO_ROOT_PASSWORD"]
-    MONGO_DATABASE_NAME:str = os.environ["MONGO_DATABASE_NAME"]
-    # MONGO_HOSTNAME:str = os.environ["MONGO_HOSTNAME"]
-    # MONGO_PORT:str = os.environ["MONGO_PORT"] 
-    MONGO_CONNECTION_STRING:str = os.environ['MONGO_CONNECTION_STRING']
+    # Base mongo collection names
+    MONGO_COLLECTION_DATA_NAME:str = APP_ID.upper() + "Data" if "-service" not in APP_ID else 'Data'
+    MONGO_COLLECTION_UTILIZATION_NAME:str = APP_ID.upper() + "Utilization"  if "-service" not in APP_ID else 'Utilization'
+    MONGO_COLLECTION_ANALYSIS_NAME:str = APP_ID.upper() + "Analysis" if "-service" not in APP_ID else 'Analysis'
+    
+    
+    #Redis connection
+    REDIS_CONNECTION_STRING:str = os.environ['REDIS_CONNECTION_STRING'] or 'redis://localhost:6379/0'
 
+    
     
     # Environment variables added later by the app
     # envs.method_name() - calls the variable dynamically 

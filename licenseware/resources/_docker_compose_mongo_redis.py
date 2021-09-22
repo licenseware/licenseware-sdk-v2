@@ -8,6 +8,8 @@ services:
     restart: unless-stopped
     ports:
       - '6379:6379'
+    environment:
+      - 'REDIS_CONNECTION_STRING=${REDIS_CONNECTION_STRING}'
     
   mongo_db_dev:
     container_name: mongo_db_dev

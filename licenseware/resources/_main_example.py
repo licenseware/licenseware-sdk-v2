@@ -1,8 +1,4 @@
-from dataclasses import dataclass
 from dotenv import load_dotenv
-
-from licenseware import endpoint_builder
-
 load_dotenv()  
 
 import datetime
@@ -25,8 +21,8 @@ from licenseware.uploader_builder import UploaderBuilder
 from licenseware.uploader_validator import UploaderValidator
 from licenseware.utils.logger import log
 
-from licenseware.schema_namespace import SchemaNamespace, MongoCrud, metaspecs
-from licenseware.editable_table import EditableTable
+from licenseware.schema_namespace import SchemaNamespace, MongoCrud
+from licenseware.editable_table import EditableTable, metaspecs
 
 
 
@@ -35,7 +31,7 @@ app = Flask(__name__)
 
 # APP
 
-ifmp_app = AppBuilder(
+App = AppBuilder(
     name = 'Infrastructure Mapper',
     description = 'Overview of devices and networks',
     flags = [flags.BETA]
@@ -121,7 +117,7 @@ rv_tools_uploader = UploaderBuilder(
 # Here we are:
 # - adding the uploader to the main app (uploaders list)
 # - sending uploader information to registry-service
-ifmp_app.register_uploader(rv_tools_uploader)
+App.register_uploader(rv_tools_uploader)
 
 
 
@@ -235,7 +231,7 @@ virtual_overview = VirtualOverview(
 
 # TODO raise component_id conflict
 # Register component to registry-service (to act as a first class citizen)
-ifmp_app.register_report_component(virtual_overview)
+App.register_report_component(virtual_overview)
 
 
 
@@ -255,7 +251,7 @@ virtualization_details_report = ReportBuilder(
 )
 
 
-ifmp_app.register_report(virtualization_details_report)
+App.register_report(virtualization_details_report)
 
 
 
@@ -278,7 +274,7 @@ class CustomApiRoute(Resource):
     
 # Add it to main app 
 # it will have the same namespace prefix /ifmp/v1/ + ns-prefix/custom-api-route
-ifmp_app.add_namespace(custom_ns, path='/ns-prefix')
+App.add_namespace(custom_ns, path='/ns-prefix')
 
 # If the namespace defined up it's used on all apps 
 # add it to licenseware sdk in app_builder default routes
@@ -302,7 +298,7 @@ def get_custom_data_from_mongo(flask_request):
 
 custom_func_endpoint = EndpointBuilder(get_custom_data_from_mongo)
 
-ifmp_app.register_endpoint(custom_func_endpoint)
+App.register_endpoint(custom_func_endpoint)
 
 
 
@@ -322,7 +318,7 @@ class DeviceData(Schema):
     
 custom_schema_endpoint = EndpointBuilder(DeviceData)
 
-ifmp_app.register_endpoint(custom_schema_endpoint)
+App.register_endpoint(custom_schema_endpoint)
 
 
 
@@ -331,24 +327,29 @@ ifmp_app.register_endpoint(custom_schema_endpoint)
 
 # Defining our schema
 class UserSchema(Schema):
+    """ Here is some Namespace docs for user """
     name = fields.Str(required=True)
     occupation = fields.Str(required=True)
 
 
-# Overwritting mongo crud methods (ONLY static methods must be used)
+# Overwritting mongo crud methods 
 class UserOperations(MongoCrud):
     
-    @staticmethod
-    def get_data(flask_request):
+    def __init__(self, schema: Schema, collection: str):
+        self.schema = schema
+        self.collection = collection
+        super().__init__(schema, collection)
+    
+    def get_data(self, flask_request):
         
-        query = UserOperations.get_query(flask_request)
+        query = self.get_query(flask_request)
         
-        results = mongodata.fetch(match=query, collection=UserOperations.collection)
+        results = mongodata.fetch(match=query, collection=self.collection)
 
         return {"status": states.SUCCESS, "message": results}, 200
     
-    @staticmethod
-    def post_data(flask_request):
+    
+    def post_data(self, flask_request):
 
         query = UserOperations.get_query(flask_request)
 
@@ -357,24 +358,23 @@ class UserOperations(MongoCrud):
         )
 
         inserted_docs = mongodata.insert(
-            schema=UserOperations.schema,
-            collection=UserOperations.collection,
+            schema=self.schema,
+            collection=self.collection,
             data=data
         )
 
         return inserted_docs
     
     
-    @staticmethod
-    def put_data(flask_request):
+    def put_data(self, flask_request):
         
-        query = UserOperations.get_query(flask_request)
+        query = self.get_query(flask_request)
         
         updated_docs = mongodata.update(
-            schema=UserOperations.schema,
+            schema=self.schema,
             match=query,
             new_data=dict(query, **{"updated_at": datetime.datetime.utcnow().isoformat()}),
-            collection=UserOperations.collection,
+            collection=self.collection,
             append=False
         )
         
@@ -384,12 +384,11 @@ class UserOperations(MongoCrud):
         return {"status": states.SUCCESS, "message": ""}, 200
         
     
-    @staticmethod
-    def delete_data(flask_request):
+    def delete_data(self, flask_request):
 
-        query = UserOperations.get_query(flask_request)
+        query = self.get_query(flask_request)
 
-        deleted_docs = mongodata.delete(match=query, collection=UserOperations.collection)
+        deleted_docs = mongodata.delete(match=query, collection=self.collection)
 
         return deleted_docs
 
@@ -405,7 +404,7 @@ UserNs = SchemaNamespace(
 
 # Adding the namespace generated from schema to our App
 user_ns = UserNs.initialize()
-ifmp_app.add_namespace(user_ns)
+App.add_namespace(user_ns)
 
 
 
@@ -503,7 +502,7 @@ devices_editable_table = EditableTable(
 )
  
 
-ifmp_app.register_editable_table(devices_editable_table)
+App.register_editable_table(devices_editable_table)
 
 
 
@@ -568,20 +567,19 @@ processor_table = EditableTable(
 )
  
 # same as up register the editable table
-ifmp_app.register_editable_table(processor_table)
-
+App.register_editable_table(processor_table)
 
 
 
 
 # Call init_app in the flask function factory 
-ifmp_app.init_app(app)
+App.init_app(app)
 
 
 if __name__ == "__main__":   
     
     # Register app to registry-service
-    ifmp_app.register_app()
+    App.register_app()
     
     app.run(port=4000, debug=True)
     
@@ -589,3 +587,5 @@ if __name__ == "__main__":
     
 # Userid / Tenantid
 # 3d1fdc6b-04bc-44c8-ae7c-5fa5b9122f1a
+# dramatiq main:App.broker -p4 --watch ./ --queues odb
+

@@ -17,7 +17,7 @@ dev:
 	python3 main.py
 
 worker:
-	flask worker -p4
+	dramatiq main:App.broker -p4 --watch ./
 	
 test:
 	echo create some tests

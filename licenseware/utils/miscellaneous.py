@@ -77,11 +77,8 @@ def get_user_id(tenant_id:str = None):
 
     
     response = requests.get(
-        url=envs.AUTH_USERS_URL,
-        headers={
-            "TenantId": tenant_id,
-            "Authorization": envs.get_auth_token()
-        }
+        url=envs.AUTH_MACHINE_CHECK_URL,
+        headers={"Authorization": envs.get_auth_token()}
     )
     
     if response.status_code == 200:

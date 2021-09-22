@@ -15,28 +15,21 @@ class Authenticator:
     response = Authenticator.connect() 
     
     :response is a tuple: json, status code 
-
-
+    
     Requirements:
 
     Set login values in environment variables:
-    - LWARE_IDENTITY_USER (the email)
+    - LWARE_IDENTITY_USER (the email/machine_name)
     - LWARE_IDENTITY_PASSWORD (the password)
-    - AUTH_SERVICE_URL (the url for authentication)
-    - AUTH_SERVICE_USERS_URL_PATH (route auth to users)
-
-    For services auth this env must be available:
-    - AUTH_SERVICE_MACHINES_URL_PATH (route auth to be used between services)
-
+    
+    
     """
 
-    #TODO just machine auth remove users auth
-    
     def __init__(self):
 
-        self.email = envs.LWARE_USER
+        self.machine_name = envs.LWARE_USER
         self.password = envs.LWARE_PASSWORD
-        self.auth_url = envs.AUTH_MACHINES_URL or envs.AUTH_USERS_URL
+        self.auth_url = envs.AUTH_MACHINES_URL
         self.auth_login_url = f"{self.auth_url}/login"
         self.auth_create_url = f'{self.auth_url}/create'
         
@@ -61,9 +54,8 @@ class Authenticator:
 
     def _login(self):
         
-        identity = "machine_name" if envs.AUTH_MACHINES_URL else "email"
         payload = {
-            identity: self.email,
+            "machine_name": self.machine_name,
             "password": self.password
         }
         
@@ -71,8 +63,8 @@ class Authenticator:
 
         if response.status_code == 200:
             return response.json(), 200
-        else:
-            return self._create_machine()
+        
+        return self._create_machine()
 
 
     def _create_machine(self):
@@ -84,7 +76,7 @@ class Authenticator:
                    }, 403
 
         payload = {
-            "machine_name": self.email,
+            "machine_name": self.machine_name,
             "password": self.password
         }
 

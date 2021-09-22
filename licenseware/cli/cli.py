@@ -166,10 +166,21 @@ def start_background_worker():
     app_id = None
     m = re.search(r"APP_ID=(.*)", env_data)
     if m: app_id = m.group(1)
+    
+    debug = False
+    m = re.search(r"DEBUG=(.*)", env_data)
+    if m: debug = m.group(1) == 'true'
 
-    if app_id:
-        os.system(f"flask worker -p4 -Q{app_id}")
+    if app_id and debug:
+        os.system(f'dramatiq main:App.broker -p4 --watch ./ --queues {app_id}')
+
+    elif app_id:
+        os.system(f'dramatiq main:App.broker -p4 --queues {app_id}')
+        
+    elif debug:
+        os.system(f'dramatiq main:App.broker -p4 --watch ./')
+        
     else:#listen to all queues
-        os.system(f"flask worker -p4")
+        os.system("dramatiq main:App.broker -p4")
 
     

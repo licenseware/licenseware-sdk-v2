@@ -9,7 +9,7 @@ from licenseware.utils.logger import log
 # python3 -m unittest tests/test_editable_tables.py
 
 
-class DeviceSchema(Schema):
+class DeviceTableSchema(Schema):
     _id = fields.Str(required=False)
     device_name = fields.Str(required=True)
     number_of_processors = fields.Int(required=False)
@@ -19,7 +19,7 @@ class TestEditableTables(unittest.TestCase):
     
     def test_editable_tables(self):
         
-        editable_tables = editable_tables_from_schemas([DeviceSchema])
+        editable_tables = editable_tables_from_schemas([DeviceTableSchema])
         
         log.warning(editable_tables)
         
