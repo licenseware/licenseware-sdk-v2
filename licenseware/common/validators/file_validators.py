@@ -51,17 +51,15 @@ def validate_text_contains_all(text, text_contains_all):
 
     if not text_contains_all: return
 
-    matches = []
+    matches_count = 0
     for txt_to_find in text_contains_all:
         pattern = re.compile(re.escape(txt_to_find), flags=re.IGNORECASE)
         match = re.search(pattern, text)
-        if match:
-            if match[0] not in matches:
-                matches.append(match[0])
+        if match: matches_count += 1
 
-    if sorted(matches) != sorted(text_contains_all):
+    if matches_count < len(text_contains_all):
         raise ValueError(f'File must contain the all following keywords: {", ".join(text_contains_all)}')
-    
+
 
 def validate_text_contains_any(text, text_contains_any):
     """
@@ -69,17 +67,14 @@ def validate_text_contains_any(text, text_contains_any):
     """
 
     if not text_contains_any: return
-
-    matches = []
+    
     for txt_to_find in text_contains_any:
         pattern = re.compile(re.escape(txt_to_find), flags=re.IGNORECASE)
         match = re.search(pattern, text)
-        if match:
-            if match.group(0) not in matches:
-                matches.append(match.group(0))
+        if match: return
 
-    if not matches:
-        raise ValueError(f'File must contain at least one of the following keywords: {", ".join(text_contains_any)}')
+    raise ValueError(f'File must contain at least one of the following keywords: {", ".join(text_contains_any)}')
+
 
 
 def validate_columns(df, required_columns, required_sheets=[]):
@@ -190,6 +185,10 @@ class GeneralValidator:
             Determine which handler to use based on input type provided 
             Raise error if file/obj type is not as expected (excel/txt file, or string/stream) 
         """
+        
+        if isinstance(self.input_object, str): 
+            self.required_input_type = 'string'
+            return 
 
         if "stream" in str(dir(self.input_object)):
             if self.required_input_type == 'excel':
