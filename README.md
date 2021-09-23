@@ -44,17 +44,22 @@ Here are the steps needed for local development of an app:
 - Create a new app : `licenseware new-app odb`;
 - Create a new uploader: `licenseware new-uploader lms_options`;
 - Update modules `validator.py` `worker.py` as per processing requirements needs for `lms_options` uploader_id. Modules created will be found here: `app/uploaders/lms_options`
+- Open the first terminal start the mock-server : `licenseware run-dev`;
+- Copy `docker-compose.yml` file to `Documents` folder start the databases `docker-compose up -d`;
+
+
+Or instead of `licenseware run-dev` you can start 3 terminals and add the commands bellow:
 - Open the first terminal start the mock-server : `licenseware start-mock-server`;
 - Open the second terminal start the redis background worker: `licenseware start-background-worker`;
 - Open the third terminal start the development server: `licenseware start-dev-server`;
-- Copy `docker-compose-mongo-redis.yml` file to `Documents` folder start the databases with:
 
-```
-docker-compose -f docker-compose-mongo-redis.yml up -d --remove-orphans --force-recreate
-```
+Logs will be less cluttered and prettier using this method.
 
 You will have mongoexpress running at: `http://localhost:8081/`
 
+If ports are blocked by another process and you can't start the development servers use the commands bellow (ubuntu/debian):
+- `sudo fuser -k 4000/tcp` - kill process running on port `4000` to start the mock server;
+- `sudo fuser -k 5000/tcp` - kill process running on port `5000` to start the dev server;
 
 
 
@@ -151,13 +156,14 @@ Bellow is a full working example of almost all features the sdk provides.
 Start the services in the following order:
 
 1. `make up` - mongo and redis;
-2. `licenseware start-mock-server` - mock dependency server for our app;
-3. `licenseware start-background-worker` - start the app server;
-4. `licenseware start-dev-server` - start the background worker.
+2. `licenseware run-dev` - development servers;
+
 
 **Attention**
 
 If you perviously started the docker-compose file with redis and mongo you may encounter some issues related to port already in use or docker container names. It's enough to build the image once `Documents` folder for example, after that you will always have available the mongo and redis databases.
+
+
 
 
 
@@ -817,18 +823,12 @@ Each **REPORT COMPONENT** has:
 Fist make sure you have set the environment variables:
 
 ```
-
 #.env
 
 DEBUG=true
 ENVIRONMENT=local
 PERSONAL_SUFFIX=_222
-
-
-FLASK_APP=main:app
-FLASK_RUN_HOST=localhost
-FLASK_RUN_PORT=4000
-FLASK_DEBUG=true
+USE_BACKGROUND_WORKER=true
 
 APP_ID=odb
 APP_HOST=http://localhost:5000
@@ -836,25 +836,18 @@ APP_HOST=http://localhost:5000
 LWARE_IDENTITY_USER=John
 LWARE_IDENTITY_PASSWORD=secret
 
-AUTH_SERVICE_URL=http://localhost:5000/auth
-AUTH_SERVICE_USERS_URL_PATH=/users
-AUTH_SERVICE_MACHINES_URL_PATH=/machines
-
-REGISTRY_SERVICE_URL=http://localhost:5000/registry-service
+AUTH_SERVICE_URL=http://localhost:4000/auth
+REGISTRY_SERVICE_URL=http://localhost:4000/registry-service
 
 FILE_UPLOAD_PATH=/tmp/lware
 
-MONGO_ROOT_USERNAME=John
-MONGO_ROOT_PASSWORD=secret
-MONGO_HOSTNAME=localhost
-MONGO_PORT=27017
 MONGO_DATABASE_NAME=db
-MONGO_CONNECTION_STRING=mongodb://${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DATABASE_NAME}
-
-REDIS_HOST=redis_db_dev
-REDIS_PORT=6379
+MONGO_CONNECTION_STRING=mongodb://localhost:27017/db
+REDIS_CONNECTION_STRING=redis://localhost:6379/0
 
 ```
+
+`USE_BACKGROUND_WORKER` set to false or not present will skip using background server and process the uploaders data straight on request.
 
 Start `redis` and `mongo` databases:
 
