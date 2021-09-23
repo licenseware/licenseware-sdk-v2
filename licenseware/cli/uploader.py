@@ -74,6 +74,38 @@ def _add_uploader_import_to_app_init_file(uploader_id:str):
         f.write(data)
 
 
+def _create_test_filename_validation(uploader_id:str):
+    
+    fname = f'test_filename_validation_{uploader_id}.py' 
+    file_path = os.path.join('tests', fname)
+    if not os.path.exists(file_path):
+        raw_contents = pkg_resources.read_text(resources, '_test_filename_validation_uploader_id.py')
+        tmp = Template(raw_contents)
+        file_contents = tmp.render(uploader_id=uploader_id)
+    
+        with open(file_path, 'w') as f:
+            f.write(file_contents)
+    
+
+def _create_test_filecontent_validation(uploader_id:str):
+    
+    fname = f'test_filecontent_validation_{uploader_id}.py' 
+    file_path = os.path.join('tests', fname)
+    if not os.path.exists(file_path):
+        raw_contents = pkg_resources.read_text(resources, '_test_filecontent_validation_uploader_id.py')
+        tmp = Template(raw_contents)
+        file_contents = tmp.render(uploader_id=uploader_id)
+    
+        with open(file_path, 'w') as f:
+            f.write(file_contents)
+    
+    
+def _create_test_files_folder(uploader_id:str):
+    
+    test_files_path = f"./test_files/{uploader_id}"
+    if not os.path.exists(test_files_path): 
+        os.makedirs(test_files_path)
+    
 
 
 def create_uploader(uploader_id:str):
@@ -88,4 +120,8 @@ def create_uploader(uploader_id:str):
     _create_uploader_worker_file(path, uploader_id)
     _create_uploader_validator_file(path, uploader_id)
     _add_uploader_import_to_app_init_file(uploader_id)
+    _create_test_filename_validation(uploader_id)
+    _create_test_filecontent_validation(uploader_id)
+    _create_test_files_folder(uploader_id)
+    
          
