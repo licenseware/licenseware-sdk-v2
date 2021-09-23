@@ -129,7 +129,7 @@ def start_mock_server():
     """
         Start the mock server needed which is a placeholder for registry-service and auth-service
     """
-    os.system("uwsgi --http 0.0.0.0:5000 -w mock_server:app --processes 4")
+    os.system("make mock")
 
 
 
@@ -138,7 +138,7 @@ def start_dev_server():
     """
         Start the development server (flask server with debug on)
     """
-    os.system("python3 main.py")
+    os.system("make dev")
 
 
 
@@ -147,7 +147,7 @@ def start_prod_server():
     """
         Start the production server (uwsgi server with 4 processes)
     """
-    os.system("uwsgi --http 0.0.0.0:4000 -w main:app --processes 4")
+    os.system("make prod")
 
     
     
@@ -156,31 +156,17 @@ def start_background_worker():
     """
         Start the redis background worker with 4 processes and with queue of app id from .env
     """
+    os.system("make worker")
     
-    if not os.path.exists('.env'):
-        raise Exception("Expected '.env' file to be found in this directory")
-        
-    with open('.env', 'r') as f:
-        env_data = f.read()
-        
-    app_id = None
-    m = re.search(r"APP_ID=(.*)", env_data)
-    if m: app_id = m.group(1)
     
-    debug = False
-    m = re.search(r"DEBUG=(.*)", env_data)
-    if m: debug = m.group(1) == 'true'
-
-    if app_id and debug:
-        os.system(f'dramatiq main:App.broker -p4 --watch ./ --queues {app_id}')
-
-    elif app_id:
-        os.system(f'dramatiq main:App.broker -p4 --queues {app_id}')
-        
-    elif debug:
-        os.system(f'dramatiq main:App.broker -p4 --watch ./')
-        
-    else:#listen to all queues
-        os.system("dramatiq main:App.broker -p4")
-
+@app.command()
+def run_dev():
+    """ Start development environment """
+    os.system("make run-dev")
     
+    
+
+@app.command()
+def run_prod():
+    """ Start production environment """
+    os.system("make run-prod")

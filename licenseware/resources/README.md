@@ -11,10 +11,10 @@ Here are the steps needed for local development of an app:
 - Open the first terminal start the mock-server : `licenseware start-mock-server`;
 - Open the second terminal start the redis background worker: `licenseware start-background-worker`;
 - Open the third terminal start the development server: `licenseware start-dev-server`;
-- Copy `docker-compose-mongo-redis.yml` file to `Documents` folder start the databases with:
+- Copy `docker-compose.yml` file to `Documents` folder start the databases with:
 
 ```
-docker-compose -f docker-compose-mongo-redis.yml up -d --remove-orphans --force-recreate
+docker-compose up
 ```
 
 You will have mongoexpress running at: `http://localhost:8081/`

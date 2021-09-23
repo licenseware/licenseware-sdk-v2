@@ -1,5 +1,6 @@
 import unittest
 from licenseware.cli.github_workflows import create_github_workflows
+from licenseware.cli.aws_cloud_formation import create_aws_cloud_formation
 
 import os
 import shutil
@@ -11,7 +12,12 @@ import shutil
 class TestDevOpsFiles(unittest.TestCase):
     
     def tearDown(self):
-        shutil.rmtree(".github")
+        
+        if os.path.exists(".github"):
+            shutil.rmtree(".github")
+    
+        if os.path.exists("cloudformation-templates"):
+            shutil.rmtree("cloudformation-templates")
     
     
     def test_git_workflow_files(self):
@@ -22,4 +28,10 @@ class TestDevOpsFiles(unittest.TestCase):
         self.assertEqual(len(os.listdir('.github/workflows')), 3)
         
         
+    def test_aws_cloud_formation(self):
+        
+        create_aws_cloud_formation('odb')
+
+        self.assertTrue(os.path.exists('cloudformation-templates'))
+        self.assertEqual(len(os.listdir('cloudformation-templates')), 2)
         

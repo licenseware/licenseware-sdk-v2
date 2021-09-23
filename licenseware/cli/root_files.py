@@ -9,18 +9,32 @@ import importlib.resources as pkg_resources
 from jinja2 import Template
 
 
-# not sure why only .py files end up in the wheel
+from .github_workflows import create_github_workflows
+from .aws_cloud_formation import create_aws_cloud_formation
+
+
+# Underscore tells pyoc3 to ignore them from creating docs 
+# (otherwise an error will occur)  
 resources_filenames = {
     '_main_example.py': 'main_example.py',
     '_main.py': 'main.py',
     '_mock_server.py': 'mock_server.py',
     '_setup.py': 'setup.py',
-    '_docker_compose_mongo_redis.py': 'docker-compose-mongo-redis.yml',
-    '_env_file.py': '.env',
-    '_gitignore_file.py': '.gitignore',
-    '_makefile_file.py': 'makefile',
-    '_README.md_file.py': 'README.md',
-    '_requirements.txt_file.py': 'requirements.txt',
+    'docker_compose_mongo_redis.yml': 'docker-compose.yml',
+    'env': '.env',
+    'gitignore': '.gitignore',
+    'makefile': 'makefile',
+    'README.md': 'README.md',
+    'requirements.txt': 'requirements.txt',
+    #DevOps
+    'dockerignore': '.dockerignore',
+    'CHANGELOG.md': 'CHANGELOG.md',
+    'docker-entrypoint.sh': 'docker-entrypoint.sh',
+    'Dockerfile': 'Dockerfile',
+    'Dockerfile.local': 'Dockerfile.local',
+    'Procfile': 'Procfile',
+    'Procfile.local': 'Procfile.local',
+    'version.txt': 'version.txt'
  }
      
      
@@ -38,3 +52,8 @@ def create_root_files(app_id:str):
             
             with open(fname, 'w') as f:
                 f.write(file_contents)
+                
+                
+    create_github_workflows(app_id)
+    create_aws_cloud_formation(app_id)
+    

@@ -1,6 +1,8 @@
 docker_command = COMPOSE_HTTP_TIMEOUT=200 docker-compose -f docker-compose-mongo-redis.yml
 
 
+# App
+
 up:
 	$(docker_command) up -d --remove-orphans --force-recreate
 down:
@@ -12,16 +14,22 @@ prod:
 
 mock:
 	uwsgi --http 0.0.0.0:4000 -w mock_server:app --processes 4
-
+	
 dev:
 	python3 main.py
 
 worker:
-	dramatiq main:App.broker -p4 --watch ./
-	
+	dramatiq main:App.broker -p4
+
+# This starts mock, dev and worker
+run-dev:
+	honcho start -f Procfile.local
+
+
 test:
 	rm -rf tests/__pycache__
 	python3 -m unittest tests/*
+
 
 dev-docs:
 	pdoc --http : app
@@ -44,11 +52,40 @@ sdk-test:
 	python3 -m unittest tests/test_sdk_cli.py
 	rm -rf tests/__pycache__
 	python3 -m unittest tests/*
-	rm -rf docker-compose-mongo-redis.yml
+	rm -rf docker-compose.yml
 	rm -rf main_example.py
 	rm -rf main.py
 	rm -rf app.log
-	rm -rf app
+	rm -rf .dockerignore
+	rm -rf .github
+	rm -rf cloudformation-templates
+	rm -rf __pycache__
+	rm -rf CHANGELOG.md
+	rm -rf docker-entrypoint.sh
+	rm -rf Dockerfile
+	rm -rf Dockerfile.local
+	rm -rf Procfile
+	rm -rf Procfile.local
+	rm -rf version.txt
+
+
+clean-sdk:
+	rm -rf docker-compose.yml
+	rm -rf main_example.py
+	rm -rf main.py
+	rm -rf app.log
+	rm -rf .dockerignore
+	rm -rf .github
+	rm -rf cloudformation-templates
+	rm -rf __pycache__
+	rm -rf CHANGELOG.md
+	rm -rf docker-entrypoint.sh
+	rm -rf Dockerfile
+	rm -rf Dockerfile.local
+	rm -rf Procfile
+	rm -rf Procfile.local
+	rm -rf version.txt
+
 	
 
 sdk-dev-docs:

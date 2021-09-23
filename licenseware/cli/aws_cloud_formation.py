@@ -7,23 +7,22 @@ import importlib.resources as pkg_resources
 from jinja2 import Template
 
 
-git_workflows_path = '.github/workflows'
+cloudformation_path = './cloudformation-templates'
 
 resources_filenames = {
-    'github-workflows-app_id-api_prod.yml': '{app_id}-api_prod.yml',
-    'github-workflows-app_id-api.yml': '{app_id}-api.yml',
-    'github-workflows-release-please.yml': 'release-please.yml'
+    'cloud-formation-app_id-api_prod.yml': '{app_id}-api_prod.yml',
+    'cloud-formation-app_id-api.yml': '{app_id}-api.yml'
 }
 
 
 
-def create_github_workflows(app_id:str = None):
+def create_aws_cloud_formation(app_id:str = None):
     
-    if not os.path.exists(git_workflows_path): 
-        os.makedirs(git_workflows_path)
+    if not os.path.exists(cloudformation_path): 
+        os.makedirs(cloudformation_path)
     
     for rname, fname in resources_filenames.items():  
-        fpath = os.path.join(git_workflows_path, fname.format(app_id=app_id))
+        fpath = os.path.join(cloudformation_path, fname.format(app_id=app_id))
         if os.path.exists(fpath): continue
         raw_contents = pkg_resources.read_text(resources, rname)
         tmp = Template(raw_contents)

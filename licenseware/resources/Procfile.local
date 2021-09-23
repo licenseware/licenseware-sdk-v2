@@ -1,0 +1,3 @@
+web: uwsgi --http 0.0.0.0:5000 -w main:app --processes 1
+worker: dramatiq main:App.broker -p1 --queues {{ app_id.replace('-service', '') }}
+mock: uwsgi --http 0.0.0.0:4000 -w mock_server:app --processes 1

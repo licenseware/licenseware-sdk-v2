@@ -44,11 +44,12 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     install_requires=REQUIREMENTS,
-    include_package_data=True,
     packages=find_packages(
         where=".",
         exclude=["tests"]
     ),
+    include_package_data=True,
+    package_data={"": ["*"]},
     entry_points={
         'console_scripts': [
             'licenseware=licenseware.cli:cli_entrypoint',
