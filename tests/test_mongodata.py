@@ -1,7 +1,5 @@
 import unittest
 
-from pymongo import collection
-
 from licenseware.utils.logger import log
 from marshmallow import Schema, fields
 

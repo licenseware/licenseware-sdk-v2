@@ -3,7 +3,7 @@
 Abstraction and validation of inserted data in mongodb
 
 
-import licenseware.mongodata as m
+from licenseware import mongodata
 or
 from licenseware import mongodata as m
 
@@ -16,11 +16,23 @@ Available functions:
 - aggregate
 - delete
 - delete_collection
+- document_count
 
 Needs the following environment variables:
 - MONGO_DATABASE_NAME
 - MONGO_CONNECTION_STRING
 - MONGO_COLLECTION_NAME (optional)
+
+
+For pagination on fetch to this:
+{
+    "#pagination": {
+        "max_items_to_fetch": 20, #limit
+        "currently_fetched_items": 0 #skip
+    }
+}
+
+
 
 """
 
@@ -125,10 +137,6 @@ def parse_match(match):
     return categ
 
 
-# sort_dict = lambda data: {k:data[k] for k in sorted(data)}
-mongo_connection = None
-
-
 def get_db_name(db_name):
     if db_name:
         return db_name
@@ -227,8 +235,9 @@ def fetch(match, collection, as_list=True, db_name=None):
 
     """
 
-    match = parse_match(match)
-
+    pagination = match.pop("#pagination", None)
+    match = parse_match(match)    
+    
     db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
     with Connect.get_connection() as mongo_connection:
@@ -236,24 +245,41 @@ def fetch(match, collection, as_list=True, db_name=None):
         if not isinstance(collection, Collection):
             return collection
 
-        if match['_id']:
+        if match['_id']:    
             found_docs = collection.find(match['_id'])
             doc = []
-            if found_docs:
-                doc = list(found_docs)[0]
-            if match['oid']:
-                doc = parse_doc(doc)
+            if found_docs: doc = list(found_docs)[0]
+            if match['oid']: doc = parse_doc(doc)
             return doc
 
         if match['distinct_key']:
-            found_docs = collection.with_options(read_concern=ReadConcern(
-                "majority")).distinct(match['distinct_key'])
+            found_docs = collection.with_options(
+                read_concern=ReadConcern("majority")).distinct(match['distinct_key'])
+            
         elif match['query_tuple']:
-            found_docs = collection.with_options(
-                read_concern=ReadConcern("majority")).find(*match['query_tuple'])
+            
+            if pagination:
+                
+                found_docs = collection.with_options(read_concern=ReadConcern("majority"))\
+                .find(*match['query_tuple'])\
+                .skip(pagination['currently_fetched_items'])\
+                .limit(pagination['max_items_to_fetch'])
+                
+            else:
+                found_docs = collection.with_options(
+                    read_concern=ReadConcern("majority")).find(*match['query_tuple'])
+        
         else:
-            found_docs = collection.with_options(
-                read_concern=ReadConcern("majority")).find(match['query'])
+            
+            if pagination:
+                found_docs = collection.with_options(read_concern=ReadConcern("majority"))\
+                .find(match['query'])\
+                .skip(pagination['currently_fetched_items'])\
+                .limit(pagination['max_items_to_fetch'])
+            else:    
+                found_docs = collection.with_options(
+                    read_concern=ReadConcern("majority")).find(match['query'])
+
 
         if as_list:
             return [parse_doc(doc) for doc in found_docs]
@@ -281,7 +307,7 @@ def aggregate(pipeline, collection, as_list=True, db_name=None):
         collection = mongo_connection[db_name][collection_name]
         if not isinstance(collection, Collection):
             return collection
-
+        
         found_docs = collection.with_options(read_concern=ReadConcern(
             "majority")).aggregate(pipeline, allowDiskUse=True)
 
