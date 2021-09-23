@@ -6,5 +6,6 @@ from dataclasses import dataclass
 class flags:
     BETA:str = 'beta'
     SOON:str = 'soon'
+    PARTENER_APP:str = 'partner_app'
 
 
