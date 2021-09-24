@@ -38,36 +38,78 @@ class TestPagination(unittest.TestCase):
         
         log.warning(f"Number of documents: {document_counted}")        
 
+
+        # Using __pagination__ match field
+        
+        currently_fetched_items = 0
+
         results = mongodata.fetch(
             match={
-                    "#pagination": {
+                    "__pagination__": {
                         "max_items_to_fetch": 20,
-                        "currently_fetched_items": 0
+                        "currently_fetched_items": currently_fetched_items
                     }
                 },
             collection=self.collection
         )
         
         self.assertEqual(len(results), 20)
+        currently_fetched_items += len(results)
         
         first_batch = results[-1]
         
         
         results = mongodata.fetch(
             match={
-                    "#pagination": {
+                    "__pagination__": {
                         "max_items_to_fetch": 20,
-                        "currently_fetched_items": len(results)
+                        "currently_fetched_items": currently_fetched_items
                     }
                 },
             collection=self.collection
         )
         
         self.assertEqual(len(results), 20)
+        currently_fetched_items += len(results)
+        
         
         second_batch = results[-1]
         
         self.assertNotEqual(first_batch['unique'], second_batch['unique'])
+        
+        
+        # Using limit/skip
+        
+        results = mongodata.fetch(
+            match={},
+            limit = 20,
+            skip = currently_fetched_items,
+            collection=self.collection
+        )
+        
+        self.assertEqual(len(results), 20)
+        currently_fetched_items += len(results)
+        
+        
+        third_batch = results[-1]
+        
+        
+        results = mongodata.fetch(
+            match={},
+            limit=20,
+            skip=currently_fetched_items,
+            collection=self.collection
+        )
+        
+        self.assertEqual(len(results), 20)
+        currently_fetched_items += len(results)
+        
+        
+        fourth_batch = results[-1]
+        
+        self.assertNotEqual(third_batch['unique'], fourth_batch['unique'])
+        
+        
         
         
         

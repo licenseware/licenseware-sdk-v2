@@ -24,30 +24,83 @@ Needs the following environment variables:
 - MONGO_COLLECTION_NAME (optional)
 
 
-For pagination on fetch to this:
-{
-    "#pagination": {
-        "max_items_to_fetch": 20, #limit
-        "currently_fetched_items": 0 #skip
-    }
-}
+Pagination
 
+For pagination make sure to include the special field `__pagination__` on `match` parameter like bellow: 
+
+```py
+
+results = mongodata.fetch(
+    match={
+            "__pagination__": {
+                "max_items_to_fetch": 20,
+                "currently_fetched_items": 0
+            }
+        },
+    collection=self.collection
+)
+
+```
+
+- `max_items_to_fetch` - is the mongo limit;
+- `currently_fetched_items` - is the mongo skip; 
+
+
+Start with `currently_fetched_items` value 0 and increase that value on each iteration.
+If `__pagination__` is not found on match pagination will not be applied.
+
+
+You can also use for pagination `limit` and `skip` paramters provided by the fetch function.
+
+
+This would be the first iteration:
+
+```py
+
+currently_fetched_items = 0
+
+results = mongodata.fetch(
+    match={},
+    limit = 20,
+    skip = currently_fetched_items,
+    collection=self.collection
+)
+
+currently_fetched_items += len(results)
+```
+
+This would be the second iteration:
+
+```py
+results = mongodata.fetch(
+    match={},
+    limit = 20,
+    skip = currently_fetched_items,
+    collection=self.collection
+)
+
+currently_fetched_items += len(results)
+```
+
+And the same is for the next iterations until `len(results)` is 0.
 
 
 """
 
 import os
+import json
 from uuid import UUID
 from pymongo import MongoClient
 from pymongo.collection import Collection
-from licenseware.decorators import failsafe
 from bson.json_util import dumps
 from bson.objectid import ObjectId
-import json
-from licenseware.utils.logger import log
 from pymongo.write_concern import WriteConcern
 from pymongo.read_concern import ReadConcern
 from pymongo.errors import DuplicateKeyError
+
+from licenseware.utils.logger import log
+
+
 
 
 
@@ -219,7 +272,7 @@ def insert(schema, collection, data, db_name=None):
 
 
 
-def fetch(match, collection, as_list=True, db_name=None):
+def fetch(match:dict, collection:str, as_list:bool = True, limit:int = None, skip:int = None, db_name:str = None):
     """
         Get data from mongo, based on match dict or string id.
 
@@ -235,7 +288,7 @@ def fetch(match, collection, as_list=True, db_name=None):
 
     """
 
-    pagination = match.pop("#pagination", None)
+    pagination = match.pop("__pagination__", None)
     match = parse_match(match)    
     
     db_name = get_db_name(db_name)
@@ -265,6 +318,13 @@ def fetch(match, collection, as_list=True, db_name=None):
                 .skip(pagination['currently_fetched_items'])\
                 .limit(pagination['max_items_to_fetch'])
                 
+            elif limit is not None and skip is not None:
+                
+                found_docs = collection.with_options(read_concern=ReadConcern("majority"))\
+                .find(*match['query_tuple'])\
+                .skip(skip)\
+                .limit(limit)
+                
             else:
                 found_docs = collection.with_options(
                     read_concern=ReadConcern("majority")).find(*match['query_tuple'])
@@ -272,10 +332,19 @@ def fetch(match, collection, as_list=True, db_name=None):
         else:
             
             if pagination:
+                
                 found_docs = collection.with_options(read_concern=ReadConcern("majority"))\
                 .find(match['query'])\
                 .skip(pagination['currently_fetched_items'])\
                 .limit(pagination['max_items_to_fetch'])
+            
+            elif limit is not None and skip is not None:
+                
+               found_docs = collection.with_options(read_concern=ReadConcern("majority"))\
+                .find(match['query'])\
+                .skip(skip)\
+                .limit(limit)
+        
             else:    
                 found_docs = collection.with_options(
                     read_concern=ReadConcern("majority")).find(match['query'])
