@@ -13,6 +13,7 @@ class ReportBuilder:
     :report_id - report id (will be used to construct path/route)
     :description - report data description
     :report_components - instantiated class objects from report_components
+    :registrable - If True report will be registered to registry service
     :report_path - the endpoint/route on which this report is found
     :connected_apps - related apps which are needed to build this report
     :flags - use flags dataclass from licenseware.commun.constants
@@ -26,6 +27,7 @@ class ReportBuilder:
         report_id:str,
         description:str,
         report_components:list,
+        registrable:bool = True,
         report_path:str = None,
         connected_apps:list = [],
         flags:list = [],
@@ -39,6 +41,7 @@ class ReportBuilder:
         self.components = report_components
         self.report_path = report_path or '/' + report_id 
         self.register_report_path = self.report_path + '/register'
+        self.registrable = registrable
         self.connected_apps = connected_apps
         self.app_id = envs.APP_ID
         self.flags = flags

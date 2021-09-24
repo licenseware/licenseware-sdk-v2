@@ -13,14 +13,6 @@ def register_app(**kwargs):
         Send a post request to registry service to make app available in front-end
     """
     
-    if not envs.app_is_authenticated():
-        log.warning('App not registered, no auth token available')
-        return {
-            "status": "fail",
-            "message": "App not registered, no auth token available"
-        }, 401
-        
-        
     app_id = envs.APP_ID + envs.PERSONAL_SUFFIX if envs.environment_is_local() else envs.APP_ID
     
     payload = {

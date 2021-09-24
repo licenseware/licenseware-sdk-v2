@@ -287,8 +287,11 @@ def fetch(match:dict, collection:str, as_list:bool = True, limit:int = None, ski
         If something fails will return a string with the error message.
 
     """
-
-    pagination = match.pop("__pagination__", None)
+    
+    pagination = None
+    if isinstance(match, dict): 
+        pagination = match.pop("__pagination__", None)
+    
     match = parse_match(match)    
     
     db_name = get_db_name(db_name)
