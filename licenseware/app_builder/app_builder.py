@@ -7,6 +7,9 @@ Notice that history report route/path is provided but is not implemented that's 
 """
 
 from dataclasses import dataclass
+from licenseware.uploader_builder.uploader_builder import UploaderBuilder
+from licenseware.report_builder.report_builder import ReportBuilder
+from licenseware.report_components.base_report_component import BaseReportComponent
 from typing import List
 from flask_restx.resource import Resource
 from marshmallow.schema import Schema
@@ -141,10 +144,10 @@ class AppBuilder:
         self.app = None
         self.api = None
         self.ns  = None
-        self.reports = []
-        self.report_components = []
-        self.uploaders = []
-        self.custom_namespaces = []
+        self.reports: List[ReportBuilder] = []
+        self.report_components: List[BaseReportComponent] = []
+        self.uploaders: List[UploaderBuilder] = []
+        self.custom_namespaces: List[Namespace] = []
     
         self.appvars = vars(self)
     

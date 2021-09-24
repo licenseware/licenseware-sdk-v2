@@ -1,10 +1,19 @@
-from licenseware.report_components.base_report_component import BaseReportComponent
+import json, os
 from flask import request
-from flask_restx import Namespace, Resource
-from licenseware.decorators.auth_decorators import authorization_check
-from licenseware.decorators import failsafe
+from flask import send_from_directory
 from marshmallow import Schema, fields
+
+from flask_restx import Namespace, Resource
+
+from licenseware.utils.logger import log
+from licenseware.decorators.auth_decorators import authorization_check
+from licenseware.report_components.base_report_component import BaseReportComponent
 from licenseware.utils.miscellaneous import build_restx_model
+from licenseware.decorators import failsafe
+from licenseware.common.constants import envs
+
+
+
 
 
 class ComponentFilterSchema(Schema):
@@ -27,11 +36,24 @@ def create_individual_report_component_resource(component: BaseReportComponent):
         @authorization_check        
         def get(self):
             
-            # clear_data = request.args.get('clear_data', 'false')
-            # if 'true' in clear_data.lower():
-            #     clear_tenant_data(request.headers.get("Tenantid"))
-
-
+            file_type = request.args.get('download_as')
+            tenant_id = request.headers.get('Tenantid')
+    
+            if file_type:
+                
+                data = component.get_data(request)
+            
+                filename = f'{component.component_id}.json'
+                dirpath = envs.get_tenant_upload_path(tenant_id)
+                filepath = os.path.join(dirpath, filename)
+                with open(filepath, 'w') as outfile: json.dump(data, outfile)
+                
+                return send_from_directory(
+                    directory=dirpath, 
+                    filename=filename, 
+                    as_attachment=True
+                )
+                
             return component.get_data(request)
         
     return ReportComponent
@@ -49,13 +71,14 @@ def get_report_individual_components_namespace(ns: Namespace, report_components:
             
         @ns.doc(
             id="Get component data with an optional filter payload",
+            params={'download_as': 'Download table component as file type: csv, xlsx, json'},
             responses={
                 200 : 'Success',
                 403 : "Missing `Tenantid` or `Authorization` information",
                 500 : 'Something went wrong while handling the request' 
-            },
-            body=restx_model
+            }
         )
+        # @ns.expect(restx_model)
         class TempIndvReportComponentResource(IRC): ...
             
         IndvReportComponentResource = type(
