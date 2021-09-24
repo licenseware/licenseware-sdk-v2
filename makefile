@@ -55,6 +55,7 @@ sdk-test:
 	rm -rf docker-compose.yml
 	rm -rf main_example.py
 	rm -rf main.py
+	rm -rf app
 	rm -rf app.log
 	rm -rf .dockerignore
 	rm -rf .github
@@ -73,6 +74,7 @@ clean-sdk:
 	rm -rf docker-compose.yml
 	rm -rf main_example.py
 	rm -rf main.py
+	rm -rf app
 	rm -rf app.log
 	rm -rf .dockerignore
 	rm -rf .github

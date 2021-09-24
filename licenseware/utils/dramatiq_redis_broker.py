@@ -3,5 +3,10 @@ from .flask_dramatiq import Dramatiq
 
 
 broker = Dramatiq(
-    url = os.getenv('REDIS_CONNECTION_STRING')
+    host=os.getenv('REDIS_HOST'),
+    port=os.getenv('REDIS_PORT'),
+    db=os.getenv('REDIS_DB'),
+    password=os.getenv('REDIS_PASSWORD')
 )
+
+

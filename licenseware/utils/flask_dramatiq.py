@@ -136,15 +136,26 @@ class LazyActor(object):
 
 class Dramatiq:
     
-    def __init__(self, *,  app:Flask = None, url:str = None, middleware: any = None):
+    def __init__(
+        self, 
+        *,  
+        app:Flask = None, 
+        host:str = None, 
+        port:int = None, 
+        db:int = None,
+        password:str = None,
+        middleware: list = None
+    ):
         
         self.app = None
-        self.url = url
+        self.host = host
+        self.port = port
+        self.db = db
+        self.password = password
         self.actors = []
         
         #Removing prometheus middleware
         default_middleware.pop(0)
-        
         if middleware is None: middleware = [m() for m in default_middleware]
         self.middleware = middleware
 
@@ -162,9 +173,13 @@ class Dramatiq:
         
         middleware = [AppContextMiddleware(self.app)] + self.middleware
         
-        if self.url.startswith('redis'):
-            self.broker = RedisBroker(url=self.url, middleware=middleware)
-        else: raise Exception("Only 'Redis' broker is supported")
+        self.broker = RedisBroker(
+            host=self.host,
+            port=self.port,
+            db=self.db,
+            password=self.password,
+            middleware=middleware
+        )
             
         for actor in self.actors:
             actor.register(broker=self.broker)
@@ -184,7 +199,6 @@ class Dramatiq:
             
         log.info("-------- Dramatiq Actors: " + " : ".join(registered_actors) + "---------")
         
- 
     
     def actor(self, fn=None, **kw):
         

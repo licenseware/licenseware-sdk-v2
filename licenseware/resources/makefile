@@ -1,4 +1,4 @@
-docker_command = COMPOSE_HTTP_TIMEOUT=200 docker-compose -f docker-compose-mongo-redis.yml
+docker_command = COMPOSE_HTTP_TIMEOUT=200 docker-compose -f docker-compose.yml
 
 
 # App
@@ -55,6 +55,7 @@ sdk-test:
 	rm -rf docker-compose.yml
 	rm -rf main_example.py
 	rm -rf main.py
+	rm -rf app
 	rm -rf app.log
 	rm -rf .dockerignore
 	rm -rf .github
@@ -73,6 +74,7 @@ clean-sdk:
 	rm -rf docker-compose.yml
 	rm -rf main_example.py
 	rm -rf main.py
+	rm -rf app
 	rm -rf app.log
 	rm -rf .dockerignore
 	rm -rf .github

@@ -26,6 +26,12 @@ def create_individual_report_component_resource(component: BaseReportComponent):
         @failsafe(fail_code=500)
         @authorization_check        
         def get(self):
+            
+            # clear_data = request.args.get('clear_data', 'false')
+            # if 'true' in clear_data.lower():
+            #     clear_tenant_data(request.headers.get("Tenantid"))
+
+
             return component.get_data(request)
         
     return ReportComponent

@@ -66,12 +66,7 @@ class envs:
     MONGO_COLLECTION_UTILIZATION_NAME:str = APP_ID.upper() + "Utilization"  if "-service" not in APP_ID else 'Utilization'
     MONGO_COLLECTION_ANALYSIS_NAME:str = APP_ID.upper() + "Analysis" if "-service" not in APP_ID else 'Analysis'
     
-    
-    #Redis connection
-    REDIS_CONNECTION_STRING:str = os.environ['REDIS_CONNECTION_STRING'] or 'redis://localhost:6379/0'
-
-    
-    
+        
     # Environment variables added later by the app
     # envs.method_name() - calls the variable dynamically 
     # you can access class vars with cls.attr_name ex: cls.MONGO_COLLECTION_DATA_NAME
