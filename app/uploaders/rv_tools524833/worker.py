@@ -1,0 +1,23 @@
+from licenseware.utils.logger import log
+from licenseware.common.constants import states
+from licenseware.notifications import notify_upload_status
+from licenseware.common.types import Event
+
+
+
+def rv_tools524833_worker(event:Event):
+    # This is the worker entrypoint  
+    
+    log.info("Starting working")
+    
+    # Here add the processing file logic
+    # Worker logic doesn't have to be all in this function. 
+    # You can create multiple sub-packages within this uploader package 
+    
+    log.debug(event) 
+    
+    # we need to send an IDLE status after file processing is finished
+    # the RUNNING status was already sent by UploaderBuilder
+    notify_upload_status(event, status=states.IDLE)
+    log.info("Finished working")
+    

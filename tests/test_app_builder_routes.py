@@ -45,6 +45,8 @@ class TestAppBuilderRoutes(unittest.TestCase):
             query_string={'tenant_id': tenant_id}, 
             headers=headers
         )
+        
+        log.debug(response.data)
 
         self.assertEqual(response.status_code, 200)
         

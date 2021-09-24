@@ -17,7 +17,7 @@ def get_activated_tenants(tenant_id:str = None):
         return tenants_list
 
     tenants_list = m.fetch(
-        match={'tenant_id': tenant_id}, collection=envs.MONGO_COLLECTION_UTILIZATION_NAME
+        match='tenant_id', collection=envs.MONGO_COLLECTION_UTILIZATION_NAME
     )
     # log.info(f"Activated tenant: {tenants_list}")
     
