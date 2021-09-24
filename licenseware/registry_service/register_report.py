@@ -1,5 +1,5 @@
 import requests
-from licenseware.utils.logger import log, log_dict
+from licenseware.utils.logger import log
 from licenseware.common.constants import envs
 from licenseware.decorators.auth_decorators import authenticated_machine
 from licenseware.common.validators.registry_payload_validators import validate_register_report_payload
@@ -10,8 +10,14 @@ from licenseware.common.validators.registry_payload_validators import validate_r
 @authenticated_machine
 def register_report(**kwargs):
     
-    if kwargs['registrable'] is False: return
+    if kwargs['registrable'] is False: 
+        return {
+            "status": "success",
+            "message": f"Report {kwargs['name']} will not be registered to registry-service (registrable is set to False)",
+            "content": None
+        }, 200
     
+        
     app_id = envs.APP_ID + envs.PERSONAL_SUFFIX if envs.environment_is_local() else envs.APP_ID
     report_id = kwargs['report_id'] + envs.PERSONAL_SUFFIX if envs.environment_is_local() else kwargs['report_id']
     
