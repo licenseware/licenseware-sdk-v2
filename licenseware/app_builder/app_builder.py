@@ -28,6 +28,8 @@ from .editable_tables_route import add_editable_tables_route
 from .tenant_registration_route import add_tenant_registration_route
 from .app_activation_route import add_app_activation_route
 from .app_registration_route import add_app_registration_route
+from .terms_and_conditions_route import add_terms_and_conditions_route
+
 
 from .endpoint_builder_namespace import endpoint_builder_namespace
 
@@ -62,6 +64,7 @@ class base_paths:
     editable_tables_path: str ='/editable_tables'
     history_report_path: str ='/reports/history_report'
     tenant_registration_path: str ='/register_tenant'
+    terms_and_conditions_path:str = '/terms_and_conditions'
 
 
 
@@ -82,6 +85,7 @@ class AppBuilder:
         editable_tables_path: str = None,
         history_report_path: str = None,
         tenant_registration_path: str = None,
+        terms_and_conditions_path:str = None,
         icon: str ="default.png",
         doc_authorizations: dict = swagger_authorization_header,
         api_decorators: list = None,
@@ -116,12 +120,15 @@ class AppBuilder:
         self.editable_tables_path = editable_tables_path or base_paths.editable_tables_path
         self.history_report_path = history_report_path or base_paths.history_report_path
         self.tenant_registration_path = tenant_registration_path or base_paths.tenant_registration_path
+        self.terms_and_conditions_path = terms_and_conditions_path or base_paths.terms_and_conditions_path
         
         self.app_activation_url = envs.BASE_URL + self.app_activation_path
         self.refresh_registration_url = envs.BASE_URL + self.refresh_registration_path
         self.editable_tables_url = envs.BASE_URL + self.editable_tables_path
         self.history_report_url = envs.BASE_URL + self.history_report_path
         self.tenant_registration_url = envs.BASE_URL + self.tenant_registration_path
+        self.terms_and_conditions_url = envs.BASE_URL + self.terms_and_conditions_path
+        
 
         self.authorizations = doc_authorizations
         self.decorators = api_decorators
@@ -199,7 +206,8 @@ class AppBuilder:
             add_editable_tables_route,
             add_tenant_registration_route,
             add_app_activation_route,
-            add_app_registration_route
+            add_app_registration_route,
+            add_terms_and_conditions_route
         ]
         
         for func in api_funcs:
