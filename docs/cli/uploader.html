@@ -102,6 +102,38 @@ def _add_uploader_import_to_app_init_file(uploader_id:str):
         f.write(data)
 
 
+def _create_test_filename_validation(uploader_id:str):
+    
+    fname = f&#39;test_filename_validation_{uploader_id}.py&#39; 
+    file_path = os.path.join(&#39;tests&#39;, fname)
+    if not os.path.exists(file_path):
+        raw_contents = pkg_resources.read_text(resources, &#39;_test_filename_validation_uploader_id.py&#39;)
+        tmp = Template(raw_contents)
+        file_contents = tmp.render(uploader_id=uploader_id)
+    
+        with open(file_path, &#39;w&#39;) as f:
+            f.write(file_contents)
+    
+
+def _create_test_filecontent_validation(uploader_id:str):
+    
+    fname = f&#39;test_filecontent_validation_{uploader_id}.py&#39; 
+    file_path = os.path.join(&#39;tests&#39;, fname)
+    if not os.path.exists(file_path):
+        raw_contents = pkg_resources.read_text(resources, &#39;_test_filecontent_validation_uploader_id.py&#39;)
+        tmp = Template(raw_contents)
+        file_contents = tmp.render(uploader_id=uploader_id)
+    
+        with open(file_path, &#39;w&#39;) as f:
+            f.write(file_contents)
+    
+    
+def _create_test_files_folder(uploader_id:str):
+    
+    test_files_path = f&#34;./test_files/{uploader_id}&#34;
+    if not os.path.exists(test_files_path): 
+        os.makedirs(test_files_path)
+    
 
 
 def create_uploader(uploader_id:str):
@@ -116,6 +148,10 @@ def create_uploader(uploader_id:str):
     _create_uploader_worker_file(path, uploader_id)
     _create_uploader_validator_file(path, uploader_id)
     _add_uploader_import_to_app_init_file(uploader_id)
+    _create_test_filename_validation(uploader_id)
+    _create_test_filecontent_validation(uploader_id)
+    _create_test_files_folder(uploader_id)
+    
          </code></pre>
 </details>
 </section>
@@ -146,7 +182,10 @@ def create_uploader(uploader_id:str):
     _create_uploader_init_file(path, uploader_id)
     _create_uploader_worker_file(path, uploader_id)
     _create_uploader_validator_file(path, uploader_id)
-    _add_uploader_import_to_app_init_file(uploader_id)</code></pre>
+    _add_uploader_import_to_app_init_file(uploader_id)
+    _create_test_filename_validation(uploader_id)
+    _create_test_filecontent_validation(uploader_id)
+    _create_test_files_folder(uploader_id)</code></pre>
 </details>
 </dd>
 </dl>
