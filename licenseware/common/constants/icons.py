@@ -8,4 +8,7 @@ class icons:
     FEATURES:str = "FeaturesIcon"
     CPU:str = "CpuIcon"
     DATABASE_ROUNDED:str = "DatabaseIconRounded"
+    DEVICE:str = "DeviceIcon"
+    FILE:str = "FileIcon"
+    
     
