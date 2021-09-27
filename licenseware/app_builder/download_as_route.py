@@ -12,7 +12,7 @@ def add_download_as_route(api:Api, appvars:dict):
     
     resource_fields = api.model('DataList', {})
     
-    @api.route('download/<string:file_type>')
+    @api.route('/download/<string:file_type>')
     class DownloadAs(Resource): 
         @failsafe(fail_code=500)
         @authorization_check
