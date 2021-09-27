@@ -87,7 +87,7 @@ class envs:
         return os.getenv('ENVIRONMENT') == 'local'
     
     @classmethod
-    def get_tenant_upload_path(tenant_id:str):
+    def get_tenant_upload_path(cls, tenant_id:str):
         return os.path.join(os.getenv("FILE_UPLOAD_PATH", 'tmp/lware'), tenant_id)
     
         

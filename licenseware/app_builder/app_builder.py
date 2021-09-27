@@ -58,6 +58,11 @@ from .report_components_namespace import (
     get_report_individual_components_namespace
 )
 
+from .download_as_route import add_download_as_route
+
+
+
+
 
 @dataclass
 class base_paths:
@@ -210,7 +215,8 @@ class AppBuilder:
             add_tenant_registration_route,
             add_app_activation_route,
             add_app_registration_route,
-            add_terms_and_conditions_route
+            add_terms_and_conditions_route,
+            add_download_as_route
         ]
         
         for func in api_funcs:

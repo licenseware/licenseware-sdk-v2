@@ -13,6 +13,9 @@ from licenseware.report_builder import ReportBuilder
 from licenseware.report_components import BaseReportComponent
 from typing import List
 
+from licenseware.download import download_as
+
+
 
 class ComponentFilterSchema(Schema):
     field_name   = fields.String(required=True)
@@ -39,21 +42,19 @@ def create_report_component_resource(component: BaseReportComponent):
     
             if file_type:
                 
+                file_type = request.args.get('download_as')
+                tenant_id = request.headers.get('Tenantid')
                 data = component.get_data(request)
-            
-                filename = f'{component.component_id}.json'
-                dirpath = envs.get_tenant_upload_path(tenant_id)
-                filepath = os.path.join(dirpath, filename)
-                with open(filepath, 'w') as outfile: json.dump(data, outfile)
+                    
+                if file_type is None: 
+                    return data
                 
-                return send_from_directory(
-                    directory=dirpath, 
-                    filename=filename, 
-                    as_attachment=True
+                return download_as(
+                    file_type, 
+                    data, 
+                    tenant_id, 
+                    filename=component.component_id
                 )
-                
-                
-            return component.get_data(request)
         
         
     return ComponentResource

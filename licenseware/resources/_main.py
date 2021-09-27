@@ -2,12 +2,15 @@ from dotenv import load_dotenv
 load_dotenv()  
 
 from flask import Flask
+from flask_cors import CORS
 from app import App
 
 
 
 
 app = Flask(__name__)
+
+CORS(app)
 
 App.init_app(app)
 

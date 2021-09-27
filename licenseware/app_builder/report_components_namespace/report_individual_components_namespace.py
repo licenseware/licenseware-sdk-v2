@@ -1,6 +1,4 @@
-import json, os
 from flask import request
-from flask import send_from_directory
 from marshmallow import Schema, fields
 
 from flask_restx import Namespace, Resource
@@ -10,8 +8,8 @@ from licenseware.decorators.auth_decorators import authorization_check
 from licenseware.report_components.base_report_component import BaseReportComponent
 from licenseware.utils.miscellaneous import build_restx_model
 from licenseware.decorators import failsafe
-from licenseware.common.constants import envs
 
+from licenseware.download import download_as
 
 
 
@@ -38,24 +36,19 @@ def create_individual_report_component_resource(component: BaseReportComponent):
             
             file_type = request.args.get('download_as')
             tenant_id = request.headers.get('Tenantid')
-    
-            if file_type:
+            data = component.get_data(request)
                 
-                data = component.get_data(request)
+            if file_type is None: 
+                return data
             
-                filename = f'{component.component_id}.json'
-                dirpath = envs.get_tenant_upload_path(tenant_id)
-                filepath = os.path.join(dirpath, filename)
-                with open(filepath, 'w') as outfile: json.dump(data, outfile)
+            return download_as(
+                file_type, 
+                data, 
+                tenant_id, 
+                filename=component.component_id
+            )
+            
                 
-                return send_from_directory(
-                    directory=dirpath, 
-                    filename=filename, 
-                    as_attachment=True
-                )
-                
-            return component.get_data(request)
-        
     return ReportComponent
     
     
