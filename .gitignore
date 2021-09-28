@@ -1,6 +1,8 @@
 app.log
 test_files
 *.json
+*.csv
+*.xlsx
 
 
 

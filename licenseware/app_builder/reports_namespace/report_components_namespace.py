@@ -53,7 +53,7 @@ def create_individual_report_component_resource(component: BaseReportComponent):
 def get_report_components_namespace(ns: Namespace, reports:List[ReportBuilder]):
     
     restx_model = ns.model('ComponentFilter', dict(
-                field_name   = fields.String,
+                column       = fields.String,
                 filter_type  =  fields.String,
                 filter_value = fields.List(fields.String)
             )
@@ -85,7 +85,7 @@ def get_report_components_namespace(ns: Namespace, reports:List[ReportBuilder]):
                     500 : 'Something went wrong while handling the request' 
                 }
             )
-            @ns.expect(restx_model)
+            @ns.expect([restx_model])
             class TempPostIRC(ReportPOSTComponent): ...
             
             # Clean url but bad swagger (overwrittes docs)
