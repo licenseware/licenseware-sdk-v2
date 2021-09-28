@@ -29,6 +29,7 @@ class BaseReportComponent:
         title:str,
         component_id:str,
         component_type:str,
+        description:str = None,
         filters:list = None,
         path:str = None,
         order:int = None,
@@ -41,6 +42,7 @@ class BaseReportComponent:
         self.title = title
         self.component_id = component_id
         self.component_type = component_type
+        self.description = description
         self.filters = filters
         self.path = path or '/' + component_id
         self.component_path = self.path if self.path.startswith('/') else '/' + self.path 
@@ -166,6 +168,7 @@ class BaseReportComponent:
             "title": self.title,
             "order": self.order,
             "component_id": self.component_id,
+            "description": self.description,
             "path": self.path,
             "url": self.url,
             "style_attributes": self.style_attributes,
