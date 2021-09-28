@@ -12,6 +12,10 @@ from licenseware.report_components.attributes import (
     attributes_table
 )
 
+from typing import List
+
+
+
 
 component_attributes_mapper = {
     'bar_vertical':attributes_bar_vertical,
@@ -20,6 +24,14 @@ component_attributes_mapper = {
     'table': attributes_table
 }
 
+
+all_allowed_filters = ['equals',
+'contains',
+'in_list',
+'greater_than',
+'greater_or_equal_to',
+'less_than',
+'less_or_equal_to']
 
 
 class BaseReportComponent:
@@ -85,6 +97,58 @@ class BaseReportComponent:
             allowed_filters = allowed_filters,
             visible_name = visible_name
         )
+        
+
+    def build_filters_from_columns_attributes(self, attributes:dict):
+        """
+        
+        Given a dict with 'columns' list attributes similar to the one bellow:
+        
+        attributes = {
+                "columns": [
+                    {
+                        "name": "Device Name",
+                        "prop": "device_name",
+                        "type": "string"
+                    },
+                    etc      
+                }]
+                
+        Generate a list of column filters like bellow:
+        
+        [ 
+            {
+                'column': 'device_name',
+                'allowed_filters': ['equals',
+                'contains',
+                'in_list',
+                'greater_than',
+                'greater_or_equal_to',
+                'less_than',
+                'less_or_equal_to'],
+                'visible_name': 'Device Name'
+            },
+            etc
+        ]
+        
+        
+        TODO Change `allowed_filters` based on column `type`
+        
+        """
+
+        col_filters = []
+        for col in attributes['columns']:
+            
+            col_filter = {
+                "column": col['prop'],
+                "allowed_filters": all_allowed_filters,
+                "visible_name": col['name']
+            }
+            
+            col_filters.append(col_filter)
+            
+        return col_filters
+            
         
         
     def build_attributes(self, *args, **kwargs):
