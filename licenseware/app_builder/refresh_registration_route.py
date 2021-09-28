@@ -40,8 +40,6 @@ def add_refresh_registration_route(api:Api, appvars:dict):
                 uploaders = uploaders
             )
             
-            log.debug(response)
-            
             return response, status_code
             
             
