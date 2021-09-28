@@ -1,11 +1,7 @@
-import json, os
 from flask import request
-from flask import send_from_directory
-from flask_restx import Namespace, Resource
+from flask_restx import Namespace, Resource, fields
 from licenseware.decorators.auth_decorators import authorization_check
 from licenseware.decorators import failsafe
-from marshmallow import Schema, fields
-from licenseware.utils.miscellaneous import build_restx_model
 from licenseware.utils.logger import log
 from licenseware.common.constants import envs
 
@@ -17,81 +13,109 @@ from licenseware.download import download_as
 
 
 
-class ComponentFilterSchema(Schema):
-    field_name   = fields.String(required=True)
-    filter_type  =  fields.String(required=True)
-    filter_value = fields.List(fields.String, required=False)
 
-
-
-def create_report_component_resource(component: BaseReportComponent):
+def create_individual_report_component_resource(component: BaseReportComponent):
     
-    class ComponentResource(Resource):
+    class ReportPOSTComponent(Resource):
         
         @failsafe(fail_code=500)
-        @authorization_check
+        @authorization_check        
         def post(self):
             return component.get_data(request)
-        
+    
+    
+    class ReportGETComponent(Resource):
+    
         @failsafe(fail_code=500)
-        @authorization_check
+        @authorization_check        
         def get(self):
             
             file_type = request.args.get('download_as')
             tenant_id = request.headers.get('Tenantid')
-    
-            if file_type:
+            data = component.get_data(request)
                 
-                file_type = request.args.get('download_as')
-                tenant_id = request.headers.get('Tenantid')
-                data = component.get_data(request)
-                    
-                if file_type is None: 
-                    return data
+            if file_type is None: 
+                return data
+            
+            return download_as(
+                file_type, 
+                data, 
+                tenant_id, 
+                filename=component.component_id
+            )
+            
                 
-                return download_as(
-                    file_type, 
-                    data, 
-                    tenant_id, 
-                    filename=component.component_id
-                )
-        
-        
-    return ComponentResource
+    return ReportGETComponent, ReportPOSTComponent
     
-
+    
+    
 
 def get_report_components_namespace(ns: Namespace, reports:List[ReportBuilder]):
     
-    restx_model = build_restx_model(ns, ComponentFilterSchema)
+    restx_model = ns.model('ComponentFilter', dict(
+                field_name   = fields.String,
+                filter_type  =  fields.String,
+                filter_value = fields.List(fields.String)
+            )
+        )
     
+        
     for report in reports:
-        for component in report.components:
-            
-            RC = create_report_component_resource(component)
-            
+        for comp in report.components:
+
+            ReportGETComponent, ReportPOSTComponent = create_individual_report_component_resource(comp)
+                
             @ns.doc(
-                id="Get components data with an optional filter payload",
+                id="Get component data with an optional filter payload",
+                params={'download_as': 'Download table component as file type: csv, xlsx, json'},
                 responses={
                     200 : 'Success',
                     403 : "Missing `Tenantid` or `Authorization` information",
                     500 : 'Something went wrong while handling the request' 
-                },
+                }
             )
-            # @ns.expect(restx_model)
-            class TempReportComponentResource(RC): ...
+            class TempGetIRC(ReportGETComponent): ...
             
-            ReportComponentResource = type(
-                report.report_id.replace("_", "").capitalize() + 'component',
-                (TempReportComponentResource, ),
+        
+            @ns.doc(
+                id="Get component data with an optional filter payload",
+                responses={
+                    200 : 'Success',
+                    403 : "Missing `Tenantid` or `Authorization` information",
+                    500 : 'Something went wrong while handling the request' 
+                }
+            )
+            @ns.expect(restx_model)
+            class TempPostIRC(ReportPOSTComponent): ...
+            
+            # Clean url but bad swagger (overwrittes docs)
+            # IRCResource = type(
+            #     comp.component_id.replace("_", "").capitalize() + 'individual_component',
+            #     (TempGetIRC, TempPostIRC, ),
+            #     {}
+            # )
+            
+            # ns.add_resource(IRCResource, comp.component_path) 
+            
+            IRCGetResource = type(
+                comp.component_id.replace("_", "").capitalize() + 'get_component',
+                (TempGetIRC, ),
                 {}
             )
             
-            ns.add_resource(ReportComponentResource, report.report_path + component.path) 
+            ns.add_resource(IRCGetResource, report.report_path + comp.component_path + '/get') 
             
+            
+            IRCPostResource = type(
+                comp.component_id.replace("_", "").capitalize() + 'post_component',
+                (TempPostIRC, ),
+                {}
+            )
+            
+            ns.add_resource(IRCPostResource, report.report_path + comp.component_path + '/post') 
+    
+    
     return ns
         
        
-       
-       
-       
+

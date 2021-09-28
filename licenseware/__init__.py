@@ -826,9 +826,10 @@ Fist make sure you have set the environment variables:
 ```
 #.env
 
+
 DEBUG=true
 ENVIRONMENT=local
-PERSONAL_SUFFIX=_222
+PERSONAL_SUFFIX=_574
 USE_BACKGROUND_WORKER=true
 
 APP_ID=odb
@@ -844,7 +845,12 @@ FILE_UPLOAD_PATH=/tmp/lware
 
 MONGO_DATABASE_NAME=db
 MONGO_CONNECTION_STRING=mongodb://localhost:27017/db
-REDIS_CONNECTION_STRING=redis://localhost:6379/0
+
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_PASSWORD=secret
+REDIS_DB=0
+
 
 ```
 

@@ -1,12 +1,9 @@
 from flask import request
-from marshmallow import Schema, fields
-
-from flask_restx import Namespace, Resource
+from flask_restx import Namespace, Resource, fields
 
 from licenseware.utils.logger import log
 from licenseware.decorators.auth_decorators import authorization_check
 from licenseware.report_components.base_report_component import BaseReportComponent
-from licenseware.utils.miscellaneous import build_restx_model
 from licenseware.decorators import failsafe
 
 from licenseware.download import download_as
@@ -14,21 +11,17 @@ from licenseware.download import download_as
 
 
 
-class ComponentFilterSchema(Schema):
-    field_name   = fields.String(required=True)
-    filter_type  =  fields.String(required=True)
-    filter_value = fields.List(fields.String, required=False)
-
-
-
 def create_individual_report_component_resource(component: BaseReportComponent):
     
-    class ReportComponent(Resource):
+    class ReportPOSTComponent(Resource):
         
         @failsafe(fail_code=500)
         @authorization_check        
         def post(self):
             return component.get_data(request)
+    
+    
+    class ReportGETComponent(Resource):
     
         @failsafe(fail_code=500)
         @authorization_check        
@@ -49,18 +42,24 @@ def create_individual_report_component_resource(component: BaseReportComponent):
             )
             
                 
-    return ReportComponent
+    return ReportGETComponent, ReportPOSTComponent
     
     
     
 
 def get_report_individual_components_namespace(ns: Namespace, report_components:list):
     
-    restx_model = build_restx_model(ns, ComponentFilterSchema)
-
+    restx_model = ns.model('ComponentFilter', dict(
+                field_name   = fields.String,
+                filter_type  =  fields.String,
+                filter_value = fields.List(fields.String)
+            )
+        )
+    
+    
     for comp in report_components:
         
-        IRC = create_individual_report_component_resource(comp)
+        ReportGETComponent, ReportPOSTComponent = create_individual_report_component_resource(comp)
             
         @ns.doc(
             id="Get component data with an optional filter payload",
@@ -71,16 +70,46 @@ def get_report_individual_components_namespace(ns: Namespace, report_components:
                 500 : 'Something went wrong while handling the request' 
             }
         )
-        # @ns.expect(restx_model)
-        class TempIndvReportComponentResource(IRC): ...
-            
-        IndvReportComponentResource = type(
-            comp.component_id.replace("_", "").capitalize() + 'individual_component',
-            (TempIndvReportComponentResource, ),
+        class TempGetIRC(ReportGETComponent): ...
+        
+    
+        @ns.doc(
+            id="Get component data with an optional filter payload",
+            responses={
+                200 : 'Success',
+                403 : "Missing `Tenantid` or `Authorization` information",
+                500 : 'Something went wrong while handling the request' 
+            }
+        )
+        @ns.expect(restx_model)
+        class TempPostIRC(ReportPOSTComponent): ...
+        
+        # Clean url but bad swagger (overwrittes docs)
+        # IRCResource = type(
+        #     comp.component_id.replace("_", "").capitalize() + 'individual_component',
+        #     (TempGetIRC, TempPostIRC, ),
+        #     {}
+        # )
+        
+        # ns.add_resource(IRCResource, comp.component_path) 
+        
+        IRCGetResource = type(
+            comp.component_id.replace("_", "").capitalize() + 'get_individual_component',
+            (TempGetIRC, ),
             {}
         )
         
-        ns.add_resource(IndvReportComponentResource, comp.component_path) 
+        ns.add_resource(IRCGetResource, comp.component_path + '/get') 
+        
+        
+        IRCPostResource = type(
+            comp.component_id.replace("_", "").capitalize() + 'post_individual_component',
+            (TempPostIRC, ),
+            {}
+        )
+        
+        ns.add_resource(IRCPostResource, comp.component_path + '/post') 
+    
     
     return ns
         

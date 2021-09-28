@@ -6,17 +6,18 @@ Notice that history report route/path is provided but is not implemented that's 
 
 """
 
+from typing import List, Callable
 from dataclasses import dataclass
+
+from flask import Flask
+from flask_cors import CORS
+from flask_restx import Api, Namespace, Resource
+from marshmallow.schema import Schema
+
 from licenseware.uploader_builder.uploader_builder import UploaderBuilder
 from licenseware.report_builder.report_builder import ReportBuilder
 from licenseware.report_components.base_report_component import BaseReportComponent
-from typing import List
-from flask_restx.resource import Resource
-from marshmallow.schema import Schema
 from licenseware.common.constants.envs import envs
-from typing import Callable
-from flask import Flask
-from flask_restx import Api, Namespace
 from licenseware.registry_service import register_all
 from licenseware.tenants import get_activated_tenants, get_tenants_with_data
 from licenseware.utils.logger import log
@@ -163,6 +164,7 @@ class AppBuilder:
         # This hides flask_restx `X-fields` from swagger headers  
         app.config['RESTX_MASK_SWAGGER'] = False
         app.config['DEBUG'] = envs.DEBUG
+        CORS(app)
         self.app = app
         
         if not self.uploaders: log.warning("No uploaders provided")
