@@ -8,6 +8,7 @@ class ComponentSchema(Schema):
     app_id = fields.Str(required=True)
     component_id = fields.Str(required=True)
     title = fields.Str(required=True) 
+    description = fields.Str(required=False, allow_none=True) 
     url = fields.Url(required=True)
     order = fields.Int(required=True, allow_none=True)
     style_attributes = fields.Dict(required=True)
