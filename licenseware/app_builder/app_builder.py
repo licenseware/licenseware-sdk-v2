@@ -146,7 +146,7 @@ class AppBuilder:
         self.options = options    
         
         # TODO version needs to be added to all urls + '/v' + self.version
-        self.prefix = '/' + envs.APP_ID 
+        self.prefix = envs.APP_PATH 
         self.app = None
         self.api = None
         self.ns  = None
@@ -202,7 +202,7 @@ class AppBuilder:
             decorators = self.decorators,
             authorizations = self.authorizations,
             security = list(self.authorizations.keys()),
-            doc='/' if envs.environment_is_local() else '/doc'
+            doc='/' if envs.environment_is_local() else self.prefix + '/doc'
         )
         
     
