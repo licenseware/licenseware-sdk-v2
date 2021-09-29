@@ -18,7 +18,7 @@ class ReportSchema(Schema):
     connected_apps = fields.List(fields.Str, required=False)
     report_components = fields.List(fields.Nested(ComponentSchema), required=False)
     filters = fields.List(fields.Nested(FilterSchema), required=False)
-    
+    preview_image_url = fields.Url(required=False, allow_none=True)
 
 class RegisterReportPayloadSchema(Schema):
     data = fields.List(fields.Nested(ReportSchema), required=True)

@@ -15,6 +15,7 @@ class ReportBuilder:
     :report_components - instantiated class objects from report_components
     :registrable - If True report will be registered to registry service
     :report_path - the endpoint/route on which this report is found
+    :preview_image_url - the full url to a static report image
     :connected_apps - related apps which are needed to build this report
     :flags - use flags dataclass from licenseware.commun.constants
     
@@ -29,6 +30,7 @@ class ReportBuilder:
         report_components:list,
         registrable:bool = True,
         report_path:str = None,
+        preview_image_url:str = None,
         connected_apps:list = [],
         flags:list = [],
         filters:list = []
@@ -46,6 +48,7 @@ class ReportBuilder:
         self.app_id = envs.APP_ID
         self.flags = flags
         self.url = envs.REPORT_URL  + self.report_path
+        self.preview_image_url = preview_image_url
         
         # Needed to overwrite report_components and filters
         self.report_components = []
