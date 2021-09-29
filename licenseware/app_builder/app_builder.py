@@ -202,7 +202,7 @@ class AppBuilder:
             decorators = self.decorators,
             authorizations = self.authorizations,
             security = list(self.authorizations.keys()),
-            doc='/' if envs.environment_is_local() else self.prefix + '/doc'
+            doc='/' if envs.environment_is_local() else self.prefix + '/swagger.json'
         )
         
     
