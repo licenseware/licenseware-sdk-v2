@@ -164,7 +164,20 @@ class AppBuilder:
         # This hides flask_restx `X-fields` from swagger headers  
         app.config['RESTX_MASK_SWAGGER'] = False
         app.config['DEBUG'] = envs.DEBUG
-        CORS(app)
+        
+        @app.after_request
+        def after_request(response):
+            response.headers.set('Access-Control-Allow-Origin', '*')
+            response.headers.set('Access-Control-Allow-Headers', 'Content-Type,Authorization,TenantId')
+            response.headers.set('Access-Control-Allow-Methods',
+                                'GET,PUT,POST,DELETE,OPTIONS')
+            response.headers.set('Access-Control-Allow-Credentials', 'true')
+
+            return response
+
+
+        # CORS(app)
+        
         self.app = app
         
         if not self.uploaders: log.warning("No uploaders provided")
