@@ -96,11 +96,11 @@ Resources:
               Value: !Ref 'EnvFileArn'
           MountPoints:
             -
-              SourceVolume: {{ app_id.replace('-service', '') }}ApiServiceStorage
+              SourceVolume: {{ app_id.replace('-service', '').capitalize() }}ApiServiceStorage
               ContainerPath: /tmp/lware
               ReadOnly: false
       Volumes:
-        - Name: {{ app_id.replace('-service', '') }}ApiServiceStorage
+        - Name: {{ app_id.replace('-service', '').capitalize() }}ApiServiceStorage
           EFSVolumeConfiguration:
             FilesystemId: !Ref {{ app_id.replace('-service', '').capitalize() }}ServiceStorage
             TransitEncryption: "DISABLED"
@@ -108,7 +108,7 @@ Resources:
   {{ app_id.replace('-service', '').capitalize() }}ServiceStorage:
     Type: AWS::EFS::FileSystem
 
-  {{ app_id.replace('-service', '') }}ApiServiceStorageMountTargetA:
+  {{ app_id.replace('-service', '').capitalize() }}ApiServiceStorageMountTargetA:
     Type: AWS::EFS::MountTarget
     Properties:
       FileSystemId: !Ref {{ app_id.replace('-service', '').capitalize() }}ServiceStorage
@@ -117,7 +117,7 @@ Resources:
       SecurityGroups:
       - Fn::ImportValue: !Sub ${EnvTag}:EFSAccessSecurityGroup
 
-  {{ app_id.replace('-service', '') }}ApiServiceStorageMountTargetB:
+  {{ app_id.replace('-service', '').capitalize() }}ApiServiceStorageMountTargetB:
     Type: AWS::EFS::MountTarget
     Properties:
       FileSystemId: !Ref {{ app_id.replace('-service', '').capitalize() }}ServiceStorage
