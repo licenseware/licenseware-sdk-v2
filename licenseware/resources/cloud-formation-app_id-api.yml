@@ -102,16 +102,16 @@ Resources:
       Volumes:
         - Name: {{ app_id.replace('-service', '') }}ApiServiceStorage
           EFSVolumeConfiguration:
-            FilesystemId: !Ref {{ app_id.replace('-service', '') }}ServiceStorage
+            FilesystemId: !Ref {{ app_id.replace('-service', '').capitalize() }}ServiceStorage
             TransitEncryption: "DISABLED"
 
-  {{ app_id.replace('-service', '') }}ServiceStorage:
+  {{ app_id.replace('-service', '').capitalize() }}ServiceStorage:
     Type: AWS::EFS::FileSystem
 
   {{ app_id.replace('-service', '') }}ApiServiceStorageMountTargetA:
     Type: AWS::EFS::MountTarget
     Properties:
-      FileSystemId: !Ref {{ app_id.replace('-service', '') }}ServiceStorage
+      FileSystemId: !Ref {{ app_id.replace('-service', '').capitalize() }}ServiceStorage
       SubnetId: 
         Fn::ImportValue: !Sub ${EnvTag}-lware-vpc-PrivateSubnetA
       SecurityGroups:
@@ -120,7 +120,7 @@ Resources:
   {{ app_id.replace('-service', '') }}ApiServiceStorageMountTargetB:
     Type: AWS::EFS::MountTarget
     Properties:
-      FileSystemId: !Ref {{ app_id.replace('-service', '') }}ServiceStorage
+      FileSystemId: !Ref {{ app_id.replace('-service', '').capitalize() }}ServiceStorage
       SubnetId: 
         Fn::ImportValue: !Sub ${EnvTag}-lware-vpc-PrivateSubnetB
       SecurityGroups:
@@ -198,8 +198,8 @@ Outputs:
         - ""
         - - Fn::ImportValue: !Sub ${EnvTag}:ExternalUrl
           - !Join [ "", !Split [ "*" , !Ref LoadBalancerPath ] ]
-  {{ app_id.replace('-service', '') }}ServiceStorage:
+  {{ app_id.replace('-service', '').capitalize() }}ServiceStorage:
     Description: The {{ app_id.replace('-service', '') }} service storage
-    Value: !Ref '{{ app_id.replace('-service', '') }}ServiceStorage'
+    Value: !Ref '{{ app_id.replace('-service', '').capitalize() }}ServiceStorage'
     Export:
-      Name: !Sub ${EnvTag}:{{ app_id.replace('-service', '') }}ServiceStorage
+      Name: !Sub ${EnvTag}:{{ app_id.replace('-service', '').capitalize() }}ServiceStorage
