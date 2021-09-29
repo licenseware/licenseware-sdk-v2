@@ -168,7 +168,7 @@ class AppBuilder:
         @app.after_request
         def after_request(response):
             response.headers.set('Access-Control-Allow-Origin', '*')
-            response.headers.set('Access-Control-Allow-Headers', 'Content-Type,Authorization,TenantId')
+            response.headers.set('Access-Control-Allow-Headers', 'Content-Type,Authorization,TenantId,Tenantid')
             response.headers.set('Access-Control-Allow-Methods',
                                 'GET,PUT,POST,DELETE,OPTIONS')
             response.headers.set('Access-Control-Allow-Credentials', 'true')
@@ -371,9 +371,9 @@ class AppBuilder:
         self.editable_tables.append(editable_table_instance)
         self.editable_tables_schemas.append(editable_table_instance.schema)
             
-
-        
+            
     def add_namespace(self, ns:Namespace, path:str = None):
+        """ Can be user for custom restx namespaces from scratch """
         self.custom_namespaces.append((ns, path))
 
     def init_namespaces(self):

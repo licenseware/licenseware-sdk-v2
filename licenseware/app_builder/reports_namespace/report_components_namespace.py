@@ -16,16 +16,13 @@ from licenseware.download import download_as
 
 def create_individual_report_component_resource(component: BaseReportComponent):
     
-    class ReportPOSTComponent(Resource):
+    class ComponentRes(Resource):
         
         @failsafe(fail_code=500)
         @authorization_check        
         def post(self):
             return component.get_data(request)
-    
-    
-    class ReportGETComponent(Resource):
-    
+        
         @failsafe(fail_code=500)
         @authorization_check        
         def get(self):
@@ -44,11 +41,9 @@ def create_individual_report_component_resource(component: BaseReportComponent):
                 filename=component.component_id
             )
             
-                
-    return ReportGETComponent, ReportPOSTComponent
+    return ComponentRes
     
-    
-    
+
 
 def get_report_components_namespace(ns: Namespace, reports:List[ReportBuilder]):
     
@@ -62,57 +57,70 @@ def get_report_components_namespace(ns: Namespace, reports:List[ReportBuilder]):
         
     for report in reports:
         for comp in report.components:
-
-            ReportGETComponent, ReportPOSTComponent = create_individual_report_component_resource(comp)
-                
-            @ns.doc(
-                id="Get component data with an optional filter payload",
-                params={'download_as': 'Download table component as file type: csv, xlsx, json'},
-                responses={
-                    200 : 'Success',
-                    403 : "Missing `Tenantid` or `Authorization` information",
-                    500 : 'Something went wrong while handling the request' 
-                }
+            
+            ComponentRes = create_individual_report_component_resource(comp)
+        
+            IRCResource = type(
+                comp.component_id.replace("_", "").capitalize() + 'report_component',
+                (ComponentRes, ),
+                {}
             )
-            class TempGetIRC(ReportGETComponent): ...
+            
+            ns.add_resource(IRCResource,  report.report_path + comp.component_path) 
+            
+            
+            
+
+            # ReportGETComponent, ReportPOSTComponent = create_individual_report_component_resource(comp)
+                
+            # @ns.doc(
+            #     id="Get component data with an optional filter payload",
+            #     params={'download_as': 'Download table component as file type: csv, xlsx, json'},
+            #     responses={
+            #         200 : 'Success',
+            #         403 : "Missing `Tenantid` or `Authorization` information",
+            #         500 : 'Something went wrong while handling the request' 
+            #     }
+            # )
+            # class TempGetIRC(ReportGETComponent): ...
             
         
-            @ns.doc(
-                id="Get component data with an optional filter payload",
-                responses={
-                    200 : 'Success',
-                    403 : "Missing `Tenantid` or `Authorization` information",
-                    500 : 'Something went wrong while handling the request' 
-                }
-            )
-            @ns.expect([restx_model])
-            class TempPostIRC(ReportPOSTComponent): ...
+            # @ns.doc(
+            #     id="Get component data with an optional filter payload",
+            #     responses={
+            #         200 : 'Success',
+            #         403 : "Missing `Tenantid` or `Authorization` information",
+            #         500 : 'Something went wrong while handling the request' 
+            #     }
+            # )
+            # @ns.expect([restx_model])
+            # class TempPostIRC(ReportPOSTComponent): ...
             
-            # Clean url but bad swagger (overwrittes docs)
-            # IRCResource = type(
-            #     comp.component_id.replace("_", "").capitalize() + 'individual_component',
-            #     (TempGetIRC, TempPostIRC, ),
+            # # Clean url but bad swagger (overwrittes docs)
+            # # IRCResource = type(
+            # #     comp.component_id.replace("_", "").capitalize() + 'individual_component',
+            # #     (TempGetIRC, TempPostIRC, ),
+            # #     {}
+            # # )
+            
+            # # ns.add_resource(IRCResource, comp.component_path) 
+            
+            # IRCGetResource = type(
+            #     comp.component_id.replace("_", "").capitalize() + 'get_component',
+            #     (TempGetIRC, ),
             #     {}
             # )
             
-            # ns.add_resource(IRCResource, comp.component_path) 
-            
-            IRCGetResource = type(
-                comp.component_id.replace("_", "").capitalize() + 'get_component',
-                (TempGetIRC, ),
-                {}
-            )
-            
-            ns.add_resource(IRCGetResource, report.report_path + comp.component_path + '/get') 
+            # ns.add_resource(IRCGetResource, report.report_path + comp.component_path + '/get') 
             
             
-            IRCPostResource = type(
-                comp.component_id.replace("_", "").capitalize() + 'post_component',
-                (TempPostIRC, ),
-                {}
-            )
+            # IRCPostResource = type(
+            #     comp.component_id.replace("_", "").capitalize() + 'post_component',
+            #     (TempPostIRC, ),
+            #     {}
+            # )
             
-            ns.add_resource(IRCPostResource, report.report_path + comp.component_path + '/post') 
+            # ns.add_resource(IRCPostResource, report.report_path + comp.component_path + '/post') 
     
     
     return ns
