@@ -28,8 +28,8 @@ jobs:
   # which builds that Dockerfile and deploys the image to a 'backend-service'
   # ECS service in a separate CloudFormation stack.
 
-  deploy-{{ app_id }}-api:
-    name: Deploy {{ app_id }} api
+  deploy-{{ app_id.replace('-service', '') }}-api:
+    name: Deploy {{ app_id.replace('-service', '') }} api
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -58,12 +58,12 @@ jobs:
     # When copying this job to add another microservice, update the image tag value
     # below (for example, 'backend' instead of 'webapp'). Also update the 'docker build'
     # command to build the new microservice's Dockerfile in the repository.
-    - name: Build, tag, and push {{ app_id }} api image
+    - name: Build, tag, and push {{ app_id.replace('-service', '') }} api image
       id: build-image
       env:
         ECR_REGISTRY: {% raw %} ${{ steps.login-ecr.outputs.registry }} {% endraw %}
         ECR_REPOSITORY: github-actions-prod
-        IMAGE_TAG: prod-{{ app_id }}-api-{% raw %} ${{ github.sha }} {% endraw %}
+        IMAGE_TAG: prod-{{ app_id.replace('-service', '') }}-api-{% raw %} ${{ github.sha }} {% endraw %}
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
@@ -76,16 +76,16 @@ jobs:
       id: service-stack
       uses: aws-actions/aws-cloudformation-github-deploy@v1
       with:
-        name: prod-{{ app_id }}-api
-        template: cloudformation-templates/{{ app_id }}-api_prod.yml
+        name: prod-{{ app_id.replace('-service', '') }}-api
+        template: cloudformation-templates/{{ app_id.replace('-service', '') }}-api_prod.yml
         role-arn: arn:aws:iam::{% raw %} ${{ steps.creds.outputs.aws-account-id }} {% endraw %}:role/github-actions-cloudformation-stack-role-prod
         parameter-overrides: >-
-          LoadBalancerPath=/{{ app_id }}/*,
+          LoadBalancerPath=/{{ app_id.replace('-service', '') }}/*,
           LoadBalancerPriority=5,
-          EnvFileArn=arn:aws:s3:::prod.lware.environment/{{ app_id }}-api.env,
+          EnvFileArn=arn:aws:s3:::prod.lware.environment/{{ app_id.replace('-service', '') }}-api.env,
           ContainerPort=5000,
           EnvTag=prod,
-          ServiceName=prod-{{ app_id }}-api,
+          ServiceName=prod-{{ app_id.replace('-service', '') }}-api,
           ImageUrl={% raw %} ${{ steps.build-image.outputs.image }} {% endraw %}
     - name: Print service URL
       env:

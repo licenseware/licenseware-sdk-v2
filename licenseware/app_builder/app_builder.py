@@ -202,9 +202,8 @@ class AppBuilder:
             decorators = self.decorators,
             authorizations = self.authorizations,
             security = list(self.authorizations.keys()),
-            doc='/'
+            doc='/' if envs.environment_is_local() else '/doc'
         )
-        
         
     
     def init_routes(self):

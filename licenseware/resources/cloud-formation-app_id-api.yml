@@ -96,31 +96,31 @@ Resources:
               Value: !Ref 'EnvFileArn'
           MountPoints:
             -
-              SourceVolume: OdbApiServiceStorage
+              SourceVolume: {{ app_id.replace('-service', '') }}ApiServiceStorage
               ContainerPath: /tmp/lware
               ReadOnly: false
       Volumes:
-        - Name: OdbApiServiceStorage
+        - Name: {{ app_id.replace('-service', '') }}ApiServiceStorage
           EFSVolumeConfiguration:
-            FilesystemId: !Ref OdbServiceStorage
+            FilesystemId: !Ref {{ app_id.replace('-service', '') }}ServiceStorage
             TransitEncryption: "DISABLED"
 
-  OdbServiceStorage:
+  {{ app_id.replace('-service', '') }}ServiceStorage:
     Type: AWS::EFS::FileSystem
 
-  OdbApiServiceStorageMountTargetA:
+  {{ app_id.replace('-service', '') }}ApiServiceStorageMountTargetA:
     Type: AWS::EFS::MountTarget
     Properties:
-      FileSystemId: !Ref OdbServiceStorage
+      FileSystemId: !Ref {{ app_id.replace('-service', '') }}ServiceStorage
       SubnetId: 
         Fn::ImportValue: !Sub ${EnvTag}-lware-vpc-PrivateSubnetA
       SecurityGroups:
       - Fn::ImportValue: !Sub ${EnvTag}:EFSAccessSecurityGroup
 
-  OdbApiServiceStorageMountTargetB:
+  {{ app_id.replace('-service', '') }}ApiServiceStorageMountTargetB:
     Type: AWS::EFS::MountTarget
     Properties:
-      FileSystemId: !Ref OdbServiceStorage
+      FileSystemId: !Ref {{ app_id.replace('-service', '') }}ServiceStorage
       SubnetId: 
         Fn::ImportValue: !Sub ${EnvTag}-lware-vpc-PrivateSubnetB
       SecurityGroups:
@@ -198,8 +198,8 @@ Outputs:
         - ""
         - - Fn::ImportValue: !Sub ${EnvTag}:ExternalUrl
           - !Join [ "", !Split [ "*" , !Ref LoadBalancerPath ] ]
-  OdbServiceStorage:
-    Description: The Odb service storage
-    Value: !Ref 'OdbServiceStorage'
+  {{ app_id.replace('-service', '') }}ServiceStorage:
+    Description: The {{ app_id.replace('-service', '') }} service storage
+    Value: !Ref '{{ app_id.replace('-service', '') }}ServiceStorage'
     Export:
-      Name: !Sub ${EnvTag}:OdbServiceStorage
+      Name: !Sub ${EnvTag}:{{ app_id.replace('-service', '') }}ServiceStorage
