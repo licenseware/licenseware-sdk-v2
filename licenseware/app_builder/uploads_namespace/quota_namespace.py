@@ -26,6 +26,8 @@ def create_uploader_resource(uploader: UploaderBuilder):
 def get_quota_namespace(ns: Namespace, uploaders:List[UploaderBuilder]):
                 
     for uploader in uploaders:
+        
+        if uploader.quota_units is None: continue
     
         UR = create_uploader_resource(uploader)
                      

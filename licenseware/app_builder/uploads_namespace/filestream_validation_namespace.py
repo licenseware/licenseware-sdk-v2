@@ -50,6 +50,8 @@ def get_filestream_validation_namespace(ns: Namespace, uploaders:List[UploaderBu
    
     for uploader in uploaders:
         
+        if uploader.worker is None: continue
+        
         UR = create_uploader_resource(uploader)
         
         @ns.doc(

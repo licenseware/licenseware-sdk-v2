@@ -19,8 +19,8 @@ class UploaderBuilder:
     description:str - description of this uploader, what type of files it accepts 
     accepted_file_types:list - accepted file formats .xlsx, .pdf etc 
     validator_class: Type -  this is a UploaderValidator class instance
-    worker_function: Callable - this is responsible for processing the received files (receives a dict with tenant_id and absolute paths to files)
-    quota_units:int - number of units allowed to be processed for free each month
+    worker_function: Callable - this is responsible for processing the received files (receives a dict with tenant_id and absolute paths to files). If None upload will e skipped.
+    quota_units:int - number of units allowed to be processed for free each month. If None upload will e skipped.
     flags:list = [] - stage of the development see constants.flags dataclass to see/add values
     status:str = states.IDLE - state of the worker_function it it's processing or not the files
     icon:str = "default.png" - icon for this uploader see constants.icons dataclass to see/add more
@@ -61,7 +61,17 @@ class UploaderBuilder:
         self.description = description
         self.validator_class = validator_class
         self.app_id = envs.APP_ID
-        self.worker = broker.actor(worker_function, max_retries=max_retries, actor_name=self.uploader_id, queue_name=envs.APP_ID)
+        
+        if worker_function is None:
+            self.worker = None
+        else:    
+            self.worker = broker.actor(
+                worker_function, 
+                max_retries=max_retries, 
+                actor_name=self.uploader_id, 
+                queue_name=envs.APP_ID.replace('-service', '')
+            )
+        
         self.accepted_file_types = accepted_file_types
         self.flags = flags
         self.status = status
@@ -101,6 +111,13 @@ class UploaderBuilder:
     
         
     def upload_files(self, flask_request):
+        
+        if self.worker is None: 
+            return {
+                "status": states.FAILED,
+                "message": "Worker function not provided"
+            }, 400
+        
         
         event = {
             'tenant_id': flask_request.headers.get("Tenantid"),

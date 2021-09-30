@@ -88,6 +88,9 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         
     def calculate_quota(self, flask_request: Request) -> Tuple[dict, int]:
         
+        if self.quota_units is None: 
+            return {'status': states.SUCCESS, 'message': 'Quota is skipped'}, 200
+        
         log.warning("Calculating quota based on length of files")
         
         tenant_id = flask_request.headers.get('Tenantid')

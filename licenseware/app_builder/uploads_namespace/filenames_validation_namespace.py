@@ -46,6 +46,8 @@ def get_filenames_validation_namespace(ns: Namespace, uploaders:List[UploaderBui
     
     for uploader in uploaders:
         
+        if uploader.validator_class is None: continue
+        
         UR = create_uploader_resource(uploader)
            
         @ns.doc(
