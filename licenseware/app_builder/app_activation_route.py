@@ -11,6 +11,8 @@ from licenseware.decorators import failsafe
 from licenseware.registry_service import register_app
 from licenseware.utils.logger import log
 
+from licenseware.uploader_builder import UploaderBuilder
+
 
 
 def add_app_activation_route(api: Api, appvars:dict):
@@ -37,8 +39,14 @@ def add_app_activation_route(api: Api, appvars:dict):
             if not tenant_id: 
                 return {'status': 'fail', 'message': 'Tenantid not provided'}, 403
 
-            for uploader in appvars['uploaders']:
-                qmsg, status_code = uploader.init_tenant_quota(tenant_id)
+            for uploader in appvars['uploaders']:    
+                uploader: UploaderBuilder
+                
+                qmsg, status_code = uploader.init_tenant_quota(
+                    tenant_id=tenant_id,
+                    auth_token=request.headers.get("Authorization")
+                )
+                
                 if status_code != 200: return qmsg, status_code
             
             dmsg, _ = register_app(**appvars)

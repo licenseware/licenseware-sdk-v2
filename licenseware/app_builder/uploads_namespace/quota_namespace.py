@@ -16,7 +16,8 @@ def create_uploader_resource(uploader: UploaderBuilder):
         @authorization_check
         def get(self):
             return uploader.check_tenant_quota(
-                request.headers.get("Tenantid")
+                tenant_id=request.headers.get("Tenantid"),
+                auth_token=request.headers.get("Authorization")
             )
             
     return UploaderQuota

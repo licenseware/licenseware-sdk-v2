@@ -8,7 +8,7 @@ from marshmallow.schema import Schema
 from licenseware import mongodata
 from licenseware.common.constants import envs, states
 from licenseware.common.serializers import QuotaSchema
-from licenseware.utils.miscellaneous import get_user_id
+from licenseware.utils.miscellaneous import get_tenants_list
 from licenseware.utils.logger import log
 
 
@@ -23,6 +23,7 @@ class Quota:
     def __init__(
         self,
         tenant_id:str,
+        auth_token:str,
         uploader_id:str,
         units:int,
         schema:Schema = None,
@@ -39,7 +40,7 @@ class Quota:
         self.schema = schema or QuotaSchema
         self.collection = collection or envs.MONGO_COLLECTION_UTILIZATION_NAME
          
-        self.user_id = get_user_id(tenant_id)
+        self.tenants = get_tenants_list(tenant_id, auth_token)
         
         # This is used to update quota
         self.tenant_query = {
@@ -48,10 +49,10 @@ class Quota:
         }
         # This is used to calculate quota
         self.user_query = {
-            'user_id': self.user_id,
+            'tenant_id': { "$in": self.tenants },
             'uploader_id': uploader_id
         }
-        
+    
         # Making sure quota is initialized
         response, status_code = self.init_quota()
         if status_code != 200:
@@ -74,7 +75,6 @@ class Quota:
             return {'status': states.SUCCESS, 'message': 'Quota initialized'}, 200
         
         utilization_data = {
-            "user_id": self.user_id,
             "tenant_id": self.tenant_id,
             "uploader_id": self.uploader_id,
             "monthly_quota": self.units,

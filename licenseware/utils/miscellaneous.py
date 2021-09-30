@@ -71,17 +71,19 @@ swagger_authorization_header = {
 }
 
 
-def get_user_id(tenant_id:str = None):
+def get_tenants_list(tenant_id:str, auth_token:str):
 
     from licenseware.common.constants import envs
 
-    
     response = requests.get(
-        url=envs.AUTH_MACHINE_CHECK_URL,
-        headers={"Authorization": envs.get_auth_token()}
+        url=envs.GET_TENANTS_URL,
+        headers={
+            "Tenantid": tenant_id,
+            "Authorization": auth_token
+        }
     )
     
     if response.status_code == 200:
-        user_id = response.json()['user_id']
-        return user_id
+        tenants_list = response.json()
+        return tenants_list
     
