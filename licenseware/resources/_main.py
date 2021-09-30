@@ -10,6 +10,7 @@ from app import App
 app = Flask(__name__)
 
 App.init_app(app)
+App.register_app()
 
 
 
@@ -17,7 +18,4 @@ App.init_app(app)
 
 
 if __name__ == "__main__":   
-    
-    App.register_app()
-    
     app.run(port=5000, debug=True)
