@@ -1573,8 +1573,8 @@ baton -u http://localhost:4000 -c 10 -r 10000
 
 '''
 
-try:
-    from dotenv import load_dotenv
-    load_dotenv()  
-except:
-    pass # envs are just for docs
+# try:
+#     from dotenv import load_dotenv
+#     load_dotenv()  
+# except:
+#     pass # envs are just for docs
