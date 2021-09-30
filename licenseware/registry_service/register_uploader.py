@@ -13,6 +13,10 @@ def register_uploader(**kwargs):
         Send a post request to registry service to make uploader available in front-end
     """
     
+    
+    validators = vars(kwargs['validator_class'])
+    
+    
     app_id = envs.APP_ID + envs.PERSONAL_SUFFIX if envs.environment_is_local() else envs.APP_ID
     uploader_id = kwargs['uploader_id'] + envs.PERSONAL_SUFFIX if envs.environment_is_local() else kwargs['uploader_id']
     
@@ -29,7 +33,11 @@ def register_uploader(**kwargs):
             "upload_url": kwargs['upload_url'],
             "upload_validation_url": kwargs['upload_validation_url'],
             "quota_validation_url": kwargs['quota_validation_url'],
-            "status_check_url": kwargs['status_check_url']
+            "status_check_url": kwargs['status_check_url'],
+            "filename_validation_parameters": [{
+                "filename_contains": validators['filename_contains'],
+                "filename_endswith": validators['filename_endswith']
+            }]
         }]
     }
 

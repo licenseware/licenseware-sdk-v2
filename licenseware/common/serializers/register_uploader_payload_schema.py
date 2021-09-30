@@ -8,6 +8,11 @@ from licenseware.common.constants import states, flags
 from licenseware.common.validators import validate_route, validate_icon
 
 
+class FilenameValidatorSchema(Schema):
+    filename_contains = fields.List(fields.Str, required=False)
+    filename_endswith = fields.List(fields.Str, required=False)
+    
+
 
 class UploaderInfoSchema(Schema):
     
@@ -27,7 +32,8 @@ class UploaderInfoSchema(Schema):
     status_check_url = fields.Url(required=True)
     icon = fields.Str(required=False, validate=validate_icon)
     status = fields.Str(required=False, validate=validate.OneOf(states.IDLE, states.RUNNING))
-
+    filename_validation_parameters = fields.List(fields.Nested(FilenameValidatorSchema), required=True)
+    
 
 class RegisterUploaderPayloadSchema(Schema):
     data = fields.List(fields.Nested(UploaderInfoSchema), required=True)
