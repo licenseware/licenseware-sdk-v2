@@ -13,8 +13,9 @@ from licenseware.download import download_as
 
 def create_individual_report_component_resource(component: BaseReportComponent):
     
+    
     class ComponentRes(Resource):
-        
+            
         @failsafe(fail_code=500)
         @authorization_check        
         def post(self):
@@ -37,10 +38,68 @@ def create_individual_report_component_resource(component: BaseReportComponent):
                 tenant_id, 
                 filename=component.component_id
             )
-            
+                
     return ComponentRes
     
     
+
+def get_report_individual_components_namespace(ns: Namespace, report_components:list):
+    
+    
+    restx_model = ns.model('ComponentFilter', dict(
+                column       = fields.String,
+                filter_type  =  fields.String,
+                filter_value = fields.List(fields.String)
+            )
+        )
+    
+    for comp in report_components:
+        
+        ComponentRes = create_individual_report_component_resource(comp)
+        
+        docs = {
+            'get': {
+                'description': 'Get component data', 
+                'params': {'download_as': 
+                    {
+                        'description': 'Download table component as file type: csv, xlsx, json'
+                    }
+                },
+                'responses': { 
+                    200: 'Success', 
+                    403: 'Missing `Tenantid` or `Authorization` information', 
+                    500: 'Something went wrong while handling the request'
+                }
+            },
+            'post': {
+                'description': 'Get component data with an optional filter payload', 
+                'validate': None, 
+                'expect': [restx_model], 
+                'responses': { 
+                    200: 'Success', 
+                    403: 'Missing `Tenantid` or `Authorization` information', 
+                    500: 'Something went wrong while handling the request'
+                }
+            }
+        }
+        
+        ComponentRes.__apidoc__ = docs
+        
+        
+        IRCResource = type(
+            comp.component_id.replace("_", "").capitalize() + 'individual_component',
+            (ComponentRes, ),
+            {}
+        )
+        
+        ns.add_resource(IRCResource, comp.component_path) 
+        
+
+    return ns
+        
+       
+       
+
 
 # TESTING
 
@@ -75,40 +134,8 @@ def create_individual_report_component_resource(component: BaseReportComponent):
     
 
 
-
-def get_report_individual_components_namespace(ns: Namespace, report_components:list):
-    
-    
-    restx_model = ns.model('ComponentFilter', dict(
-                column       = fields.String,
-                filter_type  =  fields.String,
-                filter_value = fields.List(fields.String)
-            )
-        )
-    
-    # 3d1fdc6b-04bc-44c8-ae7c-5fa5b9122f1a
-    for comp in report_components:
-    # for comp in local_test_report_components:
-        
-        ComponentRes = create_individual_report_component_resource(comp)
-        
-        IRCResource = type(
-            comp.component_id.replace("_", "").capitalize() + 'individual_component',
-            (ComponentRes, ),
-            {}
-        )
-            
-        ns.add_resource(IRCResource, comp.component_path) 
-
-    
-    return ns
-        
-       
-       
-
-    
 # @ns.doc(
-#     id="Get component data with an optional filter payload",
+#     description="Get component data with an optional filter payload",
 #     params={'download_as': 'Download table component as file type: csv, xlsx, json'},
 #     responses={
 #         200 : 'Success',
@@ -116,42 +143,7 @@ def get_report_individual_components_namespace(ns: Namespace, report_components:
 #         500 : 'Something went wrong while handling the request' 
 #     }
 # )
-# class TempGetIRC(ReportGETComponent): ...
-
-
-# @ns.doc(
-#     id="Get component data with an optional filter payload",
-#     responses={
-#         200 : 'Success',
-#         403 : "Missing `Tenantid` or `Authorization` information",
-#         500 : 'Something went wrong while handling the request' 
-#     }
-# )
 # @ns.expect([restx_model])
-# class TempPostIRC(ReportPOSTComponent): ...
+# class TempRes:...
 
-# Clean url but bad swagger (overwrittes docs)
-# IRCResource = type(
-#     comp.component_id.replace("_", "").capitalize() + 'individual_component',
-#     (TempGetIRC, TempPostIRC, ),
-#     {}
-# )
-
-# ns.add_resource(IRCResource, comp.component_path) 
-
-# IRCGetResource = type(
-#     comp.component_id.replace("_", "").capitalize() + 'get_individual_component',
-#     (TempGetIRC, ),
-#     {}
-# )
-
-# ns.add_resource(IRCGetResource, comp.component_path + '/get') 
-
-
-# IRCPostResource = type(
-#     comp.component_id.replace("_", "").capitalize() + 'post_individual_component',
-#     (TempPostIRC, ),
-#     {}
-# )
-
-# ns.add_resource(IRCPostResource, comp.component_path + '/post') 
+# log.debug(TempRes.__apidoc__)
