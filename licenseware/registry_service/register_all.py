@@ -19,9 +19,10 @@ def register_all(app:dict, reports:list, report_components:list, uploaders:list)
         _, status_code = register_report(**report)
         if status_code != 200: registering_successful = False
     
-    for rep_component in report_components:
-        _, status_code = register_component(**rep_component)
-        if status_code != 200: registering_successful = False
+    # TODO update registry service
+    # for rep_component in report_components:
+    #     _, status_code = register_component(**rep_component)
+    #     if status_code != 200: registering_successful = False
         
     for uploader in uploaders:
         _, status_code = register_uploader(**uploader)

@@ -29,10 +29,11 @@ def register_report(**kwargs):
             "description": kwargs['description'],
             "flags": kwargs['flags'],
             "url": kwargs['url'],
-            "preview_image_url":kwargs['preview_image_url'],
-            "report_components":  kwargs['report_components'],
+            # TODO update registry service
+            # "preview_image_url":kwargs['preview_image_url'],
+            # "report_components":  kwargs['report_components'],
             "connected_apps": kwargs['connected_apps'],
-            "filters" : kwargs['filters']
+            # "filters" : kwargs['filters']
         }]
     }
     

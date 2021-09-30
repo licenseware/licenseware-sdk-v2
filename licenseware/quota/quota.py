@@ -6,7 +6,7 @@ from typing import Tuple
 from marshmallow.schema import Schema
 
 from licenseware import mongodata
-from licenseware.common.constants import envs
+from licenseware.common.constants import envs, states
 from licenseware.common.serializers import QuotaSchema
 from licenseware.utils.miscellaneous import get_user_id
 from licenseware.utils.logger import log
@@ -28,10 +28,11 @@ class Quota:
         schema:Schema = None,
         collection:str = None,
     ):
-        
-        if envs.ENVIRONMENT == 'local': 
-            units = sys.maxsize
-            
+         
+        self.quota_disabled = False
+        if units is None or envs.environment_is_local(): 
+            self.quota_disabled = True
+             
         self.units = units
         self.tenant_id = tenant_id
         self.uploader_id = uploader_id
@@ -59,6 +60,10 @@ class Quota:
     
     
     def init_quota(self) -> Tuple[dict, int]:
+        
+        if self.quota_disabled: 
+            return {'status': states.SUCCESS, 'message': 'Quota disabled'}, 200
+
 
         results = mongodata.fetch(
             match=self.tenant_query,
@@ -66,7 +71,7 @@ class Quota:
         )
 
         if results:
-            return {'status': 'success', 'message': 'Quota initialized'}, 200
+            return {'status': states.SUCCESS, 'message': 'Quota initialized'}, 200
         
         utilization_data = {
             "user_id": self.user_id,
@@ -82,13 +87,17 @@ class Quota:
         )
 
         if isinstance(inserted_ids, list) and len(inserted_ids) == 1:
-            return {'status': 'success', 'message': 'Quota initialized'}, 200
+            return {'status': states.SUCCESS, 'message': 'Quota initialized'}, 200
 
-        return {'status': 'fail', 'message': 'Quota failed to initialize'}, 500
+        return {'status': states.FAILED, 'message': 'Quota failed to initialize'}, 500
 
 
 
     def update_quota(self, units:int) -> Tuple[dict, int]:
+        
+        if self.quota_disabled: 
+            return {'status': states.SUCCESS, 'message': 'Quota disabled'}, 200
+
 
         current_utilization = mongodata.fetch(
             match=self.tenant_query,
@@ -108,12 +117,16 @@ class Quota:
         )
 
         if updated_docs != 1:
-            return {'status': 'fail', 'message': 'Quota failed to be updated'}, 500
+            return {'status': states.FAILED, 'message': 'Quota failed to be updated'}, 500
         
-        return {'status': 'success', 'message': 'Quota updated'}, 200
+        return {'status': states.SUCCESS, 'message': 'Quota updated'}, 200
 
         
     def check_quota(self, units:int = 0) -> Tuple[dict, int]:
+        
+        if self.quota_disabled: 
+            return {'status': states.SUCCESS, 'message': 'Quota disabled'}, 200
+
 
         results = mongodata.fetch(self.user_query, self.collection)
         
@@ -141,12 +154,12 @@ class Quota:
         
         if monthly_quota_consumed <= self.units + units:
             return {
-                        'status': 'success',
+                        'status': states.SUCCESS,
                         'message': 'Utilization within monthly quota'
                     }, 200
         else:
             return {
-                        'status': 'fail',
+                        'status': states.FAILED,
                         'message': 'Monthly quota exceeded'
                     }, 402
 
