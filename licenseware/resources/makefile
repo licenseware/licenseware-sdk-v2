@@ -19,7 +19,7 @@ dev:
 	python3 main.py
 
 worker:
-	dramatiq main:App.broker -p4
+	dramatiq main:App.broker -p4 --watch .
 
 # This starts mock, dev and worker
 run-dev:
