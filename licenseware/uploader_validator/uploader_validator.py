@@ -59,10 +59,11 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         super().__init__(**vars(self))
      
     
-    def quota_within_limits(self, tenant_id:str, units: int) -> bool:
+    def quota_within_limits(self, tenant_id:str, auth_token:str, units: int) -> bool:
         
         q = Quota(
             tenant_id=tenant_id, 
+            auth_token=auth_token,
             uploader_id=self.uploader_id, 
             units=self.quota_units
         )
@@ -73,10 +74,11 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         return True
     
     
-    def update_quota(self, tenant_id:str, units: int) -> Tuple[dict, int]:
+    def update_quota(self, tenant_id:str, auth_token:str, units: int) -> Tuple[dict, int]:
         
         q = Quota(
             tenant_id=tenant_id, 
+            auth_token=auth_token,
             uploader_id=self.uploader_id, 
             units=self.quota_units
         )
@@ -94,12 +96,13 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         log.warning("Calculating quota based on length of files")
         
         tenant_id = flask_request.headers.get('Tenantid')
+        auth_token = flask_request.headers.get('Authorization')
         file_objects = flask_request.files.getlist("files[]")
         
         current_units_to_process = len(file_objects)
         
-        if self.quota_within_limits(tenant_id, current_units_to_process):
-            self.update_quota(tenant_id, current_units_to_process)
+        if self.quota_within_limits(tenant_id, auth_token, current_units_to_process):
+            self.update_quota(tenant_id, auth_token, current_units_to_process)
             return {'status': states.SUCCESS, 'message': 'Quota within limits'}, 200
         
         return {'status': states.FAILED, 'message': 'Quota exceeded'}, 402

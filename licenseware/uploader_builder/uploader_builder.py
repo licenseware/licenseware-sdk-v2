@@ -163,12 +163,13 @@ class UploaderBuilder:
         return response, status_code
     
     
-    def init_tenant_quota(self, tenant_id:str):
+    def init_tenant_quota(self, tenant_id:str, auth_token:str):
         
         # Used in app_activation_path
         
         q = Quota(
             tenant_id=tenant_id, 
+            auth_token=auth_token,
             uploader_id=self.uploader_id, 
             units=self.quota_units
         )
@@ -178,12 +179,13 @@ class UploaderBuilder:
         return response, status_code
     
     
-    def check_tenant_quota(self, tenant_id:str):
+    def check_tenant_quota(self, tenant_id:str, auth_token:str):
         
         # Used for uploader_id/quota route
         
         q = Quota(
             tenant_id=tenant_id, 
+            auth_token=auth_token,
             uploader_id=self.uploader_id, 
             units=self.quota_units
         )

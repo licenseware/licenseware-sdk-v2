@@ -1,4 +1,3 @@
-from os import stat
 from typing import List
 from licenseware.common.validators.file_validators import GeneralValidator
 from licenseware.utils.file_utils import save_file
