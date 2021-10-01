@@ -1,4 +1,3 @@
-import sys
 import datetime
 import dateutil.parser as dateparser
 from typing import Tuple
@@ -33,6 +32,14 @@ class Quota:
         self.quota_disabled = False
         if units is None or envs.environment_is_local(): 
             self.quota_disabled = True
+        
+        
+        # This is quota disabled default response
+        self.quota_disabled_response = {
+            'status': states.SUCCESS, 
+            'message': 'Quota disabled (units is None or dev is local)'
+        }, 200
+    
              
         self.units = units
         self.tenant_id = tenant_id
@@ -42,17 +49,19 @@ class Quota:
          
         self.tenants = get_tenants_list(tenant_id, auth_token)
         
-        # This is used to update quota
-        self.tenant_query = {
-            'tenant_id': tenant_id,
-            'uploader_id': uploader_id
-        }
         # This is used to calculate quota
         self.user_query = {
             'tenant_id': { "$in": self.tenants },
             'uploader_id': uploader_id
         }
-    
+        
+        
+        # This is used to update quota
+        self.tenant_query = {
+            'tenant_id': tenant_id,
+            'uploader_id': uploader_id
+        }
+        
         # Making sure quota is initialized
         response, status_code = self.init_quota()
         if status_code != 200:
@@ -62,8 +71,7 @@ class Quota:
     
     def init_quota(self) -> Tuple[dict, int]:
         
-        if self.quota_disabled: 
-            return {'status': states.SUCCESS, 'message': 'Quota disabled'}, 200
+        if self.quota_disabled: return self.quota_disabled_response
 
 
         results = mongodata.fetch(
@@ -95,8 +103,7 @@ class Quota:
 
     def update_quota(self, units:int) -> Tuple[dict, int]:
         
-        if self.quota_disabled: 
-            return {'status': states.SUCCESS, 'message': 'Quota disabled'}, 200
+        if self.quota_disabled: return self.quota_disabled_response
 
 
         current_utilization = mongodata.fetch(
@@ -124,8 +131,7 @@ class Quota:
         
     def check_quota(self, units:int = 0) -> Tuple[dict, int]:
         
-        if self.quota_disabled: 
-            return {'status': states.SUCCESS, 'message': 'Quota disabled'}, 200
+        if self.quota_disabled: return self.quota_disabled_response
 
 
         results = mongodata.fetch(self.user_query, self.collection)
