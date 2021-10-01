@@ -1,9 +1,68 @@
+"""
+
+Bellow is an example on how you can use the endpoint builder
+
+```py
+
+from flask import request
+from licenseware import mongodata
+from licenseware.endpoint_builder import EndpointBuilder
+
+
+# Specify the http method 
+def get_detected_uploaders(): # a function that takes no parameters
+    
+    event_id  = request.args.get("event_id")
+    tenant_id = request.headers.get("Tenantid")
+    
+    results = mongodata.fetch(
+        collection="DetectedUploaders",
+        match={
+            'tenant_id': tenant_id,
+            'event_id': event_id
+        }
+    )
+    
+    return results
+
+
+# Declare the swagger docs in a dict (if needed)
+swagger_docs = {
+    'get': {
+        'description': 'Get detected uploaders for the app provided', 
+        'params': {
+            'event_id': { 'description': 'The uuid4 received on when filenames were sent to uploader detector' }
+        },
+        'responses': { 
+            200: 'Success', 
+            403: 'Missing `Tenantid` or `Authorization` information', 
+            500: 'Something went wrong while handling the request'
+        }
+    }
+}
+
+# Instantiate the EndpointBuilder class
+get_detected_uploaders_endpoint = \
+EndpointBuilder(
+    handler = get_detected_uploaders,
+    swagger = swagger_docs
+)
+
+# Later register it to the main App
+App.register_enpoint(get_detected_uploaders_endpoint)
+
+```
+
+
+
+"""
+
+import inspect
 from typing import Any
 from flask_restx import Namespace, Resource
 from licenseware.utils.miscellaneous import http_methods
 from licenseware.utils.logger import log
 from licenseware.schema_namespace import SchemaNamespace
-import inspect
 
 
 
@@ -30,18 +89,21 @@ class EndpointBuilder:
     def __init__(
         self, 
         handler: Any, 
+        swagger:dict = None,
         http_method:str = None,
         http_path:str = None,
-        docid:str = None,
         **options
     ):
         
         self.handler = handler
         self.options = options
+        self.apidoc  = swagger
     
         self.http_method = http_method
         self.http_path = http_path
-        self.docid = docid or handler.__doc__ or handler.__name__.replace('_', ' ')
+        self.doc_id = handler.__name__.replace('_', ' ')
+        self.doc_description = handler.__doc__
+        
         
         self.initialize()
         
@@ -73,23 +135,31 @@ class EndpointBuilder:
     
     def add_method_to_namespace(self, ns):
         
-        @ns.doc(id=self.docid)
-        class BaseResource(Resource): ...
+        if self.apidoc:
+            class BaseResource(Resource): ...
+            BaseResource.__apidoc__ = self.apidoc
+        else:
+            @ns.doc(
+                id=self.doc_id,
+                description=self.doc_description
+            )
+            class BaseResource(Resource): ...
             
-        resource = type(
+  
+        CResource = type(
             self.handler.__name__ + self.http_method.capitalize(), 
             (BaseResource,), 
-            {self.http_method.lower(): lambda request: self.handler(request)}
+            {self.http_method.lower(): lambda _ : self.handler()}
         )
         
-        ns.add_resource(resource, self.http_path) 
+        ns.add_resource(CResource, self.http_path) 
         
         return ns
         
         
     def set_http_path(self):
         if self.http_path: return 
-        self.http_path = '/' + self.handler.__name__.lower()
+        self.http_path = '/' + "_".join(self.handler.__name__.lower().split('_')[1:])  
     
     
     def set_http_method(self):
