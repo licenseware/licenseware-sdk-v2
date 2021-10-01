@@ -64,9 +64,10 @@ class envs:
     MONGO_CONNECTION_STRING:str = os.environ['MONGO_CONNECTION_STRING'] or 'mongodb://localhost:27017/db'
     
     # Base mongo collection names
-    MONGO_COLLECTION_DATA_NAME:str = APP_ID.upper() + "Data" if "-service" not in APP_ID else 'Data'
-    MONGO_COLLECTION_UTILIZATION_NAME:str = APP_ID.upper() + "Utilization"  if "-service" not in APP_ID else 'Utilization'
-    MONGO_COLLECTION_ANALYSIS_NAME:str = APP_ID.upper() + "Analysis" if "-service" not in APP_ID else 'Analysis'
+    COLLECTION_PREFIX = APP_ID.replace('-service', '').upper()
+    MONGO_COLLECTION_DATA_NAME:str = COLLECTION_PREFIX + "Data"
+    MONGO_COLLECTION_UTILIZATION_NAME:str = COLLECTION_PREFIX + "Quota"
+    MONGO_COLLECTION_ANALYSIS_NAME:str = COLLECTION_PREFIX + "History"
     
         
     # Environment variables added later by the app
