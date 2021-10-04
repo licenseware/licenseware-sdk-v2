@@ -256,7 +256,7 @@ class AppBuilder:
         ]
         
         for func in ns_funcs:
-            self.add_namespace(
+            self.register_namespace(
                 func(ns=uploads_namespace, uploaders=self.uploaders)
             )
             
@@ -270,7 +270,7 @@ class AppBuilder:
         ]
         
         for func in ns_funcs:
-            self.add_namespace(
+            self.register_namespace(
                 func(ns=reports_namespace, reports=self.reports)
             )
         
@@ -282,7 +282,7 @@ class AppBuilder:
         ]
         
         for func in ns_funcs:
-            self.add_namespace(
+            self.register_namespace(
                 func(ns=report_components_namespace, report_components=self.report_components)
             )
             
@@ -291,10 +291,10 @@ class AppBuilder:
         
         for editable in self.editable_tables:
             if editable.namespace:
-                self.add_namespace(editable.namespace)
+                self.register_namespace(editable.namespace)
             else:
                 ns = SchemaNamespace(schema=editable.schema).initialize()
-                self.add_namespace(ns)
+                self.register_namespace(ns)
                 
                     
                         
@@ -358,7 +358,7 @@ class AppBuilder:
      
     def register_endpoint(self, endpoint_instance):
         ns = endpoint_instance.build_namespace(endpoint_builder_namespace)
-        self.add_namespace(ns)
+        self.register_namespace(ns)
     
     
     def register_editable_table(self, editable_table_instance: EditableTable):
@@ -372,8 +372,8 @@ class AppBuilder:
         self.editable_tables_schemas.append(editable_table_instance.schema)
             
             
-    def add_namespace(self, ns:Namespace, path:str = None):
-        """ Can be user for custom restx namespaces from scratch """
+    def register_namespace(self, ns:Namespace, path:str = None):
+        """ Used for custom restx namespaces """
         self.custom_namespaces.append((ns, path))
 
     def init_namespaces(self):

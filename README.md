@@ -444,7 +444,7 @@ class CustomApiRoute(Resource):
     
 # Add it to main app 
 # it will have the same namespace prefix /ifmp/v1/ + ns-prefix/custom-api-route
-App.add_namespace(custom_ns, path='/ns-prefix')
+App.register_namespace(custom_ns, path='/ns-prefix')
 
 # If the namespace defined up it's used on all apps 
 # add it to licenseware sdk in app_builder default routes
@@ -574,7 +574,7 @@ UserNs = SchemaNamespace(
 
 # Adding the namespace generated from schema to our App
 user_ns = UserNs.initialize()
-App.add_namespace(user_ns)
+App.register_namespace(user_ns)
 
 
 
@@ -1251,7 +1251,7 @@ class CustomApiRoute(Resource):
 We can later import the namespace created to our `main` file
 
 ```py
-ifmp_app.add_namespace(custom_ns, path='/ns-prefix')
+ifmp_app.register_namespace(custom_ns, path='/ns-prefix')
 ```
 
 `ifmp_app` will make sure it will have the app prefix.
@@ -1331,7 +1331,7 @@ app = Flask(__name__)
 ifmp_app.register_uploader(rv_tools_uploader)
 ifmp_app.register_report_component(virtual_overview)
 ifmp_app.register_report(virtualization_details_report)
-ifmp_app.add_namespace(custom_ns, path='/ns-prefix')
+ifmp_app.register_namespace(custom_ns, path='/ns-prefix')
 ifmp_app.register_endpoint(custom_func_endpoint)
 
 
