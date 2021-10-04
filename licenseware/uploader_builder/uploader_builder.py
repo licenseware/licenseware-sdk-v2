@@ -1,4 +1,4 @@
-from typing import Callable, Type
+from typing import Callable, Type, List
 from licenseware.common.constants import envs, states
 from licenseware.registry_service.register_uploader import register_uploader
 from licenseware.utils.dramatiq_redis_broker import broker
@@ -22,12 +22,18 @@ class UploaderBuilder:
     worker_function: Callable - this is responsible for processing the received files (receives a dict with tenant_id and absolute paths to files). If None upload will e skipped.
     quota_units:int - number of units allowed to be processed for free each month. If None upload will e skipped.
     flags:list = [] - stage of the development see constants.flags dataclass to see/add values
-    status:str = states.IDLE - state of the worker_function it it's processing or not the files
-    icon:str = "default.png" - icon for this uploader see constants.icons dataclass to see/add more
-    upload_path:str = None - url path/route where files will be updated
-    upload_validation_path:str = None - url path/route where filenames will be validated
-    quota_validation_path:str = None - url path/route where quota for this uploader_id is checked
-    status_check_path:str = None - url path/route where gives back the status of the worker function
+    
+    
+    You can add extra query parameters on uploaders either on filename validation or file upload
+    
+    query_params_on_validation = {
+        'param1_name': 'param description',
+        'param2_name': 'param description', 
+        'param3_name': 'param description', 
+         etc
+    }
+    
+    same for query_params_on_upload
     
     """
     
@@ -48,6 +54,8 @@ class UploaderBuilder:
         quota_validation_path:str = None,
         status_check_path:str = None,
         max_retries:int = 0,
+        query_params_on_validation:List[dict] = None,
+        query_params_on_upload:List[dict] = None,
         **options
     ):
         
@@ -76,6 +84,9 @@ class UploaderBuilder:
         self.flags = flags
         self.status = status
         self.icon = icon
+        self.query_params_on_validation = query_params_on_validation
+        self.query_params_on_upload = query_params_on_upload
+        
         
         # Paths for internal usage
         self.upload_path = upload_path or f"/{self.uploader_id}/files"

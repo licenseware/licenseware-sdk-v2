@@ -56,6 +56,7 @@ def get_filestream_validation_namespace(ns: Namespace, uploaders:List[UploaderBu
         
         @ns.doc(
             id='Validate file contents',
+            description="Upload files received on `files[]` for processing",
             params={'clear_data': 'Boolean parameter, warning, will clear existing data'},
             responses={
                 200 : 'Files are valid',
@@ -67,6 +68,17 @@ def get_filestream_validation_namespace(ns: Namespace, uploaders:List[UploaderBu
         )
         @ns.expect(file_upload_parser)
         class TempUploaderResource(UR): ...
+        
+        
+        # Adding extra swagger query parameters if provided
+        if uploader.query_params_on_upload:
+            
+            params_dict = {}
+            for param_name, param_description in uploader.query_params_on_upload.items():
+                params_dict[param_name] = { 'description': param_description }
+            
+            TempUploaderResource.__apidoc__.update({'params': params_dict})
+        
         
         UploaderResource = type(
             uploader.uploader_id.replace("_", "").capitalize() + 'stream',

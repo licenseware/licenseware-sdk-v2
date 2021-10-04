@@ -52,6 +52,7 @@ def get_filenames_validation_namespace(ns: Namespace, uploaders:List[UploaderBui
            
         @ns.doc(
             id='Validate file name list',
+            description='Validating the list of filenames provided',
             responses={
                 200 : 'Filenames are valid', 
                 400 : 'Filenames sent for validation must be in a list of strings format',
@@ -62,6 +63,17 @@ def get_filenames_validation_namespace(ns: Namespace, uploaders:List[UploaderBui
         )
         @ns.expect(restx_model)
         class TempUploaderResource(UR): ...
+
+        
+        # Adding extra swagger query parameters if provided
+        if uploader.query_params_on_validation:
+            
+            params_dict = {}
+            for param_name, param_description in uploader.query_params_on_validation.items():
+                params_dict[param_name] = { 'description': param_description }
+            
+            TempUploaderResource.__apidoc__.update({'params': params_dict})
+        
         
         UploaderResource = type(
             uploader.uploader_id.replace("_", "").capitalize() + 'filenames',
