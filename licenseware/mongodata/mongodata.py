@@ -33,8 +33,8 @@ For pagination make sure to include the special field `__pagination__` on `match
 results = mongodata.fetch(
     match={
             "__pagination__": {
-                "max_items_to_fetch": 20,
-                "currently_fetched_items": 0
+                "limit": 20,
+                "skip": 0
             }
         },
     collection=self.collection
@@ -42,11 +42,11 @@ results = mongodata.fetch(
 
 ```
 
-- `max_items_to_fetch` - is the mongo limit;
-- `currently_fetched_items` - is the mongo skip; 
+- `limit` - is the mongo limit;
+- `skip` - is the mongo skip; 
 
 
-Start with `currently_fetched_items` value 0 and increase that value on each iteration.
+Start with `skip` value 0 and increase that value on each iteration.
 If `__pagination__` is not found on match pagination will not be applied.
 
 
@@ -57,16 +57,16 @@ This would be the first iteration:
 
 ```py
 
-currently_fetched_items = 0
+skip = 0
 
 results = mongodata.fetch(
     match={},
     limit = 20,
-    skip = currently_fetched_items,
+    skip = skip,
     collection=self.collection
 )
 
-currently_fetched_items += len(results)
+skip += len(results)
 ```
 
 This would be the second iteration:
@@ -75,11 +75,11 @@ This would be the second iteration:
 results = mongodata.fetch(
     match={},
     limit = 20,
-    skip = currently_fetched_items,
+    skip = skip,
     collection=self.collection
 )
 
-currently_fetched_items += len(results)
+skip += len(results)
 ```
 
 And the same is for the next iterations until `len(results)` is 0.
@@ -318,8 +318,8 @@ def fetch(match:dict, collection:str, as_list:bool = True, limit:int = None, ski
                 
                 found_docs = collection.with_options(read_concern=ReadConcern("majority"))\
                 .find(*match['query_tuple'])\
-                .skip(pagination['currently_fetched_items'])\
-                .limit(pagination['max_items_to_fetch'])
+                .skip(pagination['skip'])\
+                .limit(pagination['limit'])
                 
             elif limit is not None and skip is not None:
                 
@@ -338,8 +338,8 @@ def fetch(match:dict, collection:str, as_list:bool = True, limit:int = None, ski
                 
                 found_docs = collection.with_options(read_concern=ReadConcern("majority"))\
                 .find(match['query'])\
-                .skip(pagination['currently_fetched_items'])\
-                .limit(pagination['max_items_to_fetch'])
+                .skip(pagination['skip'])\
+                .limit(pagination['limit'])
             
             elif limit is not None and skip is not None:
                 

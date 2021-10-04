@@ -24,15 +24,15 @@ class UploaderInfoSchema(Schema):
     # TODO change it to name in registry service
     # name = fields.Str(required=True, validate=validate.Length(min=3))  
     description = fields.Str(required=True, validate=validate.Length(min=10))
-    flags = fields.List(fields.Str, required=False) #validate=validate.OneOf(flags.BETA, flags.SOON), allow_none=True)
+    flags = fields.List(fields.Str, required=False, validate=validate.OneOf([None, flags.BETA, flags.SOON]), allow_none=True)
     accepted_file_types = fields.List(fields.Str, required=True)
     upload_url = fields.Url(required=True)
     upload_validation_url = fields.Url(required=True)
     quota_validation_url = fields.Url(required=True)
     status_check_url = fields.Url(required=True)
     icon = fields.Str(required=False, validate=validate_icon)
-    status = fields.Str(required=False, validate=validate.OneOf(states.IDLE, states.RUNNING))
-    filename_validation_parameters = fields.List(fields.Nested(FilenameValidatorSchema), required=True)
+    status = fields.Str(required=False, validate=validate.OneOf([None, states.IDLE, states.RUNNING]), allow_none=True)
+    filename_validation_parameters = fields.Nested(FilenameValidatorSchema, required=True)
     
 
 class RegisterUploaderPayloadSchema(Schema):

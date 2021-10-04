@@ -27,17 +27,17 @@ def register_uploader(**kwargs):
             "description": kwargs['description'],
             "accepted_file_types": kwargs['accepted_file_types'],
             "upload_id": uploader_id,
-            "flags": kwargs['flags'],
+            "flags": kwargs['flags'] if len(kwargs['flags']) > 0 else None,
             "status": kwargs['status'],
             "icon": kwargs['icon'],
             "upload_url": kwargs['upload_url'],
             "upload_validation_url": kwargs['upload_validation_url'],
             "quota_validation_url": kwargs['quota_validation_url'],
             "status_check_url": kwargs['status_check_url'],
-            "filename_validation_parameters": [{
+            "filename_validation_parameters": {
                 "filename_contains": validators['filename_contains'],
                 "filename_endswith": validators['filename_endswith']
-            }]
+            }
         }]
     }
 
