@@ -143,9 +143,10 @@ class Quota:
             if quota_reset_date < current_date:
                 quota['quota_reset_date'] = get_quota_reset_date()
                 quota['monthly_quota_consumed'] = 0
+                _id = quota.pop('_id')
                 mongodata.update(
                     schema=self.schema, 
-                    match={'_id': quota['_id']}, 
+                    match={'_id': _id}, 
                     new_data=quota, 
                     collection=self.collection
                 )
