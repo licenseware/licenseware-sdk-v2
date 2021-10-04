@@ -74,7 +74,7 @@ class FileNameValidator:
         validation_response = []
         for filename in filenames:
             
-            if filename in self.ignore_filenames:
+            if any(filename.endswith(f) for f in self.ignore_filenames):
                 
                 validation_response.append({
                     'status': states.SKIPPED,
