@@ -6,6 +6,9 @@ from licenseware.utils.logger import log
 from licenseware.common.validators import validate_event
 from licenseware.quota import Quota
 from licenseware.notifications import notify_upload_status
+from licenseware.uploader_validator.uploader_validator import UploaderValidator
+from flask import Request
+
 
 
 
@@ -18,7 +21,7 @@ class UploaderBuilder:
     uploader_id:str - uploader_id, this should be unique for each app declared
     description:str - description of this uploader, what type of files it accepts 
     accepted_file_types:list - accepted file formats .xlsx, .pdf etc 
-    validator_class: Type -  this is a UploaderValidator class instance
+    validator_class: UploaderValidator -  this is a UploaderValidator class instance
     worker_function: Callable - this is responsible for processing the received files (receives a dict with tenant_id and absolute paths to files). If None upload will e skipped.
     quota_units:int - number of units allowed to be processed for free each month. If None upload will e skipped.
     flags:list = [] - stage of the development see constants.flags dataclass to see/add values
@@ -43,7 +46,7 @@ class UploaderBuilder:
         uploader_id:str,
         description:str, 
         accepted_file_types:list, 
-        validator_class: Type, 
+        validator_class: UploaderValidator, 
         worker_function: Callable,
         quota_units:int,
         flags:list = [],
@@ -112,7 +115,7 @@ class UploaderBuilder:
         return response, status_code
 
 
-    def validate_filenames(self, flask_request):
+    def validate_filenames(self, flask_request:Request):
         
         quota_response, quota_status_code = self.validator_class.calculate_quota(flask_request)
         if quota_status_code != 200: return quota_response, quota_status_code
@@ -121,7 +124,7 @@ class UploaderBuilder:
         return response, status_code
     
         
-    def upload_files(self, flask_request):
+    def upload_files(self, flask_request:Request):
         
         if self.worker is None: 
             return {
@@ -151,11 +154,13 @@ class UploaderBuilder:
             if valid_filepaths:
                 
                 flask_headers = dict(flask_request.headers) if flask_request.headers else {}
-                flask_body = {dict(flask_request.json)} if flask_request.json else {}
+                flask_json = dict(flask_request.json) if flask_request.json else {}
+                flask_args = dict(flask_request.args) if flask_request.args else {}
+                #TODO add request.files?
                 
                 event.update({
                     'filepaths': valid_filepaths, 
-                    'flask_request':  {**flask_body, **flask_headers},
+                    'flask_request':  {**flask_json, **flask_headers, **flask_args},
                     'validation_response': response
                 })
                 
