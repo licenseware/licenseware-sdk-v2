@@ -1,7 +1,11 @@
 from licenseware.common.constants.envs import envs
 from licenseware.registry_service import register_report
 from licenseware.report_components.build_match_expression import condition_switcher
+from licenseware.report_components import BaseReportComponent
 from licenseware.utils.logger import log
+from typing import List
+
+
 
 
 
@@ -40,7 +44,7 @@ class ReportBuilder:
         self.report_id = report_id
         self.name = name
         self.description = description
-        self.components = report_components
+        self.components:List[BaseReportComponent] = report_components
         self.report_path = report_path or '/' + report_id 
         self.register_report_path = self.report_path + '/register'
         self.registrable = registrable

@@ -29,7 +29,7 @@ def get_status_namespace(ns: Namespace, uploaders:List[UploaderBuilder]):
         UR = create_uploader_resource(uploader)
         
         @ns.doc(
-            id='Get processing status of files uploaded',
+            description='Get processing status of files uploaded',
             responses={
                 200 : 'idle or running',
                 400 : "Tenantid not provided",

@@ -33,7 +33,7 @@ def get_quota_namespace(ns: Namespace, uploaders:List[UploaderBuilder]):
         UR = create_uploader_resource(uploader)
                      
         @ns.doc(
-            id='Check if tenant has quota within limits',
+            description='Check if tenant has quota within limits',
             responses={
                 200 : 'Quota is within limits',
                 400 : "Tenantid not provided",

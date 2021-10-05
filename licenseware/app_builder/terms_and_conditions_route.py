@@ -18,7 +18,7 @@ def add_terms_and_conditions_route(api:Api, appvars:dict):
     class TermsAndConds(Resource): 
         @failsafe(fail_code=500)
         @api.doc(
-            id='Return terms and conditions html page', 
+            description='Return terms and conditions html page', 
             responses={
                 200 : 'Terms and Conditions raw html data', 
                 500 : 'Something went wrong while handling the request' 

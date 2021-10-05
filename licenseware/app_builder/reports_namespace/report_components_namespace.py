@@ -53,7 +53,7 @@ def get_report_components_namespace(ns: Namespace, reports:List[ReportBuilder]):
     
     restx_model = ns.model('ComponentFilter', dict(
                 column       = fields.String,
-                filter_type  =  fields.String,
+                filter_type  = fields.String,
                 filter_value = fields.List(fields.String)
             )
         )

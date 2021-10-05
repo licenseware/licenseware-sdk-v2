@@ -17,7 +17,7 @@ def add_download_as_route(api:Api, appvars:dict):
         @failsafe(fail_code=500)
         @authorization_check
         @api.doc(
-            id='Given json data will return file of type: json, csv or xlsx', 
+            description='Given json data will return file of type: json, csv or xlsx', 
             responses={
                 200 : 'Downloaded file (`file_type` can be: json, csv, xlsx)', 
                 400 : 'File type not supported',

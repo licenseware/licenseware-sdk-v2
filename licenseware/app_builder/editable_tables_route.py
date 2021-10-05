@@ -20,7 +20,7 @@ def add_editable_tables_route(api:Api, appvars:dict):
         @failsafe(fail_code=500)
         @authorization_check
         @api.doc(
-            id="Get editable tables metadata",
+            description="Get editable tables metadata",
             responses={
                 200 : 'TODO - add doc',
                 403 : "Missing `Tenant` or `Authorization` information",

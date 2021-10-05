@@ -51,7 +51,6 @@ def get_filenames_validation_namespace(ns: Namespace, uploaders:List[UploaderBui
         UR = create_uploader_resource(uploader)
            
         @ns.doc(
-            id='Validate file name list',
             description='Validating the list of filenames provided',
             responses={
                 200 : 'Filenames are valid', 

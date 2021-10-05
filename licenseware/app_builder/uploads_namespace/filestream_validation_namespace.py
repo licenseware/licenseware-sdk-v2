@@ -55,7 +55,6 @@ def get_filestream_validation_namespace(ns: Namespace, uploaders:List[UploaderBu
         UR = create_uploader_resource(uploader)
         
         @ns.doc(
-            id='Validate file contents',
             description="Upload files received on `files[]` for processing",
             params={'clear_data': 'Boolean parameter, warning, will clear existing data'},
             responses={

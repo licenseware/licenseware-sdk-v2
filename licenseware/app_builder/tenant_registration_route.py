@@ -21,7 +21,7 @@ def add_tenant_registration_route(api:Api, appvars:dict):
         @failsafe(fail_code=500)
         @machine_check
         @api.doc(
-            id='Get `app_activated` and `data_available` boleans for tenant_id', 
+            description='Get `app_activated` and `data_available` boleans for tenant_id', 
             params={'tenant_id': 'Tenant ID for which the info is requested'},
             responses={
                 200 : 'Json with `app_activated`, `data_available`, `last_update_date` for `tenant_id`', 

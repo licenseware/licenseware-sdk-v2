@@ -17,7 +17,7 @@ def add_app_registration_route(api: Api, appvars:dict):
         @failsafe(fail_code=500)
         @machine_check
         @api.doc(
-            id="Register app to registry-service",
+            description="Register app to registry-service",
             responses={
                 200 : 'Registration successful',
                 403 : "Missing `Authorization` information",

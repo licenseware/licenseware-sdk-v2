@@ -23,7 +23,7 @@ def add_app_activation_route(api: Api, appvars:dict):
         @failsafe(fail_code=500)
         @authorization_check
         @api.doc(
-            id="Initialize app for tenant_id",
+            description="Initialize app for tenant_id",
             responses={
                 200 : 'Quota is within limits',
                 400 : "Tenantid not provided",

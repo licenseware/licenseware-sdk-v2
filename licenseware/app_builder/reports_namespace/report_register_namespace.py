@@ -28,7 +28,7 @@ def get_report_register_namespace(ns: Namespace, reports:List[ReportBuilder]):
         RR = create_report_resource(report)
         
         @ns.doc(
-            id=f"Register {report.name} report",
+            description="Register report",
             responses={
                 200 : "Report registered successfully",
                 403 : "Missing `Authorization` information",
