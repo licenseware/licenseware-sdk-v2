@@ -3,7 +3,7 @@ from licenseware.utils.logger import log
 from licenseware.common.constants import envs
 from licenseware.decorators.auth_decorators import authenticated_machine
 from licenseware.common.validators.registry_payload_validators import validate_register_app_payload
-
+from licenseware.tenants import get_activated_tenants, get_tenants_with_data
 
 
 
@@ -19,8 +19,8 @@ def register_app(**kwargs):
         'data': [{
             "app_id": app_id,
             "name": kwargs['name'],
-            "tenants_with_app_activated": kwargs['activated_tenants'],
-            "tenants_with_data_available": kwargs['tenants_with_data'],
+            "tenants_with_app_activated": get_activated_tenants(),
+            "tenants_with_data_available": get_tenants_with_data(),
             "description": kwargs['description'],
             "flags": kwargs['flags'],
             "icon": kwargs['icon'],
