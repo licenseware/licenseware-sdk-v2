@@ -191,6 +191,9 @@ class UploaderBuilder:
         )
         
         response, status_code = q.init_quota()
+
+        log.warning(response)
+        log.warning(status_code)
         
         return response, status_code
     

@@ -252,6 +252,7 @@ def insert(schema, collection, data, db_name=None):
     collection_name = return_collection_name(collection)
     with Connect.get_connection() as mongo_connection:
         collection = mongo_connection[db_name][collection_name]
+        log.debug(collection)
         if not isinstance(collection, Collection):
             return collection
 
@@ -298,6 +299,7 @@ def fetch(match:dict, collection:str, as_list:bool = True, limit:int = None, ski
     collection_name = return_collection_name(collection)
     with Connect.get_connection() as mongo_connection:
         collection = mongo_connection[db_name][collection_name]
+        log.debug(collection)
         if not isinstance(collection, Collection):
             return collection
 
@@ -444,6 +446,7 @@ def update(schema, match, new_data, collection, append=False, db_name=None):
     collection_name = return_collection_name(collection)
     with Connect.get_connection() as mongo_connection:
         collection = mongo_connection[db_name][collection_name]
+        log.debug(collection)
         match = parse_match(match)
         match = match['query'] or match['_id']
         if not match:
