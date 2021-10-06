@@ -45,6 +45,7 @@ def get_filestream_validation_namespace(ns: Namespace, uploaders:List[UploaderBu
         location='files', 
         type=FileStorage, 
         required=True, 
+        action="append",
         help="Upload files for processing"
     )
    
