@@ -93,8 +93,11 @@ class ReportBuilder:
             metadata['url'] = self.url + metadata.pop('path')
             metadata['type'] = metadata.pop('component_type') 
             
-            if metadata["filters"]:
-                self.filters.extend(metadata["filters"])
+            # Gathering filters from all components may cause memory overload
+            # Not sure if we need to extend raport filters with all component filters
+            # If we do so then in the list there should be no duplicates
+            # if metadata["filters"]:
+            #     self.filters.extend(metadata["filters"])
                 
             self.report_components.append(metadata)
             
