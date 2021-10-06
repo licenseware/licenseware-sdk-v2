@@ -9,20 +9,20 @@ from licenseware.common.validators import validate_route, validate_icon
 
 
 class FileValidatorSchema(Schema):
-    filename_contains = fields.List(fields.Str, required=False)
-    filename_endswith = fields.List(fields.Str, required=False)
-    ignore_filenames = fields.List(fields.Str, required=False)
+    filename_contains = fields.List(fields.Str, required=False, allow_none=True)
+    filename_endswith = fields.List(fields.Str, required=False, allow_none=True)
+    ignore_filenames = fields.List(fields.Str, required=False, allow_none=True)
     required_input_type = fields.Str(required=False, allow_none=True)
-    required_sheets = fields.List(fields.Str, required=False)
-    required_columns = fields.List(fields.Str, required=False)
-    text_contains_all = fields.List(fields.Str, required=False)
-    text_contains_any = fields.List(fields.Str, required=False)
-    min_rows_number = fields.Int(required=False)
-    header_starts_at = fields.Int(required=False)
-    buffer = fields.Int(required=False)
-    filename_valid_message = fields.Str(required=False)
+    required_sheets = fields.List(fields.Str, required=False, allow_none=True)
+    required_columns = fields.List(fields.Str, required=False, allow_none=True)
+    text_contains_all = fields.List(fields.Str, required=False, allow_none=True)
+    text_contains_any = fields.List(fields.Str, required=False, allow_none=True)
+    min_rows_number = fields.Int(required=False, allow_none=True)
+    header_starts_at = fields.Int(required=False, allow_none=True)
+    buffer = fields.Int(required=False, allow_none=True)
+    filename_valid_message = fields.Str(required=False, allow_none=True)
     filename_invalid_message = fields.Str(required=False, allow_none=True)
-    filename_ignored_message = fields.Str(required=False)
+    filename_ignored_message = fields.Str(required=False, allow_none=True)
 
 
 class UploaderInfoSchema(Schema):

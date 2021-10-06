@@ -5,7 +5,11 @@ from licenseware.decorators.auth_decorators import authenticated_machine
 from licenseware.common.validators.registry_payload_validators import validate_register_uploader_payload
 
 
-def _get_validation_parameters(validators: dict):
+def _get_validation_parameters(validator_class):
+    
+    if not hasattr(validator_class, 'vars'): return {}
+    
+    validators = vars(validator_class)
     
     params_list = [
         'filename_contains',
@@ -35,7 +39,7 @@ def register_uploader(**kwargs):
         Send a post request to registry service to make uploader available in front-end
     """
     
-    validation_parameters = _get_validation_parameters(validators=vars(kwargs['validator_class']))
+    validation_parameters = _get_validation_parameters(kwargs['validator_class'])
     
     app_id = envs.APP_ID + envs.PERSONAL_SUFFIX if envs.environment_is_local() else envs.APP_ID
     uploader_id = kwargs['uploader_id'] + envs.PERSONAL_SUFFIX if envs.environment_is_local() else kwargs['uploader_id']

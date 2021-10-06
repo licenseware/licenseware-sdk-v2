@@ -62,9 +62,10 @@ class UploaderBuilder:
         **options
     ):
         
-        #Passing variables to validator class
-        validator_class.uploader_id = uploader_id
-        validator_class.quota_units = quota_units
+        if validator_class is not None:
+            #Passing variables to validator class
+            validator_class.uploader_id = uploader_id
+            validator_class.quota_units = quota_units
         
         self.uploader_id = uploader_id
         self.quota_units = quota_units
