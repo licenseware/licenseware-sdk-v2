@@ -114,14 +114,14 @@ class AppBuilder:
         self.activated_tenants_func = activated_tenants_func
         self.tenants_with_data_func = tenants_with_data_func
         
-        # self.activated_tenants = None 
-        # self.tenants_with_data = None
+        self.activated_tenants = None 
+        self.tenants_with_data = None
         
-        # if self.activated_tenants_func:
-        #     self.activated_tenants = self.activated_tenants_func()
+        if self.activated_tenants_func:
+            self.activated_tenants = self.activated_tenants_func()
         
-        # if self.tenants_with_data_func:
-        #     self.tenants_with_data = self.tenants_with_data_func()
+        if self.tenants_with_data_func:
+            self.tenants_with_data = self.tenants_with_data_func()
             
         self.app_activation_path = app_activation_path or base_paths.app_activation_path
         self.register_app_path = register_app_path or base_paths.register_app_path
@@ -158,15 +158,7 @@ class AppBuilder:
         self.appvars = vars(self)
     
     
-    @property
-    def activated_tenants(self):
-        return self.activated_tenants_func()
-
-    @property
-    def tenants_with_data(self):
-        return self.tenants_with_data_func()
-
-
+    
     def init_app(self, app: Flask):
         
         # This hides flask_restx `X-fields` from swagger headers  
@@ -304,17 +296,26 @@ class AppBuilder:
                 ns = SchemaNamespace(schema=editable.schema).initialize()
                 self.register_namespace(ns)
                 
+
+    def refresh_tenant_data(self):
+        self.activated_tenants = self.activated_tenants_func()
+        self.tenants_with_data = self.tenants_with_data_func()
                     
                         
     def register_app(self):
         """
             Sending registration payloads to registry-service
         """
+
+        # Refresh tenant data before registering
+
         
         # Converting from objects to dictionaries
         reports = [vars(r) for r in self.reports]
         report_components = [vars(rv) for rv in self.report_components]
         uploaders = [vars(u) for u in self.uploaders]
+
+        self.refresh_tenant_data()
         
         response, status_code = register_all(
             app = self.appvars,
