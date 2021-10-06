@@ -5,6 +5,28 @@ from licenseware.decorators.auth_decorators import authenticated_machine
 from licenseware.common.validators.registry_payload_validators import validate_register_uploader_payload
 
 
+def _get_validation_parameters(validators: dict):
+    
+    params_list = [
+        'filename_contains',
+        'filename_endswith',
+        'ignore_filenames',
+        'required_input_type',
+        'required_sheets',
+        'required_columns',
+        'text_contains_all',
+        'text_contains_any',
+        'min_rows_number',
+        'header_starts_at',
+        'buffer',
+        'filename_valid_message',
+        'filename_invalid_message',
+        'filename_ignored_message'                                        
+    ]
+    
+    return {k:v for k,v in validators.items() if k in params_list}
+
+    
 
 
 @authenticated_machine
@@ -13,9 +35,7 @@ def register_uploader(**kwargs):
         Send a post request to registry service to make uploader available in front-end
     """
     
-    
-    validators = vars(kwargs['validator_class'])
-    
+    validation_parameters = _get_validation_parameters(validators=vars(kwargs['validator_class']))
     
     app_id = envs.APP_ID + envs.PERSONAL_SUFFIX if envs.environment_is_local() else envs.APP_ID
     uploader_id = kwargs['uploader_id'] + envs.PERSONAL_SUFFIX if envs.environment_is_local() else kwargs['uploader_id']
@@ -34,10 +54,7 @@ def register_uploader(**kwargs):
             "upload_validation_url": kwargs['upload_validation_url'],
             "quota_validation_url": kwargs['quota_validation_url'],
             "status_check_url": kwargs['status_check_url'],
-            "filename_validation_parameters": {
-                "filename_contains": validators['filename_contains'],
-                "filename_endswith": validators['filename_endswith']
-            }
+            "validation_parameters": validation_parameters
         }]
     }
 
