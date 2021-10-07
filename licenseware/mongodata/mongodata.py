@@ -248,6 +248,9 @@ def insert(schema, collection, data, db_name=None):
         returns a list of ids inserted in the database in the order they were added
         If something fails will return a string with the error message.
     """
+    log.debug("Incoming data:")
+    log.debug(data)
+
     db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
     with Connect.get_connection() as mongo_connection:
@@ -442,6 +445,9 @@ def update(schema, match, new_data, collection, append=False, db_name=None):
         If something fails will return a string with the error message.
 
     """
+    log.debug("Incoming data:")
+    log.debug(new_data)
+
     db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
     with Connect.get_connection() as mongo_connection:
