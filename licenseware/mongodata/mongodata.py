@@ -411,7 +411,7 @@ def _append_query(dict_: dict) -> dict:
                 key_ = ".".join([k, key])  # files.status
                 q['$set'].update({key_: dict_[k][key]})
 
-        if isinstance(dict_[k], list):
+        if isinstance(dict_[k], list) and dict_[k]:
             q['$addToSet'].update({k: {}})
             q['$addToSet'][k].update({"$each": dict_[k]})
 
