@@ -34,7 +34,7 @@ def _get_validation_parameters(validator_class):
 
 
 @authenticated_machine
-def register_uploader(**kwargs):
+def register_uploader(single_request=True, **kwargs):
     """
         Send a post request to registry service to make uploader available in front-end
     """
@@ -62,11 +62,16 @@ def register_uploader(**kwargs):
         }]
     }
 
-    log.info(payload)
+    if single_request: log.info(payload)    
     validate_register_uploader_payload(payload)
     
     headers = {"Authorization": envs.get_auth_token()}
-    registration = requests.post(url=envs.REGISTER_UPLOADER_URL, json=payload, headers=headers)
+    post_kwargs = dict(url=envs.REGISTER_UPLOADER_URL, json=payload, headers=headers)
+    
+    if single_request:
+        registration = requests.post(**post_kwargs)
+    else:
+        return post_kwargs 
 
 
     if registration.status_code == 200:

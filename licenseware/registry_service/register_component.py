@@ -8,7 +8,7 @@ from licenseware.common.validators.registry_payload_validators import validate_r
 
 
 @authenticated_machine
-def register_component(**kwargs):
+def register_component(single_request=True, **kwargs):
     
 
     app_id = envs.APP_ID + envs.PERSONAL_SUFFIX if envs.environment_is_local() else envs.APP_ID
@@ -29,11 +29,17 @@ def register_component(**kwargs):
         }]
     }
 
-    log.info(payload)    
+    if single_request: log.info(payload)    
     validate_register_report_component_payload(payload)
 
     headers = {"Authorization": envs.get_auth_token()}
-    registration = requests.post(url=envs.REGISTER_REPORT_COMPONENT_URL, json=payload, headers=headers)
+    post_kwargs = dict(url=envs.REGISTER_REPORT_COMPONENT_URL, json=payload, headers=headers)
+        
+    if single_request:
+        registration = requests.post(**post_kwargs)
+    else:
+        return post_kwargs
+    
     
     if registration.status_code != 200:
         nokmsg = f"Could not register report {kwargs['component_id']}"

@@ -172,7 +172,7 @@ class AppBuilder:
             response.headers.set('Access-Control-Allow-Methods',
                                 'GET,PUT,POST,DELETE,OPTIONS')
             response.headers.set('Access-Control-Allow-Credentials', 'true')
-
+        
             return response
 
 
@@ -298,7 +298,7 @@ class AppBuilder:
                 
                     
                         
-    def register_app(self):
+    def register_app(self, single_request=False):
         """
             Sending registration payloads to registry-service
         """
@@ -312,7 +312,8 @@ class AppBuilder:
             app = self.appvars,
             reports = reports, 
             report_components = report_components, 
-            uploaders = uploaders
+            uploaders = uploaders,
+            single_request=single_request
         )
         
         if status_code != 200: raise Exception(response['message'])
