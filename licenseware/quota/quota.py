@@ -159,7 +159,7 @@ class Quota:
         for quota in results:
             monthly_quota_consumed += quota['monthly_quota_consumed']
         
-        if monthly_quota_consumed <= self.units + units:
+        if monthly_quota_consumed + units <= quota['monthly_quota']:
             return {
                         'status': states.SUCCESS,
                         'message': 'Utilization within monthly quota',
