@@ -6,6 +6,7 @@ from flask import Request
 from licenseware.quota import Quota
 from licenseware.utils.logger import log
 from licenseware.common.constants import states
+from marshmallow.fields import Boolean
 
 from .filename_validator import FileNameValidator
 from .file_content_validator import FileContentValidator
@@ -59,7 +60,7 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         super().__init__(**vars(self))
      
     
-    def quota_within_limits(self, tenant_id:str, auth_token:str, units: int) -> bool:
+    def quota_within_limits(self, tenant_id:str, auth_token:str, units: int) -> Tuple[dict, int]:
         
         q = Quota(
             tenant_id=tenant_id, 
@@ -70,8 +71,7 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         
         _, status_code = q.check_quota(units)
         
-        if status_code != 200: return False
-        return True
+        return _, status_code
     
     
     def update_quota(self, tenant_id:str, auth_token:str, units: int) -> Tuple[dict, int]:
@@ -88,7 +88,7 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         return response, status_code
         
         
-    def calculate_quota(self, flask_request: Request) -> Tuple[dict, int]:
+    def calculate_quota(self, flask_request: Request, update_quota_units: bool = True) -> Tuple[dict, int]:
         
         if self.quota_units is None: 
             return {'status': states.SUCCESS, 'message': 'Quota is skipped'}, 200
@@ -101,11 +101,13 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         
         current_units_to_process = len(file_objects)
         
-        if self.quota_within_limits(tenant_id, auth_token, current_units_to_process):
-            self.update_quota(tenant_id, auth_token, current_units_to_process)
-            return {'status': states.SUCCESS, 'message': 'Quota within limits'}, 200
+        quota_check_status, quota_check_response = self.quota_within_limits(tenant_id, auth_token, current_units_to_process)
+
+
+        if quota_check_status == 200 & update_quota_units: self.update_quota(tenant_id, auth_token, current_units_to_process)
+            #return {'status': states.SUCCESS, 'message': 'Quota within limits'}, 200
         
-        return {'status': states.FAILED, 'message': 'Quota exceeded'}, 402
+        return quota_check_status, quota_check_response
     
         
     @classmethod

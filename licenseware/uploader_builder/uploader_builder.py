@@ -117,7 +117,7 @@ class UploaderBuilder:
 
     def validate_filenames(self, flask_request:Request):
         
-        quota_response, quota_status_code = self.validator_class.calculate_quota(flask_request)
+        quota_response, quota_status_code = self.validator_class.calculate_quota(flask_request, update_quota_units=False)
         if quota_status_code != 200: return quota_response, quota_status_code
         
         response, status_code = self.validator_class.get_filenames_response(flask_request)

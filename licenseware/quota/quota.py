@@ -70,9 +70,6 @@ class Quota:
     
     
     def init_quota(self) -> Tuple[dict, int]:
-        
-        if self.quota_disabled: return self.quota_disabled_response
-
 
         results = mongodata.fetch(
             match=self.tenant_query,
@@ -89,6 +86,9 @@ class Quota:
             "monthly_quota_consumed": 0,
             "quota_reset_date": get_quota_reset_date()
         }
+
+        if self.quota_disabled:
+            utilization_data['monthly_quota'] = 9999999
 
         inserted_ids = mongodata.insert(
             schema=self.schema, data=utilization_data, collection=self.collection
@@ -162,12 +162,16 @@ class Quota:
         if monthly_quota_consumed <= self.units + units:
             return {
                         'status': states.SUCCESS,
-                        'message': 'Utilization within monthly quota'
+                        'message': 'Utilization within monthly quota',
+                        'monthly_quota': quota['monthly_quota'],
+                        'quota_reset_date': quota['quota_reset_date']
                     }, 200
         else:
             return {
                         'status': states.FAILED,
-                        'message': 'Monthly quota exceeded'
+                        'message': 'Monthly quota exceeded',
+                        'monthly_quota': quota['monthly_quota'],
+                        'quota_reset_date': quota['quota_reset_date']
                     }, 402
 
 
