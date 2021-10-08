@@ -163,8 +163,7 @@ class AppBuilder:
     def init_app(
         self, 
         app: Flask, 
-        register:bool = False, 
-        single_register_requests:bool = True, 
+        register:bool = False
     ):
         
         
@@ -195,7 +194,7 @@ class AppBuilder:
         self.init_routes()
         self.init_namespaces()
 
-        if register: self.register_app(single_request=single_register_requests)
+        if register: self.register_app()
         self.init_broker()
         
         return self.app
@@ -310,17 +309,18 @@ class AppBuilder:
                 
                     
                         
-    def register_app(self, single_request=True):
+    def register_app(self):
         """
             Sending registration payloads to registry-service
         """
         
         # Converting from objects to dictionaries
         
-        app_dict = {k:v 
+        app_dict = \
+        {   k:v 
             for k,v in self.appvars.items() if k in [
                 'name',
-                'description'   
+                'description',   
                 'flags',
                 'icon',
                 'refresh_registration_url',
@@ -328,20 +328,77 @@ class AppBuilder:
                 'editable_tables_url',
                 'history_report_url',
                 'tenant_registration_url'                   
-            ]}
+            ]
+        }
             
+        reports = \
+        [
+            {   k:v
+                for k,v in vars(r).items()
+                if k in [
+                    'report_id',
+                    'name',
+                    'description',
+                    'flags',
+                    'url',
+                    'preview_image_url',
+                    'report_components',
+                    'connected_apps',
+                    'filters',
+                    'registrable'
+                ]        
+            }
+                for r in self.reports
+        ]
+        
+        uploaders = \
+        [
+            {   k:v
+                for k,v in vars(r).items()
+                if k in [
+                    'uploader_id',
+                    'name',
+                    'description',
+                    'accepted_file_types',
+                    'flags',
+                    'status',
+                    'icon',
+                    'upload_url',
+                    'upload_validation_url',
+                    'quota_validation_url',
+                    'status_check_url',
+                    'validation_parameters'
+                ]        
+            }
+                for r in self.uploaders
+        ]
         
         
-        reports = [vars(r) for r in self.reports]
-        report_components = [vars(rv) for rv in self.report_components]
-        uploaders = [vars(u) for u in self.uploaders]
-        
+        report_components = \
+        [
+            {   k:v
+                for k,v in vars(r).items()
+                if k in [
+                    'component_id',
+                    'url',
+                    'order',
+                    'style_attributes',
+                    'attributes',
+                    'title',
+                    'component_type',
+                    'filters',
+                    'component_type'
+                ]        
+            }
+                for r in self.report_components
+        ]
+                
+    
         register_all.send(dict(
             app = app_dict,
-            reports = [], 
-            report_components = [], 
-            uploaders = [],
-            single_request=single_request
+            reports = reports, 
+            uploaders = uploaders,
+            report_components = report_components
         ))
             
         

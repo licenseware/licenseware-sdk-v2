@@ -8,7 +8,7 @@ from licenseware.common.validators.registry_payload_validators import validate_r
 
 
 @authenticated_machine
-def register_report(single_request=True, **kwargs):
+def register_report(get_kwargs=False, **kwargs):
     
     if kwargs['registrable'] is False: 
         return {
@@ -38,17 +38,16 @@ def register_report(single_request=True, **kwargs):
     }
     
     
-    if single_request: log.info(payload)    
+    if get_kwargs == False: log.info(payload)    
     validate_register_report_payload(payload)
 
     headers = {"Authorization": envs.get_auth_token()}
     post_kwargs = dict(url=envs.REGISTER_REPORT_URL, json=payload, headers=headers)
     
-    if single_request:
-        registration = requests.post(**post_kwargs)
-    else:
-        return post_kwargs
+    if get_kwargs: return post_kwargs
     
+    
+    registration = requests.post(**post_kwargs)
     
     if registration.status_code != 200:
         nokmsg = f"Could not register report {kwargs['name']}"
