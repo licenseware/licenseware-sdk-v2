@@ -1,7 +1,6 @@
 from typing import Callable
 import requests
 from licenseware.utils.logger import log
-from licenseware.decorators.auth_decorators import authenticated_machine
 from licenseware.common.constants import envs
 
 from .register_app import register_app
@@ -56,7 +55,6 @@ def _register_with_single_request(registrable_name:str, registrable_func:Callabl
     
     
     
-@authenticated_machine
 def register_all_single_requests(app:dict, reports:list, report_components:list, uploaders:list):
     
     registering_status = True
