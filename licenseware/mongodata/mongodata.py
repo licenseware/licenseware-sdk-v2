@@ -260,6 +260,8 @@ def insert(schema, collection, data, db_name=None):
             return collection
 
         data = validate_data(schema, data)
+        log.debug("Data saved to DB")
+        log.debug(data)
 
         if isinstance(data, dict):
             _oid_inserted = collection.with_options(
@@ -406,17 +408,22 @@ def _append_query(dict_: dict) -> dict:
     q = {'$set': {}, '$addToSet': {}}
     for k in dict_:
 
-        if isinstance(dict_[k], str):
-            q['$set'].update({k: dict_[k]})
+        # if isinstance(dict_[k], str):
+        #     q['$set'].update({k: dict_[k]})
 
         if isinstance(dict_[k], dict):
             for key in dict_[k]:
                 key_ = ".".join([k, key])  # files.status
                 q['$set'].update({key_: dict_[k][key]})
 
-        if isinstance(dict_[k], list) and dict_[k]:
+        elif isinstance(dict_[k], list) and dict_[k]:
             q['$addToSet'].update({k: {}})
             q['$addToSet'][k].update({"$each": dict_[k]})
+        
+        else:
+            q['$set'].update({k: dict_[k]})
+        
+
 
     if not q['$addToSet']:
         del q['$addToSet']
@@ -452,13 +459,14 @@ def update(schema, match, new_data, collection, append=False, db_name=None):
     collection_name = return_collection_name(collection)
     with Connect.get_connection() as mongo_connection:
         collection = mongo_connection[db_name][collection_name]
-        # log.debug(collection)
         match = parse_match(match)
         match = match['query'] or match['_id']
         if not match:
             match = match['_id'] = match['distinct_key']
 
         new_data = validate_data(schema, new_data)
+        log.debug("Data saved to DB")
+        log.debug(new_data)
 
         _filter = {"_id": match["_id"]} if "_id" in match else match
         updated_docs_nbr = collection.with_options(write_concern=WriteConcern("majority")).update_many(
