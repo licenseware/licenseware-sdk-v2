@@ -1,23 +1,30 @@
-from licenseware.utils.logger import log
-from licenseware.decorators.auth_decorators import authenticated_machine
-
-from .register_all_multiple_requests import register_all_multiple_requests
 from .register_all_single_requests import register_all_single_requests
 
+from licenseware.common.constants import envs
+from licenseware.utils.dramatiq_redis_broker import broker
 
 
+class RegistrationFailed(Exception): ...
 
-@authenticated_machine
-def register_all(
-    app:dict, 
-    reports:list, 
-    report_components:list, 
-    uploaders:list, 
-    single_request:bool = False
-):
+
+def registration_failed(retries_so_far:int, exception):
+    return isinstance(exception, RegistrationFailed)
+
+
+@broker.actor(
+    retry_when=registration_failed,
+    queue_name=envs.APP_ID.replace('-service', '')
+)
+def register_all(event:dict):
     
-    if single_request: 
-        return register_all_single_requests(app, reports, report_components, uploaders)
+    registration_done = register_all_single_requests(
+        event['app'], 
+        event['reports'], 
+        event['report_components'], 
+        event['uploaders']
+    )
     
-    return register_all_multiple_requests(app, reports, report_components, uploaders)
+    if not registration_done:
+        raise RegistrationFailed("Registration failed")
+    
     

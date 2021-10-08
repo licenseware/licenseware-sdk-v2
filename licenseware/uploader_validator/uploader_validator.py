@@ -15,6 +15,8 @@ from .file_content_validator import FileContentValidator
 
 
 
+
+
 class UploaderValidator(FileNameValidator, FileContentValidator):
     
     """
@@ -56,7 +58,7 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         self.filename_valid_message = filename_valid_message
         self.filename_invalid_message = filename_invalid_message
         self.filename_ignored_message = filename_ignored_message
-        
+        self.validation_parameters = self.get_validation_parameters()
         super().__init__(**vars(self))
      
     
@@ -134,3 +136,29 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
   
     
 
+    def get_validation_parameters(self):
+        
+        if not hasattr(self, 'vars'): return {}
+        
+        validators = vars(self)
+        
+        params_list = [
+            'filename_contains',
+            'filename_endswith',
+            'ignore_filenames',
+            'required_input_type',
+            'required_sheets',
+            'required_columns',
+            'text_contains_all',
+            'text_contains_any',
+            'min_rows_number',
+            'header_starts_at',
+            'buffer',
+            'filename_valid_message',
+            'filename_invalid_message',
+            'filename_ignored_message'                                        
+        ]
+        
+        return {k:v for k,v in validators.items() if k in params_list}
+
+        
