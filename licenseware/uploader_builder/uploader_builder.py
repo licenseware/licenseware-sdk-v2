@@ -79,6 +79,7 @@ class UploaderBuilder:
             self.worker = broker.actor(
                 worker_function, 
                 max_retries=max_retries, 
+                time_limit=3600000, # 1 hour in miliseconds (default is 10 minutes)
                 actor_name=self.uploader_id, 
                 queue_name=envs.APP_ID.replace('-service', '')
             )
