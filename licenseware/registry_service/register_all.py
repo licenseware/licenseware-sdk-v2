@@ -1,23 +1,37 @@
-from licenseware.utils.logger import log
-from licenseware.decorators.auth_decorators import authenticated_machine
-
+from pymongo.errors import ExecutionTimeout
 from .register_all_multiple_requests import register_all_multiple_requests
 from .register_all_single_requests import register_all_single_requests
 
+from licenseware.common.constants import envs
+from licenseware.utils.dramatiq_redis_broker import broker
 
 
 
-@authenticated_machine
-def register_all(
-    app:dict, 
-    reports:list, 
-    report_components:list, 
-    uploaders:list, 
-    single_request:bool = False
-):
+@broker.actor(
+    max_retries=100, 
+    min_backoff=1000, 
+    queue_name=envs.APP_ID.replace('-service', '')
+)
+def register_all(event:dict):
+
+    registration_done = False
     
-    if single_request: 
-        return register_all_single_requests(app, reports, report_components, uploaders)
+    if event['single_request']: 
+        registration_done = register_all_single_requests(
+            event['app'], 
+            event['reports'], 
+            event['report_components'], 
+            event['uploaders']
+        )
+    else:
+        registration_done = register_all_multiple_requests(
+                event['app'], 
+                event['reports'], 
+                event['report_components'], 
+                event['uploaders']
+            )
+        
+    if not registration_done:
+        raise Exception("Registration failed")
     
-    return register_all_multiple_requests(app, reports, report_components, uploaders)
     

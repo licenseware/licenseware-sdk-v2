@@ -27,6 +27,7 @@ from licenseware.utils.miscellaneous import swagger_authorization_header
 from licenseware.editable_table import EditableTable
 from licenseware.schema_namespace import SchemaNamespace
 
+
 from .refresh_registration_route import add_refresh_registration_route
 from .editable_tables_route import add_editable_tables_route
 from .tenant_registration_route import add_tenant_registration_route
@@ -159,11 +160,16 @@ class AppBuilder:
     
     
     
-    def init_app(self, app: Flask):
+    def init_app(
+        self, 
+        app: Flask, 
+        register:bool = False, 
+        single_register_requests:bool = True, 
+    ):
+        
         
         # This hides flask_restx `X-fields` from swagger headers  
         app.config['RESTX_MASK_SWAGGER'] = False
-        app.config['DEBUG'] = envs.DEBUG
         
         @app.after_request
         def after_request(response):
@@ -183,23 +189,29 @@ class AppBuilder:
         if not self.uploaders: log.warning("No uploaders provided")
         if not self.reports  : log.warning("No reports provided")
          
+         
         self.authenticate_app()
-        self.init_dramatiq_broker()
-        
         self.init_api()
         self.init_routes()
         self.init_namespaces()
+
+        if register: self.register_app(single_request=single_register_requests)
+        self.init_broker()
+        
+        return self.app
+
         
         
-    def init_dramatiq_broker(self, app:Flask = None):
-        broker_instance = broker.init_app(app or self.app)
-        self.broker = broker_instance
+    def init_broker(self, app:Flask = None):
+        self.broker = broker.init_app(app or self.app)
+        return self.broker
+
         
-    
     def authenticate_app(self):
-        response, status_code = Authenticator.connect()
+        response, status_code = Authenticator.connect(max_retries='infinite', wait_seconds=2)
         if status_code != 200:
             raise Exception("App failed to authenticate!")
+        log.info("Authentification succeded!")
         return response, status_code
     
     
@@ -298,27 +310,41 @@ class AppBuilder:
                 
                     
                         
-    def register_app(self, single_request=False):
+    def register_app(self, single_request=True):
         """
             Sending registration payloads to registry-service
         """
         
         # Converting from objects to dictionaries
+        
+        app_dict = {k:v 
+            for k,v in self.appvars.items() if k in [
+                'name',
+                'description'   
+                'flags',
+                'icon',
+                'refresh_registration_url',
+                'app_activation_url',
+                'editable_tables_url',
+                'history_report_url',
+                'tenant_registration_url'                   
+            ]}
+            
+        
+        
         reports = [vars(r) for r in self.reports]
         report_components = [vars(rv) for rv in self.report_components]
         uploaders = [vars(u) for u in self.uploaders]
         
-        response, status_code = register_all(
-            app = self.appvars,
-            reports = reports, 
-            report_components = report_components, 
-            uploaders = uploaders,
+        register_all.send(dict(
+            app = app_dict,
+            reports = [], 
+            report_components = [], 
+            uploaders = [],
             single_request=single_request
-        )
+        ))
+            
         
-        if status_code != 200: raise Exception(response['message'])
-        
-        return response, status_code
         
 
     def register_uploader(self, uploader_instance):
