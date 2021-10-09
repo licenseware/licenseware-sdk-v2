@@ -65,7 +65,8 @@ class UploaderBuilder:
         #Passing variables to validator class
         validator_class.uploader_id = uploader_id
         validator_class.quota_units = quota_units
-    
+        self.validation_parameters = validator_class.validation_parameters
+        
         self.uploader_id = uploader_id
         self.quota_units = quota_units
         self.name = name
@@ -79,6 +80,7 @@ class UploaderBuilder:
             self.worker = broker.actor(
                 worker_function, 
                 max_retries=max_retries, 
+                time_limit=3600000, # 1 hour in miliseconds (default is 10 minutes)
                 actor_name=self.uploader_id, 
                 queue_name=envs.APP_ID.replace('-service', '')
             )
@@ -104,7 +106,7 @@ class UploaderBuilder:
         self.status_check_url = envs.UPLOAD_URL + self.status_check_path
         
         self.options = options
-        
+                
         self.uploader_vars = vars(self)
         
         

@@ -1,8 +1,12 @@
 import os
+import time
 import requests
 from datetime import datetime
 from licenseware.utils.logger import log
 from licenseware.common.constants import envs
+
+
+
 
 
 class Authenticator:
@@ -10,17 +14,25 @@ class Authenticator:
     
     Licenseware authentification
 
-    from licenseware.auth import Authenticator
+        `from licenseware.auth import Authenticator`
 
-    response = Authenticator.connect() 
+        `response, status_code = Authenticator.connect()`
+        
+    Response is a tuple: json, status code 
     
-    :response is a tuple: json, status code 
+    Since apps can't work without being authentificated you can set `max_retries` to 'infinite'.
+    Doing that if authentification failed for some reason it will try to authentificate again.
+    
+        `response, status_code = Authenticator.connect(max_retries='infinite', wait_seconds=2)`
+    
+    
     
     Requirements:
 
     Set login values in environment variables:
     - LWARE_IDENTITY_USER (the email/machine_name)
     - LWARE_IDENTITY_PASSWORD (the password)
+    - AUTH_SERVICE_URL (url to authentification service) 
     
     
     """
@@ -35,13 +47,28 @@ class Authenticator:
         
         
     @classmethod
-    def connect(cls):
+    def connect(cls, max_retries:int = 0, wait_seconds:int = 1):
         """
             Connects to licenseware and saves in environment variables auth tokens.
+            
+            param: max_retries  - 'infinite' or a number, 
+            param: wait_seconds - wait time in seconds if authentification fails
+            
         """
-
-        response, status_code = cls()._login()
-
+         
+        status_code = 500      
+          
+        if max_retries == 'infinite':
+            while status_code != 200:
+                response, status_code = cls()._retry_login()
+                time.sleep(wait_seconds)
+        else:
+            for _ in range(max_retries + 1):
+                response, status_code = cls()._retry_login()
+                if status_code == 200: break
+                time.sleep(wait_seconds)
+            
+            
         if status_code == 200:
             os.environ['AUTH_TOKEN'] = response.get("Authorization", "Authorization not found")
             os.environ['AUTH_TOKEN_DATETIME'] = datetime.utcnow().isoformat()
@@ -52,6 +79,18 @@ class Authenticator:
             
         return response, status_code
 
+
+
+    def _retry_login(self):  
+        response, status_code = {'status': 'failed'}, 500 
+        try:
+            response, status_code = self._login()
+        except:
+            log.warning("Authentification failed... retrying... ") 
+            pass #ConnectionError
+        return response, status_code
+        
+        
     def _login(self):
         
         payload = {
@@ -89,3 +128,8 @@ class Authenticator:
                    "status": "fail",
                    "message": "Could not create account",
                }, 500
+        
+        
+        
+        
+        

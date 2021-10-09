@@ -27,6 +27,7 @@ from licenseware.utils.miscellaneous import swagger_authorization_header
 from licenseware.editable_table import EditableTable
 from licenseware.schema_namespace import SchemaNamespace
 
+
 from .refresh_registration_route import add_refresh_registration_route
 from .editable_tables_route import add_editable_tables_route
 from .tenant_registration_route import add_tenant_registration_route
@@ -159,11 +160,15 @@ class AppBuilder:
     
     
     
-    def init_app(self, app: Flask):
+    def init_app(
+        self, 
+        app: Flask, 
+        register:bool = False
+    ):
+        
         
         # This hides flask_restx `X-fields` from swagger headers  
         app.config['RESTX_MASK_SWAGGER'] = False
-        app.config['DEBUG'] = envs.DEBUG
         
         @app.after_request
         def after_request(response):
@@ -183,23 +188,29 @@ class AppBuilder:
         if not self.uploaders: log.warning("No uploaders provided")
         if not self.reports  : log.warning("No reports provided")
          
+         
         self.authenticate_app()
-        self.init_dramatiq_broker()
-        
         self.init_api()
         self.init_routes()
         self.init_namespaces()
+
+        if register: self.register_app()
+        self.init_broker()
+        
+        return self.app
+
         
         
-    def init_dramatiq_broker(self, app:Flask = None):
-        broker_instance = broker.init_app(app or self.app)
-        self.broker = broker_instance
+    def init_broker(self, app:Flask = None):
+        self.broker = broker.init_app(app or self.app)
+        return self.broker
+
         
-    
     def authenticate_app(self):
-        response, status_code = Authenticator.connect()
+        response, status_code = Authenticator.connect(max_retries='infinite', wait_seconds=2)
         if status_code != 200:
             raise Exception("App failed to authenticate!")
+        log.info("Authentification succeded!")
         return response, status_code
     
     
@@ -298,27 +309,99 @@ class AppBuilder:
                 
                     
                         
-    def register_app(self, single_request=False):
+    def register_app(self):
         """
             Sending registration payloads to registry-service
         """
         
         # Converting from objects to dictionaries
-        reports = [vars(r) for r in self.reports]
-        report_components = [vars(rv) for rv in self.report_components]
-        uploaders = [vars(u) for u in self.uploaders]
         
-        response, status_code = register_all(
-            app = self.appvars,
+        app_dict = \
+        {   k:v 
+            for k,v in self.appvars.items() if k in [
+                'name',
+                'description',   
+                'flags',
+                'icon',
+                'refresh_registration_url',
+                'app_activation_url',
+                'editable_tables_url',
+                'history_report_url',
+                'tenant_registration_url'                   
+            ]
+        }
+            
+        reports = \
+        [
+            {   k:v
+                for k,v in vars(r).items()
+                if k in [
+                    'report_id',
+                    'name',
+                    'description',
+                    'flags',
+                    'url',
+                    'preview_image_url',
+                    'report_components',
+                    'connected_apps',
+                    'filters',
+                    'registrable'
+                ]        
+            }
+                for r in self.reports
+        ]
+        
+        uploaders = \
+        [
+            {   k:v
+                for k,v in vars(r).items()
+                if k in [
+                    'uploader_id',
+                    'name',
+                    'description',
+                    'accepted_file_types',
+                    'flags',
+                    'status',
+                    'icon',
+                    'upload_url',
+                    'upload_validation_url',
+                    'quota_validation_url',
+                    'status_check_url',
+                    'validation_parameters'
+                ]        
+            }
+                for r in self.uploaders
+        ]
+        
+        
+        report_components = \
+        [
+            {   k:v
+                for k,v in vars(r).items()
+                if k in [
+                    'component_id',
+                    'url',
+                    'order',
+                    'style_attributes',
+                    'attributes',
+                    'title',
+                    'component_type',
+                    'filters',
+                    'component_type'
+                ]        
+            }
+                for r in self.report_components
+        ]
+                
+    
+        register_all.send(dict(
+            app = app_dict,
             reports = reports, 
-            report_components = report_components, 
             uploaders = uploaders,
-            single_request=single_request
-        )
+            report_components = report_components
+        ))
+            
         
-        if status_code != 200: raise Exception(response['message'])
-        
-        return response, status_code
         
 
     def register_uploader(self, uploader_instance):

@@ -66,7 +66,7 @@ class BaseReportComponent:
         self.options = options
         
         
-    def build_filter(self, column:str, allowed_filters:list, visible_name:str, validate:bool = True):
+    def build_filter(self, column:str, allowed_filters:list, visible_name:str, column_type:str='string', validate:bool = True):
         """
             Will return a dictionary similar to the one bellow:
             
@@ -75,7 +75,8 @@ class BaseReportComponent:
                 "allowed_filters": [
                     "equals", "contains", "in_list"
                 ],
-                "visible_name": "Product Edition"
+                "visible_name": "Product Edition",
+                "column_type": "string" or "number" or TODO add more types here
             }
             
             The dictionary build will be used to filter mongo 
@@ -95,7 +96,8 @@ class BaseReportComponent:
         return dict(
             column = column,
             allowed_filters = allowed_filters,
-            visible_name = visible_name
+            visible_name = visible_name,
+            column_type = column_type
         )
         
 

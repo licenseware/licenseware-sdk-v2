@@ -66,9 +66,11 @@ def build_match_expression(filter_payload: List[dict]) -> dict:
     
     Filter metadata example: [
         {
-            column: "name", 
-            allowed_filters: ["equals", "contains", "in_list"], 
-            visible_name: "Device Name"
+            "column": "name", 
+            "allowed_filters": ["equals", "contains", "in_list"], 
+            "visible_name": "Device Name",
+            "column_type": "string" or "number" or TODO add more types here
+            
         }
     ]
     
