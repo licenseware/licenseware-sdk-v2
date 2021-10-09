@@ -10,6 +10,7 @@ class states:
     FAILED:str = 'failed'
     TIMEOUT:str = 'timeout'
     SKIPPED:str = 'skipped'
+    ACTION_REQUIRED:str = 'action_required'
     
 
 
