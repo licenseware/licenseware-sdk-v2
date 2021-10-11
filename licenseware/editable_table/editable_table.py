@@ -365,10 +365,10 @@ class EditableTable:
                 return f"{self.path}?{params}" if _get_only_path else f"{self.url}?{params}"
 
         # Create query params with just _id
-        params = urlencode({'_id': '{entity_id}'})
+        #params = urlencode({'_id': '{entity_id}'})
         
-        return f"{self.path}?{params}" if _get_only_path else f"{self.url}?{params}"
-    
+        #return f"{self.path}?{params}" if _get_only_path else f"{self.url}?{params}"
+        return None
     
     def col_entities_path(self, field_data):
         return self.col_entities_url(field_data, _get_only_path=True)
@@ -381,7 +381,7 @@ class EditableTable:
         metadata = self.field_metadata(field_data)
         if 'visible' in metadata: return metadata['visible']
         if field_name.startswith('_'): return False
-        if field_name in ['tenant_id', '_id']: return False
+        #if field_name in ['tenant_id', '_id']: return False
         return False
 
     def col_enum_values(self, field_data):

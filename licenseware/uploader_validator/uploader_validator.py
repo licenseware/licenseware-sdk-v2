@@ -107,7 +107,6 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
 
 
         if quota_check_status == 200 & update_quota_units: self.update_quota(tenant_id, auth_token, current_units_to_process)
-            #return {'status': states.SUCCESS, 'message': 'Quota within limits'}, 200
         
         return quota_check_status, quota_check_response
     
