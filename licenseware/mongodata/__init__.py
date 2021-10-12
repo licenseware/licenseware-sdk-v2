@@ -6,5 +6,6 @@ from .mongodata import (
     document_count, 
     delete_collection, 
     aggregate,
-    get_collection
+    get_collection,
+    distinct
 ) 
