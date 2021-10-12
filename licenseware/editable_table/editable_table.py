@@ -273,9 +273,6 @@ class EditableTable:
         
         self.schema_name = self.schema.__name__.replace('Schema', '').lower()
         self.names = self.schema_name
-        if not self.names.endswith('s'):
-            self.names = self.names + 's' #plural
-    
         self.component_id = component_id or self.component_id_from_schema()
         self.title = title or self.title_from_schema()
         self.path = (url or self.url_from_schema())
@@ -290,7 +287,7 @@ class EditableTable:
         return f'/{self.schema_name}'
 
     def title_from_schema(self):
-        return 'All ' + self.names
+        return self.names
 
     def component_id_from_schema(self):
         return envs.APP_ID + "_" + self.names
@@ -337,8 +334,7 @@ class EditableTable:
                 "values": self.col_enum_values(field_data),
                 "required": self.col_required(field_data),
                 "visible": self.col_visible(field_name, field_data),
-                "entities_url": self.col_entities_url(field_data),
-                "entities_path": self.col_entities_path(field_data),
+                "entities_url": self.col_entities_url(field_data)
             })
 
         return columns_list
@@ -347,27 +343,19 @@ class EditableTable:
     def col_entities_url(self, field_data, _get_only_path=False):
         """
             _id - device(doc) id which contains foreign_keys to get the distinct_keys
-            distinct_key - mongo's unique_key
             foreign_key  - field name that contains ids to distinct_key
             metadata={'editable': False, 'distinct_key': 'name', 'foreign_key': 'is_parent_to'}
         """
 
         metadata = self.field_metadata(field_data)
 
-        if 'distinct_key' and 'foreign_key' in metadata:
-            if metadata['distinct_key'] != None and metadata['foreign_key'] != None: 
-                params = urlencode({
-                    'distinct_key': metadata['distinct_key'], 
-                    'foreign_key' : metadata['foreign_key'],
-                    '_id': '{entity_id}'
-                })
-                
-                return f"{self.path}?{params}" if _get_only_path else f"{self.url}?{params}"
-
-        # Create query params with just _id
-        #params = urlencode({'_id': '{entity_id}'})
-        
-        #return f"{self.path}?{params}" if _get_only_path else f"{self.url}?{params}"
+        if 'foreign_key' in metadata and metadata['foreign_key'] != None:
+            params = urlencode({
+                'foreign_key' : metadata['foreign_key'],
+                '_id': '{entity_id}'
+            })
+            
+            return f"{self.path}?{params}" if _get_only_path else f"{self.url}?{params}"
         return None
     
     def col_entities_path(self, field_data):
@@ -381,8 +369,9 @@ class EditableTable:
         metadata = self.field_metadata(field_data)
         if 'visible' in metadata: return metadata['visible']
         if field_name.startswith('_'): return False
-        #if field_name in ['tenant_id', '_id']: return False
+        if field_name in ['tenant_id']: return False
         return False
+
 
     def col_enum_values(self, field_data):
         try:

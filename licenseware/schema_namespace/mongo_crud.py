@@ -19,10 +19,11 @@ class MongoCrud:
 
     """
     
-    def __init__(self, schema: Schema, collection: str):
+    def __init__(self, schema: Schema, collection: str, get_pipeline: list = []):
         
         self.schema = schema 
         self.collection = collection 
+        self.get_pipeline = get_pipeline
 
 
     def get_params(self, flask_request):
@@ -67,14 +68,24 @@ class MongoCrud:
         return query
 
     def get_data(self, flask_request):
-        
-        query = self.get_query(flask_request)
-        
-        results = m.fetch(match=query, collection=self.collection)
 
-        if len(results) == 0: return  'Requested data not found', 404
+        tenant = {'tenant_id': flask_request.headers.get("Tenantid")}
+        params = self.get_params(flask_request)
+        if 'foreign_key' not in params:
+            if self.get_pipeline:
+                self.get_pipeline.insert({"$match": tenant})
+                return m.aggregate(self.get_pipeline, collection=self.collection)
+            return m.fetch(match=tenant, collection=self.collection)
+        return m.distinct(match=tenant, key=params['foreign_key'], collection=self.collection)
+        
+        
+        # query = self.get_query(flask_request)
+        
+        # results = m.fetch(match=query, collection=self.collection)
 
-        return results
+        # if len(results) == 0: return  'Requested data not found', 404
+
+        # return results
 
     
     def post_data(self, flask_request):

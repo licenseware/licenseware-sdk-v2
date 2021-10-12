@@ -525,7 +525,12 @@ def delete_collection(collection, db_name=None):
             write_concern=WriteConcern("majority")).drop()
         return 1 if res is None else 0
 
-
+def distinct(match, key, collection, db_name=None):
+    db_name = get_db_name(db_name)
+    collection_name = return_collection_name(collection)
+    with Connect.get_connection() as mongo_connection:
+        collection = mongo_connection[db_name][collection_name]
+        return collection.distinct(key, match)
 
 def document_count(match, collection, db_name=None):
     """
