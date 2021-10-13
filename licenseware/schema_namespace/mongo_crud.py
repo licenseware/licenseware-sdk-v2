@@ -74,9 +74,16 @@ class MongoCrud:
         if 'foreign_key' not in params:
             if self.get_pipeline:
                 self.get_pipeline.insert(0, {"$match": tenant})
-                return m.aggregate(self.get_pipeline, collection=self.collection)
-            return m.fetch(match=tenant, collection=self.collection)
-        return m.distinct(match=tenant, key=params['foreign_key'], collection=self.collection)
+                log.warning(self.get_pipeline)
+                result = m.aggregate(self.get_pipeline, collection=self.collection)
+                log.warning(result)
+                return result
+            result = m.fetch(match=tenant, collection=self.collection)
+            log.warning(result)
+            return result
+        result = m.distinct(match=tenant, key=params['foreign_key'], collection=self.collection)
+        log.warning(result)
+        return result
         
         
         # query = self.get_query(flask_request)
