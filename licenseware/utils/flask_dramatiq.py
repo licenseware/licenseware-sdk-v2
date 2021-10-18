@@ -145,7 +145,7 @@ class Dramatiq:
         *,  
         app:Flask = None, 
         host:str = None, 
-        port:int = 6379, 
+        port:int = None, 
         db:int = 0,
         password:str = None,
         middleware: list = None
