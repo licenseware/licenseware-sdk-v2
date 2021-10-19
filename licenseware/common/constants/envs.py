@@ -49,7 +49,8 @@ class envs:
     REGISTER_REPORT_COMPONENT_URL:str = REGISTER_REPORT_URL + '/components'
     
     APP_HOST:str = os.environ['APP_HOST']
-    APP_PATH:str = "/" + APP_ID if '-service' not in APP_ID else  "/" + APP_ID.replace('-service', '')
+    QUEUE_NAME:str = APP_ID if '-service' not in APP_ID else APP_ID.replace('-service', '') #ifmp-service => ifmp
+    APP_PATH:str = "/" + QUEUE_NAME
     BASE_URL:str = APP_HOST + APP_PATH
     UPLOAD_PATH:str = '/uploads'
     REPORT_PATH:str = '/reports'
@@ -61,7 +62,7 @@ class envs:
     
     # Mongo connection
     MONGO_DATABASE_NAME:str = os.getenv("MONGO_DATABASE_NAME") or os.getenv("MONGO_DB_NAME") or 'db'
-    MONGO_CONNECTION_STRING:str = os.environ['MONGO_CONNECTION_STRING'] or 'mongodb://localhost:27017/db'
+    MONGO_CONNECTION_STRING:str = os.getenv('MONGO_CONNECTION_STRING') or 'mongodb://localhost:27017/db'
     
     # Base mongo collection names
     COLLECTION_PREFIX = APP_ID.replace('-service', '').upper()

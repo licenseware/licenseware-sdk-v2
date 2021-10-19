@@ -13,7 +13,7 @@ def registration_failed(retries_so_far:int, exception):
 
 @broker.actor(
     retry_when=registration_failed,
-    queue_name=envs.APP_ID.replace('-service', '')
+    queue_name=envs.QUEUE_NAME
 )
 def register_all(event:dict):
     

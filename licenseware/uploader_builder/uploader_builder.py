@@ -82,7 +82,7 @@ class UploaderBuilder:
                 max_retries=max_retries, 
                 time_limit=3600000, # 1 hour in miliseconds (default is 10 minutes)
                 actor_name=self.uploader_id, 
-                queue_name=envs.APP_ID.replace('-service', '')
+                queue_name=envs.QUEUE_NAME
             )
         
         self.accepted_file_types = accepted_file_types
