@@ -28,7 +28,8 @@ def register_app(**kwargs):
             "app_activation_url": kwargs['app_activation_url'],
             "editable_tables_url": kwargs['editable_tables_url'],
             "history_report_url":  kwargs['history_report_url'],
-            "tenant_registration_url":  kwargs['tenant_registration_url']
+            "tenant_registration_url":  kwargs['tenant_registration_url'],
+            "terms_and_conditions_url": kwargs['terms_and_conditions_url']
         }]
     }
     
