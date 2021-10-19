@@ -76,12 +76,10 @@ class Quota:
     def get_monthly_quota(self):
         
         if self.plan_type == quota_plan.UNLIMITED:
-            return sys.maxsize  
-        
-        if self.plan_type == quota_plan.FREE:
+            return sys.maxsize
+        else:
             return self.units 
-        
-        raise Exception(f"Can't determine `monthly_quota` based on plan_type: {self.plan_type}")
+            #raise Exception(f"Can't determine `monthly_quota` based on plan_type: {self.plan_type}")
         
     
     def init_quota(self) -> Tuple[dict, int]:
