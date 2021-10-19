@@ -1,14 +1,22 @@
+import sys
 import datetime
 import dateutil.parser as dateparser
 from typing import Tuple
+from dataclasses import dataclass
 
-from marshmallow.schema import Schema
+from marshmallow import Schema
 
 from licenseware import mongodata
 from licenseware.common.constants import envs, states
 from licenseware.common.serializers import QuotaSchema
-from licenseware.utils.miscellaneous import get_tenants_list
+from licenseware.tenants.info import get_tenants_list, get_user_profile
 from licenseware.utils.logger import log
+
+
+@dataclass
+class quota_plan:
+    UNLIMITED:str = "UNLIMITED"
+    FREE:str = "FREE" 
 
 
 def get_quota_reset_date():
@@ -29,17 +37,6 @@ class Quota:
         collection:str = None,
     ):
          
-        self.quota_disabled = False
-        if units is None or envs.environment_is_local(): 
-            self.quota_disabled = True
-        
-        
-        # This is quota disabled default response
-        self.quota_disabled_response = {
-            'status': states.SUCCESS, 
-            'message': 'Quota disabled (units is None or dev is local)'
-        }, 200
-    
              
         self.units = units
         self.tenant_id = tenant_id
@@ -48,6 +45,9 @@ class Quota:
         self.collection = collection or envs.MONGO_COLLECTION_UTILIZATION_NAME
          
         self.tenants = get_tenants_list(tenant_id, auth_token)
+        self.user_profile = get_user_profile(tenant_id, auth_token)
+        
+        self.plan_type = self.user_profile["plan_type"]
         
         # This is used to calculate quota
         self.user_query = {
@@ -55,12 +55,16 @@ class Quota:
             'uploader_id': uploader_id
         }
         
-        
         # This is used to update quota
         self.tenant_query = {
             'tenant_id': tenant_id,
             'uploader_id': uploader_id
         }
+        
+        
+        # Making sure email is verified
+        if not self.user_profile["email_verified"]:
+            raise Exception("Email not verified. Check your inbox for the activation link.")
         
         # Making sure quota is initialized
         response, status_code = self.init_quota()
@@ -68,6 +72,17 @@ class Quota:
             # will be cached in the api make sure to add @failsafe(failcode=500) decorator
             raise Exception(response['message']) 
     
+    
+    def get_monthly_quota(self):
+        
+        if self.plan_type == quota_plan.UNLIMITED:
+            return sys.maxsize  
+        
+        if self.plan_type == quota_plan.FREE:
+            return self.units 
+        
+        raise Exception(f"Can't determine `monthly_quota` based on plan_type: {self.plan_type}")
+        
     
     def init_quota(self) -> Tuple[dict, int]:
 
@@ -82,13 +97,10 @@ class Quota:
         utilization_data = {
             "tenant_id": self.tenant_id,
             "uploader_id": self.uploader_id,
-            "monthly_quota": self.units,
+            "monthly_quota": self.get_monthly_quota(),
             "monthly_quota_consumed": 0,
             "quota_reset_date": get_quota_reset_date()
         }
-
-        if self.quota_disabled:
-            utilization_data['monthly_quota'] = 9999999
 
         inserted_ids = mongodata.insert(
             schema=self.schema, data=utilization_data, collection=self.collection
@@ -103,9 +115,6 @@ class Quota:
 
     def update_quota(self, units:int) -> Tuple[dict, int]:
         
-        if self.quota_disabled: return self.quota_disabled_response
-
-
         current_utilization = mongodata.fetch(
             match=self.tenant_query,
             collection=self.collection
@@ -124,15 +133,12 @@ class Quota:
         )
 
         if updated_docs != 1:
-            return {'status': states.FAILED, 'message': 'Quota failed to be updated'}, 500
+            return {'status': states.FAILED, 'message': 'Quota update failed'}, 500
         
         return {'status': states.SUCCESS, 'message': 'Quota updated'}, 200
 
         
     def check_quota(self, units:int = 0) -> Tuple[dict, int]:
-        
-        if self.quota_disabled: return self.quota_disabled_response
-
 
         results = mongodata.fetch(self.user_query, self.collection)
         

@@ -6,7 +6,6 @@ Small 1 liners utilities that are to small to pe placed in a module
 
 import random
 import string
-import requests
 from flask_restx import Namespace
 from marshmallow import Schema
 from marshmallow_jsonschema import JSONSchema
@@ -70,21 +69,3 @@ swagger_authorization_header = {
     }
 }
 
-
-def get_tenants_list(tenant_id:str, auth_token:str):
-
-    from licenseware.common.constants import envs
-
-    response = requests.get(
-        url=envs.GET_TENANTS_URL,
-        headers={
-            "Tenantid": tenant_id,
-            "Authorization": auth_token
-        }
-    )
-    
-    if response.status_code == 200:
-        data_list = response.json()['data']
-        tenants_list = [data['id'] for data in data_list]
-        return tenants_list
-    

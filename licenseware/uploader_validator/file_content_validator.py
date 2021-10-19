@@ -67,7 +67,45 @@ class FileContentValidator:
                 
         return validation_file_objects
         
-
+        
+        
+    def validate_filepaths_content(self, filepaths:list):
+        
+        validation_response = []
+        for filepath in filepaths:
+            
+            try:
+                
+                GeneralValidator(
+                    input_object        = filepath,
+                    required_input_type = self.required_input_type,
+                    required_sheets     = self.required_sheets,
+                    required_columns    = self.required_columns, 
+                    text_contains_all   = self.text_contains_all,
+                    text_contains_any   = self.text_contains_any,
+                    min_rows_number     = self.min_rows_number,
+                    header_starts_at    = self.header_starts_at,
+                    buffer              = self.buffer
+                )
+                
+                validation_response.append({
+                    'status': states.SUCCESS,
+                    'filename': os.path.basename(filepath), 
+                    'filepath': filepath,
+                    'message': self.filename_valid_message
+                })
+                
+            except Exception as err:
+                validation_response.append({
+                    'status': states.FAILED,
+                    'filename': os.path.basename(filepath), 
+                    'filepath': filepath,
+                    'message': self.filename_invalid_message or str(err)
+                })
+                
+            return validation_response
+            
+        
     def validate_file_objects(self, file_objects:list, tenant_id:str) -> list:
         
         valid_file_objects = self.get_only_valid_file_objects(file_objects)

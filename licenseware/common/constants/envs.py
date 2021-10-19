@@ -37,10 +37,10 @@ class envs:
     AUTH_SERVICE_URL:str = os.environ['AUTH_SERVICE_URL']
     AUTH_MACHINES_URL:str = AUTH_SERVICE_URL + '/machines'
     AUTH_MACHINE_CHECK_URL:str = AUTH_SERVICE_URL + '/machine_authorization'
-    GET_TENANTS_URL:str = AUTH_SERVICE_URL + '/tenants'
+    AUTH_TENANTS_URL:str = AUTH_SERVICE_URL + '/tenants'
+    AUTH_USER_PROFILE_URL:str = AUTH_SERVICE_URL + '/auth/profile'
     
-    
-    
+
     REGISTRY_SERVICE_URL:str = os.environ['REGISTRY_SERVICE_URL']
     REGISTER_APP_URL:str = REGISTRY_SERVICE_URL + '/apps'
     REGISTER_UPLOADER_URL:str = REGISTRY_SERVICE_URL + '/uploaders'

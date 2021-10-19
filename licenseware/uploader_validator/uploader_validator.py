@@ -6,7 +6,6 @@ from flask import Request
 from licenseware.quota import Quota
 from licenseware.utils.logger import log
 from licenseware.common.constants import states
-from marshmallow.fields import Boolean
 
 from .filename_validator import FileNameValidator
 from .file_content_validator import FileContentValidator
@@ -71,9 +70,9 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
             units=self.quota_units
         )
         
-        _, status_code = q.check_quota(units)
+        response, status_code = q.check_quota(units)
         
-        return _, status_code
+        return response, status_code
     
     
     def update_quota(self, tenant_id:str, auth_token:str, units: int) -> Tuple[dict, int]:
@@ -103,10 +102,15 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         
         current_units_to_process = len(file_objects)
         
-        quota_check_status, quota_check_response = self.quota_within_limits(tenant_id, auth_token, current_units_to_process)
+        quota_check_response, quota_check_status  = \
+        self.quota_within_limits(tenant_id, auth_token, current_units_to_process)
 
+        log.info(quota_check_response)
 
-        if quota_check_status == 200 & update_quota_units: self.update_quota(tenant_id, auth_token, current_units_to_process)
+        if quota_check_status == 200 and update_quota_units == True: 
+            response, status_code = self.update_quota(tenant_id, auth_token, current_units_to_process)
+            
+            log.info(response)
         
         return quota_check_status, quota_check_response
     
@@ -161,3 +165,17 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         return {k:v for k,v in validators.items() if k in params_list}
 
         
+    def valid_filepath(self, filepath:str):
+        
+        filename_validation_response = self.validate_filenames([os.path.basename(filepath)])
+        file_name_ok = filename_validation_response[0]['status'] == states.SUCCESS
+        
+        content_validation_response = self.validate_filepaths_content([filepath])
+        file_content_ok = content_validation_response[0]['status'] == states.SUCCESS
+        
+        log.warning("----- valid_filepath call --------------")
+        log.warning(filename_validation_response)
+        log.warning(content_validation_response)
+        
+        
+        return all([file_name_ok, file_content_ok])

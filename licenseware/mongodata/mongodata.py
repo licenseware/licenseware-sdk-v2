@@ -248,8 +248,8 @@ def insert(schema, collection, data, db_name=None):
         returns a list of ids inserted in the database in the order they were added
         If something fails will return a string with the error message.
     """
-    log.debug("Incoming data:")
-    log.debug(data)
+    # log.debug("Incoming data:")
+    # log.debug(data)
 
     db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
@@ -260,8 +260,8 @@ def insert(schema, collection, data, db_name=None):
             return collection
 
         data = validate_data(schema, data)
-        log.debug("Data saved to DB")
-        log.debug(data)
+        # log.debug("Data saved to DB")
+        # log.debug(data)
 
         if isinstance(data, dict):
             _oid_inserted = collection.with_options(
@@ -452,8 +452,8 @@ def update(schema, match, new_data, collection, append=False, db_name=None):
         If something fails will return a string with the error message.
 
     """
-    log.debug("Incoming data:")
-    log.debug(new_data)
+    # log.debug("Incoming data:")
+    # log.debug(new_data)
 
     db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
@@ -465,8 +465,8 @@ def update(schema, match, new_data, collection, append=False, db_name=None):
             match = match['_id'] = match['distinct_key']
 
         new_data = validate_data(schema, new_data)
-        log.debug("Data saved to DB")
-        log.debug(new_data)
+        # log.debug("Data saved to DB")
+        # log.debug(new_data)
 
         _filter = {"_id": match["_id"]} if "_id" in match else match
         updated_docs_nbr = collection.with_options(write_concern=WriteConcern("majority")).update_many(
