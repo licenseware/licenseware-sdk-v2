@@ -327,7 +327,8 @@ class AppBuilder:
                 'app_activation_url',
                 'editable_tables_url',
                 'history_report_url',
-                'tenant_registration_url'                   
+                'tenant_registration_url',
+                'terms_and_conditions_url'                  
             ]
         }
             
