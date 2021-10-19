@@ -7,6 +7,18 @@ from licenseware.common.constants import envs
 accepted_archives = ('.zip', '.tar','.tar.bz2', )
 
 
+
+def list_files_from_path(dir_path:str):
+    
+    filepaths = []
+    for root, dirs, filenames in os.walk(dir_path):
+        for filename in filenames:    
+            filepaths.append(os.path.join(root, filename))
+
+    return filepaths
+
+
+
 def unzip(file_path:str):
 
     """
