@@ -114,7 +114,7 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
             
             log.info(response)
         
-        return quota_check_status, quota_check_response
+        return quota_check_response, quota_check_status 
     
         
     @classmethod
@@ -176,11 +176,11 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         file_content_ok = False
         if file_name_ok:
             content_validation_response = self.validate_filepaths_content([filepath])
-            log.warning(content_validation_response)
+            log.info(content_validation_response)
             file_content_ok = content_validation_response[0]['status'] == states.SUCCESS
         
-        log.warning(f"{filename} - file_name_ok:{file_name_ok}, file_content_ok:{file_content_ok}")
-        log.warning(f"{self.uploader_id} - {all([file_name_ok, file_content_ok])}")
+        log.info(f"{filename} - file_name_ok:{file_name_ok}, file_content_ok:{file_content_ok}")
+        log.info(f"{self.uploader_id} - {all([file_name_ok, file_content_ok])}")
         
         
         return all([file_name_ok, file_content_ok])
