@@ -40,6 +40,7 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         filename_ignored_message =  "Filename is ignored",
         _uploader_id:str = None,
         _quota_units:int = None, 
+        **options
     ):
         self.quota_units = _quota_units
         self.uploader_id = _uploader_id
@@ -57,6 +58,7 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         self.filename_valid_message = filename_valid_message
         self.filename_invalid_message = filename_invalid_message
         self.filename_ignored_message = filename_ignored_message
+        self.options = options
         self.validation_parameters = self.get_validation_parameters()
         super().__init__(**vars(self))
      
@@ -167,15 +169,18 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         
     def valid_filepath(self, filepath:str):
         
-        filename_validation_response = self.validate_filenames([os.path.basename(filepath)])
+        filename = os.path.basename(filepath)
+        filename_validation_response = self.validate_filenames([filename])
         file_name_ok = filename_validation_response[0]['status'] == states.SUCCESS
         
-        content_validation_response = self.validate_filepaths_content([filepath])
-        file_content_ok = content_validation_response[0]['status'] == states.SUCCESS
+        file_content_ok = False
+        if file_name_ok:
+            content_validation_response = self.validate_filepaths_content([filepath])
+            log.warning(content_validation_response)
+            file_content_ok = content_validation_response[0]['status'] == states.SUCCESS
         
-        log.warning("----- valid_filepath call --------------")
-        log.warning(filename_validation_response)
-        log.warning(content_validation_response)
+        log.warning(f"{filename} - file_name_ok:{file_name_ok}, file_content_ok:{file_content_ok}")
+        log.warning(f"{self.uploader_id} - {all([file_name_ok, file_content_ok])}")
         
         
         return all([file_name_ok, file_content_ok])

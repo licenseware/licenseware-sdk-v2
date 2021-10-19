@@ -187,8 +187,10 @@ class GeneralValidator:
         """
         
         if isinstance(self.input_object, str): 
-            self.required_input_type = 'string'
-            return 
+            if not os.path.exists(self.input_object):
+                self.required_input_type = 'string'
+                return 
+
 
         if "stream" in str(dir(self.input_object)):
             if self.required_input_type == 'excel':

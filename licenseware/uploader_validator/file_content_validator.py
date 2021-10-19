@@ -1,3 +1,4 @@
+import os
 from typing import List
 from licenseware.common.validators.file_validators import GeneralValidator
 from licenseware.utils.file_utils import save_file
@@ -103,7 +104,7 @@ class FileContentValidator:
                     'message': self.filename_invalid_message or str(err)
                 })
                 
-            return validation_response
+        return validation_response
             
         
     def validate_file_objects(self, file_objects:list, tenant_id:str) -> list:
