@@ -31,6 +31,8 @@ class AppInfoSchema(Schema):
     editable_tables_url = fields.Url(required=True)
     history_report_url = fields.Url(required=True)
     tenant_registration_url = fields.Url(required=True)
+    terms_and_conditions_url = fields.Url(required=True)
+    
 
     
 
