@@ -11,77 +11,74 @@ from licenseware.common.constants import envs, states
 from licenseware.common.serializers import QuotaSchema
 from licenseware.tenants.info import get_tenants_list, get_user_profile
 from licenseware.utils.logger import log
+from licenseware.decorators.failsafe_decorator import failsafe
 
 
 @dataclass
 class quota_plan:
-    UNLIMITED:str = "UNLIMITED"
-    FREE:str = "FREE" 
+    UNLIMITED: str = "UNLIMITED"
+    FREE: str = "FREE"
 
 
-def get_quota_reset_date():
-    quota_reset_date = datetime.datetime.utcnow() + datetime.timedelta(days=30)
+def get_quota_reset_date(current_date: datetime.datetime = datetime.datetime.utcnow()):
+    quota_reset_date = current_date + datetime.timedelta(days=30)
     return quota_reset_date.isoformat()
 
 
-
 class Quota:
-    
+
     def __init__(
         self,
-        tenant_id:str,
-        auth_token:str,
-        uploader_id:str,
-        units:int,
-        schema:Schema = None,
-        collection:str = None,
+        tenant_id: str,
+        auth_token: str,
+        uploader_id: str,
+        units: int,
+        schema: Schema = None,
+        collection: str = None,
     ):
-         
-             
+
         self.units = units
         self.tenant_id = tenant_id
         self.uploader_id = uploader_id
         self.schema = schema or QuotaSchema
         self.collection = collection or envs.MONGO_COLLECTION_UTILIZATION_NAME
-         
+
         self.tenants = get_tenants_list(tenant_id, auth_token)
         self.user_profile = get_user_profile(tenant_id, auth_token)
-        
+
         self.plan_type = self.user_profile["plan_type"]
-        
+
         # This is used to calculate quota
         self.user_query = {
-            'tenant_id': { "$in": self.tenants },
+            'tenant_id': {"$in": self.tenants},
             'uploader_id': uploader_id
         }
-        
+
         # This is used to update quota
         self.tenant_query = {
             'tenant_id': tenant_id,
             'uploader_id': uploader_id
         }
-        
-        
+
         # Making sure email is verified
         if not self.user_profile["email_verified"]:
-            raise Exception("Email not verified. Check your inbox for the activation link.")
-        
+            raise Exception(
+                "Email not verified. Check your inbox for the activation link.")
+
         # Making sure quota is initialized
         response, status_code = self.init_quota()
         if status_code != 200:
             # will be cached in the api make sure to add @failsafe(failcode=500) decorator
-            raise Exception(response['message']) 
-    
-    
+            raise Exception(response['message'])
+
     def get_monthly_quota(self):
-        
+
         if self.plan_type == quota_plan.UNLIMITED:
             return sys.maxsize
         else:
-            return self.units 
+            return self.units
             #raise Exception(f"Can't determine `monthly_quota` based on plan_type: {self.plan_type}")
-        
-    
+
     def init_quota(self) -> Tuple[dict, int]:
 
         results = mongodata.fetch(
@@ -91,7 +88,7 @@ class Quota:
 
         if results:
             return {'status': states.SUCCESS, 'message': 'Quota initialized'}, 200
-        
+
         utilization_data = {
             "tenant_id": self.tenant_id,
             "uploader_id": self.uploader_id,
@@ -109,10 +106,8 @@ class Quota:
 
         return {'status': states.FAILED, 'message': 'Quota failed to initialize'}, 500
 
+    def update_quota(self, units: int) -> Tuple[dict, int]:
 
-
-    def update_quota(self, units:int) -> Tuple[dict, int]:
-        
         current_utilization = mongodata.fetch(
             match=self.tenant_query,
             collection=self.collection
@@ -121,61 +116,76 @@ class Quota:
         new_utilization = current_utilization[0]
         new_utilization['monthly_quota_consumed'] += units
         _id = new_utilization.pop('_id')
-        
+
         updated_docs = mongodata.update(
             schema=self.schema,
             match={'_id': _id},
             new_data=new_utilization,
-            collection=self.collection, 
+            collection=self.collection,
             append=False
         )
 
         if updated_docs != 1:
             return {'status': states.FAILED, 'message': 'Quota update failed'}, 500
-        
+
         return {'status': states.SUCCESS, 'message': 'Quota updated'}, 200
 
-        
-    def check_quota(self, units:int = 0) -> Tuple[dict, int]:
-
-        results = mongodata.fetch(self.user_query, self.collection)
-        
-        # Reset quota if a month has passed 
-        for quota in results:
-            quota_reset_date = dateparser.parse(quota['quota_reset_date'])
-            current_date = datetime.datetime.utcnow()
-            if quota_reset_date < current_date:
-                quota['quota_reset_date'] = get_quota_reset_date()
+    @failsafe
+    def reset_quota(self) -> list:
+        quota_data = mongodata.fetch(self.user_query, self.collection)
+        quota_reset_date = min(
+            [dateparser.parse(quota['quota_reset_date'])
+                for quota in quota_data]
+        )
+        current_date = datetime.datetime.utcnow()
+        if quota_reset_date <= current_date:
+            for quota in quota_data:
                 quota['monthly_quota_consumed'] = 0
-                _id = quota.pop('_id')
-                mongodata.update(
-                    schema=self.schema, 
-                    match={'_id': _id}, 
-                    new_data=quota, 
-                    collection=self.collection
-                )
-                # Recall check_quota method with the new reseted date and quota
-                self.check_quota(units)
-            
-            
-        # Calculating quota consumed for this user_id
-        monthly_quota_consumed = 0
-        for quota in results:
-            monthly_quota_consumed += quota['monthly_quota_consumed']
-        
-        if monthly_quota_consumed + units <= quota['monthly_quota']:
+                quota['quota_reset_date'] = get_quota_reset_date(
+                    current_date=quota_reset_date)
+
+            mongodata.update(
+                schema=self.schema,
+                match=self.user_query,
+                new_data=quota_data,
+                collection=self.collection,
+                append=False
+            )
+        return mongodata.fetch(self.user_query, self.collection)
+
+    def check_quota(self, units: int = 0) -> Tuple[dict, int]:
+
+        if self.plan_type == quota_plan.UNLIMITED:
             return {
-                        'status': states.SUCCESS,
-                        'message': 'Utilization within monthly quota',
-                        'monthly_quota': quota['monthly_quota'],
-                        'quota_reset_date': quota['quota_reset_date']
-                    }, 200
+                'status': states.SUCCESS,
+                'message': 'Utilization within monthly quota'
+            }, 200
+        
+        quota_data = self.reset_quota()
+
+        
+        total_quota_consumed = sum(
+            [quota['monthly_quota_consumed'] for quota in quota_data]
+        )
+        max_allowed_quota = max(
+            [quota['monthly_quota'] for quota in quota_data]
+        )
+        quota_reset_date = min(
+            [dateparser.parse(quota['quota_reset_date'])
+                for quota in quota_data]
+        )
+
+        if total_quota_consumed + units <= max_allowed_quota:
+            return {
+                'status': states.SUCCESS,
+                'message': 'Utilization within monthly quota',
+                'monthly_quota': max_allowed_quota,
+                'quota_reset_date': quota_reset_date
+            }, 200            
         else:
             return {
-                        'status': states.FAILED,
-                        'message': 'Monthly quota exceeded',
-                        'monthly_quota': quota['monthly_quota'],
-                        'quota_reset_date': quota['quota_reset_date']
-                    }, 402
-
-
+                'status': states.FAILED,
+                'message': 'Monthly quota exceeded',
+                'monthly_quota': max_allowed_quota,
+                'quota_reset_date': quota_reset_date
+            }, 402
