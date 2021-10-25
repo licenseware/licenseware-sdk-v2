@@ -121,13 +121,29 @@ def build_sdk_docs():
     shutil.move("sdk-docs/licenseware", "docs")
     shutil.rmtree("sdk-docs")
 
+
+
+@app.command()
+def recreate_files():
+    """ Recreate files that are needed but missing  """
     
+    if not os.path.exists(".env"):
+        raise Exception("File `.env` not found")
+    
+    with open(".env", "r") as f:
+        data = f.read() 
+    
+    m = re.search(r'.*APP_ID=(.+).*', data)
+    if not m: raise Exception("APP_ID not found in .env") 
+    app_id = m.group(1)
+    create_app_dirs(app_id)
 
 
 @app.command()
 def start_mock_server():
     """
         Start the mock server needed which is a placeholder for registry-service and auth-service
+        Same as `make mock`
     """
     os.system("make mock")
 
@@ -137,6 +153,7 @@ def start_mock_server():
 def start_dev_server():
     """
         Start the development server (flask server with debug on)
+        Same as `make dev`
     """
     os.system("make dev")
 
@@ -146,6 +163,7 @@ def start_dev_server():
 def start_prod_server():
     """
         Start the production server (uwsgi server with 4 processes)
+        Same as `make prod`
     """
     os.system("make prod")
 
@@ -155,18 +173,27 @@ def start_prod_server():
 def start_background_worker():
     """
         Start the redis background worker with 4 processes and with queue of app id from .env
+        Same as `make worker`
     """
     os.system("make worker")
     
     
 @app.command()
 def run_dev():
-    """ Start development environment """
+    """ 
+        Start development environment 
+        Same as `make run-dev` 
+    """
+    
     os.system("make run-dev")
     
     
 
 @app.command()
 def run_prod():
-    """ Start production environment """
+    """ 
+        Start production environment 
+        Same as `make run-prod`
+    """
+    
     os.system("make run-prod")

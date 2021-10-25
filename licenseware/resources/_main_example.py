@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 load_dotenv()  
 
 import datetime
+from trend_app_protect import wrap_wsgi_app
 
 from flask import Flask
 from flask_restx import Namespace, Resource
@@ -574,18 +575,15 @@ App.register_editable_table(processor_table)
 
 # Call init_app in the flask function factory 
 App.init_app(app)
+# Register app to registry-service
+App.register_app()
+
+# Protect the app with TrendMicro Application Security
+# app = wrap_wsgi_app(app)
 
 
-if __name__ == "__main__":   
-    
-    # Register app to registry-service
-    App.register_app()
-    
+
+if __name__ == "__main__":       
     app.run(port=4000, debug=True)
     
     
-    
-# Userid / Tenantid
-# 3d1fdc6b-04bc-44c8-ae7c-5fa5b9122f1a
-# dramatiq main:App.broker -p4 --watch ./ --queues odb
-
