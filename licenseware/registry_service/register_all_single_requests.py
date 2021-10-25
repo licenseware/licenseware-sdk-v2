@@ -52,9 +52,6 @@ def _register_with_single_request(registrable_name:str, registrable_func:Callabl
         "content": payload
     }, 200
 
-    
-    
-    
 def register_all_single_requests(app:dict, reports:list, report_components:list, uploaders:list):
     
     registering_status = True
@@ -90,8 +87,6 @@ def register_all_single_requests(app:dict, reports:list, report_components:list,
     #     registrable_list=report_components
     # )
     # if status_code != 200: registering_status = False
-        
-
     
     return registering_status
 

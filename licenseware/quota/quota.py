@@ -180,12 +180,12 @@ class Quota:
                 'status': states.SUCCESS,
                 'message': 'Utilization within monthly quota',
                 'monthly_quota': max_allowed_quota,
-                'quota_reset_date': quota_reset_date
+                'quota_reset_date': quota_reset_date.isoformat()
             }, 200            
         else:
             return {
                 'status': states.FAILED,
                 'message': 'Monthly quota exceeded',
                 'monthly_quota': max_allowed_quota,
-                'quota_reset_date': quota_reset_date
+                'quota_reset_date': quota_reset_date.isoformat()
             }, 402
