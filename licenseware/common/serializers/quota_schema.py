@@ -5,6 +5,7 @@ from licenseware.common.validators import validate_uuid4
 
 
 class QuotaSchema(Schema):
+    _id = fields.Str(required=False)
     tenant_id = fields.Str(required=True, validate=validate_uuid4)
     uploader_id = fields.Str(required=True)
     monthly_quota = fields.Int(required=True) 
