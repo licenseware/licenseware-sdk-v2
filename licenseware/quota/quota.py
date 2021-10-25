@@ -143,14 +143,14 @@ class Quota:
                 quota['monthly_quota_consumed'] = 0
                 quota['quota_reset_date'] = get_quota_reset_date(
                     current_date=quota_reset_date)
-
-            mongodata.update(
-                schema=self.schema,
-                match=self.user_query,
-                new_data=quota_data,
-                collection=self.collection,
-                append=False
-            )
+                id = quota.pop('_id')
+                mongodata.update(
+                    schema=self.schema,
+                    match=self.user_query,
+                    new_data=quota,
+                    collection=self.collection,
+                    append=False
+                )
         return mongodata.fetch(self.user_query, self.collection)
 
     def check_quota(self, units: int = 0) -> Tuple[dict, int]:
