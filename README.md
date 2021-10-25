@@ -62,7 +62,6 @@ If ports are blocked by another process and you can't start the development serv
 - `sudo fuser -k 5000/tcp` - kill process running on port `5000` to start the dev server;
 
 
-
 ## Installation 
 
 Clone the repo, and install the sdk with
@@ -172,6 +171,7 @@ from dotenv import load_dotenv
 load_dotenv()  
 
 import datetime
+from trend_app_protect import wrap_wsgi_app
 
 from flask import Flask
 from flask_restx import Namespace, Resource
@@ -744,13 +744,15 @@ App.register_editable_table(processor_table)
 
 # Call init_app in the flask function factory 
 App.init_app(app)
+# Register app to registry-service
+App.register_app()
+
+# Protect the app with TrendMicro Application Security
+# app = wrap_wsgi_app(app)
 
 
-if __name__ == "__main__":   
-    
-    # Register app to registry-service
-    App.register_app()
-    
+
+if __name__ == "__main__":       
     app.run(port=4000, debug=True)
     
     
@@ -849,6 +851,8 @@ REDIS_PORT=6379
 REDIS_PASSWORD=secret
 REDIS_DB=0
 
+TREND_AP_KEY=Trend Micro Application Security KEY
+TREND_AP_SECRET=Trend Micro Application Security SECRET
 
 
 ```

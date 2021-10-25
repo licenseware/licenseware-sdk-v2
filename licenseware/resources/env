@@ -22,4 +22,6 @@ REDIS_PORT=6379
 REDIS_PASSWORD=secret
 REDIS_DB=0
 
+TREND_AP_KEY=Trend Micro Application Security KEY
+TREND_AP_SECRET=Trend Micro Application Security SECRET
 

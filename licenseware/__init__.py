@@ -1,4 +1,5 @@
 '''
+
 # Licenseware SDK
 
 This is the licenseware **Python3** sdk useful for quickly create apps. 
@@ -61,7 +62,6 @@ You will have mongoexpress running at: `http://localhost:8081/`
 If ports are blocked by another process and you can't start the development servers use the commands bellow (ubuntu/debian):
 - `sudo fuser -k 4000/tcp` - kill process running on port `4000` to start the mock server;
 - `sudo fuser -k 5000/tcp` - kill process running on port `5000` to start the dev server;
-
 
 
 ## Installation 
@@ -173,6 +173,7 @@ from dotenv import load_dotenv
 load_dotenv()  
 
 import datetime
+from trend_app_protect import wrap_wsgi_app
 
 from flask import Flask
 from flask_restx import Namespace, Resource
@@ -745,13 +746,15 @@ App.register_editable_table(processor_table)
 
 # Call init_app in the flask function factory 
 App.init_app(app)
+# Register app to registry-service
+App.register_app()
+
+# Protect the app with TrendMicro Application Security
+# app = wrap_wsgi_app(app)
 
 
-if __name__ == "__main__":   
-    
-    # Register app to registry-service
-    App.register_app()
-    
+
+if __name__ == "__main__":       
     app.run(port=4000, debug=True)
     
     
@@ -850,6 +853,8 @@ REDIS_PORT=6379
 REDIS_PASSWORD=secret
 REDIS_DB=0
 
+TREND_AP_KEY=Trend Micro Application Security KEY
+TREND_AP_SECRET=Trend Micro Application Security SECRET
 
 
 ```
@@ -1570,6 +1575,7 @@ baton -u http://localhost:4000 -c 10 -r 10000
 
 
 # TODO
+
 
 '''
 
