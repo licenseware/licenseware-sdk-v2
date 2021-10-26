@@ -69,6 +69,7 @@ class envs:
     MONGO_COLLECTION_DATA_NAME:str = COLLECTION_PREFIX + "Data"
     MONGO_COLLECTION_UTILIZATION_NAME:str = COLLECTION_PREFIX + "Quota"
     MONGO_COLLECTION_ANALYSIS_NAME:str = COLLECTION_PREFIX + "History"
+    MONGO_COLLECTION_REPORT_SNAPSHOTS_NAME:str = COLLECTION_PREFIX + "ReportSnapshots"
     
         
     # Environment variables added later by the app

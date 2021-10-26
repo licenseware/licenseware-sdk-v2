@@ -139,7 +139,6 @@ class UploaderBuilder:
             'tenant_id': flask_request.headers.get("Tenantid"),
             'uploader_id': self.uploader_id
         }
-        
         notify_upload_status(event, status=states.RUNNING)
         
         quota_response, quota_status_code = self.validator_class.calculate_quota(flask_request)
@@ -148,38 +147,38 @@ class UploaderBuilder:
             return quota_response, quota_status_code
         
         response, status_code = self.validator_class.get_file_objects_response(flask_request)
+        if status_code != 200:
+            notify_upload_status(event, status=states.IDLE)
+            return response, status_code
         
-        if status_code == 200:
+        valid_filepaths = self.validator_class.get_only_valid_filepaths_from_objects_response(response)
+        if not valid_filepaths: 
+            return {'status': states.FAILED, 'message': 'No valid files provided'}, 400
+        
+        # Preparing and sending the event to worker for background processing
+        flask_headers = dict(flask_request.headers) if flask_request.headers else {}
+        flask_json = dict(flask_request.json) if flask_request.json else {}
+        flask_args = dict(flask_request.args) if flask_request.args else {}
+        #TODO add request.files?
+        
+        event.update({
+            'filepaths': valid_filepaths, 
+            'flask_request':  {**flask_json, **flask_headers, **flask_args},
+            'validation_response': response
+        })
+        
+        if not validate_event(event, raise_error=False):
+            log.error(event)
+            notify_upload_status(event, status=states.IDLE)
+            return {'status': states.FAILED, 'message': 'Event not valid', 'event_data': event}, 400
+        
+        log.info("Sending event: " + str(event))
+        self.worker.send(event)
+        
+        return {'status': states.SUCCESS, 'message': 'Event sent', 'event_data': event}, 200
+        
             
-            valid_filepaths = self.validator_class.get_only_valid_filepaths_from_objects_response(response)
-            
-            if valid_filepaths:
-                
-                flask_headers = dict(flask_request.headers) if flask_request.headers else {}
-                flask_json = dict(flask_request.json) if flask_request.json else {}
-                flask_args = dict(flask_request.args) if flask_request.args else {}
-                #TODO add request.files?
-                
-                event.update({
-                    'filepaths': valid_filepaths, 
-                    'flask_request':  {**flask_json, **flask_headers, **flask_args},
-                    'validation_response': response
-                })
-                
-                if not validate_event(event, raise_error=False):
-                    log.error(event)
-                    notify_upload_status(event, status=states.IDLE)
-                    return {'status': states.FAILED, 'message': 'Event not valid', 'event_data': event}, 400
-                
-                log.info("Sending event: " + str(event))
-                
-                if envs.USE_BACKGROUND_WORKER: self.worker.send(event)
-                else: self.worker(event)
-                    
-                
-        notify_upload_status(event, status=states.IDLE)
-        return response, status_code
-    
+
     
     def init_tenant_quota(self, tenant_id:str, auth_token:str):
         
