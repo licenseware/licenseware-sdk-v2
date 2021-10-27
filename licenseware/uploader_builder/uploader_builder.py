@@ -125,7 +125,6 @@ class UploaderBuilder:
         response, status_code = self.validator_class.get_filenames_response(flask_request)
         return response, status_code
     
-        
     def upload_files(self, flask_request:Request):
         
         if self.worker is None: 
@@ -178,8 +177,6 @@ class UploaderBuilder:
         return {'status': states.SUCCESS, 'message': 'Event sent', 'event_data': event}, 200
         
             
-
-    
     def init_tenant_quota(self, tenant_id:str, auth_token:str):
         
         # Used in app_activation_path

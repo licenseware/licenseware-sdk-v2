@@ -45,7 +45,7 @@ def get_filestream_validation_namespace(ns: Namespace, uploaders:List[UploaderBu
         location='files', 
         type=FileStorage, 
         required=True, 
-        action="append",
+        # action="append", # Uploading multiple files doesn't work on swagger
         help="Upload files for processing"
     )
    
