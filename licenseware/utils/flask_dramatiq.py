@@ -67,9 +67,9 @@ from dramatiq import Middleware
 from dramatiq import actor as register_actor
 from dramatiq.middleware import default_middleware
 from dramatiq.brokers.redis import RedisBroker
+from licenseware.common.constants import envs
 
 from .logger import log
-
 
 # PREPS
 
@@ -130,10 +130,15 @@ class LazyActor(object):
     # Next is regular actor API.
 
     def send(self, *a, **kw):
-        return self.actor.send(*a, **kw)
+        if envs.USE_BACKGROUND_WORKER:
+            return self.actor.send(*a, **kw)
+        return self.actor(*a, **kw)
+
 
     def send_with_options(self, *a, **kw):
-        return self.actor.send_with_options(*a, **kw)
+        if envs.USE_BACKGROUND_WORKER:
+            return self.actor.send_with_options(*a, **kw)
+        return self.actor(*a, **kw)
 
 
 # BROKER    
