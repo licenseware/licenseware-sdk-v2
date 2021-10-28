@@ -170,6 +170,7 @@ class SchemaNamespace:
     collection: str = None, 
     methods: list = http_methods, 
     decorators: list = [authorization_check],
+    disable_model: bool = False,
     authorizations: dict = swagger_authorization_header,
     mongo_crud_class: type = MongoCrud,
     namespace: Namespace = None
@@ -192,6 +193,7 @@ class SchemaNamespace:
         except: self.methods = methods
         
         self.decorators = decorators
+        self.disable_model = disable_model
         self.authorizations = authorizations
         self.mongo_crud_class = mongo_crud_class
         self.namespace = namespace
@@ -227,7 +229,12 @@ class SchemaNamespace:
     def create_resources(self) -> list:
         
         ns = self.create_namespace()
-        resource_fields = ns.schema_model(self.name, self.json_schema)  
+        
+        if self.disable_model is True: 
+            resource_fields = ns.model(self.name, {})
+        else: 
+            resource_fields = ns.schema_model(self.name, self.json_schema)  
+        
         allowed_methods = self.methods
         data_service = self.mongo_crud_class(schema=self.schema, collection=self.collection)
         
@@ -236,7 +243,7 @@ class SchemaNamespace:
             @failsafe(fail_code=500)
             @ns.doc(id="Make a GET request to FETCH some data")
             @ns.param('_id', 'get data by id')
-            @ns.response(code=200, description="A list of:", model=resource_fields)
+            @ns.response(code=200, description="A list of:", model=[resource_fields])
             @ns.response(code=404, description="Requested data not found")
             @ns.response(code=405, description="METHOD NOT ALLOWED")
             def get(self):
@@ -301,6 +308,7 @@ class SchemaNamespace:
 
 
     def make_json_schema(self) -> dict:
+        if self.disable_model is True: return
         self.json_schema = JSONSchema().dump(self.schema())["definitions"][self.schema_name]
 
 
