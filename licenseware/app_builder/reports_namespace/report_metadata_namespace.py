@@ -17,19 +17,23 @@ def create_report_resource(report: ReportBuilder):
         def get(self):
             
             file_type = request.args.get('download_as')
+            latest = request.args.get('latest')
             tenant_id = request.headers.get('Tenantid')
             
+            if latest is not None:
+                return report.get_report_snapshot(request)
+                        
             if file_type is None: 
                 return report.return_json_payload()
-            
-            return download_all(
-                file_type, 
-                report, 
-                tenant_id, 
-                filename=report.report_id + '.' + file_type,
-                flask_request=request
-            )
-                
+            else:
+                return download_all(
+                    file_type, 
+                    report, 
+                    tenant_id, 
+                    filename=report.report_id + '.' + file_type,
+                    flask_request=request
+                )
+                    
     return ReportController
     
 
@@ -49,6 +53,7 @@ def get_report_metadata_namespace(ns: Namespace, reports:List[ReportBuilder]):
             },
         )
         @ns.param(name="download_as", description="Download all report components in csv, xlsx or pdf format.")
+        @ns.param(name="latest", description="Get latest saved report")
         class TempReportResource(RR): ...
         
         ReportResource = type(

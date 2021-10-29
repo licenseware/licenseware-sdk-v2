@@ -1,11 +1,11 @@
+from typing import List
+from flask import Request
 from licenseware.common.constants.envs import envs
 from licenseware.registry_service import register_report
 from licenseware.report_components.build_match_expression import condition_switcher
 from licenseware.report_components import BaseReportComponent
+from licenseware.report_snapshot import ReportSnapshot
 from licenseware.utils.logger import log
-from typing import List
-
-
 
 
 
@@ -75,6 +75,14 @@ class ReportBuilder:
             "connected_apps": self.connected_apps
         }
         return payload, 200
+    
+    
+    def get_report_snapshot(self, flask_request:Request):
+        
+        rs = ReportSnapshot(self, flask_request)
+        
+        return rs.get_report_data()
+        
     
     
     def register_report(self):
