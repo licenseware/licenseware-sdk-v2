@@ -257,9 +257,9 @@ class EditableTable:
     def __init__(
         self, 
         schema: Schema, 
+        title:str = None,
         namespace: Namespace = None,
         component_id: str = None, 
-        title: str = None,
         url: str = None, 
         table_type: str = "editable_table",
         order: int = 1,
@@ -281,8 +281,27 @@ class EditableTable:
         self.order = order
         self.style_attributes = style_attributes
         self.schema_dict = self.make_schema_dict()
+        self.add_title_on_schema_meta()
         
         
+    def add_title_on_schema_meta(self):
+        """ Adding title on Meta if not present or getting title if exists """ 
+        if hasattr(self.schema, 'Meta'):
+            if hasattr(self.schema.Meta, 'title'):
+                self.title = self.schema.Meta.title
+            else:   
+                self.schema = type(
+                    self.schema.__name__, (self.schema,), 
+                    {'Meta': type('Meta', (self.schema.Meta,), {'title': self.title})}
+                )
+        else:
+            self.schema = type(
+                self.schema.__name__, 
+                (self.schema,), 
+                {'Meta': type('Meta', (), {'title': self.title})}
+            )
+        
+
     def url_from_schema(self):
         return f'/{self.schema_name}'
 
@@ -417,6 +436,7 @@ class EditableTable:
         if 'metadata' in field_data:
             return field_data['metadata']
         return ""
+
 
 
 def editable_tables_from_schemas(schemas_list: List[Schema]) -> List[dict]:
