@@ -3,17 +3,25 @@ from flask_restx import Api, Resource
 from licenseware.decorators import failsafe
 from licenseware.utils.logger import log
 
+import sys, os
 from licenseware import resources
 import importlib.resources as pkg_resources
 
 
 
 
-
 def add_terms_and_conditions_route(api:Api, appvars:dict):
     
-    #TODO template can be updated with custom data using jinja2 (see CLI for more info)
     
+    resources_path = os.path.join(sys.path[0], "app/resources/terms_and_conditions.html")
+
+    if os.path.exists(resources_path):
+        with open(resources_path) as f:
+            raw_html = f.read()
+    else:     
+        raw_html = pkg_resources.read_text(resources, "terms_and_conditions.html")
+        
+        
     @api.route(appvars['terms_and_conditions_path'])
     class TermsAndConds(Resource): 
         @failsafe(fail_code=500)
@@ -25,9 +33,6 @@ def add_terms_and_conditions_route(api:Api, appvars:dict):
             }
         )
         def get(self):
-            
-            raw_html = pkg_resources.read_text(resources, "terms_and_conditions.html")
-            
             return raw_html
             
     return api
