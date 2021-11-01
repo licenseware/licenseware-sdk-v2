@@ -14,8 +14,8 @@ def get_tenants_list(tenant_id:str, auth_token:str):
     )
     
     if response.status_code == 200:
-        data_list = response.json()['data']
-        tenants_list = [data['id'] for data in data_list]
+        data_list = response.json()
+        tenants_list = [data['tenant_id'] for data in data_list]
         return tenants_list
     
 
