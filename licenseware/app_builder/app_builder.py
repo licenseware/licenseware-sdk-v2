@@ -401,9 +401,16 @@ class AppBuilder:
             uploaders = uploaders,
             report_components = report_components
         ))
+        
+        
+        return {
+            'app': app_dict,
+            'reports': reports,
+            'uploaders': uploaders,
+            'report_components': report_components
+        }
             
-        
-        
+    
 
     def register_uploader(self, uploader_instance):
         
