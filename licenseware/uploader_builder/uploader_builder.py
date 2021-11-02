@@ -119,10 +119,12 @@ class UploaderBuilder:
 
     def validate_filenames(self, flask_request:Request):
         
-        quota_response, quota_status_code = self.validator_class.calculate_quota(flask_request, update_quota_units=False)
-        if quota_status_code != 200: return quota_response, quota_status_code
-        
         response, status_code = self.validator_class.get_filenames_response(flask_request)
+        
+        if status_code == 200:
+            quota_response, quota_status_code = self.validator_class.calculate_quota(flask_request, update_quota_units=False)
+            if quota_status_code != 200: return quota_response, quota_status_code
+        
         return response, status_code
     
     def upload_files(self, flask_request:Request):
@@ -140,15 +142,18 @@ class UploaderBuilder:
         }
         notify_upload_status(event, status=states.RUNNING)
         
-        quota_response, quota_status_code = self.validator_class.calculate_quota(flask_request)
-        if quota_status_code != 200: 
-            notify_upload_status(event, status=states.IDLE)
-            return quota_response, quota_status_code
         
         response, status_code = self.validator_class.get_file_objects_response(flask_request)
         if status_code != 200:
             notify_upload_status(event, status=states.IDLE)
             return response, status_code
+        
+
+        quota_response, quota_status_code = self.validator_class.calculate_quota(flask_request)
+        if quota_status_code != 200: 
+            notify_upload_status(event, status=states.IDLE)
+            return quota_response, quota_status_code
+        
         
         valid_filepaths = self.validator_class.get_only_valid_filepaths_from_objects_response(response)
         if not valid_filepaths: 

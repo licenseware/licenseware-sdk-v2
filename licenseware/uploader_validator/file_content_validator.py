@@ -109,9 +109,20 @@ class FileContentValidator:
         
     def validate_file_objects(self, file_objects:list, tenant_id:str) -> list:
         
+        validation_response = []
+        
         valid_file_objects = self.get_only_valid_file_objects(file_objects)
         
-        validation_response = []
+        if valid_file_objects == []:
+            validation_response.append({
+                'status': states.FAILED,
+                'filename': 'No valid filenames', 
+                'filepath': 'File not saved',
+                'message': self.filename_invalid_message 
+            }) 
+            return validation_response
+        
+        
         for file in valid_file_objects:
             try:
             
@@ -158,7 +169,9 @@ class FileContentValidator:
                 message = 'Not all files are valid'
                 break
             
-        return status, message
+        status_code = 200 if status == states.SUCCESS else 400
+            
+        return status, message, status_code
         
         
     def get_file_objects_response(self, flask_request):
@@ -174,14 +187,14 @@ class FileContentValidator:
         file_objects = self.get_file_objects_from_request(flask_request)
         if not isinstance(file_objects, list): return file_objects
         validation_response = self.validate_file_objects(file_objects, tenant_id)
-        status, message = self.get_overall_status_and_message(validation_response)
+        status, message, status_code = self.get_overall_status_and_message(validation_response)
         
         return {
             'tenant_id': tenant_id, 
             'status': status, 
             'message': message,
             'validation': validation_response
-        }, 200
+        }, status_code
             
             
         
