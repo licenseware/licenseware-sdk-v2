@@ -199,7 +199,7 @@ Outputs:
         - - Fn::ImportValue: !Sub ${EnvTag}:ExternalUrl
           - !Join [ "", !Split [ "*" , !Ref LoadBalancerPath ] ]
   {{ app_id.replace('-service', '').capitalize() }}ServiceStorage:
-    Description: The {{ app_id.replace('-service', '') }} service storage
+    Description: The {{ app_id.replace('-service', '').capitalize() }} service storage
     Value: !Ref '{{ app_id.replace('-service', '').capitalize() }}ServiceStorage'
     Export:
       Name: !Sub ${EnvTag}:{{ app_id.replace('-service', '').capitalize() }}ServiceStorage
