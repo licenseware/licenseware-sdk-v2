@@ -28,7 +28,7 @@ jobs:
   # which builds that Dockerfile and deploys the image to a 'backend-service'
   # ECS service in a separate CloudFormation stack.
 
-  deploy-{{ app_id.replace('-service', '') }}-api:
+  deploy-{{ app_id.replace('-service', '').replace('_', '-') }}-api:
     name: Deploy {{ app_id.replace('-service', '') }} api
     runs-on: ubuntu-latest
     steps:
