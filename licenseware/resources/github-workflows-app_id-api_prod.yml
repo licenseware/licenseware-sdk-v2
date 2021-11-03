@@ -63,7 +63,7 @@ jobs:
       env:
         ECR_REGISTRY: {% raw %}${{ steps.login-ecr.outputs.registry }}{% endraw %}
         ECR_REPOSITORY: github-actions-prod
-        IMAGE_TAG: prod-{{ app_id.replace('-service', '') }}-api-{% raw %}${{ github.sha }}{% endraw %}
+        IMAGE_TAG: prod-{{ app_id.replace('-service', '').replace('_', '-') }}-api-{% raw %}${{ github.sha }}{% endraw %}
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
@@ -76,7 +76,7 @@ jobs:
       id: service-stack
       uses: aws-actions/aws-cloudformation-github-deploy@v1
       with:
-        name: prod-{{ app_id.replace('-service', '') }}-api
+        name: prod-{{ app_id.replace('-service', '').replace('_', '-') }}-api
         template: cloudformation-templates/{{ app_id.replace('-service', '') }}-api_prod.yml
         role-arn: arn:aws:iam::{% raw %}${{ steps.creds.outputs.aws-account-id }}{% endraw %}:role/github-actions-cloudformation-stack-role-prod
         parameter-overrides: >-
@@ -85,7 +85,7 @@ jobs:
           EnvFileArn=arn:aws:s3:::prod.lware.environment/{{ app_id.replace('-service', '') }}-api.env,
           ContainerPort=5000,
           EnvTag=prod,
-          ServiceName=prod-{{ app_id.replace('-service', '') }}-api,
+          ServiceName=prod-{{ app_id.replace('-service', '').replace('_', '-') }}-api,
           ImageUrl={% raw %}${{ steps.build-image.outputs.image }}{% endraw %}
     - name: Print service URL
       env:
