@@ -15,6 +15,7 @@ from licenseware.common.constants import envs
 from .report_register_namespace import get_report_register_namespace
 from .report_metadata_namespace import get_report_metadata_namespace
 from .report_components_namespace import get_report_components_namespace
+from .report_image_preview_namespace import get_report_image_preview_namespace
 
 
 # Here we are defining the uploads namespace which will be imported in app_builder
