@@ -1,3 +1,4 @@
+# TODO remove if register_all works
 from typing import Callable
 import requests
 from licenseware.utils.logger import log
@@ -51,6 +52,8 @@ def _register_with_single_request(registrable_name:str, registrable_func:Callabl
         "message": f"{registrable_name.capitalize()} registered successfully",
         "content": payload
     }, 200
+
+
 
 def register_all_single_requests(app:dict, reports:list, report_components:list, uploaders:list):
     

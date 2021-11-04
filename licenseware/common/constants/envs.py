@@ -42,6 +42,7 @@ class envs:
     
 
     REGISTRY_SERVICE_URL:str = os.environ['REGISTRY_SERVICE_URL']
+    REGISTER_ALL_URL:str = REGISTRY_SERVICE_URL + '/registrations'
     REGISTER_APP_URL:str = REGISTRY_SERVICE_URL + '/apps'
     REGISTER_UPLOADER_URL:str = REGISTRY_SERVICE_URL + '/uploaders'
     REGISTER_UPLOADER_STATUS_URL:str = REGISTRY_SERVICE_URL + '/uploaders/status'
