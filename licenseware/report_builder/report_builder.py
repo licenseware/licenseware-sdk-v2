@@ -20,6 +20,7 @@ class ReportBuilder:
     :registrable - If True report will be registered to registry service
     :report_path - the endpoint/route on which this report is found
     :preview_image - the image name from resources folder. If not provided it will look for an image with the name `report_id.png`
+    :preview_image_dark - the dark theme image name from resources folder. If not provided it will look for an image with the name `report_id_dark.png`
     :connected_apps - related apps which are needed to build this report
     :flags - use flags dataclass from licenseware.commun.constants
     
@@ -35,6 +36,7 @@ class ReportBuilder:
         registrable:bool = True,
         report_path:str = None,
         preview_image:str = None,
+        preview_image_dark:str = None,
         connected_apps:list = [],
         flags:list = [],
         filters:list = []
@@ -53,8 +55,11 @@ class ReportBuilder:
         self.flags = flags
         self.url = envs.REPORT_URL  + self.report_path
         self.preview_image_path = self.report_path + '/preview_image'
+        self.preview_image_dark_path = self.report_path + '/preview_image_dark'
         self.preview_image_url = envs.REPORT_URL + self.preview_image_path 
+        self.preview_image_dark_url = envs.REPORT_URL + self.preview_image_dark_path
         self.preview_image = preview_image
+        self.preview_image_dark = preview_image_dark
         
         # Needed to overwrite report_components and filters
         self.report_components = []
@@ -75,6 +80,7 @@ class ReportBuilder:
             "filters": self.filters,
             "url": self.url,
             "preview_image_url": self.preview_image_url,
+            "preview_image_dark_url": self.preview_image_dark_url,
             "connected_apps": self.connected_apps
         }
         return payload, 200

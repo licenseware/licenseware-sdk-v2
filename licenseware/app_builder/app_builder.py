@@ -52,7 +52,8 @@ from .reports_namespace import (
     get_report_register_namespace,
     get_report_metadata_namespace,
     get_report_components_namespace,
-    get_report_image_preview_namespace
+    get_report_image_preview_namespace,
+    get_report_image_preview_dark_namespace
 )
 
 
@@ -279,7 +280,8 @@ class AppBuilder:
             get_report_register_namespace,
             get_report_metadata_namespace,
             get_report_components_namespace,
-            get_report_image_preview_namespace
+            get_report_image_preview_namespace,
+            get_report_image_preview_dark_namespace
         ]
         
         for func in ns_funcs:
