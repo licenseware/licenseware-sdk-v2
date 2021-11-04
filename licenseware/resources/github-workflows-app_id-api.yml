@@ -27,7 +27,7 @@ jobs:
   # which builds that Dockerfile and deploys the image to a 'backend-service'
   # ECS service in a separate CloudFormation stack.
   
-  deploy-{{ app_id.replace('-service', '') }}-api:
+  deploy-{{ app_id.replace('-service', '').replace('_', '-') }}-api:
     name: Deploy {{ app_id.replace('-service', '') }} api
     runs-on: ubuntu-latest
     steps:
@@ -38,8 +38,8 @@ jobs:
       id: creds
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws-access-key-id: {% raw %} ${{ secrets.AWS_ACCESS_KEY_ID }} {% endraw %}
-        aws-secret-access-key: {% raw %} ${{ secrets.AWS_SECRET_ACCESS_KEY }} {% endraw %}
+        aws-access-key-id: {% raw %}${{ secrets.AWS_ACCESS_KEY_ID }}{% endraw %}
+        aws-secret-access-key: {% raw %}${{ secrets.AWS_SECRET_ACCESS_KEY }}{% endraw %}
         aws-region: eu-central-1
 
     - name: Login ECR
@@ -60,9 +60,9 @@ jobs:
     - name: Build, tag, and push {{ app_id.replace('-service', '') }} api image
       id: build-image
       env:
-        ECR_REGISTRY: {% raw %} ${{ steps.login-ecr.outputs.registry }} {% endraw %}
+        ECR_REGISTRY: {% raw %}${{ steps.login-ecr.outputs.registry }}{% endraw %}
         ECR_REPOSITORY: github-actions-dev
-        IMAGE_TAG: dev-{{ app_id.replace('-service', '') }}-api-{% raw %} ${{ github.sha }} {% endraw %}
+        IMAGE_TAG: dev-{{ app_id.replace('-service', '').replace('_', '-') }}-api-{% raw %}${{ github.sha }}{% endraw %}
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
@@ -75,19 +75,19 @@ jobs:
       id: service-stack
       uses: aws-actions/aws-cloudformation-github-deploy@v1
       with:
-        name: dev-{{ app_id.replace('-service', '') }}-api
+        name: dev-{{ app_id.replace('-service', '').replace('_', '-') }}-api
         template: cloudformation-templates/{{ app_id.replace('-service', '') }}-api.yml
-        role-arn: arn:aws:iam::{% raw %} ${{ steps.creds.outputs.aws-account-id }} {% endraw %}:role/github-actions-cloudformation-stack-role-dev
+        role-arn: arn:aws:iam::{% raw %}${{ steps.creds.outputs.aws-account-id }}{% endraw %}:role/github-actions-cloudformation-stack-role-dev
         parameter-overrides: >-
           LoadBalancerPath=/{{ app_id.replace('-service', '') }}/*,
-          LoadBalancerPriority=5,
+          LoadBalancerPriority=CHANGE_THIS_TO_A_NUMBER_DIFFERENT_FROM_OTHER_APPS,
           EnvFileArn=arn:aws:s3:::dev.lware.environment/{{ app_id.replace('-service', '') }}-api.env,
           ContainerPort=5000,
           EnvTag=dev,
-          ServiceName=dev-{{ app_id.replace('-service', '') }}-api,
-          ImageUrl={% raw %} ${{ steps.build-image.outputs.image }} {% endraw %}
+          ServiceName=dev-{{ app_id.replace('-service', '').replace('_', '-') }}-api,
+          ImageUrl={% raw %}${{ steps.build-image.outputs.image }}{% endraw %}
     - name: Print service URL
       env:
-        URL: {% raw %} ${{ steps.service-stack.outputs.ServiceURL }} {% endraw %}
+        URL: {% raw %}${{ steps.service-stack.outputs.ServiceURL }}{% endraw %}
       run: |
         echo "Service URL: $URL"

@@ -2,7 +2,6 @@ from flask import Request
 from datetime import datetime
 from licenseware import mongodata
 from licenseware.common.constants import envs
-from licenseware.utils.dramatiq_redis_broker import broker
 from licenseware.utils.logger import log
 from marshmallow import Schema, fields, INCLUDE
 from pymongo import ASCENDING

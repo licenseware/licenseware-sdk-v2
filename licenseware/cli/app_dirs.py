@@ -47,9 +47,14 @@ def _create_pkg_init_files(created_paths: list):
             f.write("# Add imports here")
      
 
-
+def validate_app_id(app_id:str):
+    #TODO
+    # Only letters and - sign is accepted
+    pass
 
 def create_app_dirs(app_id:str = None):
+    
+    validate_app_id(app_id)
     
     created_paths = []
     for dir_name in app_dirs:

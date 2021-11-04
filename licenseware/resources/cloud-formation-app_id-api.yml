@@ -96,31 +96,31 @@ Resources:
               Value: !Ref 'EnvFileArn'
           MountPoints:
             -
-              SourceVolume: {{ app_id.replace('-service', '').capitalize() }}ApiServiceStorage
+              SourceVolume: {{ app_id.replace('-service', '').replace('-', '').capitalize() }}ApiServiceStorage
               ContainerPath: /tmp/lware
               ReadOnly: false
       Volumes:
-        - Name: {{ app_id.replace('-service', '').capitalize() }}ApiServiceStorage
+        - Name: {{ app_id.replace('-service', '').replace('-', '').capitalize() }}ApiServiceStorage
           EFSVolumeConfiguration:
-            FilesystemId: !Ref {{ app_id.replace('-service', '').capitalize() }}ServiceStorage
+            FilesystemId: !Ref {{ app_id.replace('-service', '').replace('-', '').capitalize() }}ServiceStorage
             TransitEncryption: "DISABLED"
 
-  {{ app_id.replace('-service', '').capitalize() }}ServiceStorage:
+  {{ app_id.replace('-service', '').replace('-', '').capitalize() }}ServiceStorage:
     Type: AWS::EFS::FileSystem
 
-  {{ app_id.replace('-service', '').capitalize() }}ApiServiceStorageMountTargetA:
+  {{ app_id.replace('-service', '').replace('-', '').capitalize() }}ApiServiceStorageMountTargetA:
     Type: AWS::EFS::MountTarget
     Properties:
-      FileSystemId: !Ref {{ app_id.replace('-service', '').capitalize() }}ServiceStorage
+      FileSystemId: !Ref {{ app_id.replace('-service', '').replace('-', '').capitalize() }}ServiceStorage
       SubnetId: 
         Fn::ImportValue: !Sub ${EnvTag}-lware-vpc-PrivateSubnetA
       SecurityGroups:
       - Fn::ImportValue: !Sub ${EnvTag}:EFSAccessSecurityGroup
 
-  {{ app_id.replace('-service', '').capitalize() }}ApiServiceStorageMountTargetB:
+  {{ app_id.replace('-service', '').replace('-', '').capitalize() }}ApiServiceStorageMountTargetB:
     Type: AWS::EFS::MountTarget
     Properties:
-      FileSystemId: !Ref {{ app_id.replace('-service', '').capitalize() }}ServiceStorage
+      FileSystemId: !Ref {{ app_id.replace('-service', '').replace('-', '').capitalize() }}ServiceStorage
       SubnetId: 
         Fn::ImportValue: !Sub ${EnvTag}-lware-vpc-PrivateSubnetB
       SecurityGroups:
@@ -198,8 +198,8 @@ Outputs:
         - ""
         - - Fn::ImportValue: !Sub ${EnvTag}:ExternalUrl
           - !Join [ "", !Split [ "*" , !Ref LoadBalancerPath ] ]
-  {{ app_id.replace('-service', '').capitalize() }}ServiceStorage:
-    Description: The {{ app_id.replace('-service', '') }} service storage
-    Value: !Ref '{{ app_id.replace('-service', '').capitalize() }}ServiceStorage'
+  {{ app_id.replace('-service', '').replace('-', '').capitalize() }}ServiceStorage:
+    Description: The {{ app_id.replace('-service', '').replace('-', '').capitalize() }} service storage
+    Value: !Ref '{{ app_id.replace('-service', '').replace('-', '').capitalize() }}ServiceStorage'
     Export:
-      Name: !Sub ${EnvTag}:{{ app_id.replace('-service', '').capitalize() }}ServiceStorage
+      Name: !Sub ${EnvTag}:{{ app_id.replace('-service', '').replace('-', '').capitalize() }}ServiceStorage

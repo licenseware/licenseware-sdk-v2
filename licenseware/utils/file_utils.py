@@ -1,12 +1,18 @@
 import os, re
 import shutil
-from werkzeug.utils import secure_filename as werkzeug_secure_filename
+import zipfile
+import tarfile
+
 from licenseware.common.constants import envs
+from werkzeug.utils import secure_filename as werkzeug_secure_filename
 
 
 accepted_archives = ('.zip', '.tar','.tar.bz2', )
 
 
+def is_archive(filepath:str):
+    return zipfile.is_zipfile(filepath) or tarfile.is_tarfile(filepath)
+    
 
 def list_files_from_path(dir_path:str):
     
@@ -26,7 +32,7 @@ def unzip(file_path:str):
         Returns the path where the file was extracted
     """
 
-    if not file_path.endswith(accepted_archives):
+    if not is_archive(file_path):
         raise ValueError(f"Only {accepted_archives} archives are accepted")
         
     file_name = os.path.basename(file_path)
@@ -45,7 +51,7 @@ def recursive_unzip(file_path:str):
         Iterate over an archive and recursively extract all archives using unzip function
     """
  
-    if file_path.endswith(accepted_archives):
+    if is_archive(file_path):
         unziped_base = unzip(file_path)
     else:
         unziped_base = file_path

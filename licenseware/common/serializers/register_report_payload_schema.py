@@ -19,6 +19,7 @@ class ReportSchema(Schema):
     report_components = fields.List(fields.Nested(ComponentSchema), required=False)
     filters = fields.List(fields.Nested(FilterSchema), required=False)
     preview_image_url = fields.Url(required=False, allow_none=True)
+    preview_image_dark_url = fields.Url(required=False, allow_none=True)
 
 class RegisterReportPayloadSchema(Schema):
     data = fields.List(fields.Nested(ReportSchema), required=True)

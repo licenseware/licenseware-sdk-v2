@@ -51,7 +51,9 @@ from .reports_namespace import reports_namespace
 from .reports_namespace import (
     get_report_register_namespace,
     get_report_metadata_namespace,
-    get_report_components_namespace
+    get_report_components_namespace,
+    get_report_image_preview_namespace,
+    get_report_image_preview_dark_namespace
 )
 
 
@@ -277,7 +279,9 @@ class AppBuilder:
         ns_funcs = [
             get_report_register_namespace,
             get_report_metadata_namespace,
-            get_report_components_namespace
+            get_report_components_namespace,
+            get_report_image_preview_namespace,
+            get_report_image_preview_dark_namespace
         ]
         
         for func in ns_funcs:
@@ -401,9 +405,16 @@ class AppBuilder:
             uploaders = uploaders,
             report_components = report_components
         ))
+        
+        
+        return {
+            'app': app_dict,
+            'reports': reports,
+            'uploaders': uploaders,
+            'report_components': report_components
+        }
             
-        
-        
+    
 
     def register_uploader(self, uploader_instance):
         
