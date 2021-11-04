@@ -18,7 +18,7 @@ def download_as_xlsx(data:List[dict], tenant_id:str, filename:str = None, send_f
     if not os.path.exists(dirpath): os.makedirs(dirpath)
     
     filepath = os.path.join(dirpath, filename)
-    df = pd.DataFrame(data)
+    df = pd.DataFrame(data, index=[0])
 
     if not send_file: return df
         
