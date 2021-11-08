@@ -406,7 +406,7 @@ class AppBuilder:
                 
         payload = {
             'data': dict(
-                apps = [app_dict], # for registry-service
+                apps = [app_dict], 
                 reports = reports, 
                 uploaders = uploaders,
                 report_components = report_components
@@ -414,6 +414,7 @@ class AppBuilder:
         }
     
         register_all.send(payload)
+        
         
         return payload
             
