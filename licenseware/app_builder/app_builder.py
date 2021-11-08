@@ -400,7 +400,7 @@ class AppBuilder:
                 
     
         register_all.send(dict(
-            app = app_dict,
+            apps = [app_dict], # for registry-service
             reports = reports, 
             uploaders = uploaders,
             report_components = report_components
