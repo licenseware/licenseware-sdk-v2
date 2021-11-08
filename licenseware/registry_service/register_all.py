@@ -27,7 +27,7 @@ def register_all(payload:dict):
     # )
     
     
-    log.info(payload)    
+    log.info(payload.keys())    
 
     registration = requests.post(
         url=envs.REGISTER_ALL_URL, 
