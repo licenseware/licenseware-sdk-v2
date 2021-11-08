@@ -398,14 +398,16 @@ class AppBuilder:
                 for r in self.report_components
         ]
                 
+        payload = {
+            'data': dict(
+                apps = [app_dict], # for registry-service
+                reports = reports, 
+                uploaders = uploaders,
+                report_components = report_components
+            )
+        }
     
-        register_all.send(dict(
-            apps = [app_dict], # for registry-service
-            reports = reports, 
-            uploaders = uploaders,
-            report_components = report_components
-        ))
-        
+        register_all.send(payload)
         
         return {
             'apps': [app_dict], # for registry-service

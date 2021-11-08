@@ -21,13 +21,9 @@ def register_all(payload:dict):
 
     log.info(payload.keys()) 
     
-    payload_data = {
-        'data': payload
-    }
-
     registration = requests.post(
         url=envs.REGISTER_ALL_URL, 
-        json=payload_data, 
+        json=payload, 
         headers={"Authorization": envs.get_auth_token()}
     )
     
