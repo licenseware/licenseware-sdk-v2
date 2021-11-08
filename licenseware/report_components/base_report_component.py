@@ -63,6 +63,7 @@ class BaseReportComponent:
         self.style_attributes = style_attributes
         self.attributes = attributes
         self.registration_payload = registration_payload
+        self.app_id = envs.APP_ID
         self.options = options
         
         

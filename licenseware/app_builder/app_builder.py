@@ -343,6 +343,7 @@ class AppBuilder:
             {   k:v
                 for k,v in vars(r).items()
                 if k in [
+                    'app_id',
                     'report_id',
                     'name',
                     'description',
@@ -364,6 +365,7 @@ class AppBuilder:
             {   k:v
                 for k,v in vars(r).items()
                 if k in [
+                    'app_id',
                     'uploader_id',
                     'name',
                     'description',
@@ -387,6 +389,7 @@ class AppBuilder:
             {   k:v
                 for k,v in vars(r).items()
                 if k in [
+                    'app_id',
                     'component_id',
                     'url',
                     'order',
