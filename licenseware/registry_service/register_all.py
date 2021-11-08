@@ -18,20 +18,16 @@ def registration_failed(retries_so_far:int, exception):
 )
 def register_all(payload:dict):
     
-    # Delete this comented block
-    # registration_done = register_all_single_requests(
-    #     event['app'], 
-    #     event['reports'], 
-    #     event['report_components'], 
-    #     event['uploaders']
-    # )
+
+    log.info(payload.keys()) 
     
-    
-    log.info(payload.keys())    
+    payload_data = {
+        'data': payload
+    }
 
     registration = requests.post(
         url=envs.REGISTER_ALL_URL, 
-        json=payload, 
+        json=payload_data, 
         headers={"Authorization": envs.get_auth_token()}
     )
     
