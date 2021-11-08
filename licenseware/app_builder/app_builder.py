@@ -107,6 +107,7 @@ class AppBuilder:
         
  
         self.name = name
+        self.app_id = envs.APP_ID
         self.description = description
         self.flags = flags
         self.icon = icon
@@ -323,6 +324,7 @@ class AppBuilder:
         app_dict = \
         {   k:v 
             for k,v in self.appvars.items() if k in [
+                'app_id',
                 'name',
                 'description',   
                 'flags',
@@ -347,6 +349,7 @@ class AppBuilder:
                     'flags',
                     'url',
                     'preview_image_url',
+                    'preview_image_dark_url',
                     'report_components',
                     'connected_apps',
                     'filters',
@@ -409,12 +412,7 @@ class AppBuilder:
     
         register_all.send(payload)
         
-        return {
-            'apps': [app_dict], # for registry-service
-            'reports': reports,
-            'uploaders': uploaders,
-            'report_components': report_components
-        }
+        return payload
             
     
 
