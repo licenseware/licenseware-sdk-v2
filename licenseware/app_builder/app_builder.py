@@ -408,7 +408,7 @@ class AppBuilder:
         
         
         return {
-            'app': app_dict,
+            'apps': app_dict,
             'reports': reports,
             'uploaders': uploaders,
             'report_components': report_components
