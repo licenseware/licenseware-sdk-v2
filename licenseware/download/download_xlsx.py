@@ -18,7 +18,10 @@ def download_as_xlsx(data:List[dict], tenant_id:str, filename:str = None, send_f
     if not os.path.exists(dirpath): os.makedirs(dirpath)
     
     filepath = os.path.join(dirpath, filename)
-    df = pd.DataFrame(data)
+    try:
+        df = pd.DataFrame.from_records(data)
+    except ValueError:
+        df = pd.DataFrame.from_records([data])
 
     if not send_file: return df
         
@@ -30,4 +33,3 @@ def download_as_xlsx(data:List[dict], tenant_id:str, filename:str = None, send_f
         as_attachment=True
     )
         
-    

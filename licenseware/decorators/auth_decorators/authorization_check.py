@@ -29,7 +29,7 @@ def authorization_check(f):
             "Authorization": headers["Authorization"]
         }
 
-        response = requests.get(url=envs.AUTH_MACHINE_CHECK_URL, headers=headers)
+        response = requests.get(url=envs.AUTH_USER_CHECK_URL, headers=headers)
         
         if response.status_code != 200:
             return {'status': 'fail', 'message':fail_message}, 401

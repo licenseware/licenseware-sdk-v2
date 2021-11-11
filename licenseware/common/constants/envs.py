@@ -37,6 +37,7 @@ class envs:
     AUTH_SERVICE_URL:str = os.environ['AUTH_SERVICE_URL']
     AUTH_MACHINES_URL:str = AUTH_SERVICE_URL + '/machines'
     AUTH_MACHINE_CHECK_URL:str = AUTH_SERVICE_URL + '/machine_authorization'
+    AUTH_USER_CHECK_URL:str = AUTH_SERVICE_URL + '/verify'
     AUTH_TENANTS_URL:str = AUTH_SERVICE_URL + '/tenants'
     AUTH_USER_PROFILE_URL:str = AUTH_SERVICE_URL + '/profile'
     
