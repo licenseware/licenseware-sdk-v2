@@ -2,8 +2,8 @@ import requests
 from licenseware.utils.logger import log
 from licenseware.common.constants import envs
 from licenseware.decorators.auth_decorators import authenticated_machine
-from licenseware.common.validators.registry_payload_validators import validate_register_app_payload
 from licenseware.tenants import get_activated_tenants, get_tenants_with_data
+# from licenseware.common.validators.registry_payload_validators import validate_register_app_payload
 
 
 
@@ -13,11 +13,9 @@ def register_app(**kwargs):
         Send a post request to registry service to make app available in front-end
     """
     
-    app_id = envs.APP_ID + envs.PERSONAL_SUFFIX if envs.environment_is_local() else envs.APP_ID
-    
     payload = {
         'data': [{
-            "app_id": app_id,
+            "app_id": kwargs['app_id'],
             "name": kwargs['name'],
             "tenants_with_app_activated": get_activated_tenants(),
             "tenants_with_data_available": get_tenants_with_data(),
@@ -34,7 +32,7 @@ def register_app(**kwargs):
     }
     
     log.info(payload)    
-    validate_register_app_payload(payload)
+    # validate_register_app_payload(payload)
 
     headers = {"Authorization": envs.get_auth_token()}
     registration = requests.post(url=envs.REGISTER_APP_URL, json=payload, headers=headers)

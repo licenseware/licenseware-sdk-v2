@@ -397,8 +397,7 @@ class AppBuilder:
                     'attributes',
                     'title',
                     'component_type',
-                    'filters',
-                    'component_type'
+                    'filters'
                 ]        
             }
                 for r in self.report_components
