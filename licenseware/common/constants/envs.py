@@ -42,7 +42,7 @@ class envs:
     AUTH_USER_PROFILE_URL:str = AUTH_SERVICE_URL + '/profile'
     
 
-    REGISTRY_SERVICE_URL:str = os.environ['REGISTRY_SERVICE_URL'] + '/api/v1'
+    REGISTRY_SERVICE_URL:str = os.environ['REGISTRY_SERVICE_URL'] + '/v1'
     REGISTER_ALL_URL:str = REGISTRY_SERVICE_URL + '/registrations'
     REGISTER_APP_URL:str = REGISTRY_SERVICE_URL + '/apps'
     REGISTER_UPLOADER_URL:str = REGISTRY_SERVICE_URL + '/uploaders'
