@@ -107,6 +107,7 @@ class AppBuilder:
         
  
         self.name = name
+        self.app_id = envs.APP_ID
         self.description = description
         self.flags = flags
         self.icon = icon
@@ -228,7 +229,7 @@ class AppBuilder:
             decorators = self.decorators,
             authorizations = self.authorizations,
             security = list(self.authorizations.keys()),
-            doc='/' if envs.environment_is_local() else self.prefix + '/swagger.json'
+            doc=self.prefix + '/docs'
         )
         
     
@@ -323,6 +324,7 @@ class AppBuilder:
         app_dict = \
         {   k:v 
             for k,v in self.appvars.items() if k in [
+                'app_id',
                 'name',
                 'description',   
                 'flags',
@@ -341,12 +343,14 @@ class AppBuilder:
             {   k:v
                 for k,v in vars(r).items()
                 if k in [
+                    'app_id',
                     'report_id',
                     'name',
                     'description',
                     'flags',
                     'url',
                     'preview_image_url',
+                    'preview_image_dark_url',
                     'report_components',
                     'connected_apps',
                     'filters',
@@ -361,6 +365,7 @@ class AppBuilder:
             {   k:v
                 for k,v in vars(r).items()
                 if k in [
+                    'app_id',
                     'uploader_id',
                     'name',
                     'description',
@@ -384,6 +389,7 @@ class AppBuilder:
             {   k:v
                 for k,v in vars(r).items()
                 if k in [
+                    'app_id',
                     'component_id',
                     'url',
                     'order',
@@ -391,28 +397,25 @@ class AppBuilder:
                     'attributes',
                     'title',
                     'component_type',
-                    'filters',
-                    'component_type'
+                    'filters'
                 ]        
             }
                 for r in self.report_components
         ]
                 
-    
-        register_all.send(dict(
-            app = app_dict,
-            reports = reports, 
-            uploaders = uploaders,
-            report_components = report_components
-        ))
-        
-        
-        return {
-            'app': app_dict,
-            'reports': reports,
-            'uploaders': uploaders,
-            'report_components': report_components
+        payload = {
+            'data': dict(
+                apps = [app_dict], 
+                reports = reports, 
+                uploaders = uploaders,
+                report_components = report_components
+            )
         }
+    
+        register_all.send(payload)
+        
+        
+        return payload
             
     
 

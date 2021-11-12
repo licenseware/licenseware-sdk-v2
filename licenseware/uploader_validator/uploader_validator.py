@@ -140,31 +140,25 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         return file_paths
   
     
-
     def get_validation_parameters(self):
         
-        if not hasattr(self, 'vars'): return {}
-        
-        validators = vars(self)
-        
-        params_list = [
-            'filename_contains',
-            'filename_endswith',
-            'ignore_filenames',
-            'required_input_type',
-            'required_sheets',
-            'required_columns',
-            'text_contains_all',
-            'text_contains_any',
-            'min_rows_number',
-            'header_starts_at',
-            'buffer',
-            'filename_valid_message',
-            'filename_invalid_message',
-            'filename_ignored_message'                                        
-        ]
-        
-        return {k:v for k,v in validators.items() if k in params_list}
+        return dict(
+            filename_contains = self.filename_contains,
+            filename_endswith = self.filename_endswith,
+            ignore_filenames = self.ignore_filenames,
+            required_input_type = self.required_input_type,
+            required_sheets = self.required_sheets,
+            required_columns = self.required_columns,
+            text_contains_all = self.text_contains_all,
+            text_contains_any = self.text_contains_any,
+            min_rows_number = self.min_rows_number,
+            header_starts_at = self.header_starts_at,
+            buffer = self.buffer,
+            filename_valid_message = self.filename_valid_message,
+            filename_invalid_message = self.filename_invalid_message,
+            filename_ignored_message = self.filename_ignored_message
+        )
+            
 
         
     def valid_filepath(self, filepath:str):
