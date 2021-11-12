@@ -1,31 +1,42 @@
 """
-Here we are creating a connection to mongo database using 
-MONGO_CONNECTION_STRING from environment variables.
 
-We are also creating the default collections (if not present) in the database
+Function `collection` is a context manager which can be used as folows:
 
-We are using MongoClient because it's thread and fork safe.
+```py
 
-Object `db` is available for import (has all pymongo functions)
+from licensware.mongodata import collection
 
 
-TODO count number of connections, use context manager for client connection
+with collection("CollectionName", MarshmallowSchema, data) as col:
+    col.find({}) #any pymongo collection functions
+
+
+```
+
+`MarshmallowSchema` will validate provided `data` provided before inserting it in mongo
+
 
 """
 
 from pymongo import MongoClient
+from marshmallow import Schema
+from contextlib import contextmanager
 from licenseware.common.constants import envs
 
-client = MongoClient(envs.MONGO_CONNECTION_STRING)
-# Raise error if connection is not established
-client.admin.command('ping')
-# Get database on which we can create and modify collections
-db = client[envs.MONGO_DATABASE_NAME]
 
-# Creating default collections
-existing_collections = db.list_collections()
-if len(list(existing_collections)) == 0:
-    db.create_collection(envs.MONGO_COLLECTION_DATA_NAME)
-    db.create_collection(envs.MONGO_COLLECTION_ANALYSIS_NAME)
-    db.create_collection(envs.MONGO_COLLECTION_UTILIZATION_NAME)
+
+@contextmanager
+def collection(collection_name:str, schema: Schema, data:any):
     
+    if isinstance(data, dict):
+        data = schema().load(data)
+
+    if isinstance(data, list):
+        data = schema(many=True).load(data)
+    
+    with MongoClient(envs.MONGO_CONNECTION_STRING) as conn: 
+        col = conn[envs.MONGO_DATABASE_NAME][collection_name]
+        try:
+            yield col
+        finally:
+            conn.close()

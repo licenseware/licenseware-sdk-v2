@@ -9,3 +9,5 @@ from .mongodata import (
     get_collection,
     distinct
 ) 
+
+from .mongo_connection import collection
