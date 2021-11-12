@@ -1,5 +1,6 @@
 from licenseware.registry_service import register_upload_status
 from licenseware.utils.logger import log
+from licenseware.common.constants import envs
 
 
 def notify_upload_status(event: dict, status:str):
@@ -10,7 +11,8 @@ def notify_upload_status(event: dict, status:str):
     status = {
         'tenant_id': event['tenant_id'],
         'uploader_id': event['uploader_id'], 
-        'status': status
+        'status': status,
+        'app_id': envs.APP_ID
     }
     
     response, status_code = register_upload_status(**status)
