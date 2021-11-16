@@ -11,8 +11,12 @@ accepted_archives = ('.zip', '.tar','.tar.bz2', )
 
 
 def is_archive(filepath:str):
-    return zipfile.is_zipfile(filepath) or tarfile.is_tarfile(filepath)
-    
+    try:
+        return zipfile.is_zipfile(filepath) or tarfile.is_tarfile(filepath)
+    except:
+        return False
+
+
 
 def list_files_from_path(dir_path:str):
     
