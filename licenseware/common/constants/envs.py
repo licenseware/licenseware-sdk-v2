@@ -42,13 +42,14 @@ class envs:
     AUTH_USER_PROFILE_URL:str = AUTH_SERVICE_URL + '/profile'
     
 
-    REGISTRY_SERVICE_URL:str = os.environ['REGISTRY_SERVICE_URL'] + '/v1'
-    REGISTER_ALL_URL:str = REGISTRY_SERVICE_URL + '/registrations'
-    REGISTER_APP_URL:str = REGISTRY_SERVICE_URL + '/apps'
-    REGISTER_UPLOADER_URL:str = REGISTRY_SERVICE_URL + '/uploaders'
-    REGISTER_UPLOADER_STATUS_URL:str = REGISTRY_SERVICE_URL + '/uploaders/status'
-    REGISTER_REPORT_URL:str = REGISTRY_SERVICE_URL + '/reports'
-    REGISTER_REPORT_COMPONENT_URL:str = REGISTER_REPORT_URL + '/components'
+    REGISTRY_SERVICE_URL:str = os.environ['REGISTRY_SERVICE_URL']
+    REGISTER_ALL_URL:str = REGISTRY_SERVICE_URL + '/v1' + '/registrations'
+    REGISTER_APP_URL:str = REGISTRY_SERVICE_URL + '/v1' + '/apps'
+    REGISTER_UPLOADER_URL:str = REGISTRY_SERVICE_URL + '/v1' + '/uploaders'
+    GET_UPLOADERS_URL:str = REGISTRY_SERVICE_URL + '/uploaders'
+    REGISTER_UPLOADER_STATUS_URL:str = REGISTRY_SERVICE_URL + '/v1' + '/uploaders/status'
+    REGISTER_REPORT_URL:str = REGISTRY_SERVICE_URL + '/v1' + '/reports'
+    REGISTER_REPORT_COMPONENT_URL:str = REGISTER_REPORT_URL + '/v1' + '/components'
     
     APP_HOST:str = os.environ['APP_HOST']
     QUEUE_NAME:str = APP_ID if '-service' not in APP_ID else APP_ID.replace('-service', '') #ifmp-service => ifmp
