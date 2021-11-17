@@ -72,7 +72,7 @@ class ReportBuilder:
     def return_json_payload(self):
         payload = {
             "app_id": self.app_id,
-            "id": self.report_id,
+            "report_id": self.report_id,
             "name": self.name,
             "description": self.description,
             "flags": self.flags,
