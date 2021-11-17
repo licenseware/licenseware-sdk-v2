@@ -337,8 +337,8 @@ class AppBuilder:
                 'terms_and_conditions_url',               
             ]
         }
-        app_dict['activated_tenants'] = self.activated_tenants_func()
-        app_dict['tenants_with_data'] = self.tenants_with_data_func()
+        app_dict['tenants_with_app_activated'] = self.activated_tenants_func()
+        app_dict['tenants_with_data_available'] = self.tenants_with_data_func()
             
         reports = \
         [
