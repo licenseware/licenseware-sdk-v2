@@ -59,6 +59,8 @@ def send_email(
     
     if os.getenv('ENVIRONMENT') in {'dev', 'local'}: return True
     
+    log.info(f"Started sending emails to: {to}")
+    
     try:
         
         html_content = _load_template(template, template_vars)
