@@ -59,19 +59,23 @@ def send_email(
     
     if os.getenv('ENVIRONMENT') in {'dev', 'local'}: return True
     
-    html_content = _load_template(template, template_vars)
-        
-    mail_client = sendgrid.SendGridAPIClient(api_key=os.environ['SENDGRID_API_KEY'])
-    mail = Mail(
-        from_email=os.environ['SENDGRID_EMAIL_SENDER'],
-        subject=subject,
-        to_emails=to,
-        html_content=html_content
-    )
     try:
+        
+        html_content = _load_template(template, template_vars)
+            
+        mail_client = sendgrid.SendGridAPIClient(api_key=os.environ['SENDGRID_API_KEY'])
+        mail = Mail(
+            from_email=os.environ['SENDGRID_EMAIL_SENDER'],
+            subject=subject,
+            to_emails=to,
+            html_content=html_content
+        )
+
         response = mail_client.send(mail)
         log.info(response)
+
         return True
+
     except Exception as err:
         log.exception(err)
         return False

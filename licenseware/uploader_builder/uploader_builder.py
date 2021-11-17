@@ -89,6 +89,7 @@ class UploaderBuilder:
         self.flags = flags
         self.status = status
         self.icon = icon
+        # TODO - integrate custom query params
         self.query_params_on_validation = query_params_on_validation
         self.query_params_on_upload = query_params_on_upload
         
