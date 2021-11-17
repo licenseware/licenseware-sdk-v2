@@ -57,8 +57,8 @@ class UploaderBuilder:
         quota_validation_path:str = None,
         status_check_path:str = None,
         max_retries:int = 0,
-        query_params_on_validation:List[dict] = None,
-        query_params_on_upload:List[dict] = None,
+        query_params_on_validation:dict = None,
+        query_params_on_upload:dict = None,
         **options
     ):
         
@@ -89,7 +89,6 @@ class UploaderBuilder:
         self.flags = flags
         self.status = status
         self.icon = icon
-        # TODO - integrate custom query params
         self.query_params_on_validation = query_params_on_validation
         self.query_params_on_upload = query_params_on_upload
         
@@ -164,7 +163,6 @@ class UploaderBuilder:
         flask_headers = dict(flask_request.headers) if flask_request.headers else {}
         flask_json = dict(flask_request.json) if flask_request.json else {}
         flask_args = dict(flask_request.args) if flask_request.args else {}
-        #TODO add request.files?
         
         event.update({
             'filepaths': valid_filepaths, 
