@@ -29,17 +29,16 @@ def _load_template(html_template:str, html_template_vars:dict):
 def send_email(
     to:str, 
     subject:str, 
-    html_template:str = None, 
-    html_template_vars:dict = None, 
-    html_content:str = None
+    template:str, 
+    **template_vars
 ):
     """
-        to: list of emails of email where to send the email
+        to: email or list of emails of emails where the email needs to be sent
         subject: email subject
-        html_template: the html template filename from app/resources ex: "software_request.html"
-        html_template_vars: dict with template variables to be filled by Jinja2 
-        ex: {'name': 'dan'} will fill in the html template where `{{ name }}` is found 
-        html_content: html content string
+        template: the html template filename from app/resources ex: "software_request.html"
+        template_vars: kwargs with template variables to be filled by Jinja2 
+        ex: name='dan' will fill in the html template where `{{ name }}` is found 
+        
         
         Usage:
         
@@ -48,21 +47,19 @@ def send_email(
         send_email(
             to=some_email@gmail.com, 
             subject='SSC Catalog invite',
-            html_template="email_template.html", 
-            html_template_vars={"message": "You've been invited as an admin to SCC Catalog."}
+            template="email_template.html", 
+            message="You've been invited as an admin to SCC Catalog."
         )
         
         ```
         
-        The html_template will be found in resources and it will contain jinja2 `{{ message }}` placeholder   
+        The html template will be found in resources and it will contain jinja2 `{{ message }}` placeholder   
             
     """
     
-    if os.getenv('ENVIRONMENT') == 'dev': return True
-    assert html_template or html_content 
+    if os.getenv('ENVIRONMENT') in {'dev', 'local'}: return True
     
-    if html_template:
-        html_content = _load_template(html_template, html_template_vars)
+    html_content = _load_template(template, template_vars)
         
     mail_client = sendgrid.SendGridAPIClient(api_key=os.environ['SENDGRID_API_KEY'])
     mail = Mail(
