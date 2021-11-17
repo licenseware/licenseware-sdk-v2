@@ -334,11 +334,11 @@ class AppBuilder:
                 'editable_tables_url',
                 'history_report_url',
                 'tenant_registration_url',
-                'terms_and_conditions_url',
-                'activated_tenants',
-                'tenants_with_data'                
+                'terms_and_conditions_url',               
             ]
         }
+        app_dict['activated_tenants'] = self.activated_tenants_func()
+        app_dict['tenants_with_data'] = self.tenants_with_data_func()
             
         reports = \
         [
