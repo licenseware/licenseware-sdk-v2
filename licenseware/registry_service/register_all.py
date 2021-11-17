@@ -19,7 +19,7 @@ def registration_failed(retries_so_far:int, exception):
 def register_all(payload:dict):
     
 
-    log.info(payload.keys()) 
+    # log.info(payload) 
     
     registration = requests.post(
         url=envs.REGISTER_ALL_URL, 

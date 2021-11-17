@@ -57,9 +57,10 @@ def send_email(
             
     """
     
+    log.info(f"Sending emails to: {to}")
+    
     if os.getenv('ENVIRONMENT') in {'dev', 'local'}: return True
     
-    log.info(f"Started sending emails to: {to}")
     
     try:
         
