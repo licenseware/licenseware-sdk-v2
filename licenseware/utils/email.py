@@ -2,8 +2,10 @@ import os, sys
 import sendgrid
 from sendgrid.helpers.mail import Mail
 from jinja2 import Template
+from licenseware.common.constants import envs
 
 from .logger import log
+from .dramatiq_redis_broker import broker
 
 
 def _load_template(html_template:str, html_template_vars:dict):
@@ -25,7 +27,10 @@ def _load_template(html_template:str, html_template_vars:dict):
         
     
 
-
+@broker.actor(
+    max_retries=5, 
+    queue_name=envs.QUEUE_NAME
+)
 def send_email(
     to:str, 
     subject:str, 
@@ -59,7 +64,7 @@ def send_email(
     
     log.info(f"Sending emails to: {to}")
     
-    if os.getenv('ENVIRONMENT') in {'dev', 'local'}: return True
+    if os.getenv('ENVIRONMENT') in {'local'}: return True
     
     
     try:
