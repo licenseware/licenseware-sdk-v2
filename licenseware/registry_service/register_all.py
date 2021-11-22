@@ -18,15 +18,21 @@ def registration_failed(retries_so_far:int, exception):
 )
 def register_all(payload:dict):
     
-
-    # log.info(payload) 
+    log.info("Sending payload to registry-service") 
     
     registration = requests.post(
         url=envs.REGISTER_ALL_URL, 
         json=payload, 
-        headers={"Authorization": envs.get_auth_token()}
+        headers={
+            "Authorization": envs.get_auth_token(), 
+            'Content-type': 'application/json', 
+            'Accept': 'application/json'
+        }
     )
     
     if registration.status_code != 200:
+        log.warning(payload) 
         raise RegistrationFailed("Registration failed")
 
+    log.success("Registration successful!") 
+    
