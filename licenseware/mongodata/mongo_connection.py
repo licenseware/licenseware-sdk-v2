@@ -26,14 +26,17 @@ from licenseware.common.constants import envs
 
 
 @contextmanager
-def collection(collection_name:str, schema: Schema, data:any):
+def collection(collection_name:str, schema: Schema = None, data:any = None):
     
-    if isinstance(data, dict):
-        data = schema().load(data)
+    if schema and data:
+        
+        if isinstance(data, dict):
+            data = schema().load(data)
 
-    if isinstance(data, list):
-        data = schema(many=True).load(data)
-    
+        if isinstance(data, list):
+            data = schema(many=True).load(data)
+        
+        
     with MongoClient(envs.MONGO_CONNECTION_STRING) as conn: 
         col = conn[envs.MONGO_DATABASE_NAME][collection_name]
         try:
