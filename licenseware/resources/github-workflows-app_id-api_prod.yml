@@ -77,7 +77,7 @@ jobs:
       uses: aws-actions/aws-cloudformation-github-deploy@v1
       with:
         name: prod-{{ app_id.replace('-service', '').replace('_', '-') }}-api
-        template: cloudformation-templates/{{ app_id.replace('-service', '') }}-api_prod.yml
+        template: cloudformation-templates/{{ app_id }}-api_prod.yml
         role-arn: arn:aws:iam::{% raw %}${{ steps.creds.outputs.aws-account-id }}{% endraw %}:role/github-actions-cloudformation-stack-role-prod
         parameter-overrides: >-
           LoadBalancerPath=/{{ app_id.replace('-service', '') }}/*,
