@@ -80,7 +80,7 @@ jobs:
         role-arn: arn:aws:iam::{% raw %}${{ steps.creds.outputs.aws-account-id }}{% endraw %}:role/github-actions-cloudformation-stack-role-dev
         parameter-overrides: >-
           LoadBalancerPath=/{{ app_id.replace('-service', '') }}/*,
-          LoadBalancerPriority=CHANGE_THIS_TO_A_NUMBER_DIFFERENT_FROM_OTHER_APPS,
+          LoadBalancerPriority={{ load_balancer_priority }},
           EnvFileArn=arn:aws:s3:::dev.lware.environment/{{ app_id.replace('-service', '') }}-api.env,
           ContainerPort=5000,
           EnvTag=dev,

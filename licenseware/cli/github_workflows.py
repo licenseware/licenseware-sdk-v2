@@ -1,4 +1,5 @@
 import os
+import random
 from licenseware.utils.logger import log
 
 from licenseware import resources
@@ -27,6 +28,6 @@ def create_github_workflows(app_id:str = None):
         if os.path.exists(fpath): continue
         raw_contents = pkg_resources.read_text(resources, rname)
         tmp = Template(raw_contents)
-        file_contents = tmp.render(app_id=app_id)
+        file_contents = tmp.render(app_id=app_id, load_balancer_priority=random.randint(1, 10000))
         with open(fpath, 'w') as f:
             f.write(file_contents)
