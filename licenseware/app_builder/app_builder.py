@@ -117,16 +117,9 @@ class AppBuilder:
         # Add to self activated tenants and tenants with data
         self.activated_tenants_func = activated_tenants_func
         self.tenants_with_data_func = tenants_with_data_func
-        
         self.activated_tenants = None 
         self.tenants_with_data = None
         
-        if self.activated_tenants_func:
-            self.activated_tenants = self.activated_tenants_func()
-        
-        if self.tenants_with_data_func:
-            self.tenants_with_data = self.tenants_with_data_func()
-            
         self.app_activation_path = app_activation_path or base_paths.app_activation_path
         self.register_app_path = register_app_path or base_paths.register_app_path
         self.refresh_registration_path = refresh_registration_path or base_paths.refresh_registration_path

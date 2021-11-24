@@ -32,8 +32,10 @@ resources_filenames = {
     'docker-entrypoint.sh': 'docker-entrypoint.sh',
     'Dockerfile': 'Dockerfile',
     'Dockerfile.local': 'Dockerfile.local',
+    'Dockerfile.stack': 'Dockerfile.stack',
     'Procfile': 'Procfile',
     'Procfile.local': 'Procfile.local',
+    'Procfile.stack': 'Procfile.stack',
     'version.txt': 'version.txt'
  }
      
