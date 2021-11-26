@@ -302,6 +302,9 @@ def fetch(match:dict, collection:str, as_list:bool = True, limit:int = None, ski
     
     db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
+
+    log.info(f"MONGO_QUERY [{db_name}.{collection_name}]: {match}")
+
     with Connect.get_connection() as mongo_connection:
         collection = mongo_connection[db_name][collection_name]
         # log.debug(collection)
@@ -382,6 +385,9 @@ def aggregate(pipeline, collection, as_list=True, db_name=None):
     """
     db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
+
+    log.info(f"MONGO_QUERY [{db_name}.{collection_name}]: {pipeline}")
+
     with Connect.get_connection() as mongo_connection:
         collection = mongo_connection[db_name][collection_name]
         if not isinstance(collection, Collection):
@@ -469,6 +475,9 @@ def update(schema, match, new_data, collection, append=False, db_name=None):
         # log.debug(new_data)
 
         _filter = {"_id": match["_id"]} if "_id" in match else match
+
+        log.info(f"MONGO_QUERY [{db_name}.{collection_name}]: {_filter}")
+
         updated_docs_nbr = collection.with_options(write_concern=WriteConcern("majority")).update_many(
             filter=_filter,
             update=_append_query(new_data) if append else {"$set": new_data},
@@ -495,6 +504,9 @@ def delete(match, collection, db_name=None):
     """
     db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
+
+    log.info(f"MONGO_QUERY [{db_name}.{collection_name}]: {match}")
+
     with Connect.get_connection() as mongo_connection:
         collection = mongo_connection[db_name][collection_name]
         match = parse_match(match)
