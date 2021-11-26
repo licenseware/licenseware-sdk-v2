@@ -31,7 +31,7 @@ def register_all(payload:dict):
     )
     
     if registration.status_code != 200:
-        log.warning(payload) 
+        log.warning(registration.content) 
         raise RegistrationFailed("Registration failed")
 
     log.success("Registration successful!") 
