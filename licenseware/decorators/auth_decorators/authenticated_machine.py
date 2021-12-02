@@ -1,6 +1,7 @@
 from functools import wraps
 from licenseware.utils.logger import log
 from licenseware.auth import Authenticator
+from licenseware.common.constants import envs
 
 
 def authenticated_machine(f):
@@ -9,6 +10,8 @@ def authenticated_machine(f):
     """
     @wraps(f)
     def decorated(*args, **kwargs):   
+        
+        if envs.ENVIRONMENT == 'test': return f(*args, **kwargs)
         
         response, status_code = Authenticator.connect()
         if status_code not in {200, 201}:
