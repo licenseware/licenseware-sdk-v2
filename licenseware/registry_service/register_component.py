@@ -13,9 +13,6 @@ def register_component(**kwargs):
         Send a post request to registry service to make component available in front-end
     """
     
-    if envs.ENVIRONMENT == 'test': return
-    
-    
     payload = {
         'data': [{
             "app_id": kwargs['app_id'],

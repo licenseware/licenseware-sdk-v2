@@ -184,16 +184,12 @@ class AppBuilder:
         if not self.uploaders: log.warning("No uploaders provided")
         if not self.reports  : log.warning("No reports provided")
          
-        # For github actions CI tests
-        if envs.ENVIRONMENT != 'test':
-            self.authenticate_app()
-            if register: self.register_app()
-            
+        self.authenticate_app()
         self.init_api()
         self.init_routes()
         self.init_namespaces()
-
         self.init_broker()
+        if register: self.register_app()
         
         return self.app
 
@@ -313,10 +309,7 @@ class AppBuilder:
         """
             Sending registration payloads to registry-service
         """
-        
-        # For github actions CI tests
-        if envs.ENVIRONMENT == 'test': return
-        
+    
         # Converting from objects to dictionaries
         
         app_dict = \

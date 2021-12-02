@@ -18,8 +18,6 @@ def registration_failed(retries_so_far:int, exception):
 )
 def register_all(payload:dict):
     
-    if envs.ENVIRONMENT == 'test': return
-    
     log.info("Sending payload to registry-service") 
     
     registration = requests.post(

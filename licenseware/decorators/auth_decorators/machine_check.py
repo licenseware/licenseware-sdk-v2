@@ -13,8 +13,6 @@ def machine_check(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         
-        if envs.ENVIRONMENT == 'test': return f(*args, **kwargs)
-        
         fail_message = "Missing Authorization information"
         
         headers = dict(request.headers)

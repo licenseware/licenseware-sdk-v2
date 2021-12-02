@@ -11,8 +11,6 @@ def authenticated_machine(f):
     @wraps(f)
     def decorated(*args, **kwargs):   
         
-        if envs.ENVIRONMENT == 'test': return f(*args, **kwargs)
-        
         response, status_code = Authenticator.connect()
         if status_code not in {200, 201}:
             log.warning("Could not refresh token")

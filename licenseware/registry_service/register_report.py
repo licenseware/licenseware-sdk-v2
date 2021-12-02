@@ -10,9 +10,6 @@ from licenseware.decorators.auth_decorators import authenticated_machine
 @authenticated_machine
 def register_report(**kwargs):
     
-    if envs.ENVIRONMENT == 'test': return
-    
-    
     payload = {
         'data': [{
             "app_id": kwargs['app_id'],
