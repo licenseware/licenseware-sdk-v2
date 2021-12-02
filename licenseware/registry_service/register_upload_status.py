@@ -13,6 +13,9 @@ def register_upload_status(**kwargs):
         Send uploader processing status to registry service
     """
     
+    if envs.ENVIRONMENT == 'test': return
+    
+    
     payload = {
         'data': [
             {
