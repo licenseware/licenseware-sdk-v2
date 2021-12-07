@@ -5,12 +5,10 @@
 Notice that history report route/path is provided but is not implemented that's because a report must be defined with aggregated data from AnalysisStats mongo collection. 
 
 """
-import os
-
 from typing import List, Callable
 from dataclasses import dataclass
 
-from flask import Flask, request
+from flask import Flask
 from flask_cors import CORS
 from flask_restx import Api, Namespace, Resource
 from marshmallow.schema import Schema
@@ -179,14 +177,6 @@ class AppBuilder:
 
 
         # CORS(app)
-
-        @app.before_request
-        def before_request():
-
-            # used in logging/debugging
-            tenant_id = request.headers.get("Tenantid")
-            os.environ['TENANT_ID'] = tenant_id
-
         
         self.app = app
         
