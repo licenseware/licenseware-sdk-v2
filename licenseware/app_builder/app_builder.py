@@ -5,6 +5,7 @@
 Notice that history report route/path is provided but is not implemented that's because a report must be defined with aggregated data from AnalysisStats mongo collection. 
 
 """
+
 from typing import List, Callable
 from dataclasses import dataclass
 
