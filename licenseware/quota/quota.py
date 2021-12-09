@@ -60,11 +60,6 @@ class Quota:
             'uploader_id': uploader_id
         }
 
-        # Making sure email is verified
-        if not self.user_profile["email_verified"]:
-            raise Exception(
-                "Email not verified. Check your inbox for the activation link.")
-
         # Making sure quota is initialized
         response, status_code = self.init_quota()
         if status_code != 200:
