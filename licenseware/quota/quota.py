@@ -44,21 +44,21 @@ class Quota:
         self.schema = schema or QuotaSchema
         self.collection = collection or envs.MONGO_COLLECTION_UTILIZATION_NAME
 
-        self.tenants = get_tenants_list(tenant_id, self.auth_token)
-        self.user_profile = get_user_profile(tenant_id, self.auth_token)
+        self.tenants = get_tenants_list(self.tenant_id, self.auth_token)
+        self.user_profile = get_user_profile(self.tenant_id, self.auth_token)
 
         self.plan_type = self.user_profile["plan_type"]
 
         # This is used to calculate quota
         self.user_query = {
             'tenant_id': {"$in": self.tenants},
-            'uploader_id': uploader_id
+            'uploader_id': self.uploader_id
         }
 
         # This is used to update quota
         self.tenant_query = {
-            'tenant_id': tenant_id,
-            'uploader_id': uploader_id
+            'tenant_id': self.tenant_id,
+            'uploader_id': self.uploader_id
         }
 
         # Making sure quota is initialized
