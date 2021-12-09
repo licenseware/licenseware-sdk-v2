@@ -54,7 +54,7 @@ environment:
 
 import os, sys, json
 
-from flask import request
+from flask import request, has_request_context
 from loguru import logger as log
  
  
@@ -72,8 +72,9 @@ try:
 except:
     pass#No default logger
 
-
-log.configure(patcher=lambda record: record["extra"].update(tenant_id=request.headers.get("Tenantid")))
+log.configure(patcher=lambda record: record["extra"].update(
+    tenant_id=request.headers.get("Tenantid")) if has_request_context() else None
+)
 
 log.add(
     "app.log", 
