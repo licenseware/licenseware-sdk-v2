@@ -53,13 +53,16 @@ environment:
 """
 
 import os, sys, json
+
+from flask import request
 from loguru import logger as log
  
  
 _debug = os.getenv('DEBUG', '').lower() == 'true'
 _log_level = 'DEBUG' if _debug else 'WARNING'
 
-_log_format = """<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green>[ <level>{level}</level> ]
+_log_format = """<yellow>Tenantid={extra[tenant_id]}</yellow>
+<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green>[ <level>{level}</level> ]
 <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan>
 <level>{message}</level>
 """
@@ -69,6 +72,8 @@ try:
 except:
     pass#No default logger
 
+
+log.configure(patcher=lambda record: record["extra"].update(tenant_id=request.headers.get("Tenantid")))
 
 log.add(
     "app.log", 
