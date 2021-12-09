@@ -73,7 +73,7 @@ except:
     pass#No default logger
 
 log.configure(patcher=lambda record: record["extra"].update(
-    tenant_id=request.headers.get("Tenantid")) if has_request_context() else "",
+    tenant_id=request.headers.get("Tenantid", "")) if has_request_context() else "",
 )
 
 log.add(
