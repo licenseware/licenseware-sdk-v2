@@ -39,12 +39,13 @@ class Quota:
 
         self.units = units
         self.tenant_id = tenant_id
+        self.auth_token = auth_token
         self.uploader_id = uploader_id
         self.schema = schema or QuotaSchema
         self.collection = collection or envs.MONGO_COLLECTION_UTILIZATION_NAME
 
-        self.tenants = get_tenants_list(tenant_id, auth_token)
-        self.user_profile = get_user_profile(tenant_id, auth_token)
+        self.tenants = get_tenants_list(tenant_id, self.auth_token)
+        self.user_profile = get_user_profile(tenant_id, self.auth_token)
 
         self.plan_type = self.user_profile["plan_type"]
 
