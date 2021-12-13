@@ -56,10 +56,9 @@ import os, sys, json
 
 from flask import request, has_request_context
 from loguru import logger as log
- 
- 
-_debug = os.getenv('DEBUG', '').lower() == 'true'
-_log_level = 'DEBUG' if _debug else 'WARNING'
+
+_debug = os.getenv("DEBUG", "").lower() == "true"
+_log_level = "DEBUG" if _debug else "WARNING"
 
 # _log_format = """<yellow>Tenantid={extra[tenant_id]}</yellow>
 # <green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green>[ <level>{level}</level> ]
@@ -75,28 +74,35 @@ _log_format = """<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green>[ <level>{level}</
 try:
     log.remove(0)
 except:
-    pass#No default logger
+    pass  # No default logger
 
-# log.configure(patcher=lambda record: record["extra"].update(
-#     tenant_id=request.headers.get("Tenantid", "")) if has_request_context() else "",
-# )
 
-log.add(
-    "app.log", 
-    rotation="monthly", 
-    level=_log_level, 
-    format=_log_format
+class Placeholder(dict):  # HACK: to avoid `str.format_map` error on missing keys
+    def __missing__(self, key):
+        return str(key)
+
+
+log.configure(
+    patcher=lambda record: record["extra"].update(
+        tenant_id=request.headers.get("Tenantid")
+    )
+    if has_request_context()
+    else None,
+    extra=Placeholder(),
 )
 
 log.add(
-    sys.stderr, 
+    "app.log",
+    rotation="monthly",
+    level=_log_level,
     format=_log_format
 )
 
+log.add(sys.stderr, format=_log_format)
 
-# Pretty logs for dict data 
+
+# Pretty logs for dict data
 log_dict = lambda dict_: log.info(json.dumps(dict_, indent=4, sort_keys=True))
-
 
 
 ## Test
@@ -112,4 +118,3 @@ log_dict = lambda dict_: log.info(json.dumps(dict_, indent=4, sort_keys=True))
 # except:
 #     log.exception("Exception log")
 #     log.trace("Trace log")
-
