@@ -31,6 +31,13 @@ if os.path.exists("./CHANGELOG.md"):
             VERSION = version_match.group(1)
 
 
+EXTRAS = {
+    "tracing": [
+        "opentelemetry-distro==0.26b1",
+        "opentelemetry-instrumentation==0.26b1",
+        "opentelemetry-exporter-otlp==1.7.1",
+    ],
+}
 
 
 setup(
@@ -54,5 +61,6 @@ setup(
         'console_scripts': [
             'licenseware=licenseware.cli:cli_entrypoint',
         ],
-    }
+    },
+    extras_require=EXTRAS,
 )
