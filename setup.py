@@ -1,5 +1,6 @@
 import os, re
 from setuptools import setup, find_packages
+from functools import reduce
 
 # https://packaging.python.org/guides/distributing-packages-using-setuptools/?highlight=setup.py#setup-py
 # Distribute py wheels
@@ -31,6 +32,15 @@ if os.path.exists("./CHANGELOG.md"):
             VERSION = version_match.group(1)
 
 
+EXTRAS = {
+    "tracing": [
+        "opentelemetry-distro==0.26b1",
+        "opentelemetry-instrumentation==0.26b1",
+        "opentelemetry-exporter-otlp==1.7.1",
+    ],
+}
+# NOTE: remove this when you find how to make the SDK private
+EXTRAS_TMP_HACK = reduce(lambda lst1, lst2: lst1 + lst2, EXTRAS.values(), [])
 
 
 setup(
@@ -43,7 +53,7 @@ setup(
     license='',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    install_requires=REQUIREMENTS,
+    install_requires=REQUIREMENTS + EXTRAS_TMP_HACK,
     packages=find_packages(
         where=".",
         exclude=["tests"]
@@ -54,5 +64,6 @@ setup(
         'console_scripts': [
             'licenseware=licenseware.cli:cli_entrypoint',
         ],
-    }
+    },
+    # extras_require=EXTRAS,
 )
