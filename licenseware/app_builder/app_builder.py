@@ -419,7 +419,23 @@ class AppBuilder:
         
         return payload
             
-    
+            
+    def register_feature(self, ns:Namespace, activated:bool = False, quota:int = 0):
+        
+        for data in self.features:
+            if ns.name in data.keys():
+                raise Exception(f"Feature '{ns.name}' already registered!")
+        
+        self.features.append({
+            'name': ns.name,
+            'description': ns.description,
+            'quota': quota,
+            'activated': activated
+        })
+        
+        self.register_namespace(ns, '/features')
+        
+
 
     def register_uploader(self, uploader_instance):
         
