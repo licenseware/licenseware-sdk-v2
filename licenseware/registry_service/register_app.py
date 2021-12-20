@@ -23,7 +23,7 @@ def register_app(**kwargs):
             "flags": kwargs['flags'],
             "icon": kwargs['icon'],
             "features_url": kwargs['features_url'],
-            "feature_flag": kwargs['feature_flag'], # TODO - remove when features_url is added on registry service
+            "features": kwargs['features'], 
             "refresh_registration_url":  kwargs['refresh_registration_url'],
             "app_activation_url": kwargs['app_activation_url'],
             "editable_tables_url": kwargs['editable_tables_url'],

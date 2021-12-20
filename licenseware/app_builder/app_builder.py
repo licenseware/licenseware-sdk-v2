@@ -89,6 +89,7 @@ class AppBuilder:
         name: str, 
         description: str,
         flags: list = [],
+        features: List[dict] = None,
         editable_tables:List[EditableTable] = [],
         activated_tenants_func: Callable = get_activated_tenants, 
         tenants_with_data_func: Callable = get_tenants_with_data,
@@ -111,6 +112,7 @@ class AppBuilder:
         self.name = name
         self.app_id = envs.APP_ID
         self.description = description
+        self.features = features
         self.flags = flags
         self.icon = icon
         self.editable_tables = editable_tables
@@ -139,9 +141,6 @@ class AppBuilder:
         self.terms_and_conditions_url = envs.BASE_URL + self.terms_and_conditions_path
         self.features_url = envs.BASE_URL + self.features_path
         
-        # TODO - add feature_url to registry service
-        # each feature has an endpoint with a get viewing status and a post activating/deactivating the feature 
-        self.feature_flag = self.features_url
 
         self.authorizations = doc_authorizations
         self.decorators = api_decorators
@@ -334,10 +333,11 @@ class AppBuilder:
                 'tenant_registration_url',
                 'terms_and_conditions_url',    
                 'features_url',
-                'feature_flag' # TODO - remove when features_url is added on registry service          
+                'features' 
             ]
         }
-        app_dict['tenants_with_app_activated'] = self.activated_tenants_func()
+        
+        app_dict['tenants_with_app_activated']  = self.activated_tenants_func()
         app_dict['tenants_with_data_available'] = self.tenants_with_data_func()
             
         reports = \
