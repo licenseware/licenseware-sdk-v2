@@ -77,6 +77,7 @@ class base_paths:
     history_report_path: str ='/reports/history_report'
     tenant_registration_path: str ='/register_tenant'
     terms_and_conditions_path:str = '/terms_and_conditions'
+    features_path:str = '/features'
 
 
 
@@ -88,7 +89,6 @@ class AppBuilder:
         name: str, 
         description: str,
         flags: list = [],
-        features:list = {},
         editable_tables:List[EditableTable] = [],
         activated_tenants_func: Callable = get_activated_tenants, 
         tenants_with_data_func: Callable = get_tenants_with_data,
@@ -99,6 +99,7 @@ class AppBuilder:
         history_report_path: str = None,
         tenant_registration_path: str = None,
         terms_and_conditions_path:str = None,
+        features_path:str = None,
         icon: str ="default.png",
         doc_authorizations: dict = swagger_authorization_header,
         api_decorators: list = None,
@@ -112,7 +113,6 @@ class AppBuilder:
         self.description = description
         self.flags = flags
         self.icon = icon
-        self.features = features
         self.editable_tables = editable_tables
         self.editable_tables_schemas = editable_tables_schemas
         
@@ -129,6 +129,7 @@ class AppBuilder:
         self.history_report_path = history_report_path or base_paths.history_report_path
         self.tenant_registration_path = tenant_registration_path or base_paths.tenant_registration_path
         self.terms_and_conditions_path = terms_and_conditions_path or base_paths.terms_and_conditions_path
+        self.features_path = features_path or base_paths.features_path
         
         self.app_activation_url = envs.BASE_URL + self.app_activation_path
         self.refresh_registration_url = envs.BASE_URL + self.refresh_registration_path
@@ -136,7 +137,7 @@ class AppBuilder:
         self.history_report_url = envs.BASE_URL + self.history_report_path
         self.tenant_registration_url = envs.BASE_URL + self.tenant_registration_path
         self.terms_and_conditions_url = envs.BASE_URL + self.terms_and_conditions_path
-        
+        self.features_url = envs.BASE_URL + self.features_path
 
         self.authorizations = doc_authorizations
         self.decorators = api_decorators
@@ -328,7 +329,7 @@ class AppBuilder:
                 'history_report_url',
                 'tenant_registration_url',
                 'terms_and_conditions_url',    
-                'features'           
+                'features_url'           
             ]
         }
         app_dict['tenants_with_app_activated'] = self.activated_tenants_func()
