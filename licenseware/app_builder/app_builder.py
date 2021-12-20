@@ -89,7 +89,7 @@ class AppBuilder:
         name: str, 
         description: str,
         flags: list = [],
-        features: List[dict] = None,
+        features: List[dict] = [],
         editable_tables:List[EditableTable] = [],
         activated_tenants_func: Callable = get_activated_tenants, 
         tenants_with_data_func: Callable = get_tenants_with_data,
