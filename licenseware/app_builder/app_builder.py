@@ -88,6 +88,7 @@ class AppBuilder:
         name: str, 
         description: str,
         flags: list = [],
+        features:list = {},
         editable_tables:List[EditableTable] = [],
         activated_tenants_func: Callable = get_activated_tenants, 
         tenants_with_data_func: Callable = get_tenants_with_data,
@@ -111,6 +112,7 @@ class AppBuilder:
         self.description = description
         self.flags = flags
         self.icon = icon
+        self.features = features
         self.editable_tables = editable_tables
         self.editable_tables_schemas = editable_tables_schemas
         
@@ -325,7 +327,8 @@ class AppBuilder:
                 'editable_tables_url',
                 'history_report_url',
                 'tenant_registration_url',
-                'terms_and_conditions_url',               
+                'terms_and_conditions_url',    
+                'features'           
             ]
         }
         app_dict['tenants_with_app_activated'] = self.activated_tenants_func()
