@@ -141,7 +141,7 @@ class AppBuilder:
         
         # TODO - add feature_url to registry service
         # each feature has an endpoint with a get viewing status and a post activating/deactivating the feature 
-        self.features = self.features_url
+        self.feature_flag = self.features_url
 
         self.authorizations = doc_authorizations
         self.decorators = api_decorators
@@ -334,7 +334,7 @@ class AppBuilder:
                 'tenant_registration_url',
                 'terms_and_conditions_url',    
                 'features_url',
-                'features' # TODO - remove when features_url is added on registry service          
+                'feature_flag' # TODO - remove when features_url is added on registry service          
             ]
         }
         app_dict['tenants_with_app_activated'] = self.activated_tenants_func()

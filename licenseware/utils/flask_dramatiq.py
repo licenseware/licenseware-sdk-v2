@@ -171,6 +171,10 @@ class Dramatiq:
         if app: self.init_app(app)
         
         
+    def add_middleware(self, mdw):
+        self.middleware.append(mdw)
+        
+        
     def add_app_to_self(self, app: Flask):
         if self.app is not None: 
             raise Exception("Flask 'app' can be provided only on 'init_app' or 'Dramatiq' class instantiation")
