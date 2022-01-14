@@ -12,9 +12,6 @@ from licenseware.report_components.attributes import (
     attributes_table
 )
 
-from typing import List
-
-
 
 
 component_attributes_mapper = {
@@ -50,6 +47,10 @@ class BaseReportComponent:
         registration_payload:dict = None,
         **options
     ):
+        
+        if envs.DEPLOYMENT_SUFFIX is not None:
+            title = title + envs.DEPLOYMENT_SUFFIX
+            component_id = component_id + envs.DEPLOYMENT_SUFFIX
         
         self.title = title
         self.component_id = component_id

@@ -29,7 +29,6 @@ class envs:
     APP_ID:str = os.environ["APP_ID"]
     LWARE_USER:str = os.environ['LWARE_IDENTITY_USER']
     LWARE_PASSWORD:str = os.environ['LWARE_IDENTITY_PASSWORD']
-    PERSONAL_SUFFIX:str = os.getenv("PERSONAL_SUFFIX", "")
     ENVIRONMENT:str = os.getenv("ENVIRONMENT", 'production')
     DEBUG:bool = os.getenv('DEBUG') == 'true'
     USE_BACKGROUND_WORKER:bool = os.getenv('USE_BACKGROUND_WORKER', 'true') == 'true'
@@ -62,13 +61,15 @@ class envs:
     REPORT_URL:str = BASE_URL + REPORT_PATH
     REPORT_COMPONENT_URL:str = BASE_URL + REPORT_COMPONENT_PATH
     FILE_UPLOAD_PATH:str = os.getenv("FILE_UPLOAD_PATH", 'tmp/lware')
+    DEPLOYMENT_SUFFIX:str = os.getenv("DEPLOYMENT_SUFFIX")
+    
     
     # Mongo connection
     MONGO_DATABASE_NAME:str = os.getenv("MONGO_DATABASE_NAME") or os.getenv("MONGO_DB_NAME") or 'db'
     MONGO_CONNECTION_STRING:str = os.getenv('MONGO_CONNECTION_STRING') or 'mongodb://localhost:27017/db'
     
     # Base mongo collection names
-    COLLECTION_PREFIX = APP_ID.replace('-service', '').upper()
+    COLLECTION_PREFIX = os.getenv("COLLECTION_PREFIX", QUEUE_NAME.upper())
     MONGO_COLLECTION_DATA_NAME:str = COLLECTION_PREFIX + "Data"
     MONGO_COLLECTION_NORMALIZED_DATA_NAME:str = COLLECTION_PREFIX + "NormalizedData"
     MONGO_COLLECTION_UTILIZATION_NAME:str = COLLECTION_PREFIX + "Quota"

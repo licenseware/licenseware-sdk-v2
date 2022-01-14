@@ -42,7 +42,11 @@ class ReportBuilder:
         filters:list = []
          
     ):
-         
+        
+        if envs.DEPLOYMENT_SUFFIX is not None:
+            name = name + envs.DEPLOYMENT_SUFFIX
+            report_id = report_id + envs.DEPLOYMENT_SUFFIX
+        
         self.report_id = report_id
         self.name = name
         self.description = description
