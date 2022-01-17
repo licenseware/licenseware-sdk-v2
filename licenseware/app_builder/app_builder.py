@@ -108,9 +108,13 @@ class AppBuilder:
         **options
     ):
         
- 
         self.name = name
         self.app_id = envs.APP_ID
+        
+        if envs.DEPLOYMENT_SUFFIX is not None:
+            self.name = self.name + envs.DEPLOYMENT_SUFFIX
+            self.app_id = self.app_id + envs.DEPLOYMENT_SUFFIX
+        
         self.description = description
         self.features = features
         self.flags = flags

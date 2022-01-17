@@ -1,4 +1,5 @@
-from typing import Callable, Type, List
+from typing import Callable
+from flask import Request
 from licenseware.common.constants import envs, states
 from licenseware.registry_service.register_uploader import register_uploader
 from licenseware.utils.dramatiq_redis_broker import broker
@@ -7,7 +8,6 @@ from licenseware.common.validators import validate_event
 from licenseware.quota import Quota
 from licenseware.notifications import notify_upload_status
 from licenseware.uploader_validator.uploader_validator import UploaderValidator
-from flask import Request
 
 
 class UploaderBuilder:
@@ -59,6 +59,11 @@ class UploaderBuilder:
         one_event_per_file: bool = False,
         **options
     ):
+        
+        
+        if envs.DEPLOYMENT_SUFFIX is not None:
+            name = name + envs.DEPLOYMENT_SUFFIX
+            uploader_id = uploader_id + envs.DEPLOYMENT_SUFFIX
 
         # Passing variables to validator class
         validator_class.uploader_id = uploader_id
