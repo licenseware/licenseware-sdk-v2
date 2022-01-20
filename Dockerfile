@@ -1,5 +1,5 @@
 # STAGE 0: base image
-FROM python:3.8 AS base
+FROM python:3.8-slim-buster AS base
 
 LABEL author="Meysam Azad <meysam@licenseware.io>"
 
@@ -11,7 +11,7 @@ ENV BUILDDIR=${BUILDDIR}
 ENV WHEELDIR=${WHEELDIR}
 ENV REQUIREMENTS=${REQUIREMENTS}
 
-RUN pip install -U pip && apd update && apt install -y curl
+RUN pip install -U pip && apt update && apt install -y curl gcc
 
 
 # STAGE 1: fetch dependencies
