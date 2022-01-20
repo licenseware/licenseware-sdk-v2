@@ -21,6 +21,8 @@ import os
 from dataclasses import dataclass
 
 
+# Atention! 
+# > To keep this file short please add only variables used on most/all apps 
 
 @dataclass
 class envs:
@@ -68,10 +70,11 @@ class envs:
     MONGO_DATABASE_NAME:str = os.getenv("MONGO_DATABASE_NAME") or os.getenv("MONGO_DB_NAME") or 'db'
     MONGO_CONNECTION_STRING:str = os.getenv('MONGO_CONNECTION_STRING') or 'mongodb://localhost:27017/db'
     
-    # Base mongo collection names
+    # !!! Add here ONLY collection names that are USED on ALL or MOST of the APPS !!!
+    # For APP SPECIFIC mongo collection names you can always create a data class in `common`/`utils` or other app package.
+    # Another solution would be to extend this class and import it from the file you are extending it.
     COLLECTION_PREFIX = os.getenv("COLLECTION_PREFIX", QUEUE_NAME.upper())
     MONGO_COLLECTION_DATA_NAME:str = COLLECTION_PREFIX + "Data"
-    MONGO_COLLECTION_NORMALIZED_DATA_NAME:str = COLLECTION_PREFIX + "NormalizedData"
     MONGO_COLLECTION_NORMALIZED_DATA_NAME:str = COLLECTION_PREFIX + "NormalizedData"
     MONGO_COLLECTION_LICENSED_DATA_NAME:str = COLLECTION_PREFIX + "LicenseAssignmentData"
     MONGO_COLLECTION_UTILIZATION_NAME:str = COLLECTION_PREFIX + "Quota"
