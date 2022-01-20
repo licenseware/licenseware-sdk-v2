@@ -91,86 +91,206 @@ The controler described up can be found in `/app/controlers/catalogs_controller.
 The test module name will be: `tests/test_1_catalogs.py`
 
 
-In most cases the tests will need to be executed in a specific order, notice the `test_1` naming.
+> In most cases the tests will need to be executed in a specific order, notice the `test_1` naming.
 
 In `tests/test_1_catalogs.py` add the following:
 
+
 ```py
 
-import unittest
-from licenseware.test_helpers import (
-    create_mock_flask_request,
-    load_ordered_tests,
-    get_auth_headers,
-    EMAIL            
-)
-
-
-
+from unittest import TestCase
+from licenseware.test_helpers import get_auth_headers, get_flask_request, EMAIL            
 
 from app.common.constants import collections
 from app.services.catalogs import get_all_catalogs
   
 from main import app
-
 from licenseware import mongodata
 from licenseware.utils.logger import log
 
+t = TestCase() # this will be our assertion library
 
 
-load_tests = load_ordered_tests
+# Before tests we are writing some functionality which will be used in all tests (similar to setUp from unittest module)
+
+def raise_quota_limit():    
+    # Raise quota limits for tests
+    with collection(envs.MONGO_COLLECTION_UTILIZATION_NAME) as col:
+        res = col.find_one(filter={'uploader_id': 'catalogs_quota'})
+        if res['monthly_quota'] <= 1:
+            col.update_one(
+                filter={'uploader_id': 'catalogs_quota'},
+                update={"$inc": {'monthly_quota': 9999}}
+            )
 
 
-# python3 -m unittest tests/test_1_catalogs.py
 
 
-class Test1Catalogs(unittest.TestCase):
+def delete_all_collections():
     
-    def setUp(self):
-        mongodata.delete_collection("SSCQuota")
-        self.auth_headers = get_auth_headers()
-        self.catalog_name = "My Catalog"
-        self.cloned_licenseware_catalog = "Cloned Licenseware Catalog"
-        self.cloned_catalog = ""
+    mongodata.delete_collection(envs.MONGO_COLLECTION_ANALYSIS_NAME)
+    mongodata.delete_collection(envs.MONGO_COLLECTION_DATA_NAME)
+    mongodata.delete_collection(envs.MONGO_COLLECTION_UTILIZATION_NAME)
+    mongodata.delete_collection(collections.CATALOGS)
+    mongodata.delete_collection(collections.PRODUCT_REQUESTS)
+    mongodata.delete_collection(collections.PRODUCTS)
+    mongodata.delete_collection(collections.USERS)
+    mongodata.delete_collection(collections.SETTINGS)
+
+    load_licenseware_products_catalog()
+
         
 
-    def test_get_all_catalogs(self):
-        
-        request = create_mock_flask_request(
-            headers=self.auth_headers
-        )
-        
-        response, status_code = get_all_catalogs(request)
-        
-        self.assertEqual(status_code, 200)
-        self.assertIsInstance(response, list)
-        self.assertGreaterEqual(len(response), 1)
-        
+catalog1 = "Catalog 1"
+catalog2 = "Catalog 2"
+catalog3 = "Catalog 3"
+cloned_licenseware_catalog = "Cloned Licenseware Catalog"
+
+
+auth_main_headers = get_auth_headers() # here we are getting credentials from envs (you could also provide them as parameters)
+
+# Creating some mock users
+
+user_email = "alin+user@licenseware.io"
+user_email1 = "alin+user1@licenseware.io"
+user_email2 = "alin+user2@licenseware.io"
+
+admin_email = "alin+admin@licenseware.io"
+admin_email1 = "alin+admin1@licenseware.io"
+admin_email2 = "alin+admin2@licenseware.io"
+
+
+
+# HELPERS
+
+def get_catalog_by_name(catalog_name:str):
+
+    catalogs = mongodata.fetch(
+        match={'catalog_name': catalog_name},
+        collection=collections.CATALOGS
+    )
+    
+    t.assertIsInstance(catalogs, list)
+    t.assertEqual(len(catalogs), 1)
+
+    return catalogs[0]
+
+
+# TESTS
+
+def test_add_new_catalog():
+    
+    delete_all_collections()
+            
+    # First catalog
+    payload = {
+        "catalog_name": catalog1,
+        "tags": ["IT"],
+        "admins": [EMAIL, admin_email],
+        "users": [user_email]
+    }
+
+    request = get_flask_request(
+        headers=auth_main_headers,
+        json=payload
+    )
+    
+    decorators.request = request
+    access = decorators.access_level(lambda: True, rights.CAN_ADD_CATALOG)()
+    t.assertIsInstance(access, bool)
+    t.assertEqual(access, True)
+
+    response, status_code = add_new_catalog(request)
+    
+    t.assertEqual(status_code, 201)
+    t.assertEqual(response['catalog_name'], payload['catalog_name'])
+
+    catalog = get_catalog_by_name(catalog1)
+
+    catalog_users = mongodata.fetch(
+        match={'catalog_id': catalog['catalog_id']},
+        collection=collections.USERS
+    )
+
+    t.assertEqual(len(catalog_users), 3)
+
+    raise_quota_limit()
+    
+
+    # Second
+    payload = {
+        "catalog_name": catalog2,
+        "tags": ["IT"],
+        "admins": [EMAIL, admin_email1],
+        "users": [user_email1]
+    }
+    
+    request = get_flask_request(
+        headers=auth_main_headers,
+        json=payload
+    )
+    
+    response, status_code = add_new_catalog(request)
+    
+    t.assertEqual(status_code, 201)
+    t.assertEqual(response['catalog_name'], payload['catalog_name'])
+    
+
+    catalog = get_catalog_by_name(catalog2)
+    
+    catalog_users = mongodata.fetch(
+        match={'catalog_id': catalog['catalog_id']},
+        collection=collections.USERS
+    )
+
+    t.assertEqual(len(catalog_users), 3)
+
+
+    # Third
+    payload = {
+        "catalog_name": catalog3,
+        "tags": ["IT"],
+        "admins": [EMAIL],
+        "users": []
+    }
+    
+    request = get_flask_request(
+        headers=auth_main_headers,
+        json=payload
+    )
+    
+    response, status_code = add_new_catalog(request)
+    
+    t.assertEqual(status_code, 201)
+    t.assertEqual(response['catalog_name'], payload['catalog_name'])
+    
+
+    catalog = get_catalog_by_name(catalog3)
+
+    catalog_users = mongodata.fetch(
+        match={'catalog_id': catalog['catalog_id']},
+        collection=collections.USERS
+    )
+
+    t.assertEqual(len(catalog_users), 1)
+
+
 
 ```
 
-Notice that the test class is named `Test1Catalogs`, 1 is for executing tests in order.
+The tests will run in the order they are placed in the file.
 
-Inside test class `Test1Catalogs` the tests will be executed in the order they are placed in the class
-because of the `load_tests = load_ordered_tests` line.
-
-
-Notice that we are not using the `test_client` from flask.
-We still need to import the flask `app` object from our `main.py` file.
- 
-
-Instead of the `test_client` we are building the request using `create_mock_flask_request` function from test_helpers.
-
-In `create_mock_flask_request` function you can specify as parameters (dict) headers, json, args, TODO files.
- 
 
 The function `get_auth_headers` depends on 2 environment variables:
 - 'TEST_USER_EMAIL'
 - 'TEST_USER_PASSWORD'
+If they are not provided you will need to provide them in the `get_auth_headers` function.
 
-These environment variables will be used to get the `Authorization` and `TenantId` value from `auth-service`.
 
-TODO - create a test email which requires no email validation
+Package `test_helpers` from sdk provides 2 useful functions which can be used for tests.
+
+- `get_auth_headers` - given email, password and a optional tenant_id will register user to auth service and return auth headers.
+- `get_flask_request`- filling the needed parameters will return an equivalent flask request which can be passed to functions from controllers 
 
 
 
@@ -179,6 +299,6 @@ TODO - create a test email which requires no email validation
 
 
 
-from .authentification import get_auth_headers, EMAIL
-from .flask_request import create_mock_flask_request
+from .authentification import get_auth_headers, EMAIL, create_user, login_user, get_auth_tables
+from .flask_request import get_flask_request
 from .order_tests import load_ordered_tests

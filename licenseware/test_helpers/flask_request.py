@@ -1,15 +1,17 @@
+from typing import Callable, List
 from licenseware.utils.logger import log
 
 
 
-def create_mock_flask_request(
+def get_flask_request(
     headers:dict = None,
     args:dict = None,
-    json:dict = None
+    json:dict = None,
+    # decorators: List[Callable] = [] #TODO
+    # files: List = [] #TODO
 ):
     """
         Build an equivalent to flask request object which can be used in tests.
-        TODO - files
     """
     
     class MockFlaskRequest:

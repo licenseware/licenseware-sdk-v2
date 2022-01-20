@@ -4,6 +4,7 @@ import unittest
 def load_ordered_tests(loader, standard_tests, pattern):
     """
     Test loader that keeps the tests in the order they were declared in the class.
+    This works only for unittests, this will have no effect when running tests with pytest 
     """
     ordered_cases = []
     for test_suite in standard_tests:
