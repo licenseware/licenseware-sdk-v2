@@ -51,7 +51,7 @@ RUN pip install -U --no-cache-dir -f ${WHEELDIR} -r ${BUILDDIR}/${REQUIREMENTS} 
     rm -rf ${BUILDDIR} ${WHEELDIR}
 
 COPY --chown=${USER} . ${APP_DIR}
-RUN pip install ${APP_DIR}
+RUN pip install ${APP_DIR} && rm -rf ${APP_DIR}
 
 USER ${USER}
 
