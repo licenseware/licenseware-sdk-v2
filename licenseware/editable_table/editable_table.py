@@ -242,8 +242,8 @@ App.register_editable_table(devices_table)
 
 
 
-import os, re, itertools
-from flask_restx.namespace import Namespace
+import re, itertools
+from flask_restx import Namespace
 from marshmallow import Schema
 from licenseware.common.constants import envs
 from urllib.parse import urlencode
@@ -394,13 +394,9 @@ class EditableTable:
 
     def col_enum_values(self, field_data):
         try:
-            choices_list = []
-            for data in field_data['validate']:
-                choices_list.append(data.__dict__['choices'])
-
-            choices_list = sorted(list(set(itertools.chain(*choices_list))))
-            return choices_list
-        except: 
+            return field_data['validate'].choices
+        except Exception as err:
+            # log.warning(err) 
             return None
                   
     def col_name(self, field_name):
