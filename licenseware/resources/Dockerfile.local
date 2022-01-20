@@ -1,4 +1,4 @@
-FROM python:3.8
+FROM ghcr.io/licenseware/licenseware-sdk-v2
 
 WORKDIR /usr/src/{{ app_id }}/
 
