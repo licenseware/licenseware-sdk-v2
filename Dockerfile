@@ -56,4 +56,5 @@ RUN pip install ${APP_DIR} && rm -rf ${APP_DIR}
 
 USER ${USER}
 
-ENTRYPOINT [ "/usr/local/bin/dumb-init", "--" ]
+# This probably caused some issues with uWSGI
+# ENTRYPOINT [ "/usr/local/bin/dumb-init", "--" ]
