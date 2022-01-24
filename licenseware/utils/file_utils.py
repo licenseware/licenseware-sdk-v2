@@ -2,8 +2,10 @@ import os, re
 import shutil
 import zipfile
 import tarfile
+import traceback
 
 from licenseware.common.constants import envs
+from licenseware.utils.logger import log
 from werkzeug.utils import secure_filename as werkzeug_secure_filename
 
 
@@ -44,7 +46,11 @@ def unzip(file_path:str):
 
     extract_path = os.path.join(file_dir, file_name + "_extracted")
     
-    shutil.unpack_archive(file_path, extract_path)
+    try: 
+        shutil.unpack_archive(file_path, extract_path)
+    except:
+        log.error("Error unzipping file: {file_path}")
+        log.error(traceback.format_exc())
     
     return extract_path
 
@@ -70,6 +76,7 @@ def recursive_unzip(file_path:str):
             if not os.path.exists(fpath): continue
             
             unzip(fpath)
+            
             os.remove(fpath)
             archives_found = True
     
