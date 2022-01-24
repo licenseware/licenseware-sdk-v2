@@ -40,19 +40,19 @@ def unzip(file_path:str):
 
     if not is_archive(file_path):
         raise ValueError(f"Only {accepted_archives} archives are accepted")
-        
-    file_name = os.path.basename(file_path)
-    file_dir  = os.path.dirname(file_path)
 
-    extract_path = os.path.join(file_dir, file_name + "_extracted")
-    
-    try: 
+    try:         
+        file_name = os.path.basename(file_path)
+        file_dir  = os.path.dirname(file_path)
+        extract_path = os.path.join(file_dir, file_name + "_extracted")
         shutil.unpack_archive(file_path, extract_path)
+        return extract_path
     except:
-        log.error("Error unzipping file: {file_path}")
-        log.error(traceback.format_exc())
+        log.warning("Error unzipping file: {file_path}")
+        log.warning(traceback.format_exc())
+        return ''
     
-    return extract_path
+    
 
 
 
