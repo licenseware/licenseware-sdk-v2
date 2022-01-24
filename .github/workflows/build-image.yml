@@ -49,4 +49,4 @@ jobs:
           push: true
           tags: "${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}"
           labels: |
-            org.opencontainers.image.source $GITHUB_SERVER_URL/${{ github.repository }}
+            org.opencontainers.image.source ${{ github.server_url }}/${{ github.repository }}
