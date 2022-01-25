@@ -158,7 +158,8 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
             buffer = self.buffer,
             filename_valid_message = self.filename_valid_message,
             filename_invalid_message = self.filename_invalid_message,
-            filename_ignored_message = self.filename_ignored_message
+            filename_ignored_message = self.filename_ignored_message,
+            regex_escape = self.regex_escape
         )
             
 
