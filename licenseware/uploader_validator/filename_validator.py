@@ -17,9 +17,10 @@ class FileNameValidator:
         ignore_filenames:list = [],
         filename_contains:list = [],
         filename_endswith:list = [],
-        filename_valid_message = "Filename is valid",
-        filename_invalid_message =  None,
-        filename_ignored_message =  "Filename is ignored",
+        filename_valid_message:str = "Filename is valid",
+        filename_invalid_message:str =  None,
+        filename_ignored_message:str = "Filename is ignored",
+        regex_escape: bool = True,
         **kwargs
     ):
         self.uploader_id = uploader_id
@@ -29,6 +30,7 @@ class FileNameValidator:
         self.filename_valid_message = filename_valid_message
         self.filename_invalid_message = filename_invalid_message
         self.filename_ignored_message = filename_ignored_message
+        self.regex_escape = regex_escape
         #prevents overflow of params allows extending with non-default parameters
         self.kwargs = kwargs
         
@@ -88,7 +90,8 @@ class FileNameValidator:
                 validate_filename(
                     filename, 
                     contains=self.filename_contains, 
-                    endswith=self.filename_endswith
+                    endswith=self.filename_endswith,
+                    regex_escape=self.regex_escape
                 )
                 validation_response.append({
                     'status': states.SUCCESS,

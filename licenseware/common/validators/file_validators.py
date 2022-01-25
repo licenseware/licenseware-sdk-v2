@@ -44,7 +44,7 @@ from io import BytesIO
 from licenseware.utils.logger import log
 
 
-def validate_text_contains_all(text, text_contains_all):
+def validate_text_contains_all(text, text_contains_all, regex_escape=True):
     """
         Raise exception if contents of the text file don't contain all items in text_contains_all list
     """
@@ -53,12 +53,7 @@ def validate_text_contains_all(text, text_contains_all):
 
     matches_count = 0
     for txt_to_find in text_contains_all:
-
-        if isinstance(txt_to_find, re.Pattern):
-            pattern = txt_to_find
-        else: 
-            pattern = re.compile(re.escape(txt_to_find), flags=re.IGNORECASE)
-
+        pattern = re.compile(re.escape(txt_to_find) if regex_escape else txt_to_find, flags=re.IGNORECASE)
         match = re.search(pattern, text)
         if match: matches_count += 1
 
@@ -66,7 +61,7 @@ def validate_text_contains_all(text, text_contains_all):
         raise ValueError(f'File must contain the all following keywords: {", ".join(text_contains_all)}')
 
 
-def validate_text_contains_any(text, text_contains_any):
+def validate_text_contains_any(text, text_contains_any, regex_escape=True):
     """
         Raise exception if contents of the text file don't contain at least one item in text_contains_any list
     """
@@ -74,12 +69,7 @@ def validate_text_contains_any(text, text_contains_any):
     if not text_contains_any: return
     
     for txt_to_find in text_contains_any:
-        
-        if isinstance(txt_to_find, re.Pattern):
-            pattern = txt_to_find
-        else: 
-            pattern = re.compile(re.escape(txt_to_find), flags=re.IGNORECASE)
-
+        pattern = re.compile(re.escape(txt_to_find) if regex_escape else txt_to_find, flags=re.IGNORECASE)
         match = re.search(pattern, text)
         if match: return
 
@@ -142,7 +132,7 @@ def validate_sheets(file, required_sheets):
         raise ValueError(f"File doesn't contain the following needed sheets: {missing_sheets}")
 
 
-def validate_filename(filename:str, contains:list, endswith:list = []):
+def validate_filename(filename:str, contains:list, endswith:list = [], regex_escape:bool = True):
     """
         Check if filename contains all needed keywords and all accepted file types
     """
@@ -150,7 +140,7 @@ def validate_filename(filename:str, contains:list, endswith:list = []):
     if not isinstance(filename, str): 
         raise ValueError("filename must be a string")
 
-    validate_text_contains_any(filename, contains)
+    validate_text_contains_any(filename, contains, regex_escape)
     
     if endswith:
         for file_type in endswith:
@@ -169,6 +159,7 @@ class GeneralValidator:
             required_columns=[],
             text_contains_all=[],
             text_contains_any=[],
+            regex_escape = True,
             min_rows_number=0,
             header_starts_at=0,
             buffer=9000,
@@ -180,6 +171,7 @@ class GeneralValidator:
         self.required_columns = required_columns
         self.text_contains_all = text_contains_all
         self.text_contains_any = text_contains_any
+        self.regex_escape = regex_escape
         self.min_rows_number = min_rows_number
         self.header_starts_at = header_starts_at
         self.skip_validate_type = False
@@ -318,8 +310,8 @@ class GeneralValidator:
 
         data = self._parse_data()
 
-        validate_text_contains_all(data, self.text_contains_all)
-        validate_text_contains_any(data, self.text_contains_any)
+        validate_text_contains_all(data, self.text_contains_all, self.regex_escape)
+        validate_text_contains_any(data, self.text_contains_any, self.regex_escape)
         validate_sheets(self.input_object, self.required_sheets)
         validate_columns(data, self.required_columns, self.required_sheets)
         validate_rows_number(data, self.min_rows_number, self.required_sheets)

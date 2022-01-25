@@ -32,6 +32,7 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         required_columns:list = [],
         text_contains_all:list = [],
         text_contains_any:list = [],
+        regex_escape:bool = True,
         min_rows_number:int = 0,
         header_starts_at:int = 0,
         buffer:int = 9000,
@@ -52,6 +53,7 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         self.required_columns = required_columns
         self.text_contains_all = text_contains_all
         self.text_contains_any = text_contains_any
+        self.regex_escape = regex_escape
         self.min_rows_number = min_rows_number
         self.header_starts_at = header_starts_at
         self.buffer = buffer
