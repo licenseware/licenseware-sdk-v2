@@ -53,7 +53,12 @@ def validate_text_contains_all(text, text_contains_all):
 
     matches_count = 0
     for txt_to_find in text_contains_all:
-        pattern = re.compile(re.escape(txt_to_find), flags=re.IGNORECASE)
+
+        if isinstance(txt_to_find, re.Pattern):
+            pattern = txt_to_find
+        else: 
+            pattern = re.compile(re.escape(txt_to_find), flags=re.IGNORECASE)
+
         match = re.search(pattern, text)
         if match: matches_count += 1
 
@@ -69,7 +74,12 @@ def validate_text_contains_any(text, text_contains_any):
     if not text_contains_any: return
     
     for txt_to_find in text_contains_any:
-        pattern = re.compile(re.escape(txt_to_find), flags=re.IGNORECASE)
+        
+        if isinstance(txt_to_find, re.Pattern):
+            pattern = txt_to_find
+        else: 
+            pattern = re.compile(re.escape(txt_to_find), flags=re.IGNORECASE)
+
         match = re.search(pattern, text)
         if match: return
 
