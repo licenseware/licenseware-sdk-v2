@@ -28,7 +28,7 @@ class DeviceTableSchema(Schema):
             ],
                 error='Only allowed values are "Virtual", "Pool", "Domain", "Physical", "Cluster", "Unknown"')
         ],
-        metadata={'editable': True, 'type': 'enum', 'visible': True}
+        metadata={'editable': True, 'visible': True}
     )
     
 
