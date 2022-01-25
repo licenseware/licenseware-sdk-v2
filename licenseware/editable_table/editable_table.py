@@ -242,7 +242,6 @@ App.register_editable_table(devices_table)
 
 
 
-from random import choices
 import re, itertools
 from flask_restx import Namespace
 import marshmallow
@@ -429,8 +428,16 @@ class EditableTable:
         if 'distinct_key' in metadata: return 'entity'
 
         try:
-            if field_data['validate'][0].__dict__['choices']:
-                return 'enum'
+
+            if isinstance(field_data['validate'], marshmallow.validate.OneOf):
+                if len(field_data['validate'].choices) > 0:
+                    return 'enum'
+
+            if isinstance(field_data['validate'], list):
+                for data in field_data['validate']:
+                    if len(data['validate'].choices) > 0:
+                        return 'enum'
+            
         except: ...
 
         try:
