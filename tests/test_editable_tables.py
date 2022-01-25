@@ -19,6 +19,17 @@ class DeviceTableSchema(Schema):
         validate=validate.OneOf(["MOUNTED", "OPEN", "UNKNOWN"], error='Only "MOUNTED", "OPEN", "UNKNOWN" values are accepted'),
         metadata=metaspecs(editable=True, visible=True, type='enum')
     )
+
+    device_type = fields.Str(
+        required=True,
+        validate=[
+            validate.OneOf([
+                "Virtual", "Pool", "Domain", "Physical", "Cluster", "Unknown"
+            ],
+                error='Only allowed values are "Virtual", "Pool", "Domain", "Physical", "Cluster", "Unknown"')
+        ],
+        metadata={'editable': True, 'type': 'enum', 'visible': True}
+    )
     
 
 class TestEditableTables(unittest.TestCase):
@@ -32,10 +43,10 @@ class TestEditableTables(unittest.TestCase):
         self.assertEqual(len(editable_tables), 1)
 
         self.assertIsInstance(editable_tables[0]["columns"], list)
-        self.assertEqual(len(editable_tables[0]["columns"]), 4)
+        self.assertEqual(len(editable_tables[0]["columns"]), 5)
 
 
-        cols = ['_id', 'device_name', 'number_of_processors', 'options']
+        cols = ['_id', 'device_name', 'number_of_processors', 'options', 'device_type']
         for i in editable_tables[0]["columns"]:
             self.assertIn(i['prop'], cols)
 
@@ -56,10 +67,10 @@ class TestEditableTables(unittest.TestCase):
         self.assertEqual(len(editable_tables), 1)
 
         self.assertIsInstance(editable_tables[0]["columns"], list)
-        self.assertEqual(len(editable_tables[0]["columns"]), 4)
+        self.assertEqual(len(editable_tables[0]["columns"]), 5)
 
 
-        cols = ['_id', 'device_name', 'number_of_processors', 'options']
+        cols = ['_id', 'device_name', 'number_of_processors', 'options', 'device_type']
         for i in editable_tables[0]["columns"]:
             self.assertIn(i['prop'], cols)
 

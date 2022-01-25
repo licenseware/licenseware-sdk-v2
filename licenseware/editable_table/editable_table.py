@@ -242,8 +242,10 @@ App.register_editable_table(devices_table)
 
 
 
+from random import choices
 import re, itertools
 from flask_restx import Namespace
+import marshmallow
 from marshmallow import Schema
 from licenseware.common.constants import envs
 from urllib.parse import urlencode
@@ -393,10 +395,19 @@ class EditableTable:
 
 
     def col_enum_values(self, field_data):
+        
         try:
-            return field_data['validate'].choices
+            
+            if field_data['validate'] is None: return 
+
+            if isinstance(field_data['validate'], marshmallow.validate.OneOf):
+                return field_data['validate'].choices
+
+            if isinstance(field_data['validate'], list):
+                return sorted(list(set(itertools.chain(*[data.choices for data in field_data['validate']]))))
+            
         except Exception as err:
-            # log.warning(err) 
+            # log.error(err) 
             return None
                   
     def col_name(self, field_name):

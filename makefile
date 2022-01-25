@@ -100,7 +100,7 @@ sdk-docs:
 install-sdk:
 	pip3 uninstall -y licenseware
 	python3 setup.py bdist_wheel sdist
-	pip3 install ./dist/licenseware-2.0.0-py3-none-any.whl
+	pip3 install ./dist/licenseware-2.0.2-py3-none-any.whl
 	rm -rf build
 	rm -rf licenseware.egg-info
 	rm -rf wheel_sdk
