@@ -39,6 +39,7 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         filename_valid_message = "Filename is valid",
         filename_invalid_message =  None,
         filename_ignored_message =  "Filename is ignored",
+        ignored_by_uup:bool = False, # ignored from universal uploader matcher
         _uploader_id:str = None,
         _quota_units:int = None, 
         **options
@@ -60,6 +61,7 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         self.filename_valid_message = filename_valid_message
         self.filename_invalid_message = filename_invalid_message
         self.filename_ignored_message = filename_ignored_message
+        self.ignored_by_uup = ignored_by_uup
         self.options = options
         self.validation_parameters = self.get_validation_parameters()
         super().__init__(**vars(self))
@@ -159,7 +161,8 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
             filename_valid_message = self.filename_valid_message,
             filename_invalid_message = self.filename_invalid_message,
             filename_ignored_message = self.filename_ignored_message,
-            regex_escape = self.regex_escape
+            regex_escape = self.regex_escape,
+            ignored_by_uup = self.ignored_by_uup
         )
             
 
