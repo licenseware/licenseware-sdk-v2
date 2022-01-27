@@ -96,31 +96,31 @@ Resources:
               Value: !Ref 'EnvFileArn'
           MountPoints:
             -
-              SourceVolume: {{ app_id.replace('-service', '').replace('-', '').capitalize() }}ApiServiceStorage
+              SourceVolume: {{ app_id.capitalize() }}ApiServiceStorage
               ContainerPath: /tmp/lware
               ReadOnly: false
       Volumes:
-        - Name: {{ app_id.replace('-service', '').replace('-', '').capitalize() }}ApiServiceStorage
+        - Name: {{ app_id.capitalize() }}ApiServiceStorage
           EFSVolumeConfiguration:
-            FilesystemId: !Ref {{ app_id.replace('-service', '').replace('-', '').capitalize() }}ServiceStorage
+            FilesystemId: !Ref {{ app_id.capitalize() }}ServiceStorage
             TransitEncryption: "DISABLED"
 
-  {{ app_id.replace('-service', '').replace('-', '').capitalize() }}ServiceStorage:
+  {{ app_id.capitalize() }}ServiceStorage:
     Type: AWS::EFS::FileSystem
 
-  {{ app_id.replace('-service', '').replace('-', '').capitalize() }}ApiServiceStorageMountTargetA:
+  {{ app_id.capitalize() }}ApiServiceStorageMountTargetA:
     Type: AWS::EFS::MountTarget
     Properties:
-      FileSystemId: !Ref {{ app_id.replace('-service', '').replace('-', '').capitalize() }}ServiceStorage
+      FileSystemId: !Ref {{ app_id.capitalize() }}ServiceStorage
       SubnetId: 
         Fn::ImportValue: !Sub ${EnvTag}-lware-vpc-PrivateSubnetA
       SecurityGroups:
       - Fn::ImportValue: !Sub ${EnvTag}:EFSAccessSecurityGroup
 
-  {{ app_id.replace('-service', '').replace('-', '').capitalize() }}ApiServiceStorageMountTargetB:
+  {{ app_id.capitalize() }}ApiServiceStorageMountTargetB:
     Type: AWS::EFS::MountTarget
     Properties:
-      FileSystemId: !Ref {{ app_id.replace('-service', '').replace('-', '').capitalize() }}ServiceStorage
+      FileSystemId: !Ref {{ app_id.capitalize() }}ServiceStorage
       SubnetId: 
         Fn::ImportValue: !Sub ${EnvTag}-lware-vpc-PrivateSubnetB
       SecurityGroups:
@@ -163,7 +163,7 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
       HealthCheckIntervalSeconds: 60
-      HealthCheckPath: /{{ app_id.replace('-service', '') }}/swagger.json
+      HealthCheckPath: /{{ app_id }}/swagger.json
       HealthCheckProtocol: HTTP
       HealthCheckTimeoutSeconds: 10
       HealthyThresholdCount: 2
@@ -198,8 +198,8 @@ Outputs:
         - ""
         - - Fn::ImportValue: !Sub ${EnvTag}:ExternalUrl
           - !Join [ "", !Split [ "*" , !Ref LoadBalancerPath ] ]
-  {{ app_id.replace('-service', '').replace('-', '').capitalize() }}ServiceStorage:
-    Description: The {{ app_id.replace('-service', '').replace('-', '').capitalize() }} service storage
-    Value: !Ref '{{ app_id.replace('-service', '').replace('-', '').capitalize() }}ServiceStorage'
+  {{ app_id.capitalize() }}ServiceStorage:
+    Description: The {{ app_id.capitalize() }} service storage
+    Value: !Ref '{{ app_id.capitalize() }}ServiceStorage'
     Export:
-      Name: !Sub ${EnvTag}:{{ app_id.replace('-service', '').replace('-', '').capitalize() }}ServiceStorage
+      Name: !Sub ${EnvTag}:{{ app_id.capitalize() }}ServiceStorage

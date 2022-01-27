@@ -1,11 +1,6 @@
-FROM ghcr.io/licenseware/licenseware-sdk-v2
-
-WORKDIR /usr/src/{{ app_id }}/
-
-RUN python -m pip install --upgrade pip
-COPY requirements.txt .
-RUN pip uninstall -y licenseware && pip install -r requirements.txt 
-
+FROM ghcr.io/licenseware/licenseware-sdk-v2:latest
 
 COPY . .
+RUN opentelemetry-bootstrap --action=install
+
 CMD ["honcho", "-f", "Procfile.stack", "start"]

@@ -16,11 +16,11 @@ from .aws_cloud_formation import create_aws_cloud_formation
 # Underscore tells pyoc3 to ignore them from creating docs 
 # (otherwise an error will occur)  
 resources_filenames = {
-    '_main_example.py': 'main_example.py',
+    # '_main_example.py': 'main_example.py',
     '_main.py': 'main.py',
-    '_mock_server.py': 'mock_server.py',
+    # '_mock_server.py': 'mock_server.py',
     '_setup.py': 'setup.py',
-    'docker_compose_mongo_redis.yml': 'docker-compose.yml',
+    # 'docker_compose_mongo_redis.yml': 'docker-compose.yml',
     'env': '.env',
     'gitignore': '.gitignore',
     'makefile': 'makefile',
@@ -31,10 +31,8 @@ resources_filenames = {
     'CHANGELOG.md': 'CHANGELOG.md',
     'docker-entrypoint.sh': 'docker-entrypoint.sh',
     'Dockerfile': 'Dockerfile',
-    'Dockerfile.local': 'Dockerfile.local',
     'Dockerfile.stack': 'Dockerfile.stack',
     'Procfile': 'Procfile',
-    'Procfile.local': 'Procfile.local',
     'Procfile.stack': 'Procfile.stack',
     'version.txt': 'version.txt'
  }

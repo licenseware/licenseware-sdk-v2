@@ -1,6 +1,5 @@
 DEBUG=true
 ENVIRONMENT=local
-PERSONAL_SUFFIX=_{{ personal_suffix }}
 USE_BACKGROUND_WORKER=true
 
 APP_ID={{ app_id }}

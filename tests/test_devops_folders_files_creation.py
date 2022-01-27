@@ -22,15 +22,15 @@ class TestDevOpsFiles(unittest.TestCase):
     
     def test_git_workflow_files(self):
         
-        create_github_workflows('odb')
+        create_github_workflows('dashboard-service')
         
         self.assertTrue(os.path.exists('.github/workflows'))
-        self.assertEqual(len(os.listdir('.github/workflows')), 3)
+        self.assertEqual(len(os.listdir('.github/workflows')), 4)
         
         
     def test_aws_cloud_formation(self):
         
-        create_aws_cloud_formation('odb')
+        create_aws_cloud_formation('dashboard-service')
 
         self.assertTrue(os.path.exists('cloudformation-templates'))
         self.assertEqual(len(os.listdir('cloudformation-templates')), 2)
