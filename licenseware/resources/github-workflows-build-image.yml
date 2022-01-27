@@ -19,12 +19,12 @@ jobs:
 
       - name: Set image tag
         run: |
-          echo IMAGE_NAME=${{ env.REGISTRY }}/${{ github.repository }} >> $GITHUB_ENV
+          echo IMAGE_NAME={% raw %}${{ env.REGISTRY }}/${{ github.repository }}{% endraw %} >> $GITHUB_ENV
 
-          if [[ "${{ github.ref_name }}" == "main" ]]; then
+          if [[ "{% raw %}${{ github.ref_name }}{% endraw %}" == "main" ]]; then
             echo IMAGE_TAG=latest >> $GITHUB_ENV
           else
-            echo IMAGE_TAG=${{ github.ref_name }} >> $GITHUB_ENV
+            echo IMAGE_TAG={% raw %}${{ github.ref_name }}{% endraw %} >> $GITHUB_ENV
           fi
 
       - name: Set up QEMU needed for Docker
@@ -36,9 +36,9 @@ jobs:
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v1
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: {% raw %}${{ env.REGISTRY }}{% endraw %}
+          username: {% raw %}${{ github.actor }}{% endraw %}
+          password: {% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}
           logout: false
 
       - name: Build and push
@@ -47,6 +47,6 @@ jobs:
         with:
           context: .
           push: true
-          tags: "${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}"
+          tags: "{% raw %}${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}{% endraw %}"
           labels: |
-            org.opencontainers.image.source $GITHUB_SERVER_URL/${{ github.repository }}
+            org.opencontainers.image.source $GITHUB_SERVER_URL/{% raw %}${{ github.repository }}{% endraw %}
