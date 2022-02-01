@@ -1,23 +1,23 @@
-import os
 import requests
-from licenseware.common.constants import envs
 from licenseware.utils.logger import log
+from licenseware.common.constants import envs
+from licenseware.decorators.auth_decorators import authenticated_machine
 
 
-EMAIL = os.getenv('TEST_USER_EMAIL')
-PASSWORD = os.getenv('TEST_USER_PASSWORD')
 
-
-def get_auth_tables(table:str = None):
+def get_auth_tables(auth_headers:dict, table:str = None):
     """
         Tables: users, tenants, shared_tenants
         A machine request is used to get the auth tables
     """
 
     response = requests.get(
-        envs.AUTH_SERVICE_URL + '/auth-tables',
-        headers={"Authorization": envs.get_auth_token()} 
+        envs.AUTH_SERVICE_URL + '/users/tables',
+        headers=auth_headers
     )
+
+    # log.debug(auth_headers)
+    # log.debug(response.content)
     
     if table:
         return response.json()[table]
@@ -25,16 +25,16 @@ def get_auth_tables(table:str = None):
     return response.json()
 
 
-def get_invite_token(email:str, tenant_id:str):
+def get_invite_token(email, invited_tenant, auth_headers):
     """
         Get the invite token for the email and tenant_id provided 
     """
 
-    shared_tenants = get_auth_tables('shared_tenants')
+    shared_tenants = get_auth_tables(auth_headers, 'shared_tenants')
 
     invite_token = None
     for st in shared_tenants:
-        if st['invited_email'] == email and st['tenant_id'] == tenant_id:
+        if st['invited_email'] == email and st['tenant_id'] == invited_tenant:
             invite_token = st['invite_token']
             break
 
@@ -44,19 +44,30 @@ def get_invite_token(email:str, tenant_id:str):
 
 
 
+def login_user_with_invite_token(email, password, invited_tenant, auth_headers):
+
+    invite_token = get_invite_token(email, invited_tenant, auth_headers)
+
+    response = requests.post(
+        envs.AUTH_SERVICE_URL + '/login', 
+        json={"email": email, "password": password},
+        params={'invite_token': invite_token}
+    )
+    
+    # log.debug(response.content)
+
+    return response.json()
+
+
+
 def create_user(
     email:str, 
     password:str, 
-    invited_tenant:str = None,
     first_name:str = None,
     last_name:str = None,
     company_name:str = None,
     job_title:str = None
 ):
-
-    invite_token = None
-    if invited_tenant:
-        invite_token = get_invite_token(email, invited_tenant)
     
     payload = {
         "email": email,
@@ -68,53 +79,55 @@ def create_user(
     }
     
     response = requests.post(
-        envs.AUTH_SERVICE_URL, 
-        json=payload, 
-        params={'invite_token': invite_token} if invite_token is not None else None
+        envs.AUTH_SERVICE_URL + '/users/register', 
+        json=payload
     )
-    
-    # log.info(response.content)
-    
+
+    # log.debug(response)
+
     return response.json()
+
     
+    
+def login_user(email:str, password:str):
     
 
-def login_user(email:str, password:str, invited_tenant:str = None):
-    
-    invite_token = None
-    if invited_tenant:
-        invite_token = get_invite_token(email, invited_tenant)
-    
     response = requests.post(
         envs.AUTH_SERVICE_URL + '/login', 
-        json={"email": email, "password": password},
-        params={'invite_token': invite_token} if invite_token is not None else None
+        json={"email": email, "password": password}
     )
-    
+
+    # log.debug(response.content)
+
     return response.json()
 
 
 
 
-def get_auth_headers(email:str = None, password:str = None, invited_tenant:str = None):
+@authenticated_machine
+def get_auth_headers(email:str, password:str, invited_tenant:str = None):
     """
         This function creates the user or logs in the user
-        If email and password are not provided they will be taken from envs (TEST_USER_EMAIL, TEST_USER_PASSWORD)
         If invited_tenant parameter is provided then the user will be registered/logged with invite token from shared_tenants table
         Returns Authentification headers required to make a request
     """
 
-    # log.info(f"Authentificating with '{EMAIL}'")
-    
-    login_response = login_user(email or EMAIL, password or PASSWORD, invited_tenant)
+    # log.debug(f"> get_auth_headers: {email} {password}, {invited_tenant}")
+
+    login_response = login_user(email, password)
     
     if login_response['status'] == 'success':
         login_response.pop('status')
         login_response.pop('message')        
-        # log.info(login_response)
         return login_response
     else:
-        create_user(email or EMAIL, password or PASSWORD, invited_tenant)
+        
+        create_user(email, password)
+
+        if invited_tenant is not None:
+            response = login_user(email, password)
+            assert response['status'] == 'success'
+            return login_user_with_invite_token(email, password, invited_tenant, auth_headers=response)
+
         return get_auth_headers(email, password, invited_tenant)
         
-    
