@@ -30,11 +30,14 @@ ARG SERVICEDIR=/home/${USER}
 ARG PORT=5000
 ARG DUMB_INIT='https://github.com/Yelp/dumb-init/releases/download/v1.2.5/dumb-init_1.2.5_x86_64'
 ARG APP_DIR=${SERVICEDIR}/app
+ARG FILE_UPLOAD_PATH=/tmp/lware
 
 RUN curl -Lo /usr/local/bin/dumb-init ${DUMB_INIT} && \
     chmod +x /usr/local/bin/dumb-init
 
-RUN useradd -m ${USER}
+RUN useradd -m ${USER} && \
+    mkdir -p ${FILE_UPLOAD_PATH} && \
+    chown ${USER}:${USER} ${FILE_UPLOAD_PATH}
 
 ENV USER=${USER} \
     PORT=${PORT} \
@@ -43,6 +46,8 @@ ENV USER=${USER} \
 
 EXPOSE ${PORT}
 WORKDIR ${SERVICEDIR}
+
+VOLUME ${FILE_UPLOAD_PATH}
 
 COPY --from=build ${BUILDDIR} ${BUILDDIR}
 COPY --from=build ${WHEELDIR} ${WHEELDIR}
