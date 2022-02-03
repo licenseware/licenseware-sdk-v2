@@ -20,7 +20,7 @@ def download_as_csv(data:List[dict], tenant_id:str, filename:str = None):
     
     filepath = os.path.join(dirpath, filename)
     df = pd.DataFrame(data)
-    df.to_csv(filepath, index=False)
+    df.to_csv(filepath, index=False, quotechar='"')
 
     return send_from_directory(
         directory=dirpath, 
