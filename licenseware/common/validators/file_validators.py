@@ -116,20 +116,50 @@ def validate_rows_number(df, min_rows_number, required_sheets=[]):
             raise ValueError(f'Expected table to have at least {min_rows_number} row(s)')
 
 
+
+
+
+def _sheets_validator(sheets, required_sheets, raise_error=True):
+
+    common_sheets = list(set.intersection(set(sheets), set(required_sheets)))
+
+    if sorted(required_sheets) != sorted(common_sheets):
+        missing_sheets = set.difference(set(required_sheets), set(sheets))
+        if raise_error:
+            raise ValueError(f"File doesn't contain the following needed sheets: {missing_sheets}")
+        return False
+
+    return True
+
+
+
+
 def validate_sheets(file, required_sheets):
     """
         Raise error if required_sheets are not found in file
+
+        required_sheets = [
+            ('tabvInfo', 'tabvCPU', 'tabvHost', 'tabvCluster'),
+            ('vInfo', 'vCPU', 'vHost', 'vCluster'),
+        ]
+
+        or 
+
+        required_sheets = 'tabvInfo', 'tabvCPU', 'tabvHost', 'tabvCluster'
+
     """
 
     if not required_sheets: return
 
     sheets = pd.ExcelFile(file).sheet_names
 
-    common_sheets = list(set.intersection(set(sheets), set(required_sheets)))
+    if isinstance(required_sheets[0], tuple) and len(required_sheets) > 1:
+        for rs in required_sheets:
+            if _sheets_validator(sheets, rs, raise_error=False):
+                return # one validation succeded
+    else:
+        _sheets_validator(sheets, required_sheets, raise_error=True)
 
-    if sorted(required_sheets) != sorted(common_sheets):
-        missing_sheets = set.difference(set(required_sheets), set(sheets))
-        raise ValueError(f"File doesn't contain the following needed sheets: {missing_sheets}")
 
 
 def validate_filename(filename:str, contains:list, endswith:list = [], regex_escape:bool = True):
