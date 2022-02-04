@@ -198,6 +198,9 @@ class GeneralValidator:
             if self.required_input_type == 'excel':
                 self.required_input_type = 'excel-stream'
                 return
+            elif self.required_input_type == 'csv':
+                self.required_input_type = 'csv-stream'
+                return
             else:
                 self.required_input_type = 'stream'
                 return
@@ -271,6 +274,32 @@ class GeneralValidator:
 
         return dfs
 
+    def _sniff_delimiter(self):
+        reader = pd.read_csv(self.input_object, sep=None, iterator=True, engine='python')
+        delimiter = reader._engine.data.dialect.delimiter
+        if delimiter in [",",";"]:
+            log.info(f"Sniffed delimiter '{delimiter}' for {self.input_object}")
+            return delimiter
+        else:
+            log.warning(f"Sniffed illegal delimiter {delimiter} for {self.input_object}")
+            return ","
+
+    def _parse_csv(self):
+        df =  pd.read_csv(
+                self.input_object, nrows=self.min_rows_number, skiprows=self.header_starts_at,
+                delimiter=self._sniff_delimiter()
+            )
+        return df
+
+    def _parse_csv_stream(self):
+        delimiter = self._sniff_delimiter()
+        self.input_object.seek(0)
+        csvobj = pd.read_csv(BytesIO(self.input_object.stream.read()),
+                            error_bad_lines=False, delimiter=delimiter,
+                            nrows=self.min_rows_number, skiprows=self.header_starts_at)
+        return csvobj
+
+
     def _parse_data(self):
 
         if self.required_input_type == "excel-stream":
@@ -279,11 +308,11 @@ class GeneralValidator:
         if self.required_input_type == "excel":
             return self._parse_excel()
 
+        elif self.required_input_type == "csv-stream":
+            return self._parse_csv_stream()
 
         elif self.required_input_type == "csv":
-            return pd.read_csv(
-                self.input_object, nrows=self.min_rows_number, skiprows=self.header_starts_at
-            )
+            return self._parse_csv()
 
         elif self.required_input_type == "txt":
             with open(self.input_object, 'r', encoding='utf8', errors='ignore') as f:
@@ -307,7 +336,6 @@ class GeneralValidator:
 
         self._check_required_input_type()
         self._validate_type()
-
         data = self._parse_data()
 
         validate_text_contains_all(data, self.text_contains_all, self.regex_escape)
