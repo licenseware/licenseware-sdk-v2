@@ -3,7 +3,7 @@ from typing import List
 from licenseware.common.validators.file_validators import GeneralValidator
 from licenseware.utils.file_utils import save_file
 from licenseware.common.constants import states
-from licenseware.utils.logger import log
+# from licenseware.utils.logger import log
 
 
 
