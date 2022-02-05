@@ -39,6 +39,7 @@ You can also import individually the function bellow:
 
 import os, re
 import itertools
+from numpy import require
 import pandas as pd
 from io import BytesIO
 from licenseware.utils.logger import log
@@ -76,14 +77,21 @@ def validate_text_contains_any(text, text_contains_any, regex_escape=True):
     raise ValueError(f'File must contain at least one of the following keywords: {", ".join(text_contains_any)}')
 
 
-
-def validate_columns(df, required_columns, required_sheets=[]):
-    """
-        Raise an error if columns required are not found in the table
-    """
-
+def _columns_validator(file_columns, required_columns, raise_error=True):
     if not required_columns: return
 
+    common_cols = list(set.intersection(set(required_columns), set(file_columns)))
+
+    if sorted(required_columns) != sorted(common_cols):
+        missing_cols = set.difference(set(required_columns), set(file_columns))
+        if raise_error:
+            raise ValueError(f'Table has the following columns missing: {missing_cols}')
+        return False
+
+    return True
+
+
+def _get_columns(df, required_sheets):
     if isinstance(df, dict):
         given_columns = []
         for sheet, table in df.items():
@@ -93,10 +101,20 @@ def validate_columns(df, required_columns, required_sheets=[]):
     else:
         given_columns = df.columns
 
-    commun_cols = list(set.intersection(set(required_columns), set(given_columns)))
-    if sorted(required_columns) != sorted(commun_cols):
-        missing_cols = set.difference(set(required_columns), set(given_columns))
-        raise ValueError(f'Table has the following columns missing: {missing_cols}')
+    return given_columns
+
+
+def validate_columns(df, required_columns, required_sheets=[]):
+    if not required_columns: return
+    
+    file_columns = _get_columns(df, required_sheets)
+    
+    if isinstance(required_columns[0], tuple) and len(required_columns) > 1:
+        for rc in required_columns:
+            if _columns_validator(file_columns, rc, raise_error=False):
+                return
+    else:
+        _columns_validator(file_columns, required_columns, raise_error=True)
 
 
 def validate_rows_number(df, min_rows_number, required_sheets=[]):
@@ -116,9 +134,6 @@ def validate_rows_number(df, min_rows_number, required_sheets=[]):
             raise ValueError(f'Expected table to have at least {min_rows_number} row(s)')
 
 
-
-
-
 def _sheets_validator(sheets, required_sheets, raise_error=True):
 
     common_sheets = list(set.intersection(set(sheets), set(required_sheets)))
@@ -130,8 +145,6 @@ def _sheets_validator(sheets, required_sheets, raise_error=True):
         return False
 
     return True
-
-
 
 
 def validate_sheets(file, required_sheets):
@@ -159,7 +172,6 @@ def validate_sheets(file, required_sheets):
                 return # one validation succeded
     else:
         _sheets_validator(sheets, required_sheets, raise_error=True)
-
 
 
 def validate_filename(filename:str, contains:list, endswith:list = [], regex_escape:bool = True):
@@ -207,7 +219,7 @@ class GeneralValidator:
         self.skip_validate_type = False
         # Making sure we don't miss characters
         self.buffer = buffer + sum([len(c) for c in required_columns]) + len(text_contains_all) + len(text_contains_any)
-        
+        self.delimiter = self._sniff_delimiter()
         # Calling validation on init, raise Exception if something is wrong
         self.validate()
         
@@ -314,20 +326,22 @@ class GeneralValidator:
             log.warning(f"Sniffed illegal delimiter {delimiter} for {self.input_object}")
             return ","
 
+
     def _parse_csv(self):
         df =  pd.read_csv(
                 self.input_object, nrows=self.min_rows_number, skiprows=self.header_starts_at,
-                delimiter=self._sniff_delimiter()
+                delimiter=self.delimiter
             )
         return df
 
+
     def _parse_csv_stream(self):
-        delimiter = self._sniff_delimiter()
         self.input_object.seek(0)
-        csvobj = pd.read_csv(BytesIO(self.input_object.stream.read()),
-                            error_bad_lines=False, delimiter=delimiter,
-                            nrows=self.min_rows_number, skiprows=self.header_starts_at)
-        return csvobj
+        csvobj = BytesIO(self.input_object.stream.read())
+        return pd.read_csv(
+            csvobj, error_bad_lines=False, delimiter=self.delimiter,
+            nrows=self.min_rows_number, skiprows=self.header_starts_at
+            )
 
 
     def _parse_data(self):
