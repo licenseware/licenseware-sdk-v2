@@ -219,7 +219,6 @@ class GeneralValidator:
         self.skip_validate_type = False
         # Making sure we don't miss characters
         self.buffer = buffer + sum([len(c) for c in required_columns]) + len(text_contains_all) + len(text_contains_any)
-        self.delimiter = self._sniff_delimiter()
         # Calling validation on init, raise Exception if something is wrong
         self.validate()
         
@@ -330,16 +329,17 @@ class GeneralValidator:
     def _parse_csv(self):
         df =  pd.read_csv(
                 self.input_object, nrows=self.min_rows_number, skiprows=self.header_starts_at,
-                delimiter=self.delimiter
+                delimiter=self._sniff_delimiter()
             )
         return df
 
 
     def _parse_csv_stream(self):
+        delimiter = self._sniff_delimiter()
         self.input_object.seek(0)
         csvobj = BytesIO(self.input_object.stream.read())
         return pd.read_csv(
-            csvobj, error_bad_lines=False, delimiter=self.delimiter,
+            csvobj, error_bad_lines=False, delimiter=delimiter,
             nrows=self.min_rows_number, skiprows=self.header_starts_at
             )
 
