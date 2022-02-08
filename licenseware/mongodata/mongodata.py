@@ -278,7 +278,7 @@ def insert(schema, collection, data, db_name=None):
 
 
 
-def _get_sortli(sortdict:dict):
+def get_sortli(sortdict:List[Tuple[str, int]]):
 
     if sortdict is None: return 
 
@@ -304,12 +304,15 @@ def fetch(match:dict, collection:str, as_list:bool = True, limit:int = None, ski
         :db_name    - specify other db if needed by default is MONGO_DATABASE_NAME from .env
 
     """
+
+    # TODO - needs refatoring (to much going on)
     
     pagination = None
     if isinstance(match, dict): 
         pagination = match.pop("__pagination__", None)
     
     match = parse_match(match)    
+    sortbylist = get_sortli(sortby)
     
     db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
@@ -323,7 +326,7 @@ def fetch(match:dict, collection:str, as_list:bool = True, limit:int = None, ski
             return collection
 
         if match['_id']:    
-            found_docs = collection.find(match['_id']).sort(_get_sortli(sortby))
+            found_docs = collection.find(match['_id']) if sortbylist is None else collection.find(match['_id']).sort(sortbylist)
             doc = []
             if found_docs: doc = list(found_docs)[0]
             if match['oid']: doc = parse_doc(doc)
@@ -337,46 +340,88 @@ def fetch(match:dict, collection:str, as_list:bool = True, limit:int = None, ski
             
             if pagination:
                 
-                found_docs = collection.with_options(read_concern=ReadConcern("majority"))\
-                .find(*match['query_tuple'])\
-                .sort(_get_sortli(sortby))\
-                .skip(pagination['skip'])\
-                .limit(pagination['limit'])
-                
+                if sortbylist is None:
+                    
+                    found_docs = collection.with_options(read_concern=ReadConcern("majority"))\
+                    .find(*match['query_tuple'])\
+                    .skip(pagination['skip'])\
+                    .limit(pagination['limit'])
+                    
+                else:
+                    found_docs = collection.with_options(read_concern=ReadConcern("majority"))\
+                    .find(*match['query_tuple'])\
+                    .sort(sortbylist)\
+                    .skip(pagination['skip'])\
+                    .limit(pagination['limit'])
+                    
             elif limit is not None and skip is not None:
-                
-                found_docs = collection.with_options(read_concern=ReadConcern("majority"))\
-                .find(*match['query_tuple'])\
-                .sort(_get_sortli(sortby))\
-                .skip(skip)\
-                .limit(limit)
+
+                if sortbylist is None:
+                    found_docs = collection.with_options(read_concern=ReadConcern("majority"))\
+                    .find(*match['query_tuple'])\
+                    .skip(skip)\
+                    .limit(limit)
+                else: 
+                    found_docs = collection.with_options(read_concern=ReadConcern("majority"))\
+                    .find(*match['query_tuple'])\
+                    .sort(sortbylist)\
+                    .skip(skip)\
+                    .limit(limit)
                 
             else:
-                found_docs = collection.with_options(
-                    read_concern=ReadConcern("majority")).find(*match['query_tuple']).sort(_get_sortli(sortby))
-        
+                if sortbylist is None:
+                    found_docs = collection.with_options(
+                        read_concern=ReadConcern("majority")).find(*match['query_tuple'])
+                else:
+                    found_docs = collection.with_options(
+                        read_concern=ReadConcern("majority")).find(*match['query_tuple']).sort(sortbylist)
+
         else:
             
             if pagination:
                 
-                found_docs = collection.with_options(read_concern=ReadConcern("majority"))\
-                .find(match['query'])\
-                .sort(_get_sortli(sortby)) \
-                .skip(pagination['skip'])\
-                .limit(pagination['limit'])
+                if sortbylist is None:
+
+                    found_docs = collection.with_options(read_concern=ReadConcern("majority"))\
+                    .find(match['query'])\
+                    .skip(pagination['skip'])\
+                    .limit(pagination['limit'])
+
+                else:
+
+                    found_docs = collection.with_options(read_concern=ReadConcern("majority"))\
+                    .find(match['query'])\
+                    .sort(sortbylist) \
+                    .skip(pagination['skip'])\
+                    .limit(pagination['limit'])
+
 
             
             elif limit is not None and skip is not None:
                 
-               found_docs = collection.with_options(read_concern=ReadConcern("majority"))\
-                .find(match['query'])\
-                .sort(_get_sortli(sortby)) \
-                .skip(skip)\
-                .limit(limit)
-        
+                if sortbylist is None:
+                    
+                    found_docs = collection.with_options(read_concern=ReadConcern("majority"))\
+                    .find(match['query'])\
+                    .skip(skip)\
+                    .limit(limit)
+
+                else:
+
+                    found_docs = collection.with_options(read_concern=ReadConcern("majority"))\
+                    .find(match['query'])\
+                    .sort(sortbylist) \
+                    .skip(skip)\
+                    .limit(limit)
+
             else:    
-                found_docs = collection.with_options(
-                    read_concern=ReadConcern("majority")).find(match['query']).sort(_get_sortli(sortby))
+
+                if sortbylist is None:
+                    found_docs = collection.with_options(
+                        read_concern=ReadConcern("majority")).find(match['query'])
+                else:
+                    found_docs = collection.with_options(
+                        read_concern=ReadConcern("majority")).find(match['query']).sort(sortbylist)
 
 
         if as_list:
