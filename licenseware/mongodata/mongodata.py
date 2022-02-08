@@ -89,14 +89,14 @@ And the same is for the next iterations until `len(results)` is 0.
 
 import os
 import json
+from typing import Tuple, List, Dict
 from uuid import UUID
-from pymongo import MongoClient
+from pymongo import MongoClient, ASCENDING, DESCENDING
 from pymongo.collection import Collection
 from bson.json_util import dumps
 from bson.objectid import ObjectId
 from pymongo.write_concern import WriteConcern
 from pymongo.read_concern import ReadConcern
-from pymongo.errors import DuplicateKeyError
 
 from licenseware.utils.logger import log
 
@@ -216,7 +216,7 @@ def get_collection(collection, db_name=None):
     """
         Gets the collection on which mongo CRUD operations can be performed
 
-        If something fails will return a string with the error message.
+        
     """
 
     default_db = os.getenv("MONGO_DB_NAME") or os.getenv(
@@ -246,7 +246,7 @@ def insert(schema, collection, data, db_name=None):
         :db_name    - specify other db if needed, by default is MONGO_DATABASE_NAME from .env
 
         returns a list of ids inserted in the database in the order they were added
-        If something fails will return a string with the error message.
+        
     """
     # log.debug("Incoming data:")
     # log.debug(data)
@@ -278,7 +278,18 @@ def insert(schema, collection, data, db_name=None):
 
 
 
-def fetch(match:dict, collection:str, as_list:bool = True, limit:int = None, skip:int = None, db_name:str = None):
+def _get_sortli(sortdict:dict):
+
+    sortli = [
+        (field, ascdesc)
+        for field, ascdesc in sortdict.items()
+    ]
+
+    return sortli
+
+
+
+def fetch(match:dict, collection:str, as_list:bool = True, limit:int = None, skip:int = None, sortby:Dict[str, int] = None, db_name:str = None):
     """
         Get data from mongo, based on match dict or string id.
 
@@ -289,8 +300,6 @@ def fetch(match:dict, collection:str, as_list:bool = True, limit:int = None, ski
         :collection - collection name
         :as_list    - set as_list to false to get a generator
         :db_name    - specify other db if needed by default is MONGO_DATABASE_NAME from .env
-
-        If something fails will return a string with the error message.
 
     """
     
@@ -306,13 +315,13 @@ def fetch(match:dict, collection:str, as_list:bool = True, limit:int = None, ski
     log.info(f"MONGO_QUERY [{db_name}.{collection_name}]: {match}")
 
     with Connect.get_connection() as mongo_connection:
-        collection = mongo_connection[db_name][collection_name]
+        collection: MongoClient = mongo_connection[db_name][collection_name]
         # log.debug(collection)
         if not isinstance(collection, Collection):
             return collection
 
         if match['_id']:    
-            found_docs = collection.find(match['_id'])
+            found_docs = collection.find(match['_id']).sort(_get_sortli(sortby))
             doc = []
             if found_docs: doc = list(found_docs)[0]
             if match['oid']: doc = parse_doc(doc)
@@ -328,6 +337,7 @@ def fetch(match:dict, collection:str, as_list:bool = True, limit:int = None, ski
                 
                 found_docs = collection.with_options(read_concern=ReadConcern("majority"))\
                 .find(*match['query_tuple'])\
+                .sort(_get_sortli(sortby))\
                 .skip(pagination['skip'])\
                 .limit(pagination['limit'])
                 
@@ -335,12 +345,13 @@ def fetch(match:dict, collection:str, as_list:bool = True, limit:int = None, ski
                 
                 found_docs = collection.with_options(read_concern=ReadConcern("majority"))\
                 .find(*match['query_tuple'])\
+                .sort(_get_sortli(sortby))\
                 .skip(skip)\
                 .limit(limit)
                 
             else:
                 found_docs = collection.with_options(
-                    read_concern=ReadConcern("majority")).find(*match['query_tuple'])
+                    read_concern=ReadConcern("majority")).find(*match['query_tuple']).sort(_get_sortli(sortby))
         
         else:
             
@@ -348,19 +359,22 @@ def fetch(match:dict, collection:str, as_list:bool = True, limit:int = None, ski
                 
                 found_docs = collection.with_options(read_concern=ReadConcern("majority"))\
                 .find(match['query'])\
+                .sort(_get_sortli(sortby)) \
                 .skip(pagination['skip'])\
                 .limit(pagination['limit'])
+
             
             elif limit is not None and skip is not None:
                 
                found_docs = collection.with_options(read_concern=ReadConcern("majority"))\
                 .find(match['query'])\
+                .sort(_get_sortli(sortby)) \
                 .skip(skip)\
                 .limit(limit)
         
             else:    
                 found_docs = collection.with_options(
-                    read_concern=ReadConcern("majority")).find(match['query'])
+                    read_concern=ReadConcern("majority")).find(match['query']).sort(_get_sortli(sortby))
 
 
         if as_list:
@@ -379,8 +393,6 @@ def aggregate(pipeline, collection, as_list=True, db_name=None):
         :collection - collection name
         :as_list    - set as_list to false to get a generator
         :db_name    - specify other db if needed by default is MONGO_DATABASE_NAME from .env
-
-        If something fails will return a string with the error message.
 
     """
     db_name = get_db_name(db_name)
@@ -455,8 +467,6 @@ def update(schema, match, new_data, collection, append=False, db_name=None):
 
         returns number of modified documents
 
-        If something fails will return a string with the error message.
-
     """
     # log.debug("Incoming data:")
     # log.debug(new_data)
@@ -499,7 +509,7 @@ def delete(match, collection, db_name=None):
 
         returns number of deleted documents
 
-        If something fails will return a string with the error message.
+        
 
     """
     db_name = get_db_name(db_name)
