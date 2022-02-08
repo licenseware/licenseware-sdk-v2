@@ -43,6 +43,7 @@ from numpy import require
 import pandas as pd
 from io import BytesIO
 from licenseware.utils.logger import log
+import traceback
 
 
 def validate_text_contains_all(text, text_contains_all, regex_escape=True):
@@ -62,6 +63,7 @@ def validate_text_contains_all(text, text_contains_all, regex_escape=True):
         raise ValueError(f'File must contain the all following keywords: {", ".join(text_contains_all)}')
 
 
+
 def validate_text_contains_any(text, text_contains_any, regex_escape=True):
     """
         Raise exception if contents of the text file don't contain at least one item in text_contains_any list
@@ -78,7 +80,6 @@ def validate_text_contains_any(text, text_contains_any, regex_escape=True):
 
 
 def _columns_validator(file_columns, required_columns, raise_error=True):
-    if not required_columns: return
 
     common_cols = list(set.intersection(set(required_columns), set(file_columns)))
 
@@ -113,25 +114,10 @@ def validate_columns(df, required_columns, required_sheets=[]):
         for rc in required_columns:
             if _columns_validator(file_columns, rc, raise_error=False):
                 return
+        else:
+            _columns_validator(file_columns, required_columns, raise_error=True)
     else:
         _columns_validator(file_columns, required_columns, raise_error=True)
-
-
-def validate_rows_number(df, min_rows_number, required_sheets=[]):
-    """
-        Raise error if minimum_rows_number is not satisfied
-    """
-
-    if not min_rows_number: return
-
-    if isinstance(df, dict):
-        for sheet, table in df.items():
-            if sheet not in required_sheets: continue
-            if table.shape[0] < min_rows_number:
-                raise ValueError(f'Expected {sheet} to have at least {min_rows_number} row(s)')
-    else:
-        if df.shape[0] < min_rows_number:
-            raise ValueError(f'Expected table to have at least {min_rows_number} row(s)')
 
 
 def _sheets_validator(sheets, required_sheets, raise_error=True):
@@ -172,6 +158,23 @@ def validate_sheets(file, required_sheets):
                 return # one validation succeded
     else:
         _sheets_validator(sheets, required_sheets, raise_error=True)
+
+
+def validate_rows_number(df, min_rows_number, required_sheets=[]):
+    """
+        Raise error if minimum_rows_number is not satisfied
+    """
+
+    if not min_rows_number: return
+
+    if isinstance(df, dict):
+        for sheet, table in df.items():
+            if sheet not in required_sheets: continue
+            if table.shape[0] < min_rows_number:
+                raise ValueError(f'Expected {sheet} to have at least {min_rows_number} row(s)')
+    else:
+        if df.shape[0] < min_rows_number:
+            raise ValueError(f'Expected table to have at least {min_rows_number} row(s)')
 
 
 def validate_filename(filename:str, contains:list, endswith:list = [], regex_escape:bool = True):
@@ -337,7 +340,8 @@ class GeneralValidator:
     def _parse_csv_stream(self):
         delimiter = self._sniff_delimiter()
         self.input_object.seek(0)
-        csvobj = BytesIO(self.input_object.stream.read())
+        csv_stream = self.input_object.stream.read()
+        csvobj = BytesIO(csv_stream)
         return pd.read_csv(
             csvobj, error_bad_lines=False, delimiter=delimiter,
             nrows=self.min_rows_number, skiprows=self.header_starts_at
@@ -377,7 +381,6 @@ class GeneralValidator:
         """ 
             When called run all validators on `input_object` parameter
         """
-
         self._check_required_input_type()
         self._validate_type()
         data = self._parse_data()
