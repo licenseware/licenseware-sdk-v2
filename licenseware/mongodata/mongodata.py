@@ -280,7 +280,7 @@ def insert(schema, collection, data, db_name=None):
 
 def _get_sortli(sortdict:dict):
 
-    if sortdict is None: return []
+    if sortdict is None: return 
 
     sortli = [
         (field, ascdesc)
