@@ -15,3 +15,5 @@ from .file_upload_validation_schema import FileUploadValidationSchema
 from .register_uploader_status_payload_schema import RegisterUploaderStatusPayloadSchema
 from .register_report_payload_schema import RegisterReportPayloadSchema
 from .register_report_component_payload import RegisterReportComponentPayloadSchema
+from .wild_schema import WildSchema
+from .features_schema import FeaturesSchema

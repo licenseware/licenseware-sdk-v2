@@ -50,3 +50,23 @@ def get_user_profile(flask_request:Request, field:str = None):
         
     return response.json()
     
+
+
+def get_user_tables(flask_request: Request):
+
+    tenant_id = flask_request.headers.get("TenantId")
+    auth_token = flask_request.headers.get("Authorization")
+
+    response = requests.get(
+        envs.AUTH_USER_TABLES_URL,
+        headers={
+            "TenantId": tenant_id,
+            "Authorization": auth_token
+        }
+    )
+
+
+    if response.status_code == 200:
+        return response.json()
+
+    

@@ -62,6 +62,13 @@ from .report_components_namespace import (
     get_report_individual_components_namespace
 )
 
+
+from .features_namespace import features_namespace
+from .features_namespace import (
+    get_features_namespace
+)
+
+
 from .download_as_route import add_download_as_route
 
 
@@ -258,6 +265,7 @@ class AppBuilder:
         self.add_reports_routes()
         self.add_report_components_routes()
         self.add_editables_routes()
+        self.add_features_routes()
         
     
     
@@ -313,8 +321,19 @@ class AppBuilder:
                 ns = SchemaNamespace(schema=editable.schema).initialize()
                 self.register_namespace(ns)
                 
-                    
-                        
+
+    def add_features_routes(self):
+        
+        ns_funcs = [
+            get_features_namespace
+        ]
+        
+        for func in ns_funcs:
+            self.register_namespace(
+                func(ns=features_namespace, features=self.features)
+            )           
+
+
     def register_app(self):
         """
             Sending registration payloads to registry-service
