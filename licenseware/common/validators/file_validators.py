@@ -162,10 +162,12 @@ def validate_sheets(file, required_sheets):
 
 
 
-def validate_filename(filename:str, contains:list, endswith:list = [], regex_escape:bool = True):
+def validate_filename(filename:str, contains:list, endswith:list = None, regex_escape:bool = True):
     """
         Check if filename contains all needed keywords and all accepted file types
     """
+    if endswith is None:
+        endswith = []
 
     if not isinstance(filename, str): 
         raise ValueError("filename must be a string")
