@@ -85,8 +85,8 @@ class Authenticator:
         response, status_code = {'status': 'failed'}, 500 
         try:
             response, status_code = self._login()
-        except:
-            log.warning("Authentification failed... retrying... ") 
+        except Exception as err:
+            log.error(f"{str(err)}\n\nAuthentification failed... retrying... ") 
             pass #ConnectionError
         return response, status_code
         
