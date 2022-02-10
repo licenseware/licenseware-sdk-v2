@@ -337,6 +337,15 @@ class GeneralValidator:
         return df
 
 
+    def _get_csv_stream_header(self):
+        # mehtod to return straight the headers 
+        delimiter = self._sniff_delimiter()
+        self.input_object.seek(0)
+        csv_stream = self.input_object.stream.readlines(1)
+        header = csv_stream[0].decode('ascii').replace('"','').replace("\n",'').split(delimiter)
+        self.input_object.seek(0)
+        return header
+    
     def _parse_csv_stream(self):
         delimiter = self._sniff_delimiter()
         self.input_object.seek(0)
@@ -383,11 +392,12 @@ class GeneralValidator:
         """
         self._check_required_input_type()
         self._validate_type()
+        # self.required_input_type = 'csv-stream'
         data = self._parse_data()
 
+        print(data)
         validate_text_contains_all(data, self.text_contains_all, self.regex_escape)
         validate_text_contains_any(data, self.text_contains_any, self.regex_escape)
         validate_sheets(self.input_object, self.required_sheets)
         validate_columns(data, self.required_columns, self.required_sheets)
         validate_rows_number(data, self.min_rows_number, self.required_sheets)
-    
