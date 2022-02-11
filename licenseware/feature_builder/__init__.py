@@ -1,5 +1,5 @@
+from .feature_builder import FeatureBuilder
 from .features import (
-    FeatureBuiler,
     PRODUCT_REQUESTS
 )
 

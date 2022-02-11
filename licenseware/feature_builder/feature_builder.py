@@ -1,24 +1,22 @@
-import requests
 from typing import List
 from flask import Request
 from licenseware.quota import Quota
 from licenseware import mongodata
 from licenseware.common.constants import envs
-# from licenseware.common.serializers import WildSchema
-from licenseware.tenants.user_utils import get_user_tables
+from licenseware.common.serializers import FeaturesSchema
+from licenseware.tenants.user_utils import current_user_has_access_level
 
 
-
-class FeatureBuiler:
+class FeatureBuilder:
 
     def __init__(self,
-        name:str,
-        description:str = None, 
+        name: str,
+        description: str = None,
         access_levels: List[str] = None,
-        free_quota:int = 1, 
-        activated:bool = False,
-        feature_id:str = None,
-        feature_path:str = None
+        free_quota: int = 1,
+        activated: bool = False,
+        feature_id: str = None,
+        feature_path: str = None
     ):
         self.name = name
         self.description = description
@@ -27,11 +25,14 @@ class FeatureBuiler:
         self.activated = activated
         self.feature_id = feature_id
         self.feature_path = feature_path
-       
+
+        self.get_details()
+
+        
 
     def get_details(self):
-        
-        #! There can't be 2 features with the same `name`
+
+        # ! There can't be 2 features with the same `name`
         # `decorators` will be applied on the route created
         # `access_levels` will be verified with auth 
         #  Ex: 
@@ -46,97 +47,68 @@ class FeatureBuiler:
             self.feature_path = '/' + self.feature_id.replace("_", "-")
 
         return {
-            'name':self.name,
-            'description':self.description,
+            'name': self.name,
+            'description': self.description,
             'access_levels': self.access_levels,
-            'free_quota':self.free_quota,
-            'activated':self.activated,
-            'feature_id':self.feature_id,
-            'feature_path':self.feature_path
+            'free_quota': self.free_quota,
+            'activated': self.activated,
+            'feature_id': self.feature_id,
+            'feature_path': self.feature_path
         }
 
+    def update_quota(self, flask_request: Request, units: int = 1):
 
-    def update_quota(self, flask_request: Request, units:int = 1):
-        
         q = Quota(
             tenant_id=flask_request.headers.get("TenantId"),
             auth_token=flask_request.headers.get("Authorization"),
             units=self.free_quota,
             uploader_id=self.feature_id
         )
-        
+
         res, status_code = q.check_quota(units)
         if status_code == 200:
             return q.update_quota(units)
-        
-        return res, status_code
 
+        return res, status_code
 
     def get_status(self, flask_request: Request):
 
         tenant_id = flask_request.headers.get("TenantId")
-    
+
         results = mongodata.fetch(
-            match={'tenant_id': tenant_id},
+            match={'tenant_id': tenant_id, "name": self.name},
             collection=envs.MONGO_COLLECTION_FEATURES_NAME
         )
-        
-        if not results: return False, 200
 
         return results, 200
 
+    def set_status(self, tenant_id: str, status: bool):
 
+        self.activated = status
+        feature_details = self.get_details()
+
+        updated = mongodata.update(
+            schema=FeaturesSchema,
+            match={'tenant_id': tenant_id, 'name': self.name},
+            new_data=feature_details,
+            collection=envs.MONGO_COLLECTION_FEATURES_NAME
+        )
+
+        return updated
 
     def update_status(self, flask_request: Request):
 
-        data = flask_request.json
+        status = flask_request.json['activated']
         tenant_id = flask_request.headers.get("TenantId")
-        auth_token = flask_request.headers.get("Authorization")
 
-        user_tables = get_user_tables(flask_request)
+        resp = f"Feature {'activated' if status else 'deactivated'}", 200
 
-        # "user": user_table,
-        # "tenants": tenants_table,
-        # "shared_tenants": shared_tenants_table
-        # self.access_levels
+        if len(self.access_levels) == 0:
+            self.set_status(tenant_id, status)
+            return resp
 
+        if current_user_has_access_level(flask_request, self.access_levels):
+            self.set_status(tenant_id, status)
+            return resp
 
-
-
-
-
-
-
-       
-    
- 
-
-    
-
-    
-    
-
-
-
-
-
-        
-
-
-
-def update_product_requests_quota(flask_request: Request):
-    
-    q = Quota(
-        tenant_id=flask_request.headers.get("TenantId"),
-        auth_token=flask_request.headers.get("Authorization"),
-        units=10,
-        uploader_id="product_requests"
-    )
-    
-    res, status_code = q.check_quota(1)
-    if status_code == 200:
-        return q.update_quota(1)
-    
-    return res, status_code
-    
-    
+        return "Not enough rights to activate/deactivate feature", 401

@@ -1,7 +1,7 @@
-from .feature_builder import FeatureBuiler
+from .feature_builder import FeatureBuilder
 
 
-PRODUCT_REQUESTS = FeatureBuiler(
+PRODUCT_REQUESTS = FeatureBuilder(
     name="Product Requests",
     description="Allow users request products by sending emails",
     access_levels=['admin'],

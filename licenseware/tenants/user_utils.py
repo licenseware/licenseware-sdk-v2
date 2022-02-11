@@ -1,4 +1,5 @@
 import requests
+from typing import List
 from flask import Request
 from licenseware.common.constants import envs
 from licenseware.utils.logger import log
@@ -69,4 +70,42 @@ def get_user_tables(flask_request: Request):
     if response.status_code == 200:
         return response.json()
 
+    log.warning("User's tables not found")
+
     
+
+
+
+def current_user_has_access_level(flask_request: Request, access_levels:List[str]):
+
+    tables = get_user_tables(flask_request)
+    current_tenant = flask_request.headers.get("TenantId")
+
+    # See if current user is tenant owner
+    user_tenant = [
+        t for t in tables['tenants'] 
+        if t['user_id'] == tables['user']['id'] and t['id'] == current_tenant
+    ]
+
+    if len(user_tenant) == 1: return True
+
+
+    # See if current user is invited as an admin 
+    user_admin = [
+        st for st in tables['shared_tenants'] 
+        if st['invited_email'] == tables['user']['email'] 
+        and 
+        st['tenant_id'] == current_tenant 
+        and 
+        st['access_level'] in access_levels
+    ]
+
+    if len(user_admin) == 1: return True
+
+
+    return False
+
+
+
+
+

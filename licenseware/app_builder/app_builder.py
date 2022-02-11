@@ -205,6 +205,7 @@ class AppBuilder:
         self.init_api()
         self.init_routes()
         self.init_namespaces()
+        self.init_features()
         self.init_broker()
         if register: self.register_app()
         
@@ -267,7 +268,10 @@ class AppBuilder:
         self.add_editables_routes()
         self.add_features_routes()
         
-    
+        
+    def init_features(self):
+        self.features = [f.get_details() for f in self.features]
+
     
     def add_uploads_routes(self):
         
