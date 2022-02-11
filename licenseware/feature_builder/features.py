@@ -1,9 +1,10 @@
 from .feature_builder import FeatureBuilder
 
 
+
 PRODUCT_REQUESTS = FeatureBuilder(
     name="Product Requests",
     description="Allow users request products by sending emails",
     access_levels=['admin'],
-    free_quota=10
+    monthly_quota=10
 )

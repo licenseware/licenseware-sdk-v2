@@ -6,21 +6,21 @@ See `editable_table` package for more information.
 
 """
 
+from flask import request
 from flask_restx import Api, Resource
-from licenseware.decorators.auth_decorators import authorization_check
 from licenseware.decorators import failsafe
-from licenseware.editable_table import editable_tables_from_schemas
+from licenseware.decorators.auth_decorators import authorization_check
+from licenseware.feature_builder.utils import get_all_features
 
 
-
-def add_editable_tables_route(api:Api, appvars:dict):
+def add_features_route(api:Api, appvars:dict):
     
-    @api.route(appvars['editable_tables_path'])
-    class EditableTables(Resource):
+    @api.route(appvars['features_path'])
+    class AllFeatures(Resource):
         @failsafe(fail_code=500)
         @authorization_check
         @api.doc(
-            description="Get editable tables metadata",
+            description="Get all available features(add-ons) for this app",
             responses={
                 200 : '',
                 403 : "Missing `Tenant` or `Authorization` information",
@@ -28,9 +28,10 @@ def add_editable_tables_route(api:Api, appvars:dict):
             },
         )
         def get(self):
-            return editable_tables_from_schemas(
-                appvars['editable_tables_schemas']
-            )
+            return {
+                "available_features": [f.get_details() for f in appvars['features']], 
+                "initialized_features": get_all_features(request)
+            }
     
     return api
 

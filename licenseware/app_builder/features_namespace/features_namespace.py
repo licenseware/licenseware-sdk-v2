@@ -38,40 +38,38 @@ def create_feature_resource(feature:FeatureBuilder):
 
 def get_features_namespace(ns: Namespace, features:List[FeatureBuilder]):
 
-    
+    update_feature_status_model = ns.model('update_feature_status', dict(
+            activated = fields.Boolean(required=True)
+        )
+    )
+
+    docs = {
+        'get': {
+            'description': 'Get feature details',
+            'responses': { 
+                200: 'Feature details', 
+                403: 'Missing `Tenantid` or `Authorization` information', 
+                500: 'Something went wrong while handling the request'
+            }
+        },
+        'post': {
+            'description': 'Set feature status', 
+            'validate': True, 
+            'expect': [update_feature_status_model], 
+            'responses': { 
+                200: 'Success', 
+                403: 'Missing `Tenantid` or `Authorization` information', 
+                500: 'Something went wrong while handling the request'
+            }
+        }
+    }
+        
     for feature in features:
         
         FeatureRes = create_feature_resource(feature)
-
-        update_feature_status_model = ns.model('update_feature_status', dict(
-                activated = fields.Boolean(required=True)
-            )
-        )
-
-        docs = {
-            'get': {
-                'description': 'Get feature details',
-                'responses': { 
-                    200: 'Feature details', 
-                    403: 'Missing `Tenantid` or `Authorization` information', 
-                    500: 'Something went wrong while handling the request'
-                }
-            },
-            'post': {
-                'description': 'Set feature status', 
-                'validate': True, 
-                'expect': [update_feature_status_model], 
-                'responses': { 
-                    200: 'Success', 
-                    403: 'Missing `Tenantid` or `Authorization` information', 
-                    500: 'Something went wrong while handling the request'
-                }
-            }
-        }
         
         FeatureRes.__apidoc__ = docs
-       
-
+    
         FeatureResource = type(
             feature.feature_id.replace("_", "").capitalize() + 'Feature',
             (FeatureRes, ),
