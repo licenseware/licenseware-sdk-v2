@@ -8,9 +8,14 @@ etc
 
 """
 
+from licenseware.utils.logger import log
 
 from .flags import flags
-from .envs import envs
 from .states import states
 from .icons import icons
 from .filters import filters
+
+try:
+    from .envs import envs
+except Exception as err: 
+    log.warning(err)
