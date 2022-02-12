@@ -60,16 +60,13 @@ from loguru import logger as log
 _debug = os.getenv("DEBUG", "").lower() == "true"
 _log_level = "DEBUG" if _debug else "WARNING"
 
-# _log_format = """<yellow>Tenantid={extra[tenant_id]}</yellow>
-# <green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green>[ <level>{level}</level> ]
-# <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan>
-# <level>{message}</level>
-# """
-
-_log_format = """<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green>[ <level>{level}</level> ]
-<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan>
-<level>{message}</level>
-"""
+if 'local' in os.getenv('ENVIRONMENT', 'local').lower():
+    _log_format = """<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green>[ <level>{level}</level> ]
+    <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan>
+    <level>{message}</level>
+    """
+else:
+    _log_format = '[{level}] [----- {name}:{function}:{line} -----]    [+++++ METADATA: {extra} +++++]    [***** MESSAGE: {message}\n'
 
 try:
     log.remove(0)
@@ -84,11 +81,20 @@ class Placeholder(dict):  # HACK: to avoid `str.format_map` error on missing key
 
 log.configure(
     patcher=lambda record: record["extra"].update(
-        tenant_id=request.headers.get("Tenantid")
+        tenant_id=request.headers.get("Tenantid"),
+        host=request.headers.get("Host"),
+        user_agent=request.headers.get("User-Agent"),
+        accept=request.headers.get("Accept"),
+        content_type=request.headers.get("Content-Type"),
+        request_url=request.url,
+        request_method=request.method,
+        json_payload= request.get_json() if request.get_json() and 'login' not in request.url and 'password' not in request.url else None,
+        multiform_payload=request.files if request.files else None,
     )
     if has_request_context()
     else None,
     extra=Placeholder(),
+    
 )
 
 log.add(

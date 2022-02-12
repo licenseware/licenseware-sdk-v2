@@ -21,7 +21,7 @@ def authorization_check(f):
         #TODO flask or swagger alters headers by adding .capitalize() on them, probably.. 
         
         if "Authorization" not in headers or "Tenantid" not in headers:
-            log.warning(fail_message)
+            log.warning(f'AUTHORIZATION MISSING  | Request headers: {headers} | URL {request.url}')
             return {'status': 'fail', 'message':fail_message}, 403
 
         headers = {
@@ -32,6 +32,7 @@ def authorization_check(f):
         response = requests.get(url=envs.AUTH_USER_CHECK_URL, headers=headers)
         
         if response.status_code != 200:
+            log.warning(f'AUTHORIZATION FAIL | Request headers: {headers} | URL {request.url} | Message: {response.text}')
             return {'status': 'fail', 'message':fail_message}, 401
         
         return f(*args, **kwargs)
