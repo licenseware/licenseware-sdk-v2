@@ -159,7 +159,6 @@ class FileContentValidator:
                     'filepath': 'File not saved',
                     'message': self.filename_invalid_message or str(err)
                 })
-                log.error(traceback.format_exc())
 
         return validation_response
 
