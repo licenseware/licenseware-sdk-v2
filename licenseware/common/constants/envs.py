@@ -41,7 +41,7 @@ class envs:
     AUTH_USER_CHECK_URL:str = AUTH_SERVICE_URL + '/verify'
     AUTH_TENANTS_URL:str = AUTH_SERVICE_URL + '/tenants'
     AUTH_USER_PROFILE_URL:str = AUTH_SERVICE_URL + '/profile'
-    
+    AUTH_USER_TABLES_URL:str = AUTH_SERVICE_URL + '/users/tables'
 
     REGISTRY_SERVICE_URL:str = os.environ['REGISTRY_SERVICE_URL']
     REGISTER_ALL_URL:str = REGISTRY_SERVICE_URL + '/v1' + '/registrations'
@@ -58,9 +58,11 @@ class envs:
     BASE_URL:str = APP_HOST + APP_PATH
     UPLOAD_PATH:str = '/uploads'
     REPORT_PATH:str = '/reports'
+    FEATURE_PATH:str = '/features'
     REPORT_COMPONENT_PATH:str = '/report-components'
     UPLOAD_URL:str = BASE_URL + UPLOAD_PATH
     REPORT_URL:str = BASE_URL + REPORT_PATH
+    FEATURES_URL:str = BASE_URL + FEATURE_PATH
     REPORT_COMPONENT_URL:str = BASE_URL + REPORT_COMPONENT_PATH
     FILE_UPLOAD_PATH:str = os.getenv("FILE_UPLOAD_PATH", 'tmp/lware')
     DEPLOYMENT_SUFFIX:str = os.getenv("DEPLOYMENT_SUFFIX")
@@ -80,6 +82,7 @@ class envs:
     MONGO_COLLECTION_UTILIZATION_NAME:str = COLLECTION_PREFIX + "Quota"
     MONGO_COLLECTION_ANALYSIS_NAME:str = COLLECTION_PREFIX + "History"
     MONGO_COLLECTION_REPORT_SNAPSHOTS_NAME:str = COLLECTION_PREFIX + "ReportSnapshots"
+    MONGO_COLLECTION_FEATURES_NAME:str = COLLECTION_PREFIX + "Features"
     
         
     # Environment variables added later by the app

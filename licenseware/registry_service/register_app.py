@@ -23,7 +23,7 @@ def register_app(**kwargs):
             "flags": kwargs['flags'],
             "icon": kwargs['icon'],
             "features_url": kwargs['features_url'],
-            "features": kwargs['features'], 
+            "features": [f.get_details() for f in kwargs['features']], 
             "refresh_registration_url":  kwargs['refresh_registration_url'],
             "app_activation_url": kwargs['app_activation_url'],
             "editable_tables_url": kwargs['editable_tables_url'],
