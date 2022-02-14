@@ -180,10 +180,12 @@ def validate_rows_number(df, min_rows_number, required_sheets=[]):
             raise ValueError(f'Expected table to have at least {min_rows_number} row(s)')
 
 
-def validate_filename(filename:str, contains:list, endswith:list = [], regex_escape:bool = True):
+def validate_filename(filename:str, contains:list, endswith:list = None, regex_escape:bool = True):
     """
         Check if filename contains all needed keywords and all accepted file types
     """
+    if endswith is None:
+        endswith = []
 
     if not isinstance(filename, str): 
         raise ValueError("filename must be a string")

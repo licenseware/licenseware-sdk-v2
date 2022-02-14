@@ -17,6 +17,7 @@ from marshmallow.schema import Schema
 from licenseware.uploader_builder.uploader_builder import UploaderBuilder
 from licenseware.report_builder.report_builder import ReportBuilder
 from licenseware.report_components.base_report_component import BaseReportComponent
+from licenseware.feature_builder import FeatureBuilder
 from licenseware.common.constants.envs import envs
 from licenseware.registry_service import register_all
 from licenseware.tenants import get_activated_tenants, get_tenants_with_data
@@ -34,6 +35,7 @@ from .tenant_registration_route import add_tenant_registration_route
 from .app_activation_route import add_app_activation_route
 from .app_registration_route import add_app_registration_route
 from .terms_and_conditions_route import add_terms_and_conditions_route
+from .features_route import add_features_route
 
 
 from .endpoint_builder_namespace import endpoint_builder_namespace
@@ -62,6 +64,13 @@ from .report_components_namespace import (
     get_report_individual_components_namespace
 )
 
+
+from .features_namespace import features_namespace
+from .features_namespace import (
+    get_features_namespace
+)
+
+
 from .download_as_route import add_download_as_route
 
 
@@ -89,7 +98,7 @@ class AppBuilder:
         name: str, 
         description: str,
         flags: list = [],
-        features: List[dict] = [],
+        features: List[FeatureBuilder] = [],
         editable_tables:List[EditableTable] = [],
         activated_tenants_func: Callable = get_activated_tenants, 
         tenants_with_data_func: Callable = get_tenants_with_data,
@@ -164,7 +173,7 @@ class AppBuilder:
     
         self.appvars = vars(self)
     
-    
+
     
     def init_app(
         self, 
@@ -245,7 +254,8 @@ class AppBuilder:
             add_app_activation_route,
             add_app_registration_route,
             add_terms_and_conditions_route,
-            add_download_as_route
+            add_download_as_route,
+            add_features_route
         ]
         
         for func in api_funcs:
@@ -258,8 +268,8 @@ class AppBuilder:
         self.add_reports_routes()
         self.add_report_components_routes()
         self.add_editables_routes()
+        self.add_features_routes()
         
-    
     
     def add_uploads_routes(self):
         
@@ -313,8 +323,19 @@ class AppBuilder:
                 ns = SchemaNamespace(schema=editable.schema).initialize()
                 self.register_namespace(ns)
                 
-                    
-                        
+
+    def add_features_routes(self):
+        
+        ns_funcs = [
+            get_features_namespace
+        ]
+        
+        for func in ns_funcs:
+            self.register_namespace(
+                func(ns=features_namespace, features=self.features)
+            )           
+
+
     def register_app(self):
         """
             Sending registration payloads to registry-service
@@ -341,6 +362,7 @@ class AppBuilder:
             ]
         }
         
+        app_dict['features'] = [f.get_details() for f in self.features]
         app_dict['tenants_with_app_activated']  = self.activated_tenants_func()
         app_dict['tenants_with_data_available'] = self.tenants_with_data_func()
             
@@ -424,24 +446,18 @@ class AppBuilder:
         return payload
             
             
-    def register_feature(self, ns:Namespace, activated:bool = False, quota:int = 0):
+    def register_feature(self, feature_instance:FeatureBuilder):
         
-        for data in self.features:
-            if ns.name in data.keys():
-                raise Exception(f"Feature '{ns.name}' already registered!")
-        
-        self.features.append({
-            'name': ns.name,
-            'description': ns.description,
-            'quota': quota,
-            'activated': activated
-        })
-        
-        self.register_namespace(ns, '/features')
+        for feature in self.features:
+            if feature.feature_id == feature_instance.feature_id:
+                raise Exception(f"Feature id '{feature_instance.feature_id}' was already declared")
+            
+        self.features.append(feature_instance)
+
         
 
 
-    def register_uploader(self, uploader_instance):
+    def register_uploader(self, uploader_instance:UploaderBuilder):
         
         for uploader in self.uploaders:
             if uploader.uploader_id == uploader_instance.uploader_id:
@@ -450,7 +466,7 @@ class AppBuilder:
         self.uploaders.append(uploader_instance)
         
         
-    def register_report(self, report_instance):
+    def register_report(self, report_instance:ReportBuilder):
         
         for report in self.reports:
             if report.report_id == report_instance.report_id:
@@ -460,7 +476,7 @@ class AppBuilder:
         
         
 
-    def register_report_component(self, report_component_instance):
+    def register_report_component(self, report_component_instance:BaseReportComponent):
         
         for rep_component in self.report_components:
             if rep_component.component_id == report_component_instance.component_id:

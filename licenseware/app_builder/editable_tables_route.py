@@ -22,7 +22,7 @@ def add_editable_tables_route(api:Api, appvars:dict):
         @api.doc(
             description="Get editable tables metadata",
             responses={
-                200 : 'TODO - add doc',
+                200 : '',
                 403 : "Missing `Tenant` or `Authorization` information",
                 500 : 'Something went wrong while handling the request' 
             },
