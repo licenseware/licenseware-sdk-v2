@@ -47,7 +47,25 @@ def get_features_namespace(ns: Namespace, features:List[FeatureBuilder]):
         'get': {
             'description': 'Get feature details',
             'responses': { 
-                200: 'Feature details', 
+                200: """\
+Example response: 
+
+    {
+        "name": "Product Requests",
+        "tenant_id": "0be6c669-ab99-41e9-9d88-753a8fcc4cf8",
+        "access_levels": [
+            "admin"
+        ],
+        "activated": true,
+        "app_id": "plugins",
+        "description": "Allow users request products by sending emails",
+        "feature_id": "product_requests_feature",
+        "monthly_quota": 10,
+        "monthly_quota_consumed": 2,
+        "quota_reset_date": "2022-03-16T08:18:20.713437"
+    }
+
+""", 
                 403: 'Missing `Tenantid` or `Authorization` information', 
                 500: 'Something went wrong while handling the request'
             }
@@ -57,7 +75,7 @@ def get_features_namespace(ns: Namespace, features:List[FeatureBuilder]):
             'validate': True, 
             'expect': [update_feature_status_model], 
             'responses': { 
-                200: 'Success', 
+                200: 'Feature activated/deactivated', 
                 403: 'Missing `Tenantid` or `Authorization` information', 
                 500: 'Something went wrong while handling the request'
             }
