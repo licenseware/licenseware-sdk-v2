@@ -1,0 +1,30 @@
+WorkspaceID;DatabaseRefID;InstanceName;HostName;DatabaseName;OptionName;OptionQuery;Type;Data;Description;ScannerID;DataSource
+6f68900f-3ac1-4837-a9b5-ebcd9c1686f2;1;orcl;NAME_DB;ORCL;V$VERSION;;Cols;"BANNER";v$version - db version;RANDOM-PC-NAME;randomscanner
+6f68900f-3ac1-4837-a9b5-ebcd9c1686f2;1;orcl;NAME_DB;ORCL;V$VERSION;;Data;"Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production";v$version - db version;RANDOM-PC-NAME;randomscanner
+6f68900f-3ac1-4837-a9b5-ebcd9c1686f2;1;orcl;NAME_DB;ORCL;V$OPTION;;Cols;"PARAMETER","VALUE";v$option - db options installed;RANDOM-PC-NAME;randomscanner
+6f68900f-3ac1-4837-a9b5-ebcd9c1686f2;1;orcl;NAME_DB;ORCL;V$OPTION;;Data;"Partitioning","TRUE";v$option - db options installed;RANDOM-PC-NAME;randomscanner
+6f68900f-3ac1-4837-a9b5-ebcd9c1686f2;1;orcl;NAME_DB;ORCL;V$OPTION;;Data;"Objects","TRUE";v$option - db options installed;RANDOM-PC-NAME;randomscanner
+6f68900f-3ac1-4837-a9b5-ebcd9c1686f2;1;orcl;NAME_DB;ORCL;V$OPTION;;Data;"Real Application Clusters","FALSE";v$option - db options installed;RANDOM-PC-NAME;randomscanner
+6f68900f-3ac1-4837-a9b5-ebcd9c1686f2;1;orcl;NAME_DB;ORCL;V$OPTION;;Data;"Advanced replication","TRUE";v$option - db options installed;RANDOM-PC-NAME;randomscanner
+6f68900f-3ac1-4837-a9b5-ebcd9c1686f2;1;orcl;NAME_DB;ORCL;V$OPTION;;Data;"Bit-mapped indexes","TRUE";v$option - db options installed;RANDOM-PC-NAME;randomscanner
+6f68900f-3ac1-4837-a9b5-ebcd9c1686f2;1;orcl;NAME_DB;ORCL;V$OPTION;;Data;"Connection multiplexing","TRUE";v$option - db options installed;RANDOM-PC-NAME;randomscanner
+6f68900f-3ac1-4837-a9b5-ebcd9c1686f2;1;orcl;NAME_DB;ORCL;V$OPTION;;Data;"Connection pooling","TRUE";v$option - db options installed;RANDOM-PC-NAME;randomscanner
+6f68900f-3ac1-4837-a9b5-ebcd9c1686f2;1;orcl;NAME_DB;ORCL;V$OPTION;;Data;"Database queuing","TRUE";v$option - db options installed;RANDOM-PC-NAME;randomscanner
+6f68900f-3ac1-4837-a9b5-ebcd9c1686f2;1;orcl;NAME_DB;ORCL;V$OPTION;;Data;"Incremental backup and recovery","TRUE";v$option - db options installed;RANDOM-PC-NAME;randomscanner
+6f68900f-3ac1-4837-a9b5-ebcd9c1686f2;1;orcl;NAME_DB;ORCL;V$OPTION;;Data;"Instead-of triggers","TRUE";v$option - db options installed;RANDOM-PC-NAME;randomscanner
+6f68900f-3ac1-4837-a9b5-ebcd9c1686f2;1;orcl;NAME_DB;ORCL;V$OPTION;;Data;"Parallel backup and recovery","TRUE";v$option - db options installed;RANDOM-PC-NAME;randomscanner
+6f68900f-3ac1-4837-a9b5-ebcd9c1686f2;1;orcl;NAME_DB;ORCL;V$OPTION;;Data;"Parallel execution","TRUE";v$option - db options installed;RANDOM-PC-NAME;randomscanner
+6f68900f-3ac1-4837-a9b5-ebcd9c1686f2;1;orcl;NAME_DB;ORCL;V$OPTION;;Data;"Parallel load","TRUE";v$option - db options installed;RANDOM-PC-NAME;randomscanner
+6f68900f-3ac1-4837-a9b5-ebcd9c1686f2;1;orcl;NAME_DB;ORCL;V$OPTION;;Data;"Point-in-time tablespace recovery","TRUE";v$option - db options installed;RANDOM-PC-NAME;randomscanner
+6f68900f-3ac1-4837-a9b5-ebcd9c1686f2;1;orcl;NAME_DB;ORCL;V$OPTION;;Data;"Fine-grained access control","TRUE";v$option - db options installed;RANDOM-PC-NAME;randomscanner
+6f68900f-3ac1-4837-a9b5-ebcd9c1686f2;1;orcl;NAME_DB;ORCL;V$OPTION;;Data;"Proxy authentication/authorization","TRUE";v$option - db options installed;RANDOM-PC-NAME;randomscanner
+6f68900f-3ac1-4837-a9b5-ebcd9c1686f2;1;orcl;NAME_DB;ORCL;V$OPTION;;Data;"Change Data Capture","TRUE";v$option - db options installed;RANDOM-PC-NAME;randomscanner
+6f68900f-3ac1-4837-a9b5-ebcd9c1686f2;1;orcl;NAME_DB;ORCL;V$OPTION;;Data;"Plan Stability","TRUE";v$option - db options installed;RANDOM-PC-NAME;randomscanner
+6f68900f-3ac1-4837-a9b5-ebcd9c1686f2;1;orcl;NAME_DB;ORCL;V$OPTION;;Data;"Online Index Build","TRUE";v$option - db options installed;RANDOM-PC-NAME;randomscanner
+6f68900f-3ac1-4837-a9b5-ebcd9c1686f2;1;orcl;NAME_DB;ORCL;V$OPTION;;Data;"Coalesce Index","TRUE";v$option - db options installed;RANDOM-PC-NAME;randomscanner
+6f68900f-3ac1-4837-a9b5-ebcd9c1686f2;1;orcl;NAME_DB;ORCL;V$OPTION;;Data;"Managed Standby","TRUE";v$option - db options installed;RANDOM-PC-NAME;randomscanner
+6f68900f-3ac1-4837-a9b5-ebcd9c1686f2;1;orcl;NAME_DB;ORCL;V$OPTION;;Data;"Materialized view rewrite","TRUE";v$option - db options installed;RANDOM-PC-NAME;randomscanner
+6f68900f-3ac1-4837-a9b5-ebcd9c1686f2;1;orcl;NAME_DB;ORCL;V$OPTION;;Data;"Database resource manager","TRUE";v$option - db options installed;RANDOM-PC-NAME;randomscanner
+6f68900f-3ac1-4837-a9b5-ebcd9c1686f2;1;orcl;NAME_DB;ORCL;V$OPTION;;Data;"Spatial","TRUE";v$option - db options installed;RANDOM-PC-NAME;randomscanner
+6f68900f-3ac1-4837-a9b5-ebcd9c1686f2;1;orcl;NAME_DB;ORCL;V$OPTION;;Data;"Automatic Storage Management","FALSE";v$option - db options installed;RANDOM-PC-NAME;randomscanner
+6f68900f-3ac1-4837-a9b5-ebcd9c1686f2;1;orcl;NAME_DB;ORCL;V$OPTION;;Data;"Export transportable tablespaces","TRUE";v$option - db options installed;RANDOM-PC-NAME;randomscanner

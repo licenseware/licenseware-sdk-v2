@@ -147,3 +147,8 @@ cython_debug/
 
 # MacOS
 .DS*
+
+# 
+!comma.csv
+!pipe.csv
+!semicolon.csv
