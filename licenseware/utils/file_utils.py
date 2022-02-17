@@ -119,7 +119,11 @@ def save_file(file, tenant_id=None, path=None):
     save_path = path or os.path.join(envs.FILE_UPLOAD_PATH, tenant_id)
     if not os.path.exists(save_path): os.makedirs(save_path) 
     
-    file.seek(0)  # move cursor to 0 (stream left it on last read)
+    try:
+        file.seek(0) # move cursor to 0 (stream left it on last read)
+    except ValueError:
+        log.error("File is not a stream, can't seek")
+          
     file_path = os.path.join(save_path, filename)
     file.save(file_path)
     file.close()

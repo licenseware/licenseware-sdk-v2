@@ -39,9 +39,11 @@ You can also import individually the function bellow:
 
 import os, re
 import itertools
+from numpy import isin, require
 import pandas as pd
 from io import BytesIO
 from licenseware.utils.logger import log
+import traceback
 
 
 def validate_text_contains_all(text, text_contains_all, regex_escape=True):
@@ -61,6 +63,7 @@ def validate_text_contains_all(text, text_contains_all, regex_escape=True):
         raise ValueError(f'File must contain the all following keywords: {", ".join(text_contains_all)}')
 
 
+
 def validate_text_contains_any(text, text_contains_any, regex_escape=True):
     """
         Raise exception if contents of the text file don't contain at least one item in text_contains_any list
@@ -76,14 +79,24 @@ def validate_text_contains_any(text, text_contains_any, regex_escape=True):
     raise ValueError(f'File must contain at least one of the following keywords: {", ".join(text_contains_any)}')
 
 
+def _columns_validator(file_columns, required_columns, raise_error=True):
+    if isinstance(file_columns, list):
+        common_cols = list(set.intersection(set(required_columns), set(file_columns)))
+        if sorted(required_columns) != sorted(common_cols):
+            missing_cols = set.difference(set(required_columns), set(file_columns))
+            if raise_error:
+                raise ValueError(f'Table does not contain required columns: {missing_cols}')
+            return False
+        return True
+    else:
+        if not all(col in file_columns for col in required_columns):
+            if raise_error:
+                raise ValueError(f'Table does not contain required columns: {required_columns}')
+            return False
+        return True
 
-def validate_columns(df, required_columns, required_sheets=[]):
-    """
-        Raise an error if columns required are not found in the table
-    """
 
-    if not required_columns: return
-
+def _get_columns(df, required_sheets):
     if isinstance(df, dict):
         given_columns = []
         for sheet, table in df.items():
@@ -91,32 +104,23 @@ def validate_columns(df, required_columns, required_sheets=[]):
             given_columns.append(table.columns.tolist())
         given_columns = set(itertools.chain.from_iterable(given_columns))
     else:
-        given_columns = df.columns
-
-    commun_cols = list(set.intersection(set(required_columns), set(given_columns)))
-    if sorted(required_columns) != sorted(commun_cols):
-        missing_cols = set.difference(set(required_columns), set(given_columns))
-        raise ValueError(f'Table has the following columns missing: {missing_cols}')
+        given_columns= df.split("\n")[0]
+    return given_columns
 
 
-def validate_rows_number(df, min_rows_number, required_sheets=[]):
-    """
-        Raise error if minimum_rows_number is not satisfied
-    """
-
-    if not min_rows_number: return
-
-    if isinstance(df, dict):
-        for sheet, table in df.items():
-            if sheet not in required_sheets: continue
-            if table.shape[0] < min_rows_number:
-                raise ValueError(f'Expected {sheet} to have at least {min_rows_number} row(s)')
+def validate_columns(df, required_columns, required_sheets=[]):
+    if not required_columns: return
+    
+    file_columns = _get_columns(df, required_sheets)
+    
+    if isinstance(required_columns[0], tuple) and len(required_columns) > 1:
+        for rc in required_columns:
+            if _columns_validator(file_columns, rc, raise_error=False):
+                return
+        else:
+            raise ValueError(f'Table does not contain required columns: {required_columns}')
     else:
-        if df.shape[0] < min_rows_number:
-            raise ValueError(f'Expected table to have at least {min_rows_number} row(s)')
-
-
-
+        _columns_validator(file_columns, required_columns, raise_error=True)
 
 
 def _sheets_validator(sheets, required_sheets, raise_error=True):
@@ -130,8 +134,6 @@ def _sheets_validator(sheets, required_sheets, raise_error=True):
         return False
 
     return True
-
-
 
 
 def validate_sheets(file, required_sheets):
@@ -160,6 +162,22 @@ def validate_sheets(file, required_sheets):
     else:
         _sheets_validator(sheets, required_sheets, raise_error=True)
 
+
+def validate_rows_number(df, min_rows_number, required_sheets=[]):
+    """
+        Raise error if minimum_rows_number is not satisfied
+    """
+
+    if not min_rows_number: return
+
+    if isinstance(df, dict):
+        for sheet, table in df.items():
+            if sheet not in required_sheets: continue
+            if table.shape[0] < min_rows_number:
+                raise ValueError(f'Expected {sheet} to have at least {min_rows_number} row(s)')
+    else:
+        if df.count("\n") < min_rows_number:
+            raise ValueError(f'Expected table to have at least {min_rows_number} row(s)')
 
 
 def validate_filename(filename:str, contains:list, endswith:list = None, regex_escape:bool = True):
@@ -209,7 +227,6 @@ class GeneralValidator:
         self.skip_validate_type = False
         # Making sure we don't miss characters
         self.buffer = buffer + sum([len(c) for c in required_columns]) + len(text_contains_all) + len(text_contains_any)
-        
         # Calling validation on init, raise Exception if something is wrong
         self.validate()
         
@@ -303,6 +320,27 @@ class GeneralValidator:
 
         return dfs
 
+
+    def _sniff_delimiter(self):
+        reader = pd.read_csv(self.input_object, sep=None, iterator=True, engine='python')
+        delimiter = reader._engine.data.dialect.delimiter
+        reader.close()
+        if delimiter in [",",";"]:
+            log.info(f"Sniffed delimiter '{delimiter}' for {self.input_object}")
+            return delimiter
+        else:
+            log.warning(f"Sniffed illegal delimiter {delimiter} for {self.input_object}")
+            return ","
+
+
+    def _parse_csv(self):
+        df =  pd.read_csv(
+                self.input_object, nrows=self.min_rows_number, skiprows=self.header_starts_at,
+                delimiter=self._sniff_delimiter()
+            )
+        return df
+
+
     def _parse_data(self):
 
         if self.required_input_type == "excel-stream":
@@ -311,11 +349,8 @@ class GeneralValidator:
         if self.required_input_type == "excel":
             return self._parse_excel()
 
-
         elif self.required_input_type == "csv":
-            return pd.read_csv(
-                self.input_object, nrows=self.min_rows_number, skiprows=self.header_starts_at
-            )
+            return self._parse_csv()
 
         elif self.required_input_type == "txt":
             with open(self.input_object, 'r', encoding='utf8', errors='ignore') as f:
@@ -327,7 +362,11 @@ class GeneralValidator:
 
         elif self.required_input_type == "stream":
             self.input_object.seek(0)
-            return self.input_object.stream.read(self.buffer).decode('utf8', 'ignore')
+            if self.min_rows_number:
+                return self.input_object.stream.read().decode('utf8', 'ignore')
+            else:
+                return self.input_object.stream.read(self.buffer).decode('utf8', 'ignore')
+
 
         else:
             raise ValueError("File contents are badly formated and cannot be read!")
@@ -336,15 +375,12 @@ class GeneralValidator:
         """ 
             When called run all validators on `input_object` parameter
         """
-
         self._check_required_input_type()
         self._validate_type()
-
         data = self._parse_data()
-
+        
         validate_text_contains_all(data, self.text_contains_all, self.regex_escape)
         validate_text_contains_any(data, self.text_contains_any, self.regex_escape)
         validate_sheets(self.input_object, self.required_sheets)
         validate_columns(data, self.required_columns, self.required_sheets)
         validate_rows_number(data, self.min_rows_number, self.required_sheets)
-    

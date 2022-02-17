@@ -112,3 +112,6 @@ build-wheel:
 	rm -rf build
 	rm -rf licenseware.egg-info 
 	mv dist wheel_sdk 
+
+build-image:
+	docker build -t ghcr.io/licenseware/licenseware-sdk-v2 .
