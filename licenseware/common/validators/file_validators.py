@@ -324,6 +324,7 @@ class GeneralValidator:
     def _sniff_delimiter(self):
         reader = pd.read_csv(self.input_object, sep=None, iterator=True, engine='python')
         delimiter = reader._engine.data.dialect.delimiter
+        reader.close()
         if delimiter in [",",";"]:
             log.info(f"Sniffed delimiter '{delimiter}' for {self.input_object}")
             return delimiter
