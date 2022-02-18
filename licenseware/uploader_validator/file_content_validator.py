@@ -3,7 +3,8 @@ from typing import List, Union, Tuple
 from licenseware.common.validators.file_validators import GeneralValidator
 from licenseware.utils.file_utils import save_file
 from licenseware.common.constants import states
-# from licenseware.utils.logger import log
+from licenseware.utils.logger import log
+import traceback
 
 from werkzeug.datastructures import FileStorage
 
@@ -101,8 +102,10 @@ class FileContentValidator:
                     'status': states.FAILED,
                     'filename': os.path.basename(filepath),
                     'filepath': filepath,
-                    'message': self.filename_invalid_message or str(err)
+                    'message': self.filename_invalid_message or str(err)                    
                 })
+
+                log.error(traceback.format_exc())
 
         return validation_response
 

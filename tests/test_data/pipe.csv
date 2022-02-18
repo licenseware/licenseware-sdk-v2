@@ -1,0 +1,176 @@
+"LINE_START"|"MACHINE_ID"|"DB_NAME"|"TIMESTAMP"|"HOST_NAME"|"INSTANCE_NAME"|"OPTION_NAME"|"OPTION_QUERY"|"COL010"|"COL020"|"COL030"|"COL040"|"COL050"|"COL060"|"COL070"|"COL080"|"COL090"|"COL100"|"COL110"|"COL120"|"COL130"|"COL140"|"COL150"|"COL160"
+"LINE_START"|"someMachine"|"DB_MACHINE_NAME"|"2022-02-02_13:53:52"|"ip-000-00-0-000"|"DB_MACHINE_NAME"|V$VERSION|""|"Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production"|
+"LINE_START"|"someMachine"|"DB_MACHINE_NAME"|"2022-02-02_13:53:52"|"ip-000-00-0-000"|"DB_MACHINE_NAME"|V$OPTION|""|"Partitioning"|"TRUE"|
+"LINE_START"|"someMachine"|"DB_MACHINE_NAME"|"2022-02-02_13:53:52"|"ip-000-00-0-000"|"DB_MACHINE_NAME"|V$OPTION|""|"Objects"|"TRUE"|
+"LINE_START"|"someMachine"|"DB_MACHINE_NAME"|"2022-02-02_13:53:52"|"ip-000-00-0-000"|"DB_MACHINE_NAME"|DBA_FEATURE_USAGE_STATISTICS|10g|"CSSCAN"|"19.0.0.0.0"|"0"|"69"|"FALSE"|""|""|"2022-01-29_09:50:11"|"604800"|3361639718||
+"LINE_START"|"someMachine"|"DB_MACHINE_NAME"|"2022-02-02_13:53:52"|"ip-000-00-0-000"|"DB_MACHINE_NAME"|DBA_FEATURE_USAGE_STATISTICS|10g|"CSSCAN"|"19.0.0.0.0"|"0"|"11"|"FALSE"|""|""|"2020-10-02_17:19:44"|"604800"|4287404068||
+"LINE_START"|"someMachine"|"DB_MACHINE_NAME"|"2022-02-02_13:53:52"|"ip-000-00-0-000"|"DB_MACHINE_NAME"|DBA_FEATURE_USAGE_STATISTICS|10g|"Character Semantics"|"19.0.0.0.0"|"0"|"0"|"FALSE"|""|""|""|"604800"|1566759245||
+"LINE_START"|"someMachine"|"DB_MACHINE_NAME"|"2022-02-02_13:53:52"|"ip-000-00-0-000"|"DB_MACHINE_NAME"|DBA_FEATURE_USAGE_STATISTICS|10g|"Character Semantics"|"19.0.0.0.0"|"0"|"69"|"FALSE"|""|""|"2022-01-29_09:50:11"|"604800"|3361639718||
+"LINE_START"|"someMachine"|"DB_MACHINE_NAME"|"2022-02-02_13:53:52"|"ip-000-00-0-000"|"DB_MACHINE_NAME"|DBA_FEATURE_USAGE_STATISTICS|10g|"Character Semantics"|"19.0.0.0.0"|"0"|"11"|"FALSE"|""|""|"2020-10-02_17:19:44"|"604800"|4287404068||
+"LINE_START"|"someMachine"|"DB_MACHINE_NAME"|"2022-02-02_13:53:52"|"ip-000-00-0-000"|"DB_MACHINE_NAME"|DBA_FEATURE_USAGE_STATISTICS|10g|"Character Set"|"19.0.0.0.0"|"0"|"0"|"FALSE"|""|""|""|"604800"|1566759245||
+"LINE_START"|"someMachine"|"DB_MACHINE_NAME"|"2022-02-02_13:53:52"|"ip-000-00-0-000"|"DB_MACHINE_NAME"|DBA_FEATURE_USAGE_STATISTICS|10g|"Character Set"|"19.0.0.0.0"|"69"|"69"|"TRUE"|"2020-10-08_10:44:19"|"2022-01-29_09:50:11"|"2022-01-29_09:50:11"|"604800"|3361639718||
+"LINE_START"|"someMachine"|"DB_MACHINE_NAME"|"2022-02-02_13:53:52"|"ip-000-00-0-000"|"DB_MACHINE_NAME"|DBA_FEATURE_USAGE_STATISTICS|10g|"Character Set"|"19.0.0.0.0"|"11"|"11"|"TRUE"|"2020-07-23_19:44:57"|"2020-10-02_17:19:44"|"2020-10-02_17:19:44"|"604800"|4287404068||
+"LINE_START"|"someMachine"|"DB_MACHINE_NAME"|"2022-02-02_13:53:52"|"ip-000-00-0-000"|"DB_MACHINE_NAME"|DBA_FEATURE_USAGE_STATISTICS|10g|"Data Guard"|"19.0.0.0.0"|"0"|"0"|"FALSE"|""|""|""|"604800"|1566759245||
+"LINE_START"|"someMachine"|"DB_MACHINE_NAME"|"2022-02-02_13:53:52"|"ip-000-00-0-000"|"DB_MACHINE_NAME"|DBA_FEATURE_USAGE_STATISTICS|10g|"Data Guard"|"19.0.0.0.0"|"0"|"69"|"FALSE"|""|""|"2022-01-29_09:50:11"|"604800"|3361639718||
+  from SYS.CDC_CHANGE_TABLES$
+           *
+ERROR at line 8:
+ORA-00942: table or view does not exist
+
+
+  from SYS.CDC_CHANGE_TABLES$ c
+           *
+ERROR at line 14:
+ORA-00942: table or view does not exist
+
+
+  from SYS.CDC_CHANGE_SETS$   c
+           *
+ERROR at line 16:
+ORA-00942: table or view does not exist
+
+
+  from SCHEMA_VERSION_REGISTRY
+       *
+ERROR at line 13:
+ORA-00942: table or view does not exist
+
+
+"LINE_START"|"someMachine"|"DB_MACHINE_NAME"|"2022-02-02_13:53:52"|"ip-000-00-0-000"|"DB_MACHINE_NAME"|PARTITIONING|DBA_USERS.ORACLE_MAINTAINED|"ANONYMOUS"|"Y"|
+"LINE_START"|"someMachine"|"DB_MACHINE_NAME"|"2022-02-02_13:53:52"|"ip-000-00-0-000"|"DB_MACHINE_NAME"|PARTITIONING|DBA_USERS.ORACLE_MAINTAINED|"APPQOSSYS"|"Y"|
+"LINE_START"|"someMachine"|"DB_MACHINE_NAME"|"2022-02-02_13:53:52"|"ip-000-00-0-000"|"DB_MACHINE_NAME"|PARTITIONING|DBA_USERS.ORACLE_MAINTAINED|"AUDSYS"|"Y"|
+"LINE_START"|"someMachine"|"DB_MACHINE_NAME"|"2022-02-02_13:53:52"|"ip-000-00-0-000"|"DB_MACHINE_NAME"|PARTITIONING|DBA_USERS.ORACLE_MAINTAINED|"CTXSYS"|"Y"|
+"LINE_START"|"someMachine"|"DB_MACHINE_NAME"|"2022-02-02_13:53:52"|"ip-000-00-0-000"|"DB_MACHINE_NAME"|ACTIVE_DATA_GUARD|V$DATABASE|3361639718|DB_MACHINE_NAME|DB_MACHINE_NAME_A|READ WRITE|"PRIMARY"|"ENABLED"|"DISABLED"|"NONE"|"Linux x86 64-bit"|2020-10-08_05:16:37|2020-10-08_05:16:37|
+  FROM  OLAPSYS.DBA$OLAP_CUBES
+                *
+ERROR at line 5:
+ORA-00942: table or view does not exist
+
+
+  from ODM.ODM_MINING_MODEL
+           *
+ERROR at line 3:
+ORA-00942: table or view does not exist
+
+
+  from DMSYS.DM$OBJECT
+             *
+ERROR at line 3:
+ORA-00942: table or view does not exist
+
+
+  from DMSYS.DM$MODEL
+             *
+ERROR at line 3:
+ORA-00942: table or view does not exist
+
+
+  from DMSYS.DM$P_MODEL
+             *
+ERROR at line 3:
+ORA-00942: table or view does not exist
+
+
+"LINE_START"|"someMachine"|"DB_MACHINE_NAME"|"2022-02-02_13:53:52"|"ip-000-00-0-000"|"DB_MACHINE_NAME"|DATA_MINING|11g.DM$P_MODEL|0|
+  from MDSYS.SDO_GEOM_METADATA_TABLE
+             *
+ERROR at line 3:
+ORA-00942: table or view does not exist
+
+
+  from MDSYS.SDO_FEATURE_USAGE
+             *
+ERROR at line 4:
+ORA-00942: table or view does not exist
+
+
+  FROM  LBACSYS.LBAC$POLT
+                *
+ERROR at line 3:
+ORA-00942: table or view does not exist
+
+
+  from DVSYS.DBA_DV_REALM
+             *
+ERROR at line 5:
+ORA-00942: table or view does not exist
+
+
+  from SYSMAN.MGMT_VERSIONS
+              *
+ERROR at line 7:
+ORA-00942: table or view does not exist
+
+
+  full outer join SYSMAN.MGMT_INV_COMPONENT b on a.CONTAINER_GUID = b.CONTAINER_GUID
+                         *
+ERROR at line 17:
+ORA-00942: table or view does not exist
+
+
+        from SYSMAN.MGMT_LICENSES where upper(I_AGREE)='YES') c
+                    *
+ERROR at line 6:
+ORA-00942: table or view does not exist
+
+
+    left outer join SYSMAN.MGMT_LICENSE_CONFIRMATION     lc on tg.target_guid = lc.target_guid
+                           *
+ERROR at line 16:
+ORA-00942: table or view does not exist
+
+
+  from SYSMAN.MGMT_LICENSES
+              *
+ERROR at line 3:
+ORA-00942: table or view does not exist
+
+
+  from SYSMAN.MGMT_TARGETS
+              *
+ERROR at line 7:
+ORA-00942: table or view does not exist
+
+
+  from MGMT$TARGET
+       *
+ERROR at line 7:
+ORA-00942: table or view does not exist
+
+
+       SYSMAN.MGMT_TARGETS b
+              *
+ERROR at line 9:
+ORA-00942: table or view does not exist
+
+
+       SYSMAN.mgmt_targets          tgts
+              *
+ERROR at line 16:
+ORA-00942: table or view does not exist
+
+
+       SYSMAN.mgmt_fu_license_map   lmap
+              *
+ERROR at line 23:
+ORA-00942: table or view does not exist
+
+
+"LINE_START"|"someMachine"|"DB_MACHINE_NAME"|"2022-02-02_13:53:52"|"ip-000-00-0-000"|"DB_MACHINE_NAME"|OEM|DBA_ADVISOR_TASKS|1|"SYS"|"SYS_AUTO_SQL_TUNING_TASK"|"Automatic SQL Tuning Task"|"SQL Tuning Advisor"|"2020-04-29_05:21:28"|"2020-04-29_05:21:28"|0|""|""|"INITIAL"|"PRIMARY"|"AUTO"|
+"LINE_START"|"someMachine"|"DB_MACHINE_NAME"|"2022-02-02_13:53:52"|"ip-000-00-0-000"|"DB_MACHINE_NAME"|OEM|DBA_ADVISOR_TASKS|5|"SYS"|"SYS_AUTO_INDEX_TASK"|""|"SQL Access Advisor"|"2020-04-29_05:21:29"|"2020-04-29_05:21:29"|0|""|""|"INITIAL"|"PRIMARY"|"AUTO"|
+"LINE_START"|"someMachine"|"DB_MACHINE_NAME"|"2022-02-02_13:53:52"|"ip-000-00-0-000"|"DB_MACHINE_NAME"|OEM|DBA_SQLSET|1|"SYS_AUTO_STS"|"SYS"|"2020-04-29_05:21:29"|"2020-04-29_05:21:29"|0|"System auto SQL Tuning Set"|
+  from ODM_DOCUMENT
+       *
+ERROR at line 3:
+ORA-00942: table or view does not exist
+
+
+  from ODM_RECORD
+       *
+ERROR at line 3:
+ORA-00942: table or view does not exist
+
+
+"LINE_START"|"someMachine"|"DB_MACHINE_NAME"|"2022-02-02_13:53:52"|"ip-000-00-0-000"|"DB_MACHINE_NAME"|PATCHES|SYS.REGISTRY$HISTORY|2020-04-29_05:32:22|RU_APPLY|SERVER|19.0.0.0.0||Patch applied on 19.7.0.0.0: Release_Update - 200404035018|
+"LINE_START"|"someMachine"|"DB_MACHINE_NAME"|"2022-02-02_13:53:52"|"ip-000-00-0-000"|"DB_MACHINE_NAME"|PATCHES|SYS.REGISTRY$HISTORY|2021-09-07_12:41:08|RU_ROLLBACK|SERVER|19.0.0.0.0||Patch rolled back from 19.7.0.0.0 to 19.1.0.0.0: Feature Release - |
+"LINE_START"|"someMachine"|"DB_MACHINE_NAME"|"2022-02-02_13:53:52"|"ip-000-00-0-000"|"DB_MACHINE_NAME"|PATCHES|SYS.REGISTRY$HISTORY|2021-09-07_12:42:53|RU_APPLY|SERVER|19.0.0.0.0||Patch applied from 19.1.0.0.0 to 19.12.0.0.0: Release_Update - 210716141810|

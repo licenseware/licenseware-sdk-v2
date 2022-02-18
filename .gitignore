@@ -144,3 +144,11 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# MacOS
+.DS*
+
+# 
+!comma.csv
+!pipe.csv
+!semicolon.csv
