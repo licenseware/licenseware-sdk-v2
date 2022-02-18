@@ -1,26 +1,13 @@
 DEBUG=true
-ENVIRONMENT=local
-USE_BACKGROUND_WORKER=true
-
+APP_HOST=http://backend.localhost
 APP_ID={{ app_id }}
-APP_HOST=http://localhost:5000
-
-LWARE_IDENTITY_USER=John
-LWARE_IDENTITY_PASSWORD=secret
-
-AUTH_SERVICE_URL=http://localhost:4000/auth
-REGISTRY_SERVICE_URL=http://localhost:4000/registry-service
-
+ENVIRONMENT=local
 FILE_UPLOAD_PATH=/tmp/lware
-
+LWARE_IDENTITY_USER=testing-service
+LWARE_IDENTITY_PASSWORD=testing123
+MONGO_CONNECTION_STRING=mongodb://lware:lware-secret@localhost:27017
 MONGO_DATABASE_NAME=db
-MONGO_CONNECTION_STRING=mongodb://localhost:27017/db
-
-REDIS_HOST=localhost
-REDIS_PORT=6379
-REDIS_PASSWORD=secret
-REDIS_DB=0
-
-TREND_AP_KEY=Trend Micro Application Security KEY
-TREND_AP_SECRET=Trend Micro Application Security SECRET
+AUTH_SERVICE_URL=http://backend.localhost/auth
+REGISTRY_SERVICE_URL=http://backend.localhost/registry-service
+USE_BACKGROUND_WORKER=true
 

@@ -6,7 +6,6 @@ import importlib.resources as pkg_resources
 
 from jinja2 import Template
 
-
 cloudformation_path = './cloudformation-templates'
 
 resources_filenames = {
@@ -15,15 +14,13 @@ resources_filenames = {
 }
 
 
-
-def create_aws_cloud_formation(app_id:str = None):
-    
-    if not os.path.exists(cloudformation_path): 
+def create_aws_cloud_formation(app_id: str = None):
+    if not os.path.exists(cloudformation_path):
         os.makedirs(cloudformation_path)
 
     app_id_trimed = app_id.split('-')[0].lower()
-    
-    for rname, fname in resources_filenames.items():  
+
+    for rname, fname in resources_filenames.items():
 
         fpath = os.path.join(cloudformation_path, fname.format(app_id=app_id_trimed))
         if os.path.exists(fpath): continue
