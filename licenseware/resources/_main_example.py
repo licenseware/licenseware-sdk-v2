@@ -1,6 +1,3 @@
-from dotenv import load_dotenv
-load_dotenv()  
-
 import datetime
 from trend_app_protect import wrap_wsgi_app
 
