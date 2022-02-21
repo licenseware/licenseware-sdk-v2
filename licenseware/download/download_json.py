@@ -20,8 +20,8 @@ def download_as_json(data:List[dict], tenant_id:str, filename:str = None):
     with open(filepath, 'w') as outfile: json.dump(data, outfile)
     
     return send_from_directory(
-        directory=dirpath, 
-        filename=filename, 
+        directory=dirpath,
+        path=filename,
         as_attachment=True
     )
     
