@@ -28,8 +28,8 @@ def download_as_xlsx(data:List[dict], tenant_id:str, filename:str = None, send_f
     df.to_excel(filepath, index=False)
     
     return send_from_directory(
-        directory=dirpath, 
-        filename=filename, 
+        directory=dirpath,
+        path=filename,
         as_attachment=True
     )
         
