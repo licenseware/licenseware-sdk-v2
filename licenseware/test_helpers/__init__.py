@@ -11,7 +11,7 @@ No business logic should be incorporated in the controller.
 
 The `failsafe` decorator provided by the sdk should be placed ONLY on endpoints to prevent app crash.
 
-Bellow is a recomandation on how the controller should look: 
+Bellow is a recommendation on how the controller should look:
 
 ```py
 # /app/controlers/catalogs_controller.py
@@ -91,10 +91,3 @@ TODO
 
 
 """
-
-
-
-
-from .authentification import get_auth_headers
-from .flask_request import get_flask_request
-from .order_tests import load_ordered_tests
