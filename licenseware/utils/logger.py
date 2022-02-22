@@ -53,9 +53,14 @@ environment:
 """
 
 import os, sys, json
-
-from flask import request, has_request_context
 from loguru import logger as log
+
+try:
+    from flask import request, has_request_context
+    outside_flask = False
+except Exception as err:
+    print("Outside flask context")
+    outside_flask = True
 
 _debug = os.getenv("DEBUG", "").lower() == "true"
 _log_level = "DEBUG" if _debug else "WARNING"
@@ -79,23 +84,23 @@ class Placeholder(dict):  # HACK: to avoid `str.format_map` error on missing key
         return str(key)
 
 
-log.configure(
-    patcher=lambda record: record["extra"].update(
-        tenant_id=request.headers.get("Tenantid"),
-        host=request.headers.get("Host"),
-        user_agent=request.headers.get("User-Agent"),
-        accept=request.headers.get("Accept"),
-        content_type=request.headers.get("Content-Type"),
-        request_url=request.url,
-        request_method=request.method,
-        json_payload= request.get_json() if request.get_json() and 'login' not in request.url and 'password' not in request.url else None,
-        multiform_payload=request.files if request.files else None,
+if not outside_flask:
+    log.configure(
+        patcher=lambda record: record["extra"].update(
+            tenant_id=request.headers.get("Tenantid"),
+            host=request.headers.get("Host"),
+            user_agent=request.headers.get("User-Agent"),
+            accept=request.headers.get("Accept"),
+            content_type=request.headers.get("Content-Type"),
+            request_url=request.url,
+            request_method=request.method,
+            json_payload=request.get_json() if request.get_json() and 'login' not in request.url and 'password' not in request.url else None,
+            multiform_payload=request.files if request.files else None,
+        )
+        if has_request_context()
+        else None,
+        extra=Placeholder(),
     )
-    if has_request_context()
-    else None,
-    extra=Placeholder(),
-    
-)
 
 log.add(
     "app.log",
@@ -106,10 +111,8 @@ log.add(
 
 log.add(sys.stderr, format=_log_format)
 
-
 # Pretty logs for dict data
 log_dict = lambda dict_: log.info(json.dumps(dict_, indent=4, sort_keys=True))
-
 
 ## Test
 # log.debug("Debug log")
