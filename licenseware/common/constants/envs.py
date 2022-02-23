@@ -85,6 +85,14 @@ class envs:
     MONGO_COLLECTION_FEATURES_NAME:str = COLLECTION_PREFIX + "Features"
     
         
+    # Redis connection
+    REDIS_HOST: str = os.getenv("REDIS_HOST", "localhost")
+    REDIS_PORT: int = int(os.getenv("REDIS_PORT", "6379"))
+    REDIS_DB: int = int(os.getenv("REDIS_DB", "0"))
+    REDIS_PASSWORD: str = os.getenv("REDIS_PASSWORD", "")
+
+    REDIS_REQUEST_CACHE_DB: int = int(os.getenv("REDIS_REQUEST_CACHE_DB", "15"))
+
     # Environment variables added later by the app
     # envs.method_name() - calls the variable dynamically 
     # you can access class vars with cls.attr_name ex: cls.MONGO_COLLECTION_DATA_NAME
