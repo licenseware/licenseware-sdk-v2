@@ -91,7 +91,7 @@ class envs:
     REDIS_DB: int = int(os.getenv("REDIS_DB", "0"))
     REDIS_PASSWORD: str = os.getenv("REDIS_PASSWORD", "")
 
-    REDIS_REQUEST_CACHE_DB: int = int(os.getenv("REDIS_REQUEST_CACHE_DB", "15"))
+    REDIS_RESULT_CACHE_DB: int = int(os.getenv("REDIS_RESULT_CACHE_DB", "15"))
 
     # Environment variables added later by the app
     # envs.method_name() - calls the variable dynamically 

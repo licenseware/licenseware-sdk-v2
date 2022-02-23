@@ -11,8 +11,8 @@ class RedisCache:
         self.redis = Redis(
             host=host or envs.REDIS_HOST,
             port=port or envs.REDIS_PORT,
-            db=db or envs.REDIS_REQUEST_CACHE_DB,
-            password=envs.REDIS_PASSWORD,
+            db=db or envs.REDIS_RESULT_CACHE_DB,
+            password=password or envs.REDIS_PASSWORD,
         )
 
     def get(self, key: str) -> str:
