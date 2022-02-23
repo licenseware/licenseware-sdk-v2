@@ -25,8 +25,10 @@ for email in [admin_email1, user_email1]:
 
 We can set a default tenant/project
 ```py
-AuthHelper(email).set_default_tenant(tenant_id)
+auth_headers = AuthHelper(email, default_tenant="1234").get_auth_header()
 ```
+This way the `default_tenant` will be used for the request
+
 """
 
 import requests
@@ -37,9 +39,11 @@ from licenseware.decorators.auth_decorators import authenticated_machine
 
 class AuthHelper:
 
-    def __init__(self, email: str, password: str = "secret"):
+    def __init__(self, email: str, password: str = "secret", default_tenant: str = None):
         self.email = email
         self.password = password
+        self.default_tenant = default_tenant
+        self.auth_headers = self.get_auth_headers()
 
     @authenticated_machine
     def get_auth_headers(self):
@@ -53,6 +57,8 @@ class AuthHelper:
             login_response.pop('status')
             login_response.pop('message')
             log.success(login_response)
+            if self.default_tenant is not None:
+                login_response['TenantId'] = self.default_tenant
             return login_response
         else:
             self.create_user(self.email, self.password)
@@ -93,11 +99,9 @@ class AuthHelper:
             Tables: users, tenants, shared_tenants
         """
 
-        auth_headers = self.get_auth_headers()
-
         response = requests.get(
             envs.AUTH_SERVICE_URL + '/users/tables',
-            headers=auth_headers
+            headers=self.auth_headers
         )
 
         log.debug(f"User's tables: {response.json()}")
@@ -106,28 +110,6 @@ class AuthHelper:
             return response.json()[table]
 
         return response.json()
-
-    def set_default_tenant(self, tenant_id: str):
-
-        auth_headers = self.get_auth_headers()
-
-        payload = {
-            "status": "success",
-            "data": {
-                "id": tenant_id,
-                'company_name': 'licenseware',
-                'is_default': True,
-                "registered_on": "string"
-            }
-        }
-
-        response = requests.put(
-            envs.AUTH_SERVICE_URL + '/tenants',
-            headers=auth_headers,
-            json=payload
-        )
-
-        log.debug(response.content)
 
     @staticmethod
     def login_user(email: str, password: str):
