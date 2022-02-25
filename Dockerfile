@@ -11,7 +11,7 @@ ENV BUILDDIR=${BUILDDIR}
 ENV WHEELDIR=${WHEELDIR}
 ENV REQUIREMENTS=${REQUIREMENTS}
 
-RUN pip install -U pip && apt update && apt install -y curl gcc
+RUN pip install -U pip && apt update && apt install -y curl gcc libexpat1
 
 
 # STAGE 1: fetch dependencies
