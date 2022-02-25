@@ -283,7 +283,7 @@ def get_sortli(sortdict: dict):
     return sortli
 
 
-def fetch(match: Union[dict, Tuple[dict]], collection: str, as_list: bool = True, limit: int = None, skip: int = None,
+def fetch(match: Union[dict, Tuple[Dict[str, str], Dict[str, int]]], collection: str, as_list: bool = True, limit: int = None, skip: int = None,
           sortby: Dict[str, int] = None, db_name: str = None):
     """
         Get data from mongo, based on match dict or string id.
