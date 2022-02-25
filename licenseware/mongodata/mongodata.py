@@ -89,7 +89,7 @@ And the same is for the next iterations until `len(results)` is 0.
 
 import os
 import json
-from typing import Tuple, List, Dict
+from typing import Union, Tuple, List, Dict
 from uuid import UUID
 from pymongo import MongoClient, ASCENDING, DESCENDING
 from pymongo.collection import Collection
@@ -99,9 +99,6 @@ from pymongo.write_concern import WriteConcern
 from pymongo.read_concern import ReadConcern
 
 from licenseware.utils.logger import log
-
-
-
 
 
 def validate_data(schema, data):
@@ -211,7 +208,6 @@ class Connect(object):
         return MongoClient(os.getenv("MONGO_CONNECTION_STRING"))
 
 
-
 def get_collection(collection, db_name=None):
     """
         Gets the collection on which mongo CRUD operations can be performed
@@ -233,7 +229,6 @@ def get_collection(collection, db_name=None):
         collection = mongo_connection[db_name][collection]
 
         return collection
-
 
 
 def insert(schema, collection, data, db_name=None):
@@ -277,10 +272,8 @@ def insert(schema, collection, data, db_name=None):
         raise Exception(f"Can't interpret validated data: {data}")
 
 
-
-def get_sortli(sortdict:List[Tuple[str, int]]):
-
-    if sortdict is None: return 
+def get_sortli(sortdict: dict):
+    if sortdict is None: return
 
     sortli = [
         (field, ascdesc)
@@ -290,8 +283,8 @@ def get_sortli(sortdict:List[Tuple[str, int]]):
     return sortli
 
 
-
-def fetch(match:dict, collection:str, as_list:bool = True, limit:int = None, skip:int = None, sortby:Dict[str, int] = None, db_name:str = None):
+def fetch(match: Union[dict, Tuple[dict]], collection: str, as_list: bool = True, limit: int = None, skip: int = None,
+          sortby: Dict[str, int] = None, db_name: str = None):
     """
         Get data from mongo, based on match dict or string id.
 
@@ -306,14 +299,14 @@ def fetch(match:dict, collection:str, as_list:bool = True, limit:int = None, ski
     """
 
     # TODO - needs refatoring (to much going on)
-    
+
     pagination = None
-    if isinstance(match, dict): 
+    if isinstance(match, dict):
         pagination = match.pop("__pagination__", None)
-    
-    match = parse_match(match)    
+
+    match = parse_match(match)
     sortbylist = get_sortli(sortby)
-    
+
     db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
 
@@ -325,8 +318,9 @@ def fetch(match:dict, collection:str, as_list:bool = True, limit:int = None, ski
         if not isinstance(collection, Collection):
             return collection
 
-        if match['_id']:    
-            found_docs = collection.find(match['_id']) if sortbylist is None else collection.find(match['_id']).sort(sortbylist)
+        if match['_id']:
+            found_docs = collection.find(match['_id']) if sortbylist is None else collection.find(match['_id']).sort(
+                sortbylist)
             doc = []
             if found_docs: doc = list(found_docs)[0]
             if match['oid']: doc = parse_doc(doc)
@@ -335,39 +329,39 @@ def fetch(match:dict, collection:str, as_list:bool = True, limit:int = None, ski
         if match['distinct_key']:
             found_docs = collection.with_options(
                 read_concern=ReadConcern("majority")).distinct(match['distinct_key'])
-            
+
         elif match['query_tuple']:
-            
+
             if pagination:
-                
+
                 if sortbylist is None:
-                    
-                    found_docs = collection.with_options(read_concern=ReadConcern("majority"))\
-                    .find(*match['query_tuple'])\
-                    .skip(pagination['skip'])\
-                    .limit(pagination['limit'])
-                    
+
+                    found_docs = collection.with_options(read_concern=ReadConcern("majority")) \
+                        .find(*match['query_tuple']) \
+                        .skip(pagination['skip']) \
+                        .limit(pagination['limit'])
+
                 else:
-                    found_docs = collection.with_options(read_concern=ReadConcern("majority"))\
-                    .find(*match['query_tuple'])\
-                    .sort(sortbylist)\
-                    .skip(pagination['skip'])\
-                    .limit(pagination['limit'])
-                    
+                    found_docs = collection.with_options(read_concern=ReadConcern("majority")) \
+                        .find(*match['query_tuple']) \
+                        .sort(sortbylist) \
+                        .skip(pagination['skip']) \
+                        .limit(pagination['limit'])
+
             elif limit is not None and skip is not None:
 
                 if sortbylist is None:
-                    found_docs = collection.with_options(read_concern=ReadConcern("majority"))\
-                    .find(*match['query_tuple'])\
-                    .skip(skip)\
-                    .limit(limit)
-                else: 
-                    found_docs = collection.with_options(read_concern=ReadConcern("majority"))\
-                    .find(*match['query_tuple'])\
-                    .sort(sortbylist)\
-                    .skip(skip)\
-                    .limit(limit)
-                
+                    found_docs = collection.with_options(read_concern=ReadConcern("majority")) \
+                        .find(*match['query_tuple']) \
+                        .skip(skip) \
+                        .limit(limit)
+                else:
+                    found_docs = collection.with_options(read_concern=ReadConcern("majority")) \
+                        .find(*match['query_tuple']) \
+                        .sort(sortbylist) \
+                        .skip(skip) \
+                        .limit(limit)
+
             else:
                 if sortbylist is None:
                     found_docs = collection.with_options(
@@ -377,44 +371,42 @@ def fetch(match:dict, collection:str, as_list:bool = True, limit:int = None, ski
                         read_concern=ReadConcern("majority")).find(*match['query_tuple']).sort(sortbylist)
 
         else:
-            
+
             if pagination:
-                
+
                 if sortbylist is None:
 
-                    found_docs = collection.with_options(read_concern=ReadConcern("majority"))\
-                    .find(match['query'])\
-                    .skip(pagination['skip'])\
-                    .limit(pagination['limit'])
+                    found_docs = collection.with_options(read_concern=ReadConcern("majority")) \
+                        .find(match['query']) \
+                        .skip(pagination['skip']) \
+                        .limit(pagination['limit'])
 
                 else:
 
-                    found_docs = collection.with_options(read_concern=ReadConcern("majority"))\
-                    .find(match['query'])\
-                    .sort(sortbylist) \
-                    .skip(pagination['skip'])\
-                    .limit(pagination['limit'])
+                    found_docs = collection.with_options(read_concern=ReadConcern("majority")) \
+                        .find(match['query']) \
+                        .sort(sortbylist) \
+                        .skip(pagination['skip']) \
+                        .limit(pagination['limit'])
 
-
-            
             elif limit is not None and skip is not None:
-                
+
                 if sortbylist is None:
-                    
-                    found_docs = collection.with_options(read_concern=ReadConcern("majority"))\
-                    .find(match['query'])\
-                    .skip(skip)\
-                    .limit(limit)
+
+                    found_docs = collection.with_options(read_concern=ReadConcern("majority")) \
+                        .find(match['query']) \
+                        .skip(skip) \
+                        .limit(limit)
 
                 else:
 
-                    found_docs = collection.with_options(read_concern=ReadConcern("majority"))\
-                    .find(match['query'])\
-                    .sort(sortbylist) \
-                    .skip(skip)\
-                    .limit(limit)
+                    found_docs = collection.with_options(read_concern=ReadConcern("majority")) \
+                        .find(match['query']) \
+                        .sort(sortbylist) \
+                        .skip(skip) \
+                        .limit(limit)
 
-            else:    
+            else:
 
                 if sortbylist is None:
                     found_docs = collection.with_options(
@@ -423,12 +415,10 @@ def fetch(match:dict, collection:str, as_list:bool = True, limit:int = None, ski
                     found_docs = collection.with_options(
                         read_concern=ReadConcern("majority")).find(match['query']).sort(sortbylist)
 
-
         if as_list:
             return [parse_doc(doc) for doc in found_docs]
 
         return (parse_doc(doc) for doc in found_docs)
-
 
 
 def aggregate(pipeline, collection, as_list=True, db_name=None):
@@ -451,7 +441,7 @@ def aggregate(pipeline, collection, as_list=True, db_name=None):
         collection = mongo_connection[db_name][collection_name]
         if not isinstance(collection, Collection):
             return collection
-        
+
         found_docs = collection.with_options(read_concern=ReadConcern(
             "majority")).aggregate(pipeline, allowDiskUse=True)
 
@@ -484,11 +474,9 @@ def _append_query(dict_: dict) -> dict:
         elif isinstance(dict_[k], list) and dict_[k]:
             q['$addToSet'].update({k: {}})
             q['$addToSet'][k].update({"$each": dict_[k]})
-        
+
         else:
             q['$set'].update({k: dict_[k]})
-        
-
 
     if not q['$addToSet']:
         del q['$addToSet']
@@ -498,7 +486,6 @@ def _append_query(dict_: dict) -> dict:
     # log_dict(q)
 
     return q or dict_
-
 
 
 def update(schema, match, new_data, collection, append=False, db_name=None):
@@ -544,7 +531,6 @@ def update(schema, match, new_data, collection, append=False, db_name=None):
         return updated_docs_nbr
 
 
-
 def delete(match, collection, db_name=None):
     """
 
@@ -578,7 +564,6 @@ def delete(match, collection, db_name=None):
         return deleted_docs_nbr
 
 
-
 def delete_collection(collection, db_name=None):
     """
         Delete a collection from the database.
@@ -594,12 +579,14 @@ def delete_collection(collection, db_name=None):
             write_concern=WriteConcern("majority")).drop()
         return 1 if res is None else 0
 
+
 def distinct(match, key, collection, db_name=None):
     db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
     with Connect.get_connection() as mongo_connection:
         collection = mongo_connection[db_name][collection_name]
         return collection.distinct(key, match)
+
 
 def document_count(match, collection, db_name=None):
     """
@@ -613,5 +600,4 @@ def document_count(match, collection, db_name=None):
             return collection
 
         return collection.with_options(
-            write_concern=WriteConcern("majority")).count_documents(filter=match)  
-        
+            write_concern=WriteConcern("majority")).count_documents(filter=match)
