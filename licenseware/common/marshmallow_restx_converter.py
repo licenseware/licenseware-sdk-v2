@@ -279,7 +279,7 @@ def ma_metadata_to_restx_model(api: Api, ma_metadata: dict):
     return api.model(schema_name, restx_model)
 
 
-def marshmallow_to_restx_model(api: restx.Api, schema: Callable):
+def marshmallow_to_restx_model(api: Union[restx.Api, restx.Namespace], schema: Callable):
     """
     Convert a marshmallow schema to a Flask-Restx model
     :param api: Restx Api instance or Namespace instance
