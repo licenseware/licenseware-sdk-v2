@@ -1,16 +1,13 @@
 import datetime
-
+from flask import Request
 from marshmallow.schema import Schema
 from licenseware import mongodata as m
 from licenseware.utils.logger import log
 
 
-
-
-
 class MongoCrud:
     """
-        In this class we are defnining basic crud operations to mongodb
+        In this class we are defining basic crud operations to mongodb
         
         All methods must use `staticmethod` decorator
         
@@ -18,56 +15,52 @@ class MongoCrud:
         Indexes are provided on serializer metadata (simple_indexes, compound_indexes).
 
     """
-    
+
     def __init__(self, schema: Schema, collection: str, get_pipeline: list = []):
-        
-        self.schema = schema 
-        self.collection = collection 
+
+        self.schema = schema
+        self.collection = collection
         self.get_pipeline = get_pipeline
 
-
-    def get_params(self, flask_request):
+    def get_params(self, flask_request: Request):
         params = {}
         if flask_request.args is None: return params
         params = dict(flask_request.args) or {}
         return params
 
-    
-    def get_payload(self, flask_request):
+    def get_payload(self, flask_request: Request):
         payload = {}
         if flask_request.json is None: return payload
         if isinstance(flask_request.json, dict):
             payload = flask_request.json
         return payload
 
-    
     def validate_tenant_id(self, tenant, params, payload):
-        
+
         if 'tenant_id' in params:
             if params['tenant_id'] != tenant['tenant_id']:
                 raise Exception("The 'tenant_id' provided in query parameter is not the same as the one from headers")
-            
+
         if 'tenant_id' in payload:
             if payload['tenant_id'] != tenant['tenant_id']:
                 raise Exception("The 'tenant_id' provided in query parameter is not the same as the one from headers")
 
-    
-    def get_query(self, flask_request):
-        
+    def get_query(self, flask_request: Request):
+
         tenant = {'tenant_id': flask_request.headers.get("Tenantid")}
-        
+
         params = self.get_params(flask_request)
         payload = self.get_payload(flask_request)
-        
+
         self.validate_tenant_id(tenant, params, payload)
-        
+
         query = {**tenant, **params, **payload}
-        
+
         log.info(f"Mongo CRUD Request: {query} (schema: {self.schema.__name__}, collection: {self.collection})")
-        
+
         return query
 
-    def get_data(self, flask_request):
+    def get_data(self, flask_request: Request):
 
         tenant = {'tenant_id': flask_request.headers.get("Tenantid")}
         params = self.get_params(flask_request)
@@ -84,24 +77,22 @@ class MongoCrud:
         result = m.distinct(match=tenant, key=params['foreign_key'], collection=self.collection)
         log.warning(result)
         return result
-        
-        
+
         # query = self.get_query(flask_request)
-        
+
         # results = m.fetch(match=query, collection=self.collection)
 
         # if len(results) == 0: return  'Requested data not found', 404
 
         # return results
 
-    
-    def post_data(self, flask_request):
+    def post_data(self, flask_request: Request):
 
         query = self.get_query(flask_request)
 
         data = dict(query, **{
             "updated_at": datetime.datetime.utcnow().isoformat()}
-        )
+                    )
 
         inserted_docs = m.insert(
             schema=self.schema,
@@ -113,12 +104,10 @@ class MongoCrud:
 
         return "SUCCESS"
 
+    def put_data(self, flask_request: Request):
 
-    
-    def put_data(self, flask_request):
-        
         query = self.get_query(flask_request)
-        
+
         updated_docs = m.update(
             schema=self.schema,
             match=query,
@@ -131,9 +120,7 @@ class MongoCrud:
 
         return "SUCCESS"
 
-
-    
-    def delete_data(self, flask_request):
+    def delete_data(self, flask_request: Request):
 
         query = self.get_query(flask_request)
 
