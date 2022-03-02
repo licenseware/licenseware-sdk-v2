@@ -4,7 +4,10 @@ on:
   push:
     branches:
       - main
-      - "releases/**"
+  release:
+    types:
+      - published
+
 
 env:
   REGISTRY: ghcr.io
