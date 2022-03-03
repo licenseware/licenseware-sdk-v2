@@ -59,12 +59,31 @@ __all__ = [
 ]
 
 
-# Flask-RestX doesn't have shortcuts for bellow fields:
+# Flask-RestX replacements for marshmallow fields
 restx_fields_mapper = {
     "Str": "String",
     "Bool": "Boolean",
     "Int": "Integer",
-    "Email": "String"
+    "Email": "String",
+    "Mapping": "Raw",
+    "Dict": "Raw",
+    "Tuple": "List",
+    "UUID": "String",
+    "Number": "Integer",
+    "Decimal": "Float",
+    "NaiveDateTime": "DateTime",
+    "AwareDateTime": "DateTime",
+    "Time": "DateTime",
+    "Date": "DateTime",
+    "TimeDelta": "DateTime",
+    "URL": "Url",
+    "IP": "String",
+    "IPv4": "String",
+    "IPv6": "String",
+    "IPInterface": "String",
+    "IPv4Interface": "String",
+    "IPv6Interface": "String",
+    "Constant": "String"
 }
 
 
