@@ -1,4 +1,3 @@
-# from .register_all_single_requests import register_all_single_requests
 import requests
 from licenseware.common.constants import envs
 from licenseware.utils.logger import log
@@ -8,7 +7,7 @@ from licenseware.utils.dramatiq_redis_broker import broker
 class RegistrationFailed(Exception): ...
 
 
-def registration_failed(retries_so_far:int, exception):
+def registration_failed(retries_so_far: int, exception):
     return isinstance(exception, RegistrationFailed)
 
 

@@ -10,9 +10,9 @@ from .report_component_schema import ComponentSchema
 
 class ReportSchema(Schema):
     app_id = fields.Str(required=True, validate=validate.Length(min=3))
-    flags = fields.List(fields.Str, required=False)#, validate=validate.OneOf(flags.BETA, flags.SOON))
+    flags = fields.List(fields.Str, required=False)
     report_id = fields.Str(required=True, validate=validate.Length(min=3))  
-    report_name = fields.Str(required=True, validate=validate.Length(min=3))  
+    name = fields.Str(required=True, validate=validate.Length(min=3))
     description = fields.Str(required=True, validate=validate.Length(min=10))  
     url = fields.Url(required=True)
     connected_apps = fields.List(fields.Str, required=False)
@@ -20,6 +20,8 @@ class ReportSchema(Schema):
     filters = fields.List(fields.Nested(FilterSchema), required=False)
     preview_image_url = fields.Url(required=False, allow_none=True)
     preview_image_dark_url = fields.Url(required=False, allow_none=True)
+    registrable = fields.Boolean(required=False, allow_none=True)
+
 
 class RegisterReportPayloadSchema(Schema):
     data = fields.List(fields.Nested(ReportSchema), required=True)

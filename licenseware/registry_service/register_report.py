@@ -2,14 +2,11 @@ import requests
 from licenseware.utils.logger import log
 from licenseware.common.constants import envs
 from licenseware.decorators.auth_decorators import authenticated_machine
-# from licenseware.common.validators.registry_payload_validators import validate_register_report_payload
-
-
+from licenseware.common.validators.registry_payload_validators import validate_register_report_payload
 
 
 @authenticated_machine
 def register_report(**kwargs):
-    
     payload = {
         'data': [{
             "app_id": kwargs['app_id'],
@@ -18,32 +15,30 @@ def register_report(**kwargs):
             "description": kwargs['description'],
             "flags": kwargs['flags'],
             "url": kwargs['url'],
-            "preview_image_url":kwargs['preview_image_url'],
-            "preview_image_dark_url":kwargs['preview_image_dark_url'],
-            "report_components":  kwargs['report_components'],
+            "preview_image_url": kwargs['preview_image_url'],
+            "preview_image_dark_url": kwargs['preview_image_dark_url'],
+            "report_components": kwargs['report_components'],
             "connected_apps": kwargs['connected_apps'],
-            "filters" : kwargs['filters'],
+            "filters": kwargs['filters'],
             'registrable': kwargs['registrable']
         }]
     }
-    
-    log.info(payload)    
+
+    log.info(payload)
     # validate_register_report_payload(payload)
 
     headers = {"Authorization": envs.get_auth_token()}
     post_kwargs = dict(url=envs.REGISTER_REPORT_URL, json=payload, headers=headers)
 
     registration = requests.post(**post_kwargs)
-    
+
     if registration.status_code != 200:
         nokmsg = f"Could not register report {kwargs['name']}"
         log.error(nokmsg)
-        return { "status": "fail", "message": nokmsg, "content": payload }, 500
-    
-    return {
-        "status": "success",
-        "message": f"Report {kwargs['name']} registered successfully",
-        "content": payload
-    }, 200
+        return {"status": "fail", "message": nokmsg, "content": payload}, 500
 
-    
+    return {
+               "status": "success",
+               "message": f"Report {kwargs['name']} registered successfully",
+               "content": payload
+           }, 200

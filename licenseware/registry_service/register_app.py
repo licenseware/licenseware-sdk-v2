@@ -3,9 +3,7 @@ from licenseware.utils.logger import log
 from licenseware.common.constants import envs
 from licenseware.decorators.auth_decorators import authenticated_machine
 from licenseware.tenants import get_activated_tenants, get_tenants_with_data
-
-
-# from licenseware.common.validators.registry_payload_validators import validate_register_app_payload
+from licenseware.common.validators.registry_payload_validators import validate_register_app_payload
 
 
 @authenticated_machine
