@@ -253,7 +253,7 @@ class EditableTable:
 
     def __init__(
             self,
-            schema: Schema,
+            schema: type,
             title: str = None,
             namespace: Namespace = None,
             component_id: str = None,
@@ -264,7 +264,12 @@ class EditableTable:
     ):
         self.schema = schema
         self.namespace = namespace
-        self.schema_name = self.schema.__name__.lower()
+
+        if "Table" not in self.schema.__name__:
+            raise ValueError(
+                "Schema provided to editable tables must contain in it's name 'Table' keyword (ex: DeviceTableSchema)")
+
+        self.schema_name = self.schema.__name__.replace('Schema', '').lower()
         self.names = self.schema_name
         self.component_id = component_id or self.component_id_from_schema()
         self.title = title or self.title_from_schema()
