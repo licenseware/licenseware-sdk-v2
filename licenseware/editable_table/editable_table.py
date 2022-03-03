@@ -264,11 +264,7 @@ class EditableTable:
     ):
         self.schema = schema
         self.namespace = namespace
-
-        if "Table" not in self.schema.__name__:
-            self.schema.__name__ = self.schema.__name__ + "Table"
-
-        self.schema_name = self.schema.__name__.replace('Schema', '').lower()
+        self.schema_name = self.schema.__name__.lower()
         self.names = self.schema_name
         self.component_id = component_id or self.component_id_from_schema()
         self.title = title or self.title_from_schema()
