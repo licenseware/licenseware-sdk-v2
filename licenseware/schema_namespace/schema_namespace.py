@@ -159,7 +159,7 @@ class BaseSchema(Schema):
 class SchemaNamespace:
 
     def __init__(self,
-                 schema: Schema = None,
+                 schema: type = None,
                  collection: str = None,
                  methods: list = http_methods,
                  decorators: list = [authorization_check],
