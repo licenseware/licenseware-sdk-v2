@@ -2,9 +2,7 @@ import requests
 from licenseware.utils.logger import log
 from licenseware.common.constants import envs
 from licenseware.decorators.auth_decorators import authenticated_machine
-# from licenseware.common.validators.registry_payload_validators import validate_register_report_component_payload
-
-
+from licenseware.common.validators.registry_payload_validators import validate_register_report_component_payload
 
 
 @authenticated_machine
@@ -12,7 +10,7 @@ def register_component(**kwargs):
     """
         Send a post request to registry service to make component available in front-end
     """
-    
+
     payload = {
         'data': [{
             "app_id": kwargs['app_id'],
@@ -24,27 +22,25 @@ def register_component(**kwargs):
             "title": kwargs['title'],
             "component_type": kwargs['component_type'],
             "filters": kwargs['filters']
-            
+
         }]
     }
 
-    log.info(payload)    
+    log.info(payload)
     # validate_register_report_component_payload(payload)
 
     headers = {"Authorization": envs.get_auth_token()}
     post_kwargs = dict(url=envs.REGISTER_REPORT_COMPONENT_URL, json=payload, headers=headers)
-    
+
     registration = requests.post(**post_kwargs)
 
     if registration.status_code != 200:
         nokmsg = f"Could not register report {kwargs['component_id']}"
         log.error(nokmsg)
-        return { "status": "fail", "message": nokmsg, "content": payload }, 500
-    
-    return {
-        "status": "success",
-        "message": f"Report {kwargs['component_id']} registered successfully",
-        "content": payload
-    }, 200
+        return {"status": "fail", "message": nokmsg, "content": payload}, 500
 
-    
+    return {
+               "status": "success",
+               "message": f"Report {kwargs['component_id']} registered successfully",
+               "content": payload
+           }, 200

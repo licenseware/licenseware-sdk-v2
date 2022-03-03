@@ -331,7 +331,6 @@ class AppBuilder:
                  'tenant_registration_url',
                  'terms_and_conditions_url',
                  'features_url',
-                 'features',
                  'app_meta'
              ]
              }

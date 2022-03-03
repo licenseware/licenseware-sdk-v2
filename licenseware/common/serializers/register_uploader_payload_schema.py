@@ -40,7 +40,7 @@ class UploaderInfoSchema(Schema):
     icon = fields.Str(required=False, validate=validate_icon)
     status = fields.Str(required=False, validate=validate.OneOf([None, states.IDLE, states.RUNNING]), allow_none=True)
     validation_parameters = fields.Nested(FileValidatorSchema, required=True)
-    
+
 
 class RegisterUploaderPayloadSchema(Schema):
     data = fields.List(fields.Nested(UploaderInfoSchema), required=True)

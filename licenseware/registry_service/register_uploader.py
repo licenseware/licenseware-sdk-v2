@@ -2,9 +2,7 @@ import requests
 from licenseware.utils.logger import log
 from licenseware.common.constants import envs
 from licenseware.decorators.auth_decorators import authenticated_machine
-# from licenseware.common.validators.registry_payload_validators import validate_register_uploader_payload
-
-
+from licenseware.common.validators.registry_payload_validators import validate_register_uploader_payload
 
 
 @authenticated_machine
@@ -12,7 +10,7 @@ def register_uploader(**kwargs):
     """
         Send a post request to registry service to make uploader available in front-end
     """
-    
+
     payload = {
         'data': [{
             "app_id": kwargs['app_id'],
@@ -31,9 +29,9 @@ def register_uploader(**kwargs):
         }]
     }
 
-    log.info(payload)    
+    log.info(payload)
     # validate_register_uploader_payload(payload)
-    
+
     headers = {"Authorization": envs.get_auth_token()}
     post_kwargs = dict(url=envs.REGISTER_UPLOADER_URL, json=payload, headers=headers)
 
@@ -41,18 +39,11 @@ def register_uploader(**kwargs):
 
     if registration.status_code == 200:
         return {
-            "status": "success",
-            "message": f"Uploader '{kwargs['uploader_id']}' register successfully",
-            "content": payload
-        }, 200
-
+                   "status": "success",
+                   "message": f"Uploader '{kwargs['uploader_id']}' register successfully",
+                   "content": payload
+               }, 200
 
     nokmsg = f"Could not register uploader '{kwargs['uploader_id']}'"
     log.error(nokmsg)
     return {"status": "fail", "message": nokmsg, "content": payload}, 400
-
-
-
-
-
-
