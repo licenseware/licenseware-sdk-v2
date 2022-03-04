@@ -34,7 +34,8 @@ resources_filenames = {
     'Dockerfile.stack': 'Dockerfile.stack',
     'Procfile': 'Procfile',
     'Procfile.stack': 'Procfile.stack',
-    'version.txt': 'version.txt'
+    'version.txt': 'version.txt',
+    'tox.ini':'tox.ini'
  }
      
      

@@ -81,13 +81,151 @@ Function `get_all_catalogs` will return a response and a status_code.
 
 # Test creation
 
-TODO
+Create all needed `test_*.py` files in the `tests` folder next to the `app`.
+
+Ex:
+```bash
+.
+├── __init__.py
+├── test_add_catalogs.py
+└── test_merge_catalogs.py
+```
+
+Ideally you should test one feature per test case. For example up we have a test suite for adding catalogs
+and one separate for merging catalogs.
+
+Example of a test:
 
 ```py
 
-TODO
+import pytest
+from unittest import TestCase
+from flask.testing import Client
+from licenseware.mongodata import collection
+from licenseware.common.constants import envs
+from licenseware.utils.logger import log
+
+from main import app # this is used to get the flask test client and initialize app and workers
+from app.common.constants import collections
+
+from licenseware.test_helpers.auth import AuthHelper # this is useful to get authorization headers
+
+
+# this will be used on all tests (in case of endpoint testing)
+@pytest.fixture
+def c():
+    with app.test_client() as client:
+        yield client
+
+
+
+@pytest.fixture
+def teardown():
+    clean_db()
+
+
+
+# some utilities functions specific to this test
+def increase_quota():
+    with collection(envs.MONGO_COLLECTION_UTILIZATION_NAME) as col:
+        res = col.find_one(filter={'uploader_id': 'catalogs_quota'})
+        if res is None: return
+        if res['monthly_quota'] <= 1:
+            col.update_one(
+                filter={'uploader_id': 'catalogs_quota'},
+                update={"$inc": {'monthly_quota': 9999}}
+            )
+
+# asserts can be used also instead of unittest.TestCase assertions
+T = TestCase()
+
+
+# some global variables used 
+main_admin = "alin+mainadmin@licenseware.io"
+
+catalog1 = "Catalog 1"
+catalog2 = "Catalog 2"
+catalog3 = "Catalog 3"
+catalog4 = "Catalog 4"
+cloned_lware_catalog = "Cloned Licenseware Catalog"
+
+user_email1 = "alin+user1@licenseware.io"
+user_email2 = "alin+user2@licenseware.io"
+user_email3 = "alin+user3@licenseware.io"
+user_email4 = "alin+user4@licenseware.io"
+
+admin_email1 = "alin+admin1@licenseware.io"
+admin_email2 = "alin+admin2@licenseware.io"
+admin_email3 = "alin+admin3@licenseware.io"
+admin_email4 = "alin+admin4@licenseware.io"
+
+
+# tox tests/test_catalogs.py
+
+
+# tox tests/test_catalogs.py::test_add_new_catalogs
+def test_add_new_catalogs(c: Client):
+
+    auth_headers = AuthHelper(main_admin).get_auth_headers()
+
+    response = c.get(
+        '/ssc/activate_app',
+        headers=auth_headers
+    )
+
+    T.assertEqual(response.status_code, 200)
+
+    increase_quota()
+
+    catalogs = [
+        {
+            "catalog_name": catalog1,
+            "tags": ["IT"],
+            "admins": [main_admin, admin_email1],
+            "users": [user_email1]
+        },
+        {
+            "catalog_name": catalog2,
+            "tags": ["IT"],
+            "admins": [main_admin, admin_email2],
+            "users": [user_email2]
+        },
+        {
+            "catalog_name": catalog3,
+            "tags": ["IT"],
+            "admins": [main_admin, admin_email3],
+            "users": [user_email3]
+        }
+    ]
+
+    for payload in catalogs:
+        response = c.post(
+            '/ssc/catalogs',
+            json=payload,
+            headers=auth_headers
+        )
+
+        log.warning(response.data)
+        # log.warning(response.get_json())
+
+        T.assertEqual(response.status_code, 201)
+
+
+
+def test_something_else(c: Client):
+
+    result = get_somthing_from_db()
+    assert admin_email3 in result
+
+
+
+# etc
 
 ```
+
+If tests are dependent on each other (data from a test is needed on another test) 
+you can either place all tests in one file (big file hard to manage though) or
+get add the seed data to db in a fixture function (recomended) 
 
 
 """
