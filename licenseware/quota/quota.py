@@ -47,7 +47,7 @@ class Quota:
         self.tenants = get_tenants_list(self.tenant_id, self.auth_token)
         self.user_profile = get_user_profile(self.tenant_id, self.auth_token)
 
-        self.plan_type = self.user_profile["plan_type"]
+        self.plan_type = self.user_profile["plan_type"].upper()
 
         # This is used to calculate quota
         self.user_query = {
@@ -68,12 +68,9 @@ class Quota:
             raise Exception(response['message'])
 
     def get_monthly_quota(self):
-
         if self.plan_type == quota_plan.UNLIMITED:
             return sys.maxsize
-        else:
-            return self.units
-            #raise Exception(f"Can't determine `monthly_quota` based on plan_type: {self.plan_type}")
+        return self.units
 
     def init_quota(self) -> Tuple[dict, int]:
 
