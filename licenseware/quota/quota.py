@@ -28,13 +28,13 @@ def get_quota_reset_date(current_date: datetime.datetime = datetime.datetime.utc
 class Quota:
 
     def __init__(
-        self,
-        tenant_id: str,
-        auth_token: str,
-        uploader_id: str,
-        units: int,
-        schema: Schema = None,
-        collection: str = None,
+            self,
+            tenant_id: str,
+            auth_token: str,
+            uploader_id: str,
+            units: int,
+            schema: Schema = None,
+            collection: str = None,
     ):
 
         self.units = units
@@ -128,7 +128,7 @@ class Quota:
         quota_data = mongodata.fetch(self.user_query, self.collection)
         quota_reset_date = min(
             [dateparser.parse(quota['quota_reset_date'])
-                for quota in quota_data]
+             for quota in quota_data]
         )
         current_date = datetime.datetime.utcnow()
         if quota_reset_date <= current_date:
@@ -136,7 +136,7 @@ class Quota:
                 quota['monthly_quota_consumed'] = 0
                 quota['quota_reset_date'] = get_quota_reset_date(
                     current_date=quota_reset_date)
-                id = quota.pop('_id')
+                quota.pop('_id')
                 mongodata.update(
                     schema=self.schema,
                     match=self.user_query,
@@ -150,13 +150,12 @@ class Quota:
 
         if self.plan_type == quota_plan.UNLIMITED:
             return {
-                'status': states.SUCCESS,
-                'message': 'Utilization within monthly quota'
-            }, 200
-        
+                       'status': states.SUCCESS,
+                       'message': 'Utilization within monthly quota'
+                   }, 200
+
         quota_data = self.reset_quota()
 
-        
         total_quota_consumed = sum(
             [quota['monthly_quota_consumed'] for quota in quota_data]
         )
@@ -165,20 +164,20 @@ class Quota:
         )
         quota_reset_date = min(
             [dateparser.parse(quota['quota_reset_date'])
-                for quota in quota_data]
+             for quota in quota_data]
         )
 
         if total_quota_consumed + units <= max_allowed_quota:
             return {
-                'status': states.SUCCESS,
-                'message': 'Utilization within monthly quota',
-                'monthly_quota': max_allowed_quota,
-                'quota_reset_date': quota_reset_date.isoformat()
-            }, 200            
+                       'status': states.SUCCESS,
+                       'message': 'Utilization within monthly quota',
+                       'monthly_quota': max_allowed_quota,
+                       'quota_reset_date': quota_reset_date.isoformat()
+                   }, 200
         else:
             return {
-                'status': states.FAILED,
-                'message': 'Monthly quota exceeded',
-                'monthly_quota': max_allowed_quota,
-                'quota_reset_date': quota_reset_date.isoformat()
-            }, 402
+                       'status': states.FAILED,
+                       'message': 'Monthly quota exceeded',
+                       'monthly_quota': max_allowed_quota,
+                       'quota_reset_date': quota_reset_date.isoformat()
+                   }, 402
