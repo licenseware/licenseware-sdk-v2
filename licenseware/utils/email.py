@@ -8,37 +8,35 @@ from .logger import log
 from .dramatiq_redis_broker import broker
 
 
-def _load_template(html_template:str, html_template_vars:dict):
-    
+def _load_template(html_template: str, html_template_vars: dict):
     resources_path = os.path.join(sys.path[0], f"app/resources/{html_template}")
 
     if not os.path.exists(resources_path):
         raise Exception("Email template not found in resources folder")
-        
+
     with open(resources_path) as f:
         tmp = Template(f.read())
-        
+
     if html_template_vars:
         html_content = tmp.render(**html_template_vars)
     else:
         html_content = tmp.render()
-        
+
     return html_content
-        
-    
+
 
 @broker.actor(
-    max_retries=5, 
+    max_retries=0,
     queue_name=envs.QUEUE_NAME
 )
 def send_email(
-    to:str, 
-    subject:str, 
-    template:str, 
-    **template_vars
+        to: str,
+        subject: str,
+        template: str,
+        **template_vars
 ):
     """
-        to: email or list of emails of emails where the email needs to be sent
+        to: email or list of emails where the email needs to be sent
         subject: email subject
         template: the html template filename from app/resources ex: "software_request.html"
         template_vars: kwargs with template variables to be filled by Jinja2 
@@ -61,16 +59,13 @@ def send_email(
         The html template will be found in resources and it will contain jinja2 `{{ message }}` placeholder   
             
     """
-    
+
     log.info(f"Sending emails to: {to}")
-    
-    if os.getenv('ENVIRONMENT') in {'local'}: return True
-    
-    
+
     try:
-        
+
         html_content = _load_template(template, template_vars)
-            
+
         mail_client = sendgrid.SendGridAPIClient(api_key=os.environ['SENDGRID_API_KEY'])
         mail = Mail(
             from_email=os.environ['SENDGRID_EMAIL_SENDER'],
