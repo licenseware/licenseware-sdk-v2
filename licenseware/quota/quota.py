@@ -172,6 +172,7 @@ class Quota:
                        'status': states.SUCCESS,
                        'message': 'Utilization within monthly quota',
                        'monthly_quota': max_allowed_quota,
+                       'monthly_quota_consumed': total_quota_consumed,
                        'quota_reset_date': quota_reset_date.isoformat()
                    }, 200
         else:
@@ -179,5 +180,6 @@ class Quota:
                        'status': states.FAILED,
                        'message': 'Monthly quota exceeded',
                        'monthly_quota': max_allowed_quota,
+                       'monthly_quota_consumed': total_quota_consumed,
                        'quota_reset_date': quota_reset_date.isoformat()
                    }, 402
