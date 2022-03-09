@@ -154,8 +154,9 @@ def validate_sheets(file, required_sheets):
     if not required_sheets: return
 
     sheets = pd.ExcelFile(file).sheet_names
-
-    if isinstance(required_sheets[0], tuple) and len(required_sheets) > 1:
+    
+    # Registry service saves tuples as lists
+    if (isinstance(required_sheets[0], tuple) or isinstance(required_sheets[0], list)) and len(required_sheets) > 1:
         for rs in required_sheets:
             if _sheets_validator(sheets, rs, raise_error=False):
                 return # one validation succeded
