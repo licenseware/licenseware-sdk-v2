@@ -103,8 +103,10 @@ def _get_columns(df, required_sheets):
             if sheet not in required_sheets: continue
             given_columns.append(table.columns.tolist())
         given_columns = set(itertools.chain.from_iterable(given_columns))
+    elif isinstance(df, pd.DataFrame):
+        given_columns = df.columns
     else:
-        given_columns= df.split("\n")[0]
+        given_columns = df.split("\n")[0]
     return given_columns
 
 
