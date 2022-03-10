@@ -39,6 +39,9 @@ def set_environment_variables(*, envs:dict = None, env_path:str = ".env"):
 
     """
 
+    if os.getenv('ENVIRONMENT') not in ['local', None]:
+        return
+
     if envs:
         os.environ.update(envs)
 
@@ -48,6 +51,8 @@ def set_environment_variables(*, envs:dict = None, env_path:str = ".env"):
             vli = v.strip().split('=')
             if len(vli) == 2:
                 env_vars[vli[0]] = vli[1]
+            else:
+                env_vars[vli[0]] = ""
 
         os.environ.update(env_vars)
 
