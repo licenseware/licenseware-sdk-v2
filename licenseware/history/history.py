@@ -112,7 +112,7 @@ Files processed in bulk are grouped in list
 }
 
 """
-
+import uuid
 from functools import wraps
 from licenseware import mongodata
 from licenseware.utils.logger import log
@@ -137,11 +137,16 @@ class History:
             @wraps(f)
             def wrapper(*args, **kwargs):
                 try:
+                    # Handle case where files are uploaded and EventId is not provided in the headers
+                    if f.__name__ == 'upload_files' and args[0].headers.get("EventId") is None:
+                        kwargs.update({"event_id": str(uuid.uuid4())})
+
                     response = f(*args, **kwargs)
                     metadata = get_metadata(f, args, kwargs)
                     response = append_headers_on_validation_funcs(metadata, response)
                     if success_message: log.success(success_message)
                     return response
+
                 except Exception as err:
 
                     log.exception(err)
