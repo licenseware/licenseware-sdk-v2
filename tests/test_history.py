@@ -14,10 +14,10 @@ class TestHistory(unittest.TestCase):
             """ Validate filenames received """
 
             response, status_code = {
-                "status": "success",
-                "message": "Filenames are valid",
-                "data": f"{name}, {data}"
-            }, 200
+                        "status": "success",
+                        "message": "Filenames are valid",
+                        "data": f"{name}, {data}"
+                    }, 200
 
             return response, status_code
 
@@ -26,18 +26,24 @@ class TestHistory(unittest.TestCase):
             'Authorization': "e9898dfl4s34kjs"
         })
 
-        response, status_code = validate_filenames(request, "the string", data=[1,2,3])
+        response, status_code = validate_filenames(request, "the string", data=[1, 2, 3])
 
         self.assertEqual(status_code, 200)
         self.assertEqual(response['status'], 'success')
 
-        # @History.log()
-        # def validate_something(name, data):
-        #     pass
-        #
-        # result = validate_something("name", "data")
+        @History.log()
+        def validate_filenames_no_flask_request(name, data, tenant_id="123", event_id="wer"):
+            """ Validate filenames received """
 
+            response, status_code = {
+                                        "status": "success",
+                                        "message": "Filenames are valid",
+                                        "data": f"{name}, {data}"
+                                    }, 200
 
+            return response, status_code
 
+        response, status_code = validate_filenames_no_flask_request("Alin", [1, 2, 3])
 
-
+        self.assertEqual(status_code, 200)
+        self.assertEqual(response['status'], 'success')

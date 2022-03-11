@@ -110,68 +110,44 @@ Files processed in bulk are grouped in list
 
 import inspect
 from functools import wraps
+from licenseware import mongodata
 from licenseware.utils.logger import log
-from marshmallow import Schema, fields
-from licenseware.common.validators import validate_uuid4
+from licenseware.common.constants import envs
+from licenseware.common.serializers import WildSchema
 
-
-class FileNameValidationSchema(Schema):
-    pass
-
-
-class FileContentValidationSchema(Schema):
-    pass
-
-
-class ProcessingDetailsSchema(Schema):
-    step = fields.String()
-    error = fields.String()
-    processed_file_path = fields.String()
-    traceback = fields.String()
-
-
-class HistorySchema(Schema):
-    tenant_id = fields.String(required=True, validate=validate_uuid4)
-    event_id = fields.String(required=True, validate=validate_uuid4)
-    uploader_id = fields.String(required=True)
-    filename_validation = fields.List(fields.Nested(FileNameValidationSchema))
-    file_content_validation = fields.List(fields.Nested(FileContentValidationSchema))
-    files_uploaded = fields.List(fields.String)
-    processing_details = fields.List(fields.Nested(ProcessingDetailsSchema))
+from . import event, tenant
 
 
 class History:
 
     @staticmethod
-    def get_func_metadata(func, func_args, func_kwargs):
+    def get_metadata(func, func_args, func_kwargs):
+        """ Getting all the data needed to identify and track files uploaded (function name, source and tenant_id) """
 
-        func_metadata = {
+        metadata = {
             'callable': func.__name__,
-            'file': str(inspect.getmodule(func)).split("from")[1].strip().replace("'", "").replace(">", ""),
-            'docs': func.__doc__.strip() if func.__doc__ else None
+            'docs': func.__doc__.strip() if func.__doc__ else None,
+            'source': str(inspect.getmodule(func)).split("from")[1].strip().replace("'", "").replace(">", ""),
+            'tenant_id': tenant.get_tenant_id(func, func_args, func_kwargs),
+            'event_id': event.get_event_id(func, func_args, func_kwargs)
         }
 
-        if len(func_args) > 0:
-            for arg in func_args:
-                if hasattr(arg, 'headers'):
-                    try:
-                        func_metadata['tenant_id'] = func_args[0].headers.get("TenantId")
-                        func_metadata['auth_token'] = func_args[0].headers.get("Authorization")
-                        break
-                    except:
-                        pass
+        if metadata['tenant_id'] is None:
+            raise Exception(f"No `tenant_id` found (see: '{metadata['callable']}' from '{metadata['source']}')")
 
-        if 'tenant_id' not in func_metadata:
-            if 'tenant_id' in func_kwargs:
-                func_metadata['tenant_id'] = func_kwargs['tenant_id']
-            elif 'flask_request' in func_kwargs:
-                func_metadata['tenant_id'] = func_kwargs['flask_request'].headers.get("TenantId")
-                func_metadata['auth_token'] = func_kwargs['flask_request'].headers.get("Authorization")
-            else:
-                log.error(f"TenantId not found on function '{func.__name__}' parameters")
+        if metadata['event_id'] is None:
+            raise Exception(f"No `event_id` found can't create history (see: '{metadata['callable']}' from '{metadata['source']}')")
 
-        print(func_metadata)
-        return func_metadata
+        print(metadata)
+        return metadata
+
+    @staticmethod
+    def save_step(metadata):
+        return mongodata.insert(
+            schema=WildSchema,
+            data=metadata,
+            collection=envs.MONGO_COLLECTION_HISTORY_NAME
+        )
 
     @staticmethod
     def log(*dargs, success_message=None, failed_message=None):
@@ -179,7 +155,8 @@ class History:
             @wraps(f)
             def wrapper(*args, **kwargs):
                 try:
-                    func_metadata = History.get_func_metadata(f, args, kwargs)
+                    metadata = History.get_metadata(f, args, kwargs)
+                    History.save_step(metadata)
 
                     response = f(*args, **kwargs)
                     if success_message: log.success(success_message)
