@@ -115,7 +115,7 @@ from licenseware.utils.logger import log
 from licenseware.common.constants import envs
 from licenseware.common.serializers import WildSchema
 
-from . import event, tenant
+from . import event, tenant, uploader
 
 
 class History:
@@ -129,7 +129,9 @@ class History:
             'docs': func.__doc__.strip() if func.__doc__ else func.__name__,
             'source': str(inspect.getmodule(func)).split("from")[1].strip().replace("'", "").replace(">", ""),
             'tenant_id': tenant.get_tenant_id(func, func_args, func_kwargs),
-            'event_id': event.get_event_id(func, func_args, func_kwargs)
+            'event_id': event.get_event_id(func, func_args, func_kwargs),
+            'app_id': envs.APP_ID,
+            'uploader_id': uploader.get_uploader_id(func, func_args, func_kwargs)
         }
 
         if metadata['tenant_id'] is None:
@@ -137,6 +139,9 @@ class History:
 
         if metadata['event_id'] is None:
             raise Exception(f"No `event_id` found can't create history (see: '{metadata['callable']}' from '{metadata['source']}')")
+
+        if metadata['uploader_id'] is None:
+            raise Exception(f"No `uploader_id` found can't create history (see: '{metadata['callable']}' from '{metadata['source']}')")
 
         print(metadata)
         return metadata

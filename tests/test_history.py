@@ -23,7 +23,8 @@ class TestHistory(unittest.TestCase):
 
         request = get_flask_request(headers={
             'TenantId': "1234",
-            'Authorization': "e9898dfl4s34kjs"
+            'Authorization': "e9898dfl4s34kjs",
+            'UploaderId': "rv_tools"
         })
 
         response, status_code = validate_filenames(request, "the string", data=[1, 2, 3])
@@ -32,7 +33,7 @@ class TestHistory(unittest.TestCase):
         self.assertEqual(response['status'], 'success')
 
         @History.log()
-        def validate_filenames_no_flask_request(name, data, tenant_id="123", event_id="wer"):
+        def validate_filenames_no_flask_request(name, data, tenant_id="123", event_id="wer", uploader_id="rv_tools"):
             """ Validate filenames received """
 
             response, status_code = {

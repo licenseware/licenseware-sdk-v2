@@ -32,12 +32,14 @@ def get_value_from_kwargs(func_kwargs, *params):
 
 def get_value_from_defaults(func, *params):
     for param in params:
-        value = inspect.signature(func).parameters[param].default
-        if value: return value
+        try:
+            value = inspect.signature(func).parameters[param].default
+            if value: return value
+        except: pass
 
 
 def get_value_from_func(func, func_args, func_kwargs, *params):
-    """ Get parameters value from function data"""
+    """ Get parameters value from function data """
 
     value = get_value_from_args(func_args, *params)
 
