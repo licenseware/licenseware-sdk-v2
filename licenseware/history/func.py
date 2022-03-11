@@ -27,6 +27,12 @@ def get_value_from_kwargs(func_kwargs, *params):
         except:
             pass
 
+    if func_kwargs.get('event') is not None:
+        if isinstance(func_kwargs['event'], dict):
+            for param in params:
+                value = func_kwargs['event'].get(param)
+                if value: return value
+
     return None
 
 

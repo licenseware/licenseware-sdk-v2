@@ -135,7 +135,7 @@ class History:
         }
 
         if metadata['tenant_id'] is None:
-            raise Exception(f"No `tenant_id` found (see: '{metadata['callable']}' from '{metadata['source']}')")
+            raise Exception(f"No `tenant_id` found can't create history (see: '{metadata['callable']}' from '{metadata['source']}')")
 
         if metadata['event_id'] is None:
             raise Exception(f"No `event_id` found can't create history (see: '{metadata['callable']}' from '{metadata['source']}')")

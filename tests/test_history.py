@@ -24,7 +24,8 @@ class TestHistory(unittest.TestCase):
         request = get_flask_request(headers={
             'TenantId': "1234",
             'Authorization': "e9898dfl4s34kjs",
-            'UploaderId': "rv_tools"
+            # 'UploaderId': "rv_tools",
+            "X-Forwarded-Path": '/universal-uploader/uploads/universal_uploader/validation'
         })
 
         response, status_code = validate_filenames(request, "the string", data=[1, 2, 3])
