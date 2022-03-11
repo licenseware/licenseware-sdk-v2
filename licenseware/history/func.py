@@ -6,11 +6,10 @@ def get_value_from_args(func_args, *params):
         if hasattr(arg, 'headers'):  # flask request
             try:
                 for param in params:
-                    value = func_args[0].headers.get(param)
+                    value = arg.headers.get(param)
                     if value: return value
             except:
                 pass
-
     return None
 
 
@@ -22,7 +21,10 @@ def get_value_from_kwargs(func_kwargs, *params):
     if func_kwargs.get('flask_request') is not None:
         try:
             for param in params:
-                value = func_kwargs['flask_request'].headers.get(param)
+                if isinstance(func_kwargs['flask_request'], dict):
+                    value = func_kwargs['flask_request'].get(param)
+                else:
+                    value = func_kwargs['flask_request'].headers.get(param)
                 if value: return value
         except:
             pass

@@ -118,6 +118,7 @@ class UploaderBuilder:
         return response, status_code
 
     def validate_filenames(self, flask_request: Request):
+        """ Validate file names provided by user """
 
         response, status_code = self.validator_class.get_filenames_response(
             flask_request)
@@ -130,6 +131,7 @@ class UploaderBuilder:
         return response, status_code
 
     def upload_files(self, flask_request: Request):
+        """ Validate file content provided by user and send files for processing if they are valid """
 
         if self.worker is None:
             return {
@@ -161,6 +163,7 @@ class UploaderBuilder:
             return {'status': states.FAILED, 'message': 'No valid files provided'}, 400
 
         # Preparing and sending the event to worker for background processing
+
         flask_headers = dict(
             flask_request.headers) if flask_request.headers else {}
         flask_json = dict(flask_request.json) if flask_request.json else {}

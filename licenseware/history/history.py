@@ -1,8 +1,13 @@
 """
 Specs:
 
-[] create an event_id for the file uploaded
+[X] create an event_id for the file(s) uploaded
     - the event_id is a unique uuid4 id which allows us to track the files uploaded in the processing pipeline
+    Resolution:
+    When the `validate_filenames` function from `UploaderBuilder` sdk class is called,
+    parameters `EventId` and `UploaderId` are added on the headers.
+    On the next step when files are sent for upload and the file content validation is triggered
+    the `EventId` and `UploaderId` will be taken from the headers received from frontend (`UploaderId` is optional).
 
 [] save each response from the validation steps
     - save filename validation response
@@ -108,43 +113,15 @@ Files processed in bulk are grouped in list
 
 """
 
-import inspect
 from functools import wraps
 from licenseware import mongodata
 from licenseware.utils.logger import log
 from licenseware.common.constants import envs
 from licenseware.common.serializers import WildSchema
-
-from . import event, tenant, uploader
+from .metadata import get_metadata, append_headers_on_validation_funcs
 
 
 class History:
-
-    @staticmethod
-    def get_metadata(func, func_args, func_kwargs):
-        """ Getting all the data needed to identify and track files uploaded (function name, source and tenant_id) """
-
-        metadata = {
-            'callable': func.__name__,
-            'docs': func.__doc__.strip() if func.__doc__ else func.__name__,
-            'source': str(inspect.getmodule(func)).split("from")[1].strip().replace("'", "").replace(">", ""),
-            'tenant_id': tenant.get_tenant_id(func, func_args, func_kwargs),
-            'event_id': event.get_event_id(func, func_args, func_kwargs),
-            'app_id': envs.APP_ID,
-            'uploader_id': uploader.get_uploader_id(func, func_args, func_kwargs)
-        }
-
-        if metadata['tenant_id'] is None:
-            raise Exception(f"No `tenant_id` found can't create history (see: '{metadata['callable']}' from '{metadata['source']}')")
-
-        if metadata['event_id'] is None:
-            raise Exception(f"No `event_id` found can't create history (see: '{metadata['callable']}' from '{metadata['source']}')")
-
-        if metadata['uploader_id'] is None:
-            raise Exception(f"No `uploader_id` found can't create history (see: '{metadata['callable']}' from '{metadata['source']}')")
-
-        print(metadata)
-        return metadata
 
     @staticmethod
     def save_step(metadata):
@@ -160,21 +137,18 @@ class History:
             @wraps(f)
             def wrapper(*args, **kwargs):
                 try:
-                    metadata = History.get_metadata(f, args, kwargs)
-                    History.save_step(metadata)
-
                     response = f(*args, **kwargs)
+                    metadata = get_metadata(f, args, kwargs)
+                    response = append_headers_on_validation_funcs(metadata, response)
                     if success_message: log.success(success_message)
-
                     return response
-
                 except Exception as err:
+
                     log.exception(err)
-                    if failed_message:
-                        log.error(failed_message)
-                    else:
-                        log.error(err)
-                    raise
+                    if failed_message: log.error(failed_message)
+                    else: log.error(err)
+
+                    raise err
 
             return wrapper
 

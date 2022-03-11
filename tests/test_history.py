@@ -28,7 +28,7 @@ class TestHistory(unittest.TestCase):
             "X-Forwarded-Path": '/universal-uploader/uploads/universal_uploader/validation'
         })
 
-        response, status_code = validate_filenames(request, "the string", data=[1, 2, 3])
+        response, status_code, headers = validate_filenames(request, "the string", data=[1, 2, 3])
 
         self.assertEqual(status_code, 200)
         self.assertEqual(response['status'], 'success')
