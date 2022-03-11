@@ -126,7 +126,7 @@ class History:
 
         metadata = {
             'callable': func.__name__,
-            'docs': func.__doc__.strip() if func.__doc__ else None,
+            'docs': func.__doc__.strip() if func.__doc__ else func.__name__,
             'source': str(inspect.getmodule(func)).split("from")[1].strip().replace("'", "").replace(">", ""),
             'tenant_id': tenant.get_tenant_id(func, func_args, func_kwargs),
             'event_id': event.get_event_id(func, func_args, func_kwargs)
