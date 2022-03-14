@@ -3,7 +3,8 @@ import shutil
 import datetime
 from licenseware import mongodata
 from licenseware.common.constants import envs, states
-from licenseware.common.serializers import WildSchema
+# from licenseware.common.serializers import WildSchema
+from .history_schemas import HistorySchema
 
 
 def save_filename_validation(metadata, response):
@@ -13,11 +14,13 @@ def save_filename_validation(metadata, response):
         "event_id": metadata["event_id"],
         "app_id": metadata["app_id"],
         "uploader_id": metadata["uploader_id"],
-        "filename_validation": response["validation"]
+        "filename_validation": response["validation"],
+        "filename_validation_updated_at": datetime.datetime.utcnow().isoformat(),
+        "updated_at": datetime.datetime.utcnow().isoformat()
     }
 
     return mongodata.insert(
-        schema=WildSchema,
+        schema=HistorySchema,
         data=data,
         collection=envs.MONGO_COLLECTION_HISTORY_NAME
     )
@@ -51,13 +54,15 @@ def save_file_content_validation(metadata, response):
         "app_id": metadata["app_id"],
         "uploader_id": metadata["uploader_id"],
         "file_content_validation": response["validation_response"]["validation"],
-        "files_uploaded": response["event_data"]["filepaths"]
+        "files_uploaded": response["event_data"]["filepaths"],
+        "updated_at": datetime.datetime.utcnow().isoformat()
     }
 
     data["files_uploaded"] = copy_files_uploaded_on_event_folder(data)
+    data["file_content_validation_updated_at"] = datetime.datetime.utcnow().isoformat()
 
     return mongodata.update(
-        schema=WildSchema,
+        schema=HistorySchema,
         match={
             "tenant_id": metadata["tenant_id"],
             "event_id": metadata["event_id"]
@@ -74,6 +79,7 @@ def save_processing_details(metadata, response):
         "event_id": metadata["event_id"],
         "app_id": metadata["app_id"],
         "uploader_id": metadata["uploader_id"],
+        "updated_at": datetime.datetime.utcnow().isoformat(),
         "processing_details": [{
             "step": metadata['step'],
             "filepath": metadata["filepath"],
@@ -82,12 +88,13 @@ def save_processing_details(metadata, response):
             "error": response["error"],
             "traceback": response["traceback"],
             "callable": metadata['callable'],
-            "source": metadata['source']
+            "source": metadata['source'],
+            "updated_at": datetime.datetime.utcnow().isoformat()
         }]
     }
 
     return mongodata.update(
-        schema=WildSchema,
+        schema=HistorySchema,
         match={
             "tenant_id": metadata["tenant_id"],
             "event_id": metadata["event_id"]

@@ -34,7 +34,7 @@ class TestHistory(unittest.TestCase):
             return response, status_code
 
         request = get_flask_request(headers={
-            'TenantId': "1234",
+            'TenantId': "b37761e3-6926-4cc1-88c7-4d0478b04adf",
             'Authorization': "e9898dfl4s34kjs",
             # 'UploaderId': "rv_tools",
             "X-Forwarded-Path": '/universal-uploader/uploads/universal_uploader/validation'
@@ -46,7 +46,10 @@ class TestHistory(unittest.TestCase):
         self.assertEqual(response['status'], 'success')
 
         @History.log()
-        def processing_function(name, data, filepath, tenant_id="123", event_id="wer", uploader_id="rv_tools"):
+        def processing_function(name, data, filepath,
+                                tenant_id="b37761e3-6926-4cc1-88c7-4d0478b04adf",
+                                event_id="b37761e3-6926-4cc1-88c7-4d0478b04adf",
+                                uploader_id="rv_tools"):
             """ Process data from file """
 
             response, status_code = {
