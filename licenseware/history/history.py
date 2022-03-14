@@ -9,13 +9,13 @@ Specs:
     On the next step when files are sent for upload and the file content validation is triggered
     the `EventId` and `UploaderId` will be taken from the headers received from frontend (`UploaderId` is optional).
 
-[] save each response from the validation steps
+[X] save each response from the validation steps
     - save filename validation response
     - save file content validation response
-    - save files uploaded on disk under a tenant_id/event_id folder (files saved will be useful in reproducing the error)
-    - delete files saved in /event_id folder if the processing was successful (0 errors) to avoid filling the disk
+    - save files uploaded on disk under a tenant_id_event_id_delete_date folder (files saved will be useful in reproducing the error)
+    - delete files saved in /event_id folder by a cron job
 
-[] allow logging history and return an alternate response in case of failure
+[X] allow logging history and return an alternate response in case of failure
     - adding `History.log()` decorator on processing functions will save the raised errors in db
     and return an alternate `empty` response (either an empty dict/list
     or None which can be handled in the next step of the processing pipeline)
@@ -115,12 +115,44 @@ Files processed in bulk are grouped in list
 import uuid
 import traceback
 from functools import wraps
+from pymongo.collection import Collection
+from licenseware import mongodata
+from licenseware.mongodata import collection
+from licenseware.common.serializers import WildSchema
+from licenseware.common.constants import envs
 from licenseware.utils.logger import log
 from .metadata import get_metadata, create_metadata, append_headers_on_validation_funcs
 from .step import save_step
 
 
 class History:
+
+    @staticmethod
+    def add_entities(
+            event_id: str,
+            entities: list = None
+    ):
+        return mongodata.update(
+            schema=WildSchema,
+            match={'event_id': event_id},
+            new_data=entities,
+            append=True,
+            collection=envs.MONGO_COLLECTION_HISTORY_NAME
+        )
+
+    @staticmethod
+    def remove_entities(
+            event_id: str,
+            entities: list = None
+    ):
+        with collection(envs.MONGO_COLLECTION_HISTORY_NAME) as col:
+            col: Collection
+            updated = col.update_one(
+                filter={'event_id': event_id},
+                update={'$pull': {'entities': {"$in": entities}}}
+            ).modified_count
+
+        return updated
 
     @staticmethod
     def log_success(
