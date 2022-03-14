@@ -16,7 +16,19 @@ class TestHistory(unittest.TestCase):
             response, status_code = {
                         "status": "success",
                         "message": "Filenames are valid",
-                        "data": f"{name}, {data}"
+                        "data": f"{name}, {data}",
+                        "validation": [
+                            {
+                              "status": "success",
+                              "filename": "rvtools.xlsx",
+                              "message": "Filename is valid"
+                            },
+                            {
+                              "status": "success",
+                              "filename": "options.csv",
+                              "message": "Filename is valid"
+                            }
+                          ]
                     }, 200
 
             return response, status_code
@@ -34,8 +46,8 @@ class TestHistory(unittest.TestCase):
         self.assertEqual(response['status'], 'success')
 
         @History.log()
-        def validate_filenames_no_flask_request(name, data, tenant_id="123", event_id="wer", uploader_id="rv_tools"):
-            """ Validate filenames received """
+        def processing_function(name, data, filepath, tenant_id="123", event_id="wer", uploader_id="rv_tools"):
+            """ Process data from file """
 
             response, status_code = {
                                         "status": "success",
@@ -45,7 +57,7 @@ class TestHistory(unittest.TestCase):
 
             return response, status_code
 
-        response, status_code = validate_filenames_no_flask_request("Alin", [1, 2, 3])
+        response, status_code = processing_function("Alin", [1, 2, 3], filepath='path/to/file')
 
         self.assertEqual(status_code, 200)
         self.assertEqual(response['status'], 'success')

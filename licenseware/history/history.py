@@ -113,48 +113,55 @@ Files processed in bulk are grouped in list
 
 """
 import uuid
+import traceback
 from functools import wraps
-from licenseware import mongodata
 from licenseware.utils.logger import log
-from licenseware.common.constants import envs
-from licenseware.common.serializers import WildSchema
 from .metadata import get_metadata, append_headers_on_validation_funcs
+from .step import save_step
 
 
 class History:
 
     @staticmethod
-    def save_step(metadata):
-        return mongodata.insert(
-            schema=WildSchema,
-            data=metadata,
-            collection=envs.MONGO_COLLECTION_HISTORY_NAME
-        )
+    def log(*dargs, on_success_save: str = None, on_failure_save: str = None, on_failure_return: any = None):
+        """
+            param: on_success_save - what to save on history logs if function didn't raised any errors
+            param: on_failure_save - what to save on history logs if function raised error
+            param: on_failure_return - if function raised an error return this instead (for safe processing)
+            Ex:
+            ```
+                @History.log(on_failure_return={})
+                def procFunc(*args, **kwargs):
+                    raise Exception("Failed")
 
-    @staticmethod
-    def log(*dargs, success_message=None, failed_message=None):
+                >> print(procFunc())
+                >> {}
+            ```
+        """
         def _decorator(f):
             @wraps(f)
             def wrapper(*args, **kwargs):
+                # Handle case where files are uploaded and EventId is not provided in the headers
+                if f.__name__ == 'upload_files' and args[0].headers.get("EventId") is None:
+                    kwargs.update({"event_id": str(uuid.uuid4())})
+                metadata = get_metadata(f, args, kwargs)
                 try:
-                    # Handle case where files are uploaded and EventId is not provided in the headers
-                    if f.__name__ == 'upload_files' and args[0].headers.get("EventId") is None:
-                        kwargs.update({"event_id": str(uuid.uuid4())})
-
                     response = f(*args, **kwargs)
-                    metadata = get_metadata(f, args, kwargs)
+                    save_step(metadata, response, on_success_save, on_failure_save)
                     response = append_headers_on_validation_funcs(metadata, response)
-                    if success_message: log.success(success_message)
                     return response
-
                 except Exception as err:
-
                     log.exception(err)
-                    if failed_message: log.error(failed_message)
-                    else: log.error(err)
+                    if on_failure_save:
+                        save_step(metadata, None, on_success_save, on_failure_save, True)
+                    else:
+                        save_step(metadata, {
+                            'error': str(err),
+                            'traceback': str(traceback.format_exc())
+                        }, on_success_save, on_failure_save, True)
 
+                    if on_failure_return: return on_failure_return
                     raise err
 
             return wrapper
-
         return _decorator(dargs[0]) if dargs and callable(dargs[0]) else _decorator

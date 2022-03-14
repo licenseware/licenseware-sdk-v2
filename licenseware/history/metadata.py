@@ -1,7 +1,7 @@
 import inspect
 from licenseware.common.constants import envs
 
-from . import event, tenant, uploader
+from . import event, tenant, uploader, file
 
 
 def get_metadata(func, func_args, func_kwargs):
@@ -9,13 +9,16 @@ def get_metadata(func, func_args, func_kwargs):
 
     metadata = {
         'callable': func.__name__,
-        'docs': func.__doc__.strip() if func.__doc__ else func.__name__,
+        'step': func.__doc__.strip() if func.__doc__ else func.__name__,
         'source': str(inspect.getmodule(func)).split("from")[1].strip().replace("'", "").replace(">", ""),
         'tenant_id': tenant.get_tenant_id(func, func_args, func_kwargs),
         'event_id': event.get_event_id(func, func_args, func_kwargs),
         'app_id': envs.APP_ID,
-        'uploader_id': uploader.get_uploader_id(func, func_args, func_kwargs)
+        'uploader_id': uploader.get_uploader_id(func, func_args, func_kwargs),
+        'filepath': file.get_filepath(func, func_args, func_kwargs)
     }
+
+    print(metadata)
 
     if metadata['tenant_id'] is None:
         raise Exception(
@@ -29,7 +32,12 @@ def get_metadata(func, func_args, func_kwargs):
         raise Exception(
             f"No `uploader_id` found can't create history (see: '{metadata['callable']}' from '{metadata['source']}')")
 
-    print(metadata)
+    # File path must be provided on processing functions
+    if metadata['filepath'] is None:
+        if func.__name__ not in ['validate_filenames', 'upload_files']:
+            raise Exception(
+                f"No `filepath` found can't create history (see: '{metadata['callable']}' from '{metadata['source']}')")
+
     return metadata
 
 
