@@ -4,6 +4,27 @@ from licenseware.common.constants import envs
 from . import event, tenant, uploader, file
 
 
+def create_metadata(
+        step: str,
+        tenant_id: str,
+        event_id: str,
+        uploader_id: str,
+        filepath: str,
+        func_name: str = None,
+        func_source: str = None,
+):
+    return {
+        'callable': func_name,
+        'step': step,
+        'source': func_source,
+        'tenant_id': tenant_id,
+        'event_id': event_id,
+        'app_id': envs.APP_ID,
+        'uploader_id': uploader_id,
+        'filepath': filepath
+    }
+
+
 def get_metadata(func, func_args, func_kwargs):
     """ Getting all the data needed to identify and track files uploaded (function name, source and tenant_id) """
 
@@ -45,7 +66,6 @@ def append_headers_on_validation_funcs(metadata, response):
     """ If history decorator is added on the  validation functions from sdk append EventId and UploaderId headers """
     if metadata['callable'] in ['validate_filenames', 'upload_files']:
         if isinstance(response, tuple):
-            if len(response) == 2: # if returns something like: {"status": "success", "message": "ok"}, 200
+            if len(response) == 2:  # if returns something like: {"status": "success", "message": "ok"}, 200
                 return *response, {"EventId": metadata['event_id'], "UploaderId": metadata['uploader_id']}
     return response
-

@@ -116,11 +116,48 @@ import uuid
 import traceback
 from functools import wraps
 from licenseware.utils.logger import log
-from .metadata import get_metadata, append_headers_on_validation_funcs
+from .metadata import get_metadata, create_metadata, append_headers_on_validation_funcs
 from .step import save_step
 
 
 class History:
+
+    @staticmethod
+    def log_success(
+            step: str,
+            tenant_id: str,
+            event_id: str,
+            uploader_id: str,
+            filepath: str,
+            on_success_save: str = None,
+            func_name: str = None,
+            func_source: str = None,
+            **overflow
+    ):
+        metadata = create_metadata(step, tenant_id, event_id, uploader_id, filepath, func_name, func_source)
+        save_step(metadata, None, on_success_save, None)
+        return metadata
+
+    @staticmethod
+    def log_failure(
+            step: str,
+            tenant_id: str,
+            event_id: str,
+            uploader_id: str,
+            filepath: str,
+            error_string: str,
+            traceback_string: str,
+            on_failure_save: str = None,
+            func_name: str = None,
+            func_source: str = None,
+            **overflow
+    ):
+        metadata = create_metadata(step, tenant_id, event_id, uploader_id, filepath, func_name, func_source)
+        save_step(metadata, {
+            'error': error_string,
+            'traceback': traceback_string
+        }, None, on_failure_save, True)
+        return metadata
 
     @staticmethod
     def log(*dargs, on_success_save: str = None, on_failure_save: str = None, on_failure_return: any = None):
@@ -152,13 +189,11 @@ class History:
                     return response
                 except Exception as err:
                     log.exception(err)
-                    if on_failure_save:
-                        save_step(metadata, None, on_success_save, on_failure_save, True)
-                    else:
-                        save_step(metadata, {
-                            'error': str(err),
-                            'traceback': str(traceback.format_exc())
-                        }, on_success_save, on_failure_save, True)
+
+                    save_step(metadata, {
+                        'error': str(err),
+                        'traceback': str(traceback.format_exc())
+                    }, on_success_save, on_failure_save, True)
 
                     if on_failure_return: return on_failure_return
                     raise err
