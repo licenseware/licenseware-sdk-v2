@@ -41,45 +41,6 @@ class HistorySchema(Schema):
     file_content_validation_updated_at = fields.String()
 
 
-"""
-Example:
+class EntitiesSchema(Schema):
+    entities = fields.List(fields.String, required=True, validate=validate_uuid4)
 
-{
-    "tenant_id": metadata["tenant_id"],
-    "event_id": metadata["event_id"],
-    "app_id": metadata["app_id"],
-    "uploader_id": metadata["uploader_id"],
-    "filename_validation": [
-            {
-              "status": "success",
-              "filename": "rvtools.xlsx",
-              "message": "Filename is valid"
-            },
-            {
-              "status": "success",
-              "filename": "options.csv",
-              "message": "Filename is valid"
-            }
-    ],
-    "file_content_validation": [
-        {
-          "status": "success",
-          "filename": "cpuq.txt",
-          "filepath": "/tmp/lware/b37761e3-6926-4cc1-88c7-4d0478b04adf/cpuq.txt",
-          "message": "Filename is valid"
-        }
-    ],
-    "files_uploaded": response["event_data"]["filepaths"],
-    "processing_details": [{
-        "step": metadata['step'],
-        "filepath": metadata["filepath"],
-        "status": response["status"],
-        "success": response["success"],
-        "error": response["error"],
-        "traceback": response["traceback"],
-        "callable": metadata['callable'],
-        "source": metadata['source']
-    }]
-}
-
-"""

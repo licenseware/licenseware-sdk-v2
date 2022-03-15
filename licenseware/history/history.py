@@ -1,117 +1,3 @@
-"""
-Specs:
-
-[X] create an event_id for the file(s) uploaded
-    - the event_id is a unique uuid4 id which allows us to track the files uploaded in the processing pipeline
-    Resolution:
-    When the `validate_filenames` function from `UploaderBuilder` sdk class is called,
-    parameters `EventId` and `UploaderId` are added on the headers.
-    On the next step when files are sent for upload and the file content validation is triggered
-    the `EventId` and `UploaderId` will be taken from the headers received from frontend (`UploaderId` is optional).
-
-[X] save each response from the validation steps
-    - save filename validation response
-    - save file content validation response
-    - save files uploaded on disk under a tenant_id_event_id_delete_date folder (files saved will be useful in reproducing the error)
-    - delete files saved in /event_id folder by a cron job
-
-[X] allow logging history and return an alternate response in case of failure
-    - adding `History.log()` decorator on processing functions will save the raised errors in db
-    and return an alternate `empty` response (either an empty dict/list
-    or None which can be handled in the next step of the processing pipeline)
-    - `History.log()` decorator requires one job for each function with raise error where needed
-    - also allow using where not possible (big funcs which do a lot of things) logging/saving error/success responses
-    `History.log_entities(**data)`, `History.log_success(**data)` and `History.log_failure(**data)` functions can be used
-
-[] different history stats schema based on the type of files processed
-    - currently there are 2 types of processed files
-        1. files that are processed in bulk (the processing pipeline requires uploading more than 1 file)
-        2. files that are processed one by one (the processing pipeline requires uploading just 1 file)
-        3. single file with multiple entities?TODO
-
-
-Entities:
- - devices
- - databases
- - products
- - list can be expanded
-
-Test on: ODB (review_lite, lms_options)
-
-review_lite - databases from filename
-lms_options - databases from content
-
-save db ids (uuid4) to entities_ids
-
-HistoryStatsSchema (for files processed one by one):
-
-{
-    "tenant_id": "xxx",
-    "event_id": "xxxx",
-    "uploader_id": "rv_lite",
-    "entities_ids": [
-        "uuid4 strings"
-    ],
-    "filename_validation": [
-        {"file_path": "/path/file", "response": the filename validation response},
-        etc
-    ],
-    "file_content_validationr bulk file should look:": [
-        {"file_path": "/path/file", "response": the file content validation response},
-        etc
-    ],
-    "files_uploaded": [file_path1, file_path2, file_path3],
-    "processing_details": [
-            {
-                "step": "Getting machines CPU cores",
-                "error": "Value in column x not an integer",
-                "processed_file_path": "path/to/file/processed",
-                "traceback": "traceback error"
-            }
-            etc
-    ]
-}
-
-
-def procFunc():
-    ''' processing xxx '''
-    raise Exception("X not found in y")
-
-
-HistoryStatsSchema (for files processed in bulk):
-Files processed in bulk are grouped in list
-
-{
-    "tenant_id": "xxx",
-    "event_id": "xxxx",
-    "uploader_id": "rv_lite",
-    "filename_validation": [
-        [
-            {"file_path": "/path/file", "response": the filename validation response},
-            etc
-        ]
-    ],
-    "file_content_validation": [
-        [
-            {"file_path": "/path/file", "response": the file content validation response},
-            etc
-        ]
-    ],
-    "files_uploaded": [[file_path1, file_path2, file_path3], etc],
-    "processing_details": [
-            [
-                {
-                "step": "Getting machines CPU cores",
-                "error": "Value in column x not an integer",
-                "processed_file_path": "path/to/file/processed",
-                "traceback": "traceback error"
-                }
-                etc
-            ]
-    ]
-}
-
-"""
 import uuid
 import inspect
 import traceback
@@ -119,21 +5,30 @@ from functools import wraps
 from pymongo.collection import Collection
 from licenseware import mongodata
 from licenseware.mongodata import collection
-from licenseware.common.serializers import WildSchema
 from licenseware.common.constants import envs
 from licenseware.utils.logger import log as logg
+from .history_schemas import EntitiesSchema
 from .metadata import get_metadata, create_metadata, append_headers_on_validation_funcs
 from .step import save_step
-
-__all__ = ['add_entities', 'remove_entities', 'log_failure', 'log_success', 'log']
 
 
 def add_entities(
         event_id: str,
         entities: list = None
 ):
+    """
+    Add reference ids to entities like databases, devices etc
+    Usage:
+    ```py
+        def processing_func(*args, **kwargs):
+            entity_id1, entity_id2 = get_some_entities()
+            history.add_entities(event_id, entities=[entity_id1, entity_id2])
+    ```
+    Where `entity_idx` is an uuid4 string.
+
+    """
     return mongodata.update(
-        schema=WildSchema,
+        schema=EntitiesSchema,
         match={'event_id': event_id},
         new_data={"entities": entities},
         append=True,
@@ -145,6 +40,17 @@ def remove_entities(
         event_id: str,
         entities: list = None
 ):
+    """
+    Remove reference ids to entities like databases, devices etc from history
+    Usage:
+    ```py
+        def processing_func(*args, **kwargs):
+            entity_id1, entity_id2 = get_some_entities()
+            history.add_entities(event_id, entities=[entity_id1, entity_id2])
+    ```
+    Where `entity_idx` is an uuid4 string.
+
+    """
     with collection(envs.MONGO_COLLECTION_HISTORY_NAME) as col:
         col: Collection
         updated = col.update_one(
@@ -164,8 +70,25 @@ def log_success(
         on_success_save: str = None,
         **overflow
 ):
+    """
+    Log in history a processing success event.
+    Usage:
+    ```py
+        def processing_func(*args, **kwargs):
+            # some processing here
+            history.log_success(
+                func=processing_func,  # for classes use self.func
+                tenant_id=tenant_id,
+                event_id=event_id,
+                uploader_id=uploader_id,
+                filepath=filepath,
+                on_success_save="Entities added successfully"
+            )
+            # some processing here
+    ```
+    """
     func_name = func.__name__
-    step = func.__doc__ or func.__name__
+    step = func.__doc__.strip() if func.__doc__ else func.__name__
     func_source = str(inspect.getmodule(func)).split("from")[1].strip().replace("'", "").replace(">", "")
 
     metadata = create_metadata(step, tenant_id, event_id, uploader_id, filepath, func_name, func_source)
@@ -184,9 +107,31 @@ def log_failure(
         on_failure_save: str = None,
         **overflow
 ):
+    """
+    Log in history a processing failure event.
+    Usage:
+    ```py
+        def processing_func(*args, **kwargs):
+            # some processing here
+            try:
+                raise Exception("Something bad happened")
+            except Exception as error:
+                history.log_failure(
+                    func=processing_func, # for classes use self.func
+                    tenant_id=tenant_id,
+                    event_id=event_id,
+                    uploader_id=uploader_id,
+                    filepath=filepath,
+                    error_string=str(error),
+                    traceback_string=str(traceback.format_exc())
+                )
+            # some processing here
+    ```
+
+    """
 
     func_name = func.__name__
-    step = func.__doc__ or func.__name__
+    step = func.__doc__.strip() if func.__doc__ else func.__name__
     func_source = str(inspect.getmodule(func)).split("from")[1].strip().replace("'", "").replace(">", "")
 
     metadata = create_metadata(step, tenant_id, event_id, uploader_id, filepath, func_name, func_source)
@@ -199,6 +144,36 @@ def log_failure(
 
 def log(*dargs, on_success_save: str = None, on_failure_save: str = None, on_failure_return: any = None):
     """
+        Log processing events by decorating processing function/methods.
+
+        Usage:
+        ```py
+            @history.log()
+            def processing_function(filepath, event_id, uploader_id, tenant_id):
+                # some processing here
+                return "some data"
+        ```
+
+        Parameters: filepath, event_id, uploader_id, tenant_id are REQUIRED!
+        Required parameters can be put on self in class like:
+
+        ```py
+            class ProcessingClass:
+
+                def __init__(self, event):
+                    self.event_id = event["event_data"]["event_id"]
+                    self.uploader_id = event["event_data"]["uploader_id"]
+                    self.tenant_id = event["event_data"]["tenant_id"]
+
+                @history.log(on_failure_return={})
+                def proc_func_within_class(self, filepath):
+                    print(f"Processing {filepath}...")
+                    raise Exception("Something bad happened")
+                    print("Done!")
+                    return {"k": "v"}
+        ```
+        Either way if needed parameters will not be found an error will be raised by history.log decorator.
+
         param: on_success_save - what to save on history logs if function didn't raised any errors
         param: on_failure_save - what to save on history logs if function raised error
         param: on_failure_return - if function raised an error return this instead (for safe processing)
@@ -212,6 +187,93 @@ def log(*dargs, on_success_save: str = None, on_failure_save: str = None, on_fai
             >> print(procFunc())
             >> {}
         ```
+
+    Here is an example on how logging a processing event will look like:
+
+    ```bash
+
+        {
+            _id: ObjectId('6230670a96defb313cf63fa9'),
+            uploader_id: 'universal_uploader',
+            app_id: 'app',
+            event_id: '6cd474cd-663f-4d1f-891e-e18d0d0ea77e',
+            tenant_id: 'b37761e3-6926-4cc1-88c7-4d0478b04adf',
+            filename_validation: [
+                {
+                    message: 'Filename is valid',
+                    filename: 'cpuq.txt',
+                    status: 'success'
+                }
+            ],
+            updated_at: '2022-03-15T10:14:34.470253',
+            filename_validation_updated_at: '2022-03-15T10:14:34.411491',
+            file_content_validation: [
+                {
+                    message: 'Filename is valid',
+                    filepath: '/tmp/lware/b37761e3-6926-4cc1-88c7-4d0478b04adf/cpuq.txt',
+                    filename: 'cpuq.txt',
+                    status: 'success'
+                }
+            ],
+            file_content_validation_updated_at: '2022-03-15T10:14:34.426705',
+            files_uploaded: [
+                '/tmp/lware/b37761e3-6926-4cc1-88c7-4d0478b04adf_6cd474cd-663f-4d1f-891e-e18d0d0ea77e_2022-04-14/cpuq.txt'
+            ],
+            processing_details: [
+                {
+                    step: 'Getting some data out of provided cpuq.txt file',
+                    status: 'success',
+                    traceback: null,
+                    error: null,
+                    callable: 'processing_function',
+                    success: null,
+                    source: '/home/acmt/Documents/lware/licenseware-sdk-v2/tests/test_history.py',
+                    updated_at: '2022-03-15T10:14:34.434117',
+                    filepath: '/tmp/lware/b37761e3-6926-4cc1-88c7-4d0478b04adf/cpuq.txt'
+                },
+                {
+                    step: 'Getting some data out of provided cpuq.txt file',
+                    status: 'success',
+                    traceback: null,
+                    error: null,
+                    callable: 'processing_function_without_decorator',
+                    success: 'Entities added successfully',
+                    source: '/home/acmt/Documents/lware/licenseware-sdk-v2/tests/test_history.py',
+                    updated_at: '2022-03-15T10:14:34.454749',
+                    filepath: '/tmp/lware/b37761e3-6926-4cc1-88c7-4d0478b04adf/cpuq.txt'
+                },
+                {
+                    step: 'Getting some data out of provided cpuq.txt file',
+                    status: 'failed',
+                    traceback: 'Traceback (most recent call last):\n  File "/home/acmt/Documents/lware/licenseware-sdk-v2/tests/test_history.py", line 183, in processing_function_without_decorator\n    raise Exception("Something bad happened")\nException: Something bad happened\n',
+                    error: 'Something bad happened',
+                    callable: 'processing_function_without_decorator',
+                    success: null,
+                    source: '/home/acmt/Documents/lware/licenseware-sdk-v2/tests/test_history.py',
+                    updated_at: '2022-03-15T10:14:34.462103',
+                    filepath: '/tmp/lware/b37761e3-6926-4cc1-88c7-4d0478b04adf/cpuq.txt'
+                },
+                {
+                    step: 'proc_func_within_class',
+                    status: 'failed',
+                    traceback: 'Traceback (most recent call last):\n  File "/home/acmt/Documents/lware/licenseware-sdk-v2/licenseware/history/history.py", line 231, in wrapper\n    response = f(*args, **kwargs)\n  File "/home/acmt/Documents/lware/licenseware-sdk-v2/tests/test_history.py", line 219, in proc_func_within_class\n    raise Exception("Something bad happened")\nException: Something bad happened\n',
+                    error: 'Something bad happened',
+                    callable: 'proc_func_within_class',
+                    success: null,
+                    source: '/home/acmt/Documents/lware/licenseware-sdk-v2/tests/test_history.py',
+                    updated_at: '2022-03-15T10:14:34.470259',
+                    filepath: '/tmp/lware/b37761e3-6926-4cc1-88c7-4d0478b04adf/cpuq.txt'
+                }
+            ],
+            entities: [
+                '5a5be275-cee8-44a6-a11c-0e2b886a820e',
+                'b137ff5d-90f1-4d45-872d-91b617666b78',
+                'b3d7a18e-7a6d-4296-8fcc-0464ec243658',
+                'ebaf16c9-4d88-413d-b395-92b65166ab20'
+            ]
+        }
+    ```
+
     """
     def _decorator(f):
         @wraps(f)

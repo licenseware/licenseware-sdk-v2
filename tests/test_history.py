@@ -168,7 +168,9 @@ class TestHistory(unittest.TestCase):
 
             history.add_entities(event_id, entities=[str(uuid.uuid4()), str(uuid.uuid4())])
             # do something else
-            history.add_entities(event_id, entities=[str(uuid.uuid4()), str(uuid.uuid4())])
+            entity_to_remove = str(uuid.uuid4())
+            history.add_entities(event_id, entities=[entity_to_remove, str(uuid.uuid4()), str(uuid.uuid4())])
+            history.remove_entities(event_id, entities=[entity_to_remove])
 
             history.log_success(
                 func=processing_function_without_decorator,  # for classes use self.func
