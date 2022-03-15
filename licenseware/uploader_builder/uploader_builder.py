@@ -8,6 +8,7 @@ from licenseware.common.validators import validate_event
 from licenseware.quota import Quota
 from licenseware.notifications import notify_upload_status
 from licenseware.uploader_validator.uploader_validator import UploaderValidator
+from licenseware import history
 
 
 class UploaderBuilder:
@@ -117,7 +118,9 @@ class UploaderBuilder:
             raise Exception("Uploader can't register to registry service")
         return response, status_code
 
+    @history.log()
     def validate_filenames(self, flask_request: Request):
+        """ Validate file names provided by user """
 
         response, status_code = self.validator_class.get_filenames_response(
             flask_request)
@@ -129,7 +132,13 @@ class UploaderBuilder:
 
         return response, status_code
 
-    def upload_files(self, flask_request: Request):
+    @history.log()
+    def upload_files(self, flask_request: Request, event_id: str = None):
+        """ Validate file content provided by user and send files for processing if they are valid """
+
+        header_event_id = flask_request.headers.get("EventId") or event_id
+        if header_event_id is None:
+            raise Exception("Parameter `EventId` not provided in headers")
 
         if self.worker is None:
             return {
@@ -139,7 +148,8 @@ class UploaderBuilder:
 
         event = {
             'tenant_id': flask_request.headers.get("Tenantid"),
-            'uploader_id': self.uploader_id
+            'uploader_id': self.uploader_id,
+            'event_id': header_event_id
         }
         notify_upload_status(event, status=states.RUNNING)
 
@@ -171,6 +181,7 @@ class UploaderBuilder:
                 {
                     'tenant_id': flask_headers.get("Tenantid"),
                     'uploader_id': self.uploader_id,
+                    'event_id': header_event_id,
                     'filepaths': [filepath],
                     'flask_request': {**flask_json, **flask_headers, **flask_args},
                     'validation_response': response
