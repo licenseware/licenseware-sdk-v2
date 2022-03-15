@@ -140,23 +140,42 @@ class TestHistory(unittest.TestCase):
 
         print(fc_response, fc_status_code, fc_headers)
 
+        # On the worker side we need to get `event_id`, `uploader_id`, `tenant_id`, `filepaths` from the even received
+
+        @history.log()
+        def processing_function(filepath, event_id, uploader_id, tenant_id):
+            """ Getting some data out of provided cpuq.txt file """
+            print(f"Processing {filepath}...")
+            print("Done!")
+            return {"k": "v"}
+
+        for filepath in fc_response["event_data"]["filepaths"]:
+            data = processing_function(
+                filepath=filepath,
+                event_id=fc_response["event_data"]["event_id"],
+                uploader_id=fc_response["event_data"]["uploader_id"],
+                tenant_id=fc_response["event_data"]["tenant_id"]
+            )
+
+            print(data)
+
         # What's saved on DB until now
         """
         {
-            _id: ObjectId('623034baf8dcd8f0f55dd80c'),
-            uploader_id: 'cpuq',
-            tenant_id: 'b37761e3-6926-4cc1-88c7-4d0478b04adf',
+            _id: ObjectId('623040aef801ad2c4bb176bd'),
+            filename_validation_updated_at: '2022-03-15T07:30:54.152860',
             filename_validation: [
                 {
+                    message: 'Filename is valid',
                     status: 'success',
-                    filename: 'cpuq.txt',
-                    message: 'Filename is valid'
+                    filename: 'cpuq.txt'
                 }
             ],
+            updated_at: '2022-03-15T07:30:54.176573',
             app_id: 'app',
-            updated_at: '2022-03-15T06:39:54.472429',
-            filename_validation_updated_at: '2022-03-15T06:39:54.458005',
-            event_id: '29244ac4-e530-4179-ae67-0fd57b365553',
+            tenant_id: 'b37761e3-6926-4cc1-88c7-4d0478b04adf',
+            event_id: 'ce9c7316-912f-4e48-a7a5-a5e34f46f586',
+            uploader_id: 'universal_uploader',
             file_content_validation: [
                 {
                     message: 'Filename is valid',
@@ -165,30 +184,25 @@ class TestHistory(unittest.TestCase):
                     filepath: '/tmp/lware/b37761e3-6926-4cc1-88c7-4d0478b04adf/cpuq.txt'
                 }
             ],
-            file_content_validation_updated_at: '2022-03-15T06:39:54.472574',
+            file_content_validation_updated_at: '2022-03-15T07:30:54.168721',
             files_uploaded: [
-                '/tmp/lware/b37761e3-6926-4cc1-88c7-4d0478b04adf_29244ac4-e530-4179-ae67-0fd57b365553_2022-04-14/cpuq.txt'
+                '/tmp/lware/b37761e3-6926-4cc1-88c7-4d0478b04adf_ce9c7316-912f-4e48-a7a5-a5e34f46f586_2022-04-14/cpuq.txt'
+            ],
+            processing_details: [
+                {
+                    traceback: null,
+                    filepath: '/tmp/lware/b37761e3-6926-4cc1-88c7-4d0478b04adf/cpuq.txt',
+                    updated_at: '2022-03-15T07:30:54.176577',
+                    status: 'success',
+                    error: null,
+                    step: 'Getting some data out of provided cpuq.txt file',
+                    source: '/home/acmt/Documents/lware/licenseware-sdk-v2/tests/test_history.py',
+                    callable: 'processing_function',
+                    success: null
+                }
             ]
         }
         """
-        # On the worker side we need to get `event_id`, `uploader_id`, `tenant_id`, `filepaths` from the even received
-
-        @history.log()
-        def processing_function(filepath, event_id, uploader_id, tenant_id):
-            print(f"Processing {filepath}...")
-            print("Done!")
-            return {"k": "v"}
-
-        for filepath in fc_response["event_data"]["filepaths"]:
-            data = processing_function(
-                filepath,
-                # Needed for history
-                event_id=fc_response["event_data"]["event_id"],
-                uploader_id=fc_response["event_data"]["uploader_id"],
-                tenant_id=fc_response["event_data"]["tenant_id"]
-            )
-
-            print(data)
 
 
 

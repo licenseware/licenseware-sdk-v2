@@ -28,7 +28,7 @@ def create_metadata(
 def get_metadata(func, func_args, func_kwargs):
     """ Getting all the data needed to identify and track files uploaded (function name, source and tenant_id) """
 
-    print(func.__name__, func_args, func_kwargs)
+    print("History inputs:", func.__name__, func_args, func_kwargs)
 
     metadata = {
         'callable': func.__name__,
@@ -41,7 +41,7 @@ def get_metadata(func, func_args, func_kwargs):
         'filepath': file.get_filepath(func, func_args, func_kwargs)
     }
 
-    print(metadata)
+    print("History output metadata:", metadata)
 
     if metadata['tenant_id'] is None:
         raise Exception(

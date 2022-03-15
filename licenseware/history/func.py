@@ -50,7 +50,8 @@ def get_value_from_self(func_args, *params):
     if len(func_args) == 0: return
     for param in params:
         if hasattr(func_args[0], param):
-            return getattr(func_args[0], param)
+            value = getattr(func_args[0], param)
+            if value: return value
 
 
 def get_value_from_func(func, func_args, func_kwargs, *params):
