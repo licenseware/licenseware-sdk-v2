@@ -1,5 +1,6 @@
 import os
 import unittest
+import traceback
 from licenseware import history
 from licenseware.test_helpers.flask_request import get_flask_request
 
@@ -123,7 +124,7 @@ class TestHistory(unittest.TestCase):
 
         fn_response, fn_status_code, fn_headers = ub.validate_filenames(fn_request)
 
-        print(fn_response, fn_status_code, fn_headers)
+        # print(fn_response, fn_status_code, fn_headers)
 
         fc_request = get_flask_request(
             headers={
@@ -138,19 +139,49 @@ class TestHistory(unittest.TestCase):
 
         fc_response, fc_status_code, fc_headers = ub.upload_files(fc_request)
 
-        print(fc_response, fc_status_code, fc_headers)
+        # print(fc_response, fc_status_code, fc_headers)
 
         # On the worker side we need to get `event_id`, `uploader_id`, `tenant_id`, `filepaths` from the even received
 
-        @history.log()
-        def processing_function(filepath, event_id, uploader_id, tenant_id):
+        # @history.log()
+        # def processing_function(filepath, event_id, uploader_id, tenant_id):
+        #     """ Getting some data out of provided cpuq.txt file """
+        #     print(f"Processing {filepath}...")
+        #     print("Done!")
+        #     return {"k": "v"}
+        #
+        # for filepath in fc_response["event_data"]["filepaths"]:
+        #     data = processing_function(
+        #         filepath=filepath,
+        #         event_id=fc_response["event_data"]["event_id"],
+        #         uploader_id=fc_response["event_data"]["uploader_id"],
+        #         tenant_id=fc_response["event_data"]["tenant_id"]
+        #     )
+        #
+        #     print(data)
+
+        def processing_function_without_decorator(filepath, event_id, uploader_id, tenant_id):
             """ Getting some data out of provided cpuq.txt file """
             print(f"Processing {filepath}...")
+
+            try:
+                raise Exception("Something bad happened")
+            except Exception as error:
+                history.log_failure(
+                    func=processing_function_without_decorator, # for classes use self.func
+                    tenant_id=tenant_id,
+                    event_id=event_id,
+                    uploader_id=uploader_id,
+                    filepath=filepath,
+                    error_string=str(error),
+                    traceback_string=str(traceback.format_exc())
+                )
+
             print("Done!")
             return {"k": "v"}
 
         for filepath in fc_response["event_data"]["filepaths"]:
-            data = processing_function(
+            data = processing_function_without_decorator(
                 filepath=filepath,
                 event_id=fc_response["event_data"]["event_id"],
                 uploader_id=fc_response["event_data"]["uploader_id"],
@@ -158,6 +189,10 @@ class TestHistory(unittest.TestCase):
             )
 
             print(data)
+
+
+
+
 
         # What's saved on DB until now
         """

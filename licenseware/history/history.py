@@ -113,6 +113,7 @@ Files processed in bulk are grouped in list
 
 """
 import uuid
+import inspect
 import traceback
 from functools import wraps
 from pymongo.collection import Collection
@@ -155,23 +156,25 @@ def remove_entities(
 
 
 def log_success(
-        step: str,
+        func: callable,
         tenant_id: str,
         event_id: str,
         uploader_id: str,
         filepath: str,
         on_success_save: str = None,
-        func_name: str = None,
-        func_source: str = None,
         **overflow
 ):
+    func_name = func.__name__
+    step = func.__doc__ or func.__name__
+    func_source = str(inspect.getmodule(func)).split("from")[1].strip().replace("'", "").replace(">", "")
+
     metadata = create_metadata(step, tenant_id, event_id, uploader_id, filepath, func_name, func_source)
     save_step(metadata, None, on_success_save, None)
     return metadata
 
 
 def log_failure(
-        step: str,
+        func: callable,
         tenant_id: str,
         event_id: str,
         uploader_id: str,
@@ -179,10 +182,13 @@ def log_failure(
         error_string: str,
         traceback_string: str,
         on_failure_save: str = None,
-        func_name: str = None,
-        func_source: str = None,
         **overflow
 ):
+
+    func_name = func.__name__
+    step = func.__doc__ or func.__name__
+    func_source = str(inspect.getmodule(func)).split("from")[1].strip().replace("'", "").replace(">", "")
+
     metadata = create_metadata(step, tenant_id, event_id, uploader_id, filepath, func_name, func_source)
     save_step(metadata, {
         'error': error_string,
