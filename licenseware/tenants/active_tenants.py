@@ -1,5 +1,4 @@
 from licenseware import mongodata as m
-from licenseware.utils.logger import log
 from licenseware.common.constants import envs
 
 

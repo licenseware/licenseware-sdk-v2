@@ -33,7 +33,7 @@ def close_timed_out_files():
         }}]
     )
     
-    log.warning(timed_out.matched_count)
+    log.info(timed_out.matched_count)
     
     if timed_out.matched_count > 0:
         return timed_out

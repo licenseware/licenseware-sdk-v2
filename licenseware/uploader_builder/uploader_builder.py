@@ -11,7 +11,6 @@ from licenseware.uploader_validator.uploader_validator import UploaderValidator
 
 
 class UploaderBuilder:
-
     """
 
     name:str - name of the uploader
@@ -38,29 +37,28 @@ class UploaderBuilder:
     """
 
     def __init__(
-        self,
-        name: str,
-        uploader_id: str,
-        description: str,
-        accepted_file_types: list,
-        validator_class: UploaderValidator,
-        worker_function: Callable,
-        quota_units: int,
-        flags: list = [],
-        status: str = states.IDLE,
-        icon: str = "default.png",
-        upload_path: str = None,
-        upload_validation_path: str = None,
-        quota_validation_path: str = None,
-        status_check_path: str = None,
-        max_retries: int = 0,
-        query_params_on_validation: dict = None,
-        query_params_on_upload: dict = None,
-        one_event_per_file: bool = False,
-        **options
+            self,
+            name: str,
+            uploader_id: str,
+            description: str,
+            accepted_file_types: list,
+            validator_class: UploaderValidator,
+            worker_function: Callable,
+            quota_units: int,
+            flags: list = [],
+            status: str = states.IDLE,
+            icon: str = "default.png",
+            upload_path: str = None,
+            upload_validation_path: str = None,
+            quota_validation_path: str = None,
+            status_check_path: str = None,
+            max_retries: int = 0,
+            query_params_on_validation: dict = None,
+            query_params_on_upload: dict = None,
+            one_event_per_file: bool = False,
+            **options
     ):
-        
-        
+
         if envs.DEPLOYMENT_SUFFIX is not None:
             name = name + envs.DEPLOYMENT_SUFFIX
             uploader_id = uploader_id + envs.DEPLOYMENT_SUFFIX
@@ -84,7 +82,7 @@ class UploaderBuilder:
             self.worker = broker.actor(
                 worker_function,
                 max_retries=max_retries,
-                # 1 hour in miliseconds (default is 10 minutes)
+                # 1 hour in milliseconds (default is 10 minutes)
                 time_limit=3600000,
                 actor_name=self.uploader_id,
                 queue_name=envs.QUEUE_NAME
@@ -135,9 +133,9 @@ class UploaderBuilder:
 
         if self.worker is None:
             return {
-                "status": states.FAILED,
-                "message": "Worker function not provided"
-            }, 400
+                       "status": states.FAILED,
+                       "message": "Worker function not provided"
+                   }, 400
 
         event = {
             'tenant_id': flask_request.headers.get("Tenantid"),
@@ -170,13 +168,13 @@ class UploaderBuilder:
 
         if self.one_event_per_file:
             events = [
-                    {
-                        'tenant_id': flask_headers.get("Tenantid"),
-                        'uploader_id': self.uploader_id,
-                        'filepaths': [filepath],
-                        'flask_request':  {**flask_json, **flask_headers, **flask_args},
-                        'validation_response': response
-                    }
+                {
+                    'tenant_id': flask_headers.get("Tenantid"),
+                    'uploader_id': self.uploader_id,
+                    'filepaths': [filepath],
+                    'flask_request': {**flask_json, **flask_headers, **flask_args},
+                    'validation_response': response
+                }
                 for filepath in valid_filepaths
             ]
             events_data = [
@@ -186,13 +184,13 @@ class UploaderBuilder:
         else:
             event.update({
                 'filepaths': valid_filepaths,
-                'flask_request':  {**flask_json, **flask_headers, **flask_args},
+                'flask_request': {**flask_json, **flask_headers, **flask_args},
                 'validation_response': response
             })
 
-            if not validate_event(event, raise_error = False):
+            if not validate_event(event, raise_error=False):
                 log.error(event)
-                notify_upload_status(event, status = states.IDLE)
+                notify_upload_status(event, status=states.IDLE)
                 return {'status': states.FAILED, 'message': 'Event not valid', 'event_data': event}, 400
 
             log.info("Sending event: " + str(event))
@@ -200,37 +198,35 @@ class UploaderBuilder:
 
             return {'status': states.SUCCESS, 'message': 'Event sent', 'event_data': event}, 200
 
-
     def init_tenant_quota(self, tenant_id: str, auth_token: str):
 
         # Used in app_activation_path
 
-        q=Quota(
-            tenant_id = tenant_id,
-            auth_token = auth_token,
-            uploader_id = self.uploader_id,
-            units = self.quota_units
+        q = Quota(
+            tenant_id=tenant_id,
+            auth_token=auth_token,
+            uploader_id=self.uploader_id,
+            units=self.quota_units
         )
 
-        response, status_code=q.init_quota()
+        response, status_code = q.init_quota()
 
         log.warning(response)
         log.warning(status_code)
 
         return response, status_code
 
-
     def check_tenant_quota(self, tenant_id: str, auth_token: str):
 
         # Used for uploader_id/quota route
 
-        q=Quota(
-            tenant_id = tenant_id,
-            auth_token = auth_token,
-            uploader_id = self.uploader_id,
-            units = self.quota_units
+        q = Quota(
+            tenant_id=tenant_id,
+            auth_token=auth_token,
+            uploader_id=self.uploader_id,
+            units=self.quota_units
         )
 
-        response, status_code=q.check_quota()
+        response, status_code = q.check_quota()
 
         return response, status_code
