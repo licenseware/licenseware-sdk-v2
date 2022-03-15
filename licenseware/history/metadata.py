@@ -28,6 +28,8 @@ def create_metadata(
 def get_metadata(func, func_args, func_kwargs):
     """ Getting all the data needed to identify and track files uploaded (function name, source and tenant_id) """
 
+    print(func.__name__, func_args, func_kwargs)
+
     metadata = {
         'callable': func.__name__,
         'step': func.__doc__.strip() if func.__doc__ else func.__name__,

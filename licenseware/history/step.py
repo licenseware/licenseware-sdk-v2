@@ -53,7 +53,7 @@ def save_file_content_validation(metadata, response):
         "event_id": metadata["event_id"],
         "app_id": metadata["app_id"],
         "uploader_id": metadata["uploader_id"],
-        "file_content_validation": response["validation_response"]["validation"],
+        "file_content_validation": response["event_data"]["validation_response"]["validation"],
         "files_uploaded": response["event_data"]["filepaths"],
         "updated_at": datetime.datetime.utcnow().isoformat()
     }

@@ -120,115 +120,118 @@ from licenseware import mongodata
 from licenseware.mongodata import collection
 from licenseware.common.serializers import WildSchema
 from licenseware.common.constants import envs
-from licenseware.utils.logger import log
+from licenseware.utils.logger import log as logg
 from .metadata import get_metadata, create_metadata, append_headers_on_validation_funcs
 from .step import save_step
 
+__all__ = ['add_entities', 'remove_entities', 'log_failure', 'log']
 
-class History:
 
-    @staticmethod
-    def add_entities(
-            event_id: str,
-            entities: list = None
-    ):
-        return mongodata.update(
-            schema=WildSchema,
-            match={'event_id': event_id},
-            new_data=entities,
-            append=True,
-            collection=envs.MONGO_COLLECTION_HISTORY_NAME
-        )
+def add_entities(
+        event_id: str,
+        entities: list = None
+):
+    return mongodata.update(
+        schema=WildSchema,
+        match={'event_id': event_id},
+        new_data=entities,
+        append=True,
+        collection=envs.MONGO_COLLECTION_HISTORY_NAME
+    )
 
-    @staticmethod
-    def remove_entities(
-            event_id: str,
-            entities: list = None
-    ):
-        with collection(envs.MONGO_COLLECTION_HISTORY_NAME) as col:
-            col: Collection
-            updated = col.update_one(
-                filter={'event_id': event_id},
-                update={'$pull': {'entities': {"$in": entities}}}
-            ).modified_count
 
-        return updated
+def remove_entities(
+        event_id: str,
+        entities: list = None
+):
+    with collection(envs.MONGO_COLLECTION_HISTORY_NAME) as col:
+        col: Collection
+        updated = col.update_one(
+            filter={'event_id': event_id},
+            update={'$pull': {'entities': {"$in": entities}}}
+        ).modified_count
 
-    @staticmethod
-    def log_success(
-            step: str,
-            tenant_id: str,
-            event_id: str,
-            uploader_id: str,
-            filepath: str,
-            on_success_save: str = None,
-            func_name: str = None,
-            func_source: str = None,
-            **overflow
-    ):
-        metadata = create_metadata(step, tenant_id, event_id, uploader_id, filepath, func_name, func_source)
-        save_step(metadata, None, on_success_save, None)
-        return metadata
+    return updated
 
-    @staticmethod
-    def log_failure(
-            step: str,
-            tenant_id: str,
-            event_id: str,
-            uploader_id: str,
-            filepath: str,
-            error_string: str,
-            traceback_string: str,
-            on_failure_save: str = None,
-            func_name: str = None,
-            func_source: str = None,
-            **overflow
-    ):
-        metadata = create_metadata(step, tenant_id, event_id, uploader_id, filepath, func_name, func_source)
-        save_step(metadata, {
-            'error': error_string,
-            'traceback': traceback_string
-        }, None, on_failure_save, True)
-        return metadata
 
-    @staticmethod
-    def log(*dargs, on_success_save: str = None, on_failure_save: str = None, on_failure_return: any = None):
-        """
-            param: on_success_save - what to save on history logs if function didn't raised any errors
-            param: on_failure_save - what to save on history logs if function raised error
-            param: on_failure_return - if function raised an error return this instead (for safe processing)
-            Ex:
-            ```
-                @History.log(on_failure_return={})
-                def procFunc(*args, **kwargs):
-                    raise Exception("Failed")
+def log_success(
+        step: str,
+        tenant_id: str,
+        event_id: str,
+        uploader_id: str,
+        filepath: str,
+        on_success_save: str = None,
+        func_name: str = None,
+        func_source: str = None,
+        **overflow
+):
+    metadata = create_metadata(step, tenant_id, event_id, uploader_id, filepath, func_name, func_source)
+    save_step(metadata, None, on_success_save, None)
+    return metadata
 
-                >> print(procFunc())
-                >> {}
-            ```
-        """
-        def _decorator(f):
-            @wraps(f)
-            def wrapper(*args, **kwargs):
-                # Handle case where files are uploaded and EventId is not provided in the headers
-                if f.__name__ == 'upload_files' and args[0].headers.get("EventId") is None:
-                    kwargs.update({"event_id": str(uuid.uuid4())})
-                metadata = get_metadata(f, args, kwargs)
-                try:
-                    response = f(*args, **kwargs)
-                    save_step(metadata, response, on_success_save, on_failure_save)
-                    response = append_headers_on_validation_funcs(metadata, response)
-                    return response
-                except Exception as err:
-                    log.exception(err)
 
-                    save_step(metadata, {
-                        'error': str(err),
-                        'traceback': str(traceback.format_exc())
-                    }, on_success_save, on_failure_save, True)
+def log_failure(
+        step: str,
+        tenant_id: str,
+        event_id: str,
+        uploader_id: str,
+        filepath: str,
+        error_string: str,
+        traceback_string: str,
+        on_failure_save: str = None,
+        func_name: str = None,
+        func_source: str = None,
+        **overflow
+):
+    metadata = create_metadata(step, tenant_id, event_id, uploader_id, filepath, func_name, func_source)
+    save_step(metadata, {
+        'error': error_string,
+        'traceback': traceback_string
+    }, None, on_failure_save, True)
+    return metadata
 
-                    if on_failure_return: return on_failure_return
-                    raise err
 
-            return wrapper
-        return _decorator(dargs[0]) if dargs and callable(dargs[0]) else _decorator
+def log(*dargs, on_success_save: str = None, on_failure_save: str = None, on_failure_return: any = None):
+    """
+        param: on_success_save - what to save on history logs if function didn't raised any errors
+        param: on_failure_save - what to save on history logs if function raised error
+        param: on_failure_return - if function raised an error return this instead (for safe processing)
+        Ex:
+        ```
+            @history.log(on_failure_return={})
+            def procFunc(*args, **kwargs):
+                raise Exception("Failed")
+
+            >> print(procFunc())
+            >> {}
+        ```
+    """
+    def _decorator(f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            # Handle case where files are uploaded and EventId is not provided in the headers
+            if f.__name__ == 'upload_files' and len(args) > 1:
+                if hasattr(args[1], "headers"):
+                    if args[1].headers.get("EventId") is None:
+                        logg.info("EventId not provided from frontend.\nUpdated with `event_id`.")
+                        kwargs.update({"event_id": str(uuid.uuid4())})
+
+            metadata = get_metadata(f, args, kwargs)
+            try:
+                response = f(*args, **kwargs)
+                save_step(metadata, response, on_success_save, on_failure_save)
+                response = append_headers_on_validation_funcs(metadata, response)
+                return response
+            except Exception as err:
+                logg.exception(err)
+
+                save_step(metadata, {
+                    'error': str(err),
+                    'traceback': str(traceback.format_exc())
+                }, on_success_save, on_failure_save, True)
+
+                if on_failure_return: return on_failure_return
+                raise err
+
+        return wrapper
+    return _decorator(dargs[0]) if dargs and callable(dargs[0]) else _decorator

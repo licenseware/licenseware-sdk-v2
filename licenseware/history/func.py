@@ -46,6 +46,13 @@ def get_value_from_defaults(func, *params):
         except: pass
 
 
+def get_value_from_self(func_args, *params):
+    if len(func_args) == 0: return
+    for param in params:
+        if hasattr(func_args[0], param):
+            return getattr(func_args[0], param)
+
+
 def get_value_from_func(func, func_args, func_kwargs, *params):
     """ Get parameters value from function data """
 
@@ -55,5 +62,7 @@ def get_value_from_func(func, func_args, func_kwargs, *params):
         value = get_value_from_kwargs(func_kwargs, *params)
     if value is None:
         value = get_value_from_defaults(func, *params)
+    if value is None:
+        value = get_value_from_self(func_args, *params)
 
     return value
