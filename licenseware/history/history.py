@@ -125,7 +125,7 @@ from licenseware.utils.logger import log as logg
 from .metadata import get_metadata, create_metadata, append_headers_on_validation_funcs
 from .step import save_step
 
-__all__ = ['add_entities', 'remove_entities', 'log_failure', 'log']
+__all__ = ['add_entities', 'remove_entities', 'log_failure', 'log_success', 'log']
 
 
 def add_entities(
@@ -135,7 +135,7 @@ def add_entities(
     return mongodata.update(
         schema=WildSchema,
         match={'event_id': event_id},
-        new_data=entities,
+        new_data={"entities": entities},
         append=True,
         collection=envs.MONGO_COLLECTION_HISTORY_NAME
     )
@@ -202,6 +202,7 @@ def log(*dargs, on_success_save: str = None, on_failure_save: str = None, on_fai
         param: on_success_save - what to save on history logs if function didn't raised any errors
         param: on_failure_save - what to save on history logs if function raised error
         param: on_failure_return - if function raised an error return this instead (for safe processing)
+        If you want on failure to return None put it as a string `on_failure_return="None"`
         Ex:
         ```
             @history.log(on_failure_return={})
@@ -215,6 +216,7 @@ def log(*dargs, on_success_save: str = None, on_failure_save: str = None, on_fai
     def _decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
+            print(f"History kwargs: on_success_save:{on_success_save}, on_failure_save:{on_failure_save}, on_failure_return:{on_failure_return}")
             # Handle case where files are uploaded and EventId is not provided in the headers
             if f.__name__ == 'upload_files' and len(args) > 1:
                 if hasattr(args[1], "headers"):
@@ -229,15 +231,19 @@ def log(*dargs, on_success_save: str = None, on_failure_save: str = None, on_fai
                 response = append_headers_on_validation_funcs(metadata, response)
                 return response
             except Exception as err:
-                logg.exception(err)
 
                 save_step(metadata, {
                     'error': str(err),
                     'traceback': str(traceback.format_exc())
                 }, on_success_save, on_failure_save, True)
 
-                if on_failure_return: return on_failure_return
-                raise err
+                if on_failure_return is not None:
+                    return on_failure_return
+                elif on_failure_return == "None":
+                    return None
+                else:
+                    logg.exception(err)
+                    raise err
 
         return wrapper
     return _decorator(dargs[0]) if dargs and callable(dargs[0]) else _decorator

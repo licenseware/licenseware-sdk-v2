@@ -8,6 +8,7 @@ from licenseware.common.validators import validate_event
 from licenseware.quota import Quota
 from licenseware.notifications import notify_upload_status
 from licenseware.uploader_validator.uploader_validator import UploaderValidator
+from licenseware import history
 
 
 class UploaderBuilder:
@@ -117,6 +118,7 @@ class UploaderBuilder:
             raise Exception("Uploader can't register to registry service")
         return response, status_code
 
+    @history.log()
     def validate_filenames(self, flask_request: Request):
         """ Validate file names provided by user """
 
@@ -130,6 +132,7 @@ class UploaderBuilder:
 
         return response, status_code
 
+    @history.log()
     def upload_files(self, flask_request: Request, event_id: str = None):
         """ Validate file content provided by user and send files for processing if they are valid """
 

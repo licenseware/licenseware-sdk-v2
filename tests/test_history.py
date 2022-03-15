@@ -1,6 +1,8 @@
 import os
 import unittest
 import traceback
+import uuid
+
 from licenseware import history
 from licenseware.test_helpers.flask_request import get_flask_request
 
@@ -143,26 +145,39 @@ class TestHistory(unittest.TestCase):
 
         # On the worker side we need to get `event_id`, `uploader_id`, `tenant_id`, `filepaths` from the even received
 
-        # @history.log()
-        # def processing_function(filepath, event_id, uploader_id, tenant_id):
-        #     """ Getting some data out of provided cpuq.txt file """
-        #     print(f"Processing {filepath}...")
-        #     print("Done!")
-        #     return {"k": "v"}
-        #
-        # for filepath in fc_response["event_data"]["filepaths"]:
-        #     data = processing_function(
-        #         filepath=filepath,
-        #         event_id=fc_response["event_data"]["event_id"],
-        #         uploader_id=fc_response["event_data"]["uploader_id"],
-        #         tenant_id=fc_response["event_data"]["tenant_id"]
-        #     )
-        #
-        #     print(data)
+        @history.log()
+        def processing_function(filepath, event_id, uploader_id, tenant_id):
+            """ Getting some data out of provided cpuq.txt file """
+            print(f"Processing {filepath}...")
+            print("Done!")
+            return {"k": "v"}
+
+        for filepath in fc_response["event_data"]["filepaths"]:
+            data = processing_function(
+                filepath=filepath,
+                event_id=fc_response["event_data"]["event_id"],
+                uploader_id=fc_response["event_data"]["uploader_id"],
+                tenant_id=fc_response["event_data"]["tenant_id"]
+            )
+
+            print(data)
 
         def processing_function_without_decorator(filepath, event_id, uploader_id, tenant_id):
             """ Getting some data out of provided cpuq.txt file """
             print(f"Processing {filepath}...")
+
+            history.add_entities(event_id, entities=[str(uuid.uuid4()), str(uuid.uuid4())])
+            # do something else
+            history.add_entities(event_id, entities=[str(uuid.uuid4()), str(uuid.uuid4())])
+
+            history.log_success(
+                func=processing_function_without_decorator,  # for classes use self.func
+                tenant_id=tenant_id,
+                event_id=event_id,
+                uploader_id=uploader_id,
+                filepath=filepath,
+                on_success_save="Entities added successfully"
+            )
 
             try:
                 raise Exception("Something bad happened")
@@ -191,50 +206,106 @@ class TestHistory(unittest.TestCase):
             print(data)
 
 
+        class ProcessingClass:
 
+            def __init__(self, event):
+                self.event_id = event["event_data"]["event_id"]
+                self.uploader_id = event["event_data"]["uploader_id"]
+                self.tenant_id = event["event_data"]["tenant_id"]
 
+            @history.log(on_failure_return={})
+            def proc_func_within_class(self, filepath):
+                print(f"Processing {filepath}...")
+                raise Exception("Something bad happened")
+                print("Done!")
+                return {"k": "v"}
+
+        pc = ProcessingClass(event=fc_response)
+
+        for filepath in fc_response["event_data"]["filepaths"]:
+            data = pc.proc_func_within_class(filepath=filepath)
+            print("Result:", data)
 
         # What's saved on DB until now
         """
         {
-            _id: ObjectId('623040aef801ad2c4bb176bd'),
-            filename_validation_updated_at: '2022-03-15T07:30:54.152860',
+            _id: ObjectId('62305cc90fa221d09199e54f'),
+            event_id: 'e3a491a2-a2fd-4067-b0c5-1e19ea282c4d',
+            app_id: 'app',
+            uploader_id: 'universal_uploader',
+            updated_at: '2022-03-15T09:30:49.712193',
+            filename_validation_updated_at: '2022-03-15T09:30:49.652564',
+            tenant_id: 'b37761e3-6926-4cc1-88c7-4d0478b04adf',
             filename_validation: [
                 {
                     message: 'Filename is valid',
-                    status: 'success',
-                    filename: 'cpuq.txt'
+                    filename: 'cpuq.txt',
+                    status: 'success'
                 }
             ],
-            updated_at: '2022-03-15T07:30:54.176573',
-            app_id: 'app',
-            tenant_id: 'b37761e3-6926-4cc1-88c7-4d0478b04adf',
-            event_id: 'ce9c7316-912f-4e48-a7a5-a5e34f46f586',
-            uploader_id: 'universal_uploader',
             file_content_validation: [
                 {
                     message: 'Filename is valid',
-                    status: 'success',
+                    filepath: '/tmp/lware/b37761e3-6926-4cc1-88c7-4d0478b04adf/cpuq.txt',
                     filename: 'cpuq.txt',
-                    filepath: '/tmp/lware/b37761e3-6926-4cc1-88c7-4d0478b04adf/cpuq.txt'
+                    status: 'success'
                 }
             ],
-            file_content_validation_updated_at: '2022-03-15T07:30:54.168721',
+            file_content_validation_updated_at: '2022-03-15T09:30:49.668121',
             files_uploaded: [
-                '/tmp/lware/b37761e3-6926-4cc1-88c7-4d0478b04adf_ce9c7316-912f-4e48-a7a5-a5e34f46f586_2022-04-14/cpuq.txt'
+                '/tmp/lware/b37761e3-6926-4cc1-88c7-4d0478b04adf_e3a491a2-a2fd-4067-b0c5-1e19ea282c4d_2022-04-14/cpuq.txt'
             ],
             processing_details: [
                 {
+                    success: null,
                     traceback: null,
-                    filepath: '/tmp/lware/b37761e3-6926-4cc1-88c7-4d0478b04adf/cpuq.txt',
-                    updated_at: '2022-03-15T07:30:54.176577',
-                    status: 'success',
-                    error: null,
+                    updated_at: '2022-03-15T09:30:49.675298',
                     step: 'Getting some data out of provided cpuq.txt file',
-                    source: '/home/acmt/Documents/lware/licenseware-sdk-v2/tests/test_history.py',
+                    error: null,
                     callable: 'processing_function',
-                    success: null
+                    status: 'success',
+                    filepath: '/tmp/lware/b37761e3-6926-4cc1-88c7-4d0478b04adf/cpuq.txt',
+                    source: '/home/acmt/Documents/lware/licenseware-sdk-v2/tests/test_history.py'
+                },
+                {
+                    success: 'Entities added successfully',
+                    traceback: null,
+                    updated_at: '2022-03-15T09:30:49.696379',
+                    step: ' Getting some data out of provided cpuq.txt file ',
+                    error: null,
+                    callable: 'processing_function_without_decorator',
+                    status: 'success',
+                    filepath: '/tmp/lware/b37761e3-6926-4cc1-88c7-4d0478b04adf/cpuq.txt',
+                    source: '/home/acmt/Documents/lware/licenseware-sdk-v2/tests/test_history.py'
+                },
+                {
+                    success: null,
+                    traceback: 'Traceback (most recent call last):\n  File "/home/acmt/Documents/lware/licenseware-sdk-v2/tests/test_history.py", line 183, in processing_function_without_decorator\n    raise Exception("Something bad happened")\nException: Something bad happened\n',
+                    updated_at: '2022-03-15T09:30:49.704058',
+                    step: ' Getting some data out of provided cpuq.txt file ',
+                    error: 'Something bad happened',
+                    callable: 'processing_function_without_decorator',
+                    status: 'failed',
+                    filepath: '/tmp/lware/b37761e3-6926-4cc1-88c7-4d0478b04adf/cpuq.txt',
+                    source: '/home/acmt/Documents/lware/licenseware-sdk-v2/tests/test_history.py'
+                },
+                {
+                    success: null,
+                    traceback: 'Traceback (most recent call last):\n  File "/home/acmt/Documents/lware/licenseware-sdk-v2/licenseware/history/history.py", line 229, in wrapper\n    response = f(*args, **kwargs)\n  File "/home/acmt/Documents/lware/licenseware-sdk-v2/tests/test_history.py", line 219, in proc_func_within_class\n    raise Exception("Something bad happened")\nException: Something bad happened\n',
+                    updated_at: '2022-03-15T09:30:49.712198',
+                    step: 'proc_func_within_class',
+                    error: 'Something bad happened',
+                    callable: 'proc_func_within_class',
+                    status: 'failed',
+                    filepath: '/tmp/lware/b37761e3-6926-4cc1-88c7-4d0478b04adf/cpuq.txt',
+                    source: '/home/acmt/Documents/lware/licenseware-sdk-v2/tests/test_history.py'
                 }
+            ],
+            entities: [
+                '56c6c8e7-7fcb-42eb-b52b-7c9b03f9e9ad',
+                '272bf824-5e18-48f8-8cd7-cba6b9c84429',
+                '7f2381b7-6e58-4475-820a-39aea8d4602f',
+                '426fc6e0-47e7-406c-964e-a41e0ce07ff7'
             ]
         }
         """
