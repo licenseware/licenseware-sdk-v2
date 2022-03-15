@@ -16,7 +16,7 @@ def get_tenants_list(tenant_id:str, auth_token:str):
     if response.status_code == 200:
         return response.json()
     else:
-        log.warning(response.content)
+        log.info(response.content)
         return []
     
 

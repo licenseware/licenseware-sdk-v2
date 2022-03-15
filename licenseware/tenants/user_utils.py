@@ -65,7 +65,7 @@ def get_user_tables(flask_request: Request):
     if response.status_code == 200:
         return response.json()
 
-    log.warning("User's tables not found")
+    log.info("User's tables not found")
 
 
 def current_user_has_access_level(flask_request: Request, access_levels: List[str]):
