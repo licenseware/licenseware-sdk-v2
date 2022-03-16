@@ -11,7 +11,7 @@ from jinja2 import Template
 
 from .github_workflows import create_github_workflows
 from .aws_cloud_formation import create_aws_cloud_formation
-
+from .debug_folder import create_debug_folder
 
 # Underscore tells pyoc3 to ignore them from creating docs 
 # (otherwise an error will occur)  
@@ -21,11 +21,13 @@ resources_filenames = {
     # '_mock_server.py': 'mock_server.py',
     '_setup.py': 'setup.py',
     # 'docker_compose_mongo_redis.yml': 'docker-compose.yml',
-    'env': '.env',
+    'envlocal': '.envlocal',
     'gitignore': '.gitignore',
     'makefile': 'makefile',
     'README.md': 'README.md',
     'requirements.txt': 'requirements.txt',
+    'requirements-dev.txt': 'requirements-dev.txt',
+    'requirements-tests.txt': 'requirements-tests.txt',
     #DevOps
     'dockerignore': '.dockerignore',
     'CHANGELOG.md': 'CHANGELOG.md',
@@ -35,7 +37,9 @@ resources_filenames = {
     'Procfile': 'Procfile',
     'Procfile.stack': 'Procfile.stack',
     'version.txt': 'version.txt',
-    'tox.ini':'tox.ini'
+    'tox.ini':'tox.ini',
+    'pre-commit-config.yaml': '.pre-commit-config.yaml',
+    'docker-compose.yml': 'docker-compose.yml'
  }
      
      
@@ -79,5 +83,6 @@ def create_root_files(app_id:str):
                 
                 
     create_github_workflows(app_id)
-    create_aws_cloud_formation(app_id)
-    create_test_environment()
+    # create_aws_cloud_formation(app_id)
+    # create_debug_folder(app_id)
+    # create_test_environment()

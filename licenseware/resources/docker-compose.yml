@@ -1,0 +1,50 @@
+version: "3.8"
+
+services:
+  {{ app_id }}:
+    image: ghcr.io/licenseware/{{ app_id }}-service:{% raw %}${{% endraw %}{{ app_id.upper() }}_IMAGE_TAG:-latest{% raw %}}{% endraw %}
+    build:
+      context: .
+      dockerfile: Dockerfile.stack
+    hostname: {{ app_id }}
+    container_name: lware-{{ app_id }}
+    command: honcho -f Procfile.stack start
+    restart: unless-stopped
+    volumes:
+      - "./app:/home/licenseware/app:ro"
+      - "{{ app_id }}:/tmp/lware"
+    networks:
+      - gateway
+      - mongo
+      - redis
+    env_file:
+      - ./deploy/.env.{{ app_id }}
+
+  {{ app_id }}-registration:
+    image: ghcr.io/licenseware/lware-service-registration
+    container_name: lware-{{ app_id }}-registration
+    command:
+      - python
+      - register.py
+      - --kong-admin-url=http://kong:8001
+      - --service-host={{ app_id }}
+      - --service-port=5000
+      - --service-url-prefixes=/{{ app_id }}
+    restart: on-failure
+    networks:
+      - gateway
+
+volumes:
+  {{ app_id }}:
+    name: lware-{{ app_id }}
+
+networks:
+  gateway:
+    name: lware-gateway
+    external: true
+  mongo:
+    name: lware-mongo
+    external: true
+  redis:
+    name: lware-redis
+    external: true

@@ -19,6 +19,7 @@ coverage.xml
 .pytest_cache
 .hypothesis
 
+.dockerignore
 tests
 wheel_sdk
 makefile
@@ -28,3 +29,7 @@ CHANGELOG.md
 docker-compose*.yml
 Dockerfile*
 version.txt
+deploy
+
+.vscode
+.idea

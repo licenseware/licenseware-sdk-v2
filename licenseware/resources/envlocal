@@ -9,5 +9,5 @@ MONGO_CONNECTION_STRING=mongodb://lware:lware-secret@localhost:27017
 MONGO_DATABASE_NAME=db
 AUTH_SERVICE_URL=http://backend.localhost/auth
 REGISTRY_SERVICE_URL=http://backend.localhost/registry-service
-USE_BACKGROUND_WORKER=true
+USE_BACKGROUND_WORKER=false
 
