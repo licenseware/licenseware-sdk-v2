@@ -48,13 +48,21 @@ def copy_files_uploaded_on_event_folder(data):
 
 def save_file_content_validation(metadata, response):
 
+    file_content_validation = []
+    for cv in response["event_data"]:
+        file_content_validation.extend(cv["validation_response"]['validation'])
+
+    filepaths = []
+    for cv in response["event_data"]:
+        filepaths.extend(cv["filepaths"])
+
     data = {
         "tenant_id": metadata["tenant_id"],
         "event_id": metadata["event_id"],
         "app_id": metadata["app_id"],
         "uploader_id": metadata["uploader_id"],
-        "file_content_validation": response["event_data"]["validation_response"]["validation"],
-        "files_uploaded": response["event_data"]["filepaths"],
+        "file_content_validation": file_content_validation,
+        "files_uploaded": filepaths,
         "updated_at": datetime.datetime.utcnow().isoformat()
     }
 
