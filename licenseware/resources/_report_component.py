@@ -23,6 +23,12 @@ class {{ component_id.split('_') | map('title') | join('') }}(BaseReportComponen
         
         
     def get_data(self, flask_request):
+
+        limit = flask_request.args.get("limit")
+        skip = flask_request.args.get("skip")
+
+        if skip and not limit or limit and not skip:
+            return "Limit and skip must be set together", 400
         
         match_filters = self.get_mongo_match_filters(flask_request)
         
