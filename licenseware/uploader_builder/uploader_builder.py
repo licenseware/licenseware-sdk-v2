@@ -188,10 +188,10 @@ class UploaderBuilder:
                 }
                 for filepath in valid_filepaths
             ]
-            events_data = [
+            [
                 self.worker.send(event) for event in events if validate_event(event, raise_error=False)
             ]
-            return {'status': states.SUCCESS, 'message': 'Event sent', 'event_data': events_data}, 200
+            return {'status': states.SUCCESS, 'message': 'Event sent', 'event_data': events}, 200
         else:
             event.update({
                 'filepaths': valid_filepaths,
@@ -207,7 +207,7 @@ class UploaderBuilder:
             log.info("Sending event: " + str(event))
             self.worker.send(event)
 
-            return {'status': states.SUCCESS, 'message': 'Event sent', 'event_data': event}, 200
+            return {'status': states.SUCCESS, 'message': 'Event sent', 'event_data': [event]}, 200
 
     def init_tenant_quota(self, tenant_id: str, auth_token: str):
 
