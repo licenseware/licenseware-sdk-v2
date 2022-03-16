@@ -3,8 +3,8 @@ import shutil
 import datetime
 from licenseware import mongodata
 from licenseware.common.constants import envs, states
-# from licenseware.common.serializers import WildSchema
 from .history_schemas import HistorySchema
+from licenseware.utils.logger import log as logg
 
 
 def save_filename_validation(metadata, response):
@@ -47,6 +47,10 @@ def copy_files_uploaded_on_event_folder(data):
 
 
 def save_file_content_validation(metadata, response):
+
+    if "event_data" not in response:
+        logg.info("Parameter `event_data` not found on response from `upload_files`")
+        return
 
     file_content_validation = []
     for cv in response["event_data"]:
