@@ -11,6 +11,7 @@ from .root_files import create_root_files
 app_path = './app'
 app_dirs = [
     'common',
+    'services',
     'reports',
     'report_components',
     'uploaders',

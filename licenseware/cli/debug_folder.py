@@ -11,8 +11,8 @@ debug_jupyter_path = './debug/jupyter'
 
 
 resources_filenames = {
-    'jupyter-docker-compose.yml': 'jupyter-docker-compose.yml',
-    'jupyter-requirements.txt': 'jupyter-requirements.txt',
+    'jupyter-docker-compose.yml': 'docker-compose.yml',
+    'jupyter-requirements.txt': 'requirements.txt',
     'debug-env.app_id': '.env.{app_id}',
     'debug-env.debug': '.env.debug',
 }
@@ -31,7 +31,7 @@ def create_debug_folder(app_id: str = None):
             fpath = os.path.join(debug_path, fname.format(app_id=app_id_trimed))
             if os.path.exists(fpath): continue
         elif rname.startswith("jupyter"):
-            fpath = os.path.join(debug_path, fname.format(app_id=app_id_trimed))
+            fpath = os.path.join(debug_jupyter_path, fname.format(app_id=app_id_trimed))
             if os.path.exists(fpath): continue
 
         raw_contents = pkg_resources.read_text(resources, rname)
