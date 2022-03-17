@@ -39,7 +39,7 @@ build-image:
         with:
           context: .
           push: true
-          tags: ${{ env.TARGET_IMAGE }}
+          tags: {% raw %}${{ env.TARGET_IMAGE }}{% endraw %}
           labels: |
             org.opencontainers.image.source={% raw %}${{ github.server_url }}/${{ github.repository }}{% endraw %}
 

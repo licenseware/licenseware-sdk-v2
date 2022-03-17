@@ -30,12 +30,19 @@ def create_debug_folder(app_id: str = None):
         if rname.startswith("debug"):
             fpath = os.path.join(debug_path, fname.format(app_id=app_id_trimed))
             if os.path.exists(fpath): continue
+
+            raw_contents = pkg_resources.read_text(resources, rname)
+            tmp = Template(raw_contents)
+            file_contents = tmp.render(app_id=app_id)
+            with open(fpath, 'w') as f:
+                f.write(file_contents)
+
         elif rname.startswith("jupyter"):
             fpath = os.path.join(debug_jupyter_path, fname.format(app_id=app_id_trimed))
             if os.path.exists(fpath): continue
 
-        raw_contents = pkg_resources.read_text(resources, rname)
-        tmp = Template(raw_contents)
-        file_contents = tmp.render(app_id=app_id_trimed)
-        with open(fpath, 'w') as f:
-            f.write(file_contents)
+            raw_contents = pkg_resources.read_text(resources, rname)
+            tmp = Template(raw_contents)
+            file_contents = tmp.render(app_id=app_id_trimed)
+            with open(fpath, 'w') as f:
+                f.write(file_contents)
