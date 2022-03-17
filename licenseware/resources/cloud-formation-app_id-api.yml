@@ -21,14 +21,6 @@ Parameters:
     Type: Number
     Default: 80
     Description: What port number the application inside the docker container is binding to
-  ContainerCpu:
-    Type: Number
-    Default: 256
-    Description: How much CPU to give the container. 1024 is 1 CPU
-  ContainerMemory:
-    Type: Number
-    Default: 512
-    Description: How much memory in megabytes to give the container
   LoadBalancerPath:
     Type: String
     Default: "*"
@@ -43,7 +35,7 @@ Parameters:
                  assigned to different paths on the load balancer.
   DesiredCount:
     Type: Number
-    Default: 4
+    Default: 1
     Description: How many copies of the service task to run
   Role:
     Type: String
@@ -62,7 +54,35 @@ Parameters:
     Type: String
     Default: 5
     Description: ECS unhealthy timeout for deregistration
-
+NumProcessors:
+    Type: Number
+    Default: 4
+    Description: Number of web server process workers
+  NumThreads:
+    Type: Number
+    Default: 2
+    Description: Number of web server thread workers
+  NumBackgroundWorkers:
+    Type: Number
+    Default: 4
+    Description: Number of web server thread workers
+  ContainerCpu:
+    Type: Number
+    Default: 512
+    Description: How much CPU to give the container. 1024 is 1 CPU
+  ContainerMemory:
+    Type: Number
+    Default: 2048
+    Description: How much memory in megabytes to give the container
+  OverallCPU:
+    Type: Number
+    Default: 512
+  OverallMemory:
+    Type: Number
+    Default: 2048
+  UploadPath:
+    Type: String
+    Default: "/tmp/lware"
 
 Conditions:
   HasCustomRole: !Not [ !Equals [!Ref 'Role', ''] ]
@@ -79,9 +99,9 @@ Resources:
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
     Properties:
+      Cpu: !Ref 'OverallCPU'
+      Memory: !Ref 'OverallMemory'
       Family: !Sub ${EnvTag}-${ServiceName}
-      Cpu: !Ref 'ContainerCpu'
-      Memory: !Ref 'ContainerMemory'
       NetworkMode: awsvpc
       RequiresCompatibilities:
         - FARGATE
@@ -104,19 +124,29 @@ Resources:
               awslogs-group: !Sub ${EnvTag}-service-${ServiceName}
               awslogs-region: !Ref 'AWS::Region'
               awslogs-stream-prefix: !Ref 'ServiceName'
+              Environment:
+            - Name: NUM_PROCESSORS
+              Value: !Ref 'NumProcessors'
+            - Name: NUM_THREADS
+              Value: !Ref 'NumThreads'
+            - Name: NUM_BACKGROUND_WORKERS
+              Value: !Ref 'NumBackgroundWorkers'
+            - Name: FILE_UPLOAD_PATH
+              Value: !Ref 'UploadPath'
           EnvironmentFiles:
             - Type: s3
               Value: !Ref 'EnvFileArn'
           MountPoints:
-            -
-              SourceVolume: {{ app_id.capitalize() }}ApiServiceStorage
-              ContainerPath: /tmp/lware
+            - SourceVolume: {{ app_id.capitalize() }}ApiServiceStorage
+              ContainerPath: !Ref 'UploadPath'
               ReadOnly: false
       Volumes:
         - Name: {{ app_id.capitalize() }}ApiServiceStorage
           EFSVolumeConfiguration:
             FilesystemId: !Ref {{ app_id.capitalize() }}ServiceStorage
-            TransitEncryption: "DISABLED"
+            TransitEncryption: "ENABLED"
+            AuthorizationConfig:
+              AccessPointId: !Ref {{ app_id.capitalize() }}EfsAccessPoint
 
   {{ app_id.capitalize() }}ServiceStorage:
     Type: AWS::EFS::FileSystem
@@ -138,6 +168,21 @@ Resources:
         Fn::ImportValue: !Sub ${EnvTag}-lware-vpc-PrivateSubnetB
       SecurityGroups:
       - Fn::ImportValue: !Sub ${EnvTag}:EFSAccessSecurityGroup
+    
+    {{ app_id.capitalize() }}EfsAccessPoint:
+    Type: AWS::EFS::AccessPoint
+    Properties:
+      FileSystemId: !Ref {{ app_id.capitalize() }}ServiceStorage
+      PosixUser:
+        Gid: '1000'
+        Uid: '1000'
+      RootDirectory:
+        Path: !Ref 'UploadPath'
+        CreationInfo:
+          OwnerUid: '1000'
+          OwnerGid: '1000'
+          Permissions: '0774'
+          
   # The service. The service is a resource which allows you to run multiple
   # copies of a type of task, and gather up their logs and metrics, as well
   # as monitor the number of running tasks and replace any that have crashed

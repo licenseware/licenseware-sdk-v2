@@ -1,6 +1,8 @@
 app.log
 test_files
 *.ipynb
+vscode
+.idea
 
 
 
