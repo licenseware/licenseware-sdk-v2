@@ -52,7 +52,7 @@ VOLUME ${FILE_UPLOAD_PATH}
 COPY --from=build ${BUILDDIR} ${BUILDDIR}
 COPY --from=build ${WHEELDIR} ${WHEELDIR}
 
-RUN pip install -U --no-cache-dir -f ${WHEELDIR} -r ${BUILDDIR}/${REQUIREMENTS} && \
+RUN pip install ${WHEELDIR}/* && \
     rm -rf ${BUILDDIR} ${WHEELDIR} && \
     mkdir ${APP_DIR}
 
