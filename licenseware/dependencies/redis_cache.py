@@ -1,4 +1,5 @@
 from datetime import timedelta
+from typing import List
 
 from licenseware.common.constants import envs
 from redis import Redis
@@ -21,3 +22,12 @@ class RedisCache:
     def set(self, key: str, value: bytes, expiry: int) -> bool:
         assert isinstance(value, bytes), "value must be bytes"
         return self.redis.set(key, value, ex=timedelta(seconds=expiry))
+
+    def sadd(self, key: str, value: str) -> bool:
+        return self.redis.sadd(key, value)
+
+    def smembers(self, key: str) -> set:
+        return self.redis.smembers(key)
+
+    def delete(self, *keys: List[str]) -> bool:
+        return self.redis.delete(*keys)

@@ -3,6 +3,7 @@ from functools import wraps
 from typing import Callable
 
 from licenseware.dependencies.redis_cache import RedisCache
+from licenseware.utils.common import get_http_request_tenant_id
 
 caching_database = RedisCache()
 TEN_MINUTES = 600
@@ -47,9 +48,25 @@ def cache_result(fn: Callable = None, expiry: int = TEN_MINUTES) -> Callable:
             result = fn(*args, **kwargs)
 
             _save_result(hashed_request, result, expiry)
+            _save_key_to_tenant_id(hashed_request)
 
             return result
 
         return wrapper
 
     return decorator(fn) if fn else decorator
+
+
+def _save_key_to_tenant_id(key: bytes, tenant_id: str = None):
+    if tenant_id is None:
+        tenant_id = get_http_request_tenant_id()
+    if tenant_id is not None:
+        caching_database.sadd(key, tenant_id)
+
+
+def clear_caches_for_tenant_id(tenant_id: str = None):
+    if tenant_id is None:
+        tenant_id = get_http_request_tenant_id()
+    if tenant_id is not None:
+        keys = caching_database.smembers(tenant_id)
+        caching_database.delete(tenant_id, *keys)
