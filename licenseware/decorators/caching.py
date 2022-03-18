@@ -61,7 +61,7 @@ def _save_key_to_tenant_id(key: bytes, tenant_id: str = None):
     if tenant_id is None:
         tenant_id = get_http_request_tenant_id()
     if tenant_id is not None:
-        caching_database.sadd(key, tenant_id)
+        caching_database.sadd(tenant_id, key)
 
 
 def clear_caches_for_tenant_id(tenant_id: str = None):
