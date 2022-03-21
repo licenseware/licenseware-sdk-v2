@@ -5,7 +5,7 @@ from licenseware import mongodata
 from licenseware.common.constants import envs
 from licenseware.mongodata import collection
 from licenseware.test_helpers.auth import AuthHelper
-from licenseware.test_helpers.flask_request import get_flask_request
+from licenseware.test_helpers.flask_request import get_flask_request, get_request_files
 from licenseware.utils.logger import log
 from main import app
 
@@ -34,11 +34,10 @@ def increase_quota():
 
 # tox tests/test_starter.py::test_something_specific
 def test_something_specific(c: Client):
-
     # Will create an account or login and return the auth headers needed for making requests
     auth_headers = AuthHelper("alin+test@licenseware.io").get_auth_headers()
 
-    response = c.get(f"/{envs.APP_PATH}/activate_app", headers=auth_headers)
+    response = c.get(f"{envs.APP_PATH}/activate_app", headers=auth_headers)
     assert response.status_code, 200
 
     increase_quota()
@@ -48,8 +47,8 @@ def test_something_specific(c: Client):
         {"some": "data"}
     ]
 
-    response = c.post(f"/{envs.APP_PATH}/some-endpoint", json=payload, headers=auth_headers)
-    log.warning(response.data)# view what's returned for debugging
+    response = c.post(f"{envs.APP_PATH}/some-endpoint", json=payload, headers=auth_headers)
+    log.warning(response.data)  # view what's returned for debugging
 
     # make some assertions
     assert response.status_code, 201
@@ -57,9 +56,23 @@ def test_something_specific(c: Client):
     # a get request with some query parameters
     # (ex: https://awesomewebsite.com/another-endpoint?search_value=test)
     response = c.get(
-        f"/{envs.APP_PATH}/another-endpoint",
+        f"{envs.APP_PATH}/another-endpoint",
         query_string={"search_value": "test"},
         headers=auth_headers,
+    )
+
+    assert response.status_code, 200
+
+    # Upload some files
+    response = c.post(
+        f"{envs.APP_PATH}/uploads/uploader_id/files",
+        data={"files[]": get_request_files(
+            "./test_files/rl/file1.csv",
+            "./test_files/rl/file2.csv",
+            "./test_files/rl/file3.csv",
+        )
+        },
+        headers=auth_headers
     )
 
     assert response.status_code, 200
@@ -76,7 +89,7 @@ def test_something_else(c: Client):
         headers=auth_headers,
         args={"search_value": "test", "limit": 20, "skip": 40},
         json={"some": "payload"},
-        files=["./test_files/somefile.xlsx"] # will create a FileStorage object from paths given
+        files=["./test_files/somefile.xlsx"]  # will create a FileStorage object from paths given
     )
 
     # The flask mock request object created up is useful if you don't want to use flask TestClient
