@@ -9,6 +9,7 @@ from licenseware.quota import Quota
 from licenseware.notifications import notify_upload_status
 from licenseware.uploader_validator.uploader_validator import UploaderValidator
 from licenseware import history
+from licenseware.utils.miscellaneous import serialize_flask_request
 
 
 class UploaderBuilder:
@@ -132,26 +133,7 @@ class UploaderBuilder:
 
         return response, status_code
 
-    @history.log
-    def upload_files(self, flask_request: Request, event_id: str = None):
-        """ Validate file content provided by user and send files for processing if they are valid """
-
-        given_event_id = flask_request.args.get("EventId") or event_id
-        if given_event_id is None:
-            raise Exception("Parameter `EventId` not provided in query parameters")
-
-        if self.worker is None:
-            return {
-                       "status": states.FAILED,
-                       "message": "Worker function not provided"
-                   }, 400
-
-        event = {
-            'tenant_id': flask_request.headers.get("Tenantid"),
-            'uploader_id': self.uploader_id,
-            'event_id': given_event_id
-        }
-        notify_upload_status(event, status=states.RUNNING)
+    def get_filepaths(self, event: dict, flask_request: Request):
 
         response, status_code = self.validator_class.get_file_objects_response(
             flask_request)
@@ -170,23 +152,43 @@ class UploaderBuilder:
         if not valid_filepaths:
             return {'status': states.FAILED, 'message': 'No valid files provided'}, 400
 
+        return {"response": response, "filepaths": valid_filepaths}
+
+    @history.log
+    def upload_files(self, flask_request: Request, event_id: str = None):
+        """ Validate file content provided by user and send files for processing if they are valid """
+
+        given_event_id = flask_request.args.get("EventId") or event_id
+        if given_event_id is None:
+            raise Exception("Parameter `EventId` not provided in query parameters")
+
+        tenant_id = flask_request.headers.get("TenantId")
+
+        event = {
+            'tenant_id': flask_request.headers.get("Tenantid"),
+            'uploader_id': self.uploader_id,
+            'event_id': given_event_id
+        }
+        notify_upload_status(event, status=states.RUNNING)
+
         # Preparing and sending the event to worker for background processing
-        flask_headers = dict(
-            flask_request.headers) if flask_request.headers else {}
-        flask_json = dict(flask_request.json) if flask_request.json else {}
-        flask_args = dict(flask_request.args) if flask_request.args else {}
+        fp = self.get_filepaths(event, flask_request)
+        if not isinstance(fp, dict):
+            return fp
+
+        serialized_flask_request = serialize_flask_request(flask_request)
 
         if self.one_event_per_file:
             events = [
                 {
-                    'tenant_id': flask_headers.get("Tenantid"),
+                    'tenant_id': tenant_id,
                     'uploader_id': self.uploader_id,
                     'event_id': given_event_id,
                     'filepaths': [filepath],
-                    'flask_request': {**flask_json, **flask_headers, **flask_args},
-                    'validation_response': response
+                    'flask_request': serialized_flask_request,
+                    'validation_response': fp['response']
                 }
-                for filepath in valid_filepaths
+                for filepath in fp['filepaths']
             ]
             [
                 self.worker.send(event) for event in events if validate_event(event, raise_error=False)
@@ -194,9 +196,9 @@ class UploaderBuilder:
             return {'status': states.SUCCESS, 'message': 'Event sent', 'event_data': events}, 200
         else:
             event.update({
-                'filepaths': valid_filepaths,
-                'flask_request': {**flask_json, **flask_headers, **flask_args},
-                'validation_response': response
+                'filepaths': fp['filepaths'],
+                'flask_request': serialized_flask_request,
+                'validation_response': fp['response']
             })
 
             if not validate_event(event, raise_error=False):

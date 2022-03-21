@@ -10,12 +10,22 @@ import string
 from marshmallow import Schema
 from marshmallow_jsonschema import JSONSchema
 from typing import List
+from flask import Request
 
 from licenseware.utils.logger import log
 
 
+def serialize_flask_request(flask_request: Request):
+    """ Convert flask request object into a dict """
+    flask_headers = dict(
+        flask_request.headers) if flask_request.headers else {}
+    flask_json = dict(flask_request.json) if flask_request.json else {}
+    flask_args = dict(flask_request.args) if flask_request.args else {}
 
-def set_environment_variables(*, envs:dict = None, env_path:str = ".env"):
+    return {**flask_json, **flask_headers, **flask_args}
+
+
+def set_environment_variables(*, envs: dict = None, env_path: str = ".env"):
     """
 
         In the case we need to set some environment variables
@@ -57,7 +67,6 @@ def set_environment_variables(*, envs:dict = None, env_path:str = ".env"):
         os.environ.update(env_vars)
 
 
-
 def generate_id(length=6):
     """ Create a random series of digits of length specified """
     return "".join([random.choice(list(string.digits)) for _ in range(length)])
@@ -81,23 +90,21 @@ def get_json_schema(schema: Schema):
     return json_schema
 
 
-def build_restx_model(ns, schema: Schema, model_name:str = None):
+def build_restx_model(ns, schema: Schema, model_name: str = None):
     """ 
         Convert a marshmallow schema to a flask restx model 
         Resulted restx model can be used for swagger (body, marshal_with, expect, etc) 
     """
-    
+
     model_name = model_name or schema.__name__
-    
+
     json_schema = get_json_schema(schema)
-    restx_model = ns.schema_model(model_name, json_schema) 
-    
+    restx_model = ns.schema_model(model_name, json_schema)
+
     return restx_model
-    
 
 
 http_methods = ['GET', 'POST', 'PUT', 'DELETE']
-
 
 swagger_authorization_header = {
     'Tenantid': {
@@ -111,4 +118,3 @@ swagger_authorization_header = {
         'name': 'Authorization'
     }
 }
-
