@@ -1,7 +1,7 @@
 from licenseware.utils.logger import log
 from marshmallow import Schema
 from typing import Any
-
+import traceback
 
 def validate_data(schema: type, data: Any):
     if isinstance(data, dict):
@@ -31,5 +31,5 @@ def schema_validator(schema: type, data: dict, raise_error=True):
             # log.success(ok_msg)
             return True
         except Exception as err:
-            log.error(nok_msg(err))
+            log.error(traceback.format_exc())
             return False
