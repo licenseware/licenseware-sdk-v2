@@ -14,7 +14,6 @@ resources_filenames = {
     'github-workflows-app_id-api_prod.yml': '{app_id}-api_prod.yml',
     'github-workflows-app_id-api.yml': '{app_id}-api.yml',
     'lint.yml': 'lint.yml',
-    'release-please.yml': 'release-please.yml',
     'release-publish-notif.yml': 'release-publish-notif.yml'
 }
 
