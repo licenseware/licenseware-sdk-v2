@@ -1,6 +1,7 @@
 import uuid
 import inspect
 import traceback
+from typing import Any
 from functools import wraps
 from pymongo.collection import Collection
 from licenseware import mongodata
@@ -142,13 +143,13 @@ def log_failure(
     return metadata
 
 
-def log(*dargs, on_success_save: str = None, on_failure_save: str = None, on_failure_return: any = None):
+def log(*dargs, on_success_save: str = None, on_failure_save: str = None, on_failure_return: Any = None):
     """
         Log processing events by decorating processing function/methods.
 
         Usage:
         ```py
-            @history.log()
+            @history.log
             def processing_function(filepath, event_id, uploader_id, tenant_id):
                 # some processing here
                 return "some data"
@@ -281,8 +282,8 @@ def log(*dargs, on_success_save: str = None, on_failure_save: str = None, on_fai
             print(f"History kwargs: on_success_save:{on_success_save}, on_failure_save:{on_failure_save}, on_failure_return:{on_failure_return}")
             # Handle case where files are uploaded and EventId is not provided in the headers
             if f.__name__ == 'upload_files' and len(args) > 1:
-                if hasattr(args[1], "headers"):
-                    if args[1].headers.get("EventId") is None:
+                if hasattr(args[1], "args"):
+                    if args[1].args.get("EventId") is None:
                         logg.info("EventId not provided from frontend.\nUpdated with `event_id`.")
                         kwargs.update({"event_id": str(uuid.uuid4())})
 
