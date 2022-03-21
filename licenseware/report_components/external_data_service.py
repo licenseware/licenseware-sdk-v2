@@ -8,7 +8,7 @@ from licenseware.utils.logger import log
 class ExternalDataService:
     @staticmethod
     def _get_all_components(headers):
-        registry_service_url = os.get("REGISTRY_SERVICE_URL")
+        registry_service_url = os.getenv("REGISTRY_SERVICE_URL")
         try:
             comp_data = requests.get(
                 url=f"{registry_service_url}/components"
