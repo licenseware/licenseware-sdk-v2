@@ -396,7 +396,7 @@ class AppBuilder:
                      'style_attributes',
                      'attributes',
                      'title',
-                     'component_type',
+                     'type',
                      'filters'
                  ]
                  }
