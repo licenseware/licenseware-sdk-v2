@@ -280,11 +280,11 @@ def log(*dargs, on_success_save: str = None, on_failure_save: str = None, on_fai
         @wraps(f)
         def wrapper(*args, **kwargs):
             print(f"History kwargs: on_success_save:{on_success_save}, on_failure_save:{on_failure_save}, on_failure_return:{on_failure_return}")
-            # Handle case where files are uploaded and EventId is not provided in the headers
+            # Handle case where files are uploaded and event_id is not provided in the query params
             if f.__name__ == 'upload_files' and len(args) > 1:
                 if hasattr(args[1], "args"):
-                    if args[1].args.get("EventId") is None:
-                        logg.info("EventId not provided from frontend.\nUpdated with `event_id`.")
+                    if args[1].args.get("event_id") is None:
+                        logg.info("event_id not provided from frontend.\nUpdated with `event_id`.")
                         kwargs.update({"event_id": str(uuid.uuid4())})
 
             metadata = get_metadata(f, args, kwargs)

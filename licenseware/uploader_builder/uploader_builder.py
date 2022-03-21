@@ -158,9 +158,7 @@ class UploaderBuilder:
     def upload_files(self, flask_request: Request, event_id: str = None):
         """ Validate file content provided by user and send files for processing if they are valid """
 
-        given_event_id = flask_request.args.get("EventId") or event_id
-        if given_event_id is None:
-            raise Exception("Parameter `EventId` not provided in query parameters")
+        given_event_id = flask_request.args.get("event_id") or event_id
 
         tenant_id = flask_request.headers.get("TenantId")
 
@@ -243,3 +241,4 @@ class UploaderBuilder:
         response, status_code = q.check_quota()
 
         return response, status_code
+
