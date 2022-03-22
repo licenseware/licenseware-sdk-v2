@@ -64,10 +64,10 @@ def get_metadata(func, func_args, func_kwargs):
     return metadata
 
 
-def append_headers_on_validation_funcs(metadata, response):
-    """ If history decorator is added on the  validation functions from sdk append EventId and UploaderId headers """
+def add_event_id_to_payload(metadata, response):
+    """ If history decorator is added on the validation functions from sdk append event_id to payload"""
     if metadata['callable'] in ['validate_filenames', 'upload_files']:
         if isinstance(response, tuple):
-            if len(response) == 2:  # if returns something like: {"status": "success", "message": "ok"}, 200
-                return *response, {"EventId": metadata['event_id'], "UploaderId": metadata['uploader_id']}
+            if len(response) == 2:
+                return {**response[0], **{"event_id": metadata['event_id']}}, response[1]
     return response

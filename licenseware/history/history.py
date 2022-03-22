@@ -9,7 +9,7 @@ from licenseware.mongodata import collection
 from licenseware.common.constants import envs
 from licenseware.utils.logger import log as logg
 from .history_schemas import EntitiesSchema
-from .metadata import get_metadata, create_metadata, append_headers_on_validation_funcs
+from .metadata import get_metadata, create_metadata, add_event_id_to_payload
 from .step import save_step
 
 
@@ -291,7 +291,7 @@ def log(*dargs, on_success_save: str = None, on_failure_save: str = None, on_fai
             try:
                 response = f(*args, **kwargs)
                 save_step(metadata, response, on_success_save, on_failure_save)
-                response = append_headers_on_validation_funcs(metadata, response)
+                response = add_event_id_to_payload(metadata, response)
                 return response
             except Exception as err:
 
