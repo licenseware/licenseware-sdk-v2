@@ -11,11 +11,13 @@ class ExternalDataService:
         registry_service_url = os.getenv("REGISTRY_SERVICE_URL")
         try:
             comp_data = requests.get(
-                url=f"{registry_service_url}/components"
+                url=f"{registry_service_url}/components",
+                headers=headers
             )
             return comp_data.json()
         except Exception:
             log.error(traceback.format_exc())
+            return []
 
 
     @staticmethod
