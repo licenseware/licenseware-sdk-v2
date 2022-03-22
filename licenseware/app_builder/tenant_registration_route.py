@@ -45,7 +45,8 @@ def add_tenant_registration_route(api:Api, appvars:dict):
             activated_tenants = get_activated_tenants(tenant_id)
             clear_caches_for_tenant_id(tenant_id)
 
-            app_activated, data_available = bool(tenants_with_data), bool(activated_tenants)
+            app_activated =  bool(activated_tenants)
+            data_available = bool(tenants_with_data)
             
             last_update_date = None
             if app_activated: last_update_date = tenants_with_data[0]['last_update_date']
