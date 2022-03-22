@@ -16,11 +16,10 @@ class MongoCrud:
 
     """
 
-    def __init__(self, schema: Schema, collection: str, get_pipeline: list = []):
+    def __init__(self, schema: Schema, collection: str):
 
         self.schema = schema
         self.collection = collection
-        self.get_pipeline = get_pipeline
 
     def get_params(self, flask_request: Request):
         params = {}
@@ -34,6 +33,10 @@ class MongoCrud:
         if isinstance(flask_request.json, dict):
             payload = flask_request.json
         return payload
+
+    @property
+    def get_pipeline(self):
+        return None
 
     def validate_tenant_id(self, tenant, params, payload):
 
@@ -65,17 +68,14 @@ class MongoCrud:
         tenant = {'tenant_id': flask_request.headers.get("Tenantid")}
         params = self.get_params(flask_request)
         if 'foreign_key' not in params:
-            if self.get_pipeline:
-                self.get_pipeline.insert(0, {"$match": tenant})
-                log.warning(self.get_pipeline)
-                result = m.aggregate(self.get_pipeline, collection=self.collection)
-                log.warning(result)
+            pipeline = self.get_pipeline
+            if pipeline:
+                pipeline.insert(0, {"$match": tenant})
+                result = m.aggregate(pipeline, collection=self.collection)
                 return result
             result = m.fetch(match=tenant, collection=self.collection)
-            log.warning(result)
             return result
         result = m.distinct(match=tenant, key=params['foreign_key'], collection=self.collection)
-        log.warning(result)
         return result
 
         # query = self.get_query(flask_request)
