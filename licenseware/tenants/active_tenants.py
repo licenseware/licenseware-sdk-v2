@@ -77,11 +77,12 @@ def get_tenants_with_data(tenant_id:str = None):
 
 
 
-def clear_tenant_data(tenant_id:str):
+def clear_tenant_data(tenant_id:str, collections_list=[envs.MONGO_COLLECTION_DATA_NAME]):
 
-    res = m.delete(
-        match={'tenant_id': tenant_id},
-        collection=envs.MONGO_COLLECTION_DATA_NAME 
-    )
+    for c in collections_list:
+        res = m.delete(
+            match={'tenant_id': tenant_id},
+            collection=c
+        )
 
     # log.info(f"tenant data deleted: {res}")
