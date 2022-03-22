@@ -58,6 +58,7 @@ class UploaderBuilder:
             query_params_on_validation: dict = None,
             query_params_on_upload: dict = None,
             one_event_per_file: bool = False,
+            collections_list: list = [envs.MONGO_COLLECTION_DATA_NAME],
             **options
     ):
 
@@ -110,6 +111,7 @@ class UploaderBuilder:
         self.status_check_url = envs.UPLOAD_URL + self.status_check_path
 
         self.options = options
+        self.collections_list = collections_list
 
         self.uploader_vars = vars(self)
 

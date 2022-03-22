@@ -28,7 +28,7 @@ def create_uploader_resource(uploader:UploaderBuilder):
             
             clear_data = request.args.get('clear_data', 'false')
             if 'true' in clear_data.lower():
-                clear_tenant_data(request.headers.get("Tenantid"))
+                clear_tenant_data(request.headers.get("Tenantid"), uploader.collections_list)
 
             return uploader.upload_files(request)
         
