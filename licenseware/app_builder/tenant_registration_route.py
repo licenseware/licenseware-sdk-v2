@@ -49,7 +49,7 @@ def add_tenant_registration_route(api:Api, appvars:dict):
             data_available = bool(tenants_with_data)
             
             last_update_date = None
-            if app_activated: last_update_date = tenants_with_data[0]['last_update_date']
+            if data_available: last_update_date = tenants_with_data[0]['last_update_date']
             
             return {
                 "app_activated": app_activated,
