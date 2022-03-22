@@ -17,6 +17,7 @@ class ExternalDataService:
             return comp_data.json()
         except Exception:
             log.error(traceback.format_exc())
+            return []
 
 
     @staticmethod
