@@ -54,6 +54,7 @@ def set_environment_variables(*, envs: dict = None, env_path: str = ".env"):
 
     if envs:
         os.environ.update(envs)
+        return
 
     with open(env_path, "r") as f:
         env_vars = {}
