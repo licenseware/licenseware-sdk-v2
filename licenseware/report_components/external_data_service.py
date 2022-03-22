@@ -17,12 +17,18 @@ class ExternalDataService:
             return comp_data.json()
         except Exception:
             log.error(traceback.format_exc())
-            return []
+            return [{
+                'data': []
+            }]   
 
 
     @staticmethod
     def _get_component_url(components, app_id, component_id):
-        return [d['url'] for d in components if d['app_id'] == app_id and d['component_id'] == component_id][0]
+        try:
+            return [d['url'] for d in components['data'] if d['app_id'] == app_id and d['component_id'] == component_id][0]
+        except IndexError:
+            log.error(traceback.format_exc())
+            return False
 
 
     @staticmethod
@@ -39,6 +45,8 @@ class ExternalDataService:
                 app_id=app_id,
                 component_id=component_id
             )
+            if not service_url:
+                return []
 
             if filter_payload:
                 data = requests.post(
