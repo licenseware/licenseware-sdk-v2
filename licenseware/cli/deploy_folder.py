@@ -6,19 +6,19 @@ import importlib.resources as pkg_resources
 
 from jinja2 import Template
 
-debug_path = './debug'
-debug_jupyter_path = './debug/jupyter'
+debug_path = './deploy'
+debug_jupyter_path = './deploy/jupyter'
 
 
 resources_filenames = {
     'jupyter-docker-compose.yml': 'docker-compose.yml',
     'jupyter-requirements.txt': 'requirements.txt',
-    'debug-env.app_id': '.env.{app_id}',
-    'debug-env.debug': '.env.debug',
+    'deploy-env.app_id': '.env.{app_id}',
+    'deploy-env.debug': '.env.debug',
 }
 
 
-def create_debug_folder(app_id: str = None):
+def create_deploy_folder(app_id: str = None):
 
     if not os.path.exists(debug_jupyter_path):
         os.makedirs(debug_jupyter_path)
@@ -27,7 +27,7 @@ def create_debug_folder(app_id: str = None):
 
     for rname, fname in resources_filenames.items():
 
-        if rname.startswith("debug"):
+        if rname.startswith("deploy"):
             fpath = os.path.join(debug_path, fname.format(app_id=app_id_trimed))
             if os.path.exists(fpath): continue
 

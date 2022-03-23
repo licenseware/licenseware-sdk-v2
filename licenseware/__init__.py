@@ -1,5 +1,4 @@
 '''
-
 # Licenseware SDK
 
 This is the licenseware **Python3** sdk useful for quickly create apps. 
@@ -48,14 +47,6 @@ Here are the steps needed for local development of an app:
 - Update modules `validator.py` `worker.py` as per processing requirements needs for `lms_options` uploader_id. Modules created will be found here: `app/uploaders/lms_options`
 - Open the first terminal start the mock-server : `licenseware run-dev`;
 - Copy `docker-compose.yml` file to `Documents` folder start the databases `docker-compose up -d`;
-
-
-Or instead of `licenseware run-dev` you can start 3 terminals and add the commands bellow:
-- Open the first terminal start the mock-server : `licenseware start-mock-server`;
-- Open the second terminal start the redis background worker: `licenseware start-background-worker`;
-- Open the third terminal start the development server: `licenseware start-dev-server`;
-
-Logs will be less cluttered and prettier using this method.
 
 You will have mongoexpress running at: `http://localhost:8081/`
 
@@ -154,23 +145,10 @@ And add it to binaries on the release.
 
 Bellow is a full working example of almost all features the sdk provides.
 
-Start the services in the following order:
-
-1. `make up` - mongo and redis;
-2. `licenseware run-dev` - development servers;
-
-
-**Attention**
-
-If you perviously started the docker-compose file with redis and mongo you may encounter some issues related to port already in use or docker container names. It's enough to build the image once `Documents` folder for example, after that you will always have available the mongo and redis databases.
-
-
-
+Start the service with `docker-compose up -d`
 
 
 ```py
-from dotenv import load_dotenv
-load_dotenv()  
 
 import datetime
 from trend_app_protect import wrap_wsgi_app
@@ -222,9 +200,9 @@ def rv_tools_worker(event_data):
     # event_data = {
     #     'tenant_id': 'the tenant_id from request',
     #     'filepaths': 'absolute file paths to the files uploaded',
+    #     'event_id': 'the current event_id of the uploaded files',
     #     'uploader_id': 'the uploader id in our case rv_tools'
-    #     'headers':  'flask request headers',
-    #     'json':  'flask request json data',
+    #     'flask_request':  'data as dict from flask request'
     # }
     
     log.info("Starting working")
@@ -401,11 +379,8 @@ virtual_overview = VirtualOverview(
     component_type='summary'
 )
 
-# TODO raise component_id conflict
 # Register component to registry-service (to act as a first class citizen)
 App.register_report_component(virtual_overview)
-
-
 
 # Component order is determined by it's position in the list
 report_components=[
@@ -770,10 +745,6 @@ if __name__ == "__main__":
 
 Make commands:
 
-- `make up` and  `make down` - start and stop mongo and redis databases;
-- `make mock` - start mock server which app will use for authentication, registry-service or other external services dependencies;
-- `make dev` - start application with hot reload;
-- `make worker` - start dramatiq worker;
 - `make test` - run all unit tests.
 - `make dev-docs` - this command will start a pdoc3 http server use for viewing and updating documentation for the app created;
 - `make docs` - this command will generate html docs based on docstrings provided in the app;
@@ -827,46 +798,24 @@ Each **REPORT COMPONENT** has:
 Fist make sure you have set the environment variables:
 
 ```
-#.env
+#.envlocal
 
 DEBUG=true
+APP_HOST=http://backend.localhost
+APP_ID={{ app_id }}
 ENVIRONMENT=local
-PERSONAL_SUFFIX=_574
-USE_BACKGROUND_WORKER=true
-
-APP_ID=odb
-APP_HOST=http://localhost:5000
-
-LWARE_IDENTITY_USER=John
-LWARE_IDENTITY_PASSWORD=secret
-
-AUTH_SERVICE_URL=http://localhost:4000/auth
-REGISTRY_SERVICE_URL=http://localhost:4000/registry-service
-
 FILE_UPLOAD_PATH=/tmp/lware
-
+LWARE_IDENTITY_USER=testing-service
+LWARE_IDENTITY_PASSWORD=testing123
+MONGO_CONNECTION_STRING=mongodb://lware:lware-secret@localhost:27017
 MONGO_DATABASE_NAME=db
-MONGO_CONNECTION_STRING=mongodb://localhost:27017/db
-
-REDIS_HOST=localhost
-REDIS_PORT=6379
-REDIS_PASSWORD=secret
-REDIS_DB=0
-
-TREND_AP_KEY=Trend Micro Application Security KEY
-TREND_AP_SECRET=Trend Micro Application Security SECRET
-
+AUTH_SERVICE_URL=http://backend.localhost/auth
+REGISTRY_SERVICE_URL=http://backend.localhost/registry-service
+USE_BACKGROUND_WORKER=false
 
 ```
 
 `USE_BACKGROUND_WORKER` set to false or not present will skip using background server and process the uploaders data straight on request.
-
-Start `redis` and `mongo` databases:
-
-```bash
-make up
-```
-
 
 
 <a name="app-declaration"></a>
@@ -940,6 +889,7 @@ The `event` will be a dictionary with the following contents:
     'tenant_id': flask_request.headers.get("Tenantid"),
     'filepaths': valid_filepaths, 
     'uploader_id': uploader_id,
+    'event_id': event_id,
     'flask_request':  {**flask_body, **flask_headers},
     'validation_response': 'response from validator class'
 }
@@ -1378,16 +1328,14 @@ Options:
   --help                          Show this message and exit.
 
 Commands:
-  build-docs               Build app html docs
-  build-sdk-docs           Build licenseware sdk html docs
-  new-app                  Given app_id build a new app The package...
-  new-report               Given report_id build a new report The package...
-  new-report-component     Given component_id build a new report component...
-  new-uploader             Given uploader_id build a new uploader The...
-  start-background-worker  Start the redis background worker with 4...
-  start-dev-server         Start the development server (flask server with...
-  start-mock-server        Start the mock server needed which is a...
-  start-prod-server        Start the production server (uwsgi server with 4...
+  build-docs            Build app html docs
+  build-sdk-docs        Build licenseware sdk html docs
+  create-tests          Create tests from swagger docs Command example: >>...
+  new-app               Given app_id build a new app The package structure...
+  new-report            Given report_id build a new report The package...
+  new-report-component  Given component_id and component_type build a new...
+  new-uploader          Given uploader_id build a new uploader The package...
+  recreate-files        Recreate files that are needed but missing
 
 ```
 
@@ -1412,7 +1360,7 @@ licenseware new-app ifmp
 The entire app structure will be generated 
 
 ```bash
-# The cloned github repository
+.
 ├── app
 │   ├── common
 │   │   └── __init__.py
@@ -1420,26 +1368,47 @@ The entire app structure will be generated
 │   │   └── __init__.py
 │   ├── __init__.py
 │   ├── report_components
-│   │   └── __init__.py   # create a new report component with `licenseware new-report-component component_id` 
+│   │   └── __init__.py
 │   ├── reports
-│   │   └── __init__.py   # create a new report with `licenseware new-report report_id`
+│   │   └── __init__.py
 │   ├── serializers
 │   │   └── __init__.py
+│   ├── services
+│   │   └── __init__.py
 │   ├── uploaders
-│   │   └── __init__.py   # create a new uploader with `licenseware new-uploader uploader_id`
-│   ├── utils
-│   │    └── __init__.py
-│   └── __init__.py       # here the app is instantiated and the uploaders, reports, report_components are registered to the app
+│   │   └── __init__.py
+│   └── utils
+│       └── __init__.py
 ├── app.log
-├── docker-compose-mongo-redis.yml
-├── main_example.py
+├── CHANGELOG.md
+├── cloudformation-templates
+│   ├── odb-api_prod.yml
+│   └── odb-api.yml
+├── deploy
+│   └── jupyter
+│       ├── docker-compose.yml
+│       └── requirements.txt
+├── docker-compose.yml
+├── docker-entrypoint.sh
+├── Dockerfile
+├── Dockerfile.stack
 ├── main.py
 ├── makefile
-├── mock_server.py
+├── Procfile
+├── Procfile.stack
 ├── README.md
+├── requirements-dev.txt
+├── requirements-tests.txt
 ├── requirements.txt
 ├── setup.py
+├── test_files
+├── tests
+│   ├── __init__.py
+│   └── test_starter.py
+├── tox.ini
+└── version.txt
 
+14 directories, 32 files
 ```
 
 All imports will be handled by the CLI when you create a new uploader, report or report_component from the terminal.
@@ -1519,48 +1488,12 @@ All imports an routes will be handled by the licenseware sdk.
 To sparse the logic you can create multiple sub-packages/modules.
 
 
-
-
-## Start develompent environments servers 
-
-You can start from the terminal the mock server, dev/prod server and the redis background worker.
-
-Open a terminal for each command:
-
-```bash
-
-licenseware start-mock-server
-
-``` 
-This will start the server that will handle mock requests to registry-service and auth-server.
-
-
-
-
-```bash
-
-licenseware start-background-worker
-
-``` 
-This will start the redis background worker server that will handle the events.
-
-
-```bash
-
-licenseware start-dev-server
-
-``` 
-This will start the flask server with auto-reload. 
-
-
-
-
 <a name="working-on-sdk"></a>
 # Working on SDK
 
-
-# TODO
-
+- Each new feature should be placed in a package
+- Add only features that apply to all or most apps
+- # TODO
 
 
 
@@ -1570,17 +1503,10 @@ This will start the flask server with auto-reload.
 [baton docs](https://github.com/americanexpress/baton)
 
 ```bash
-baton -u http://localhost:4000 -c 10 -r 10000
+baton -u http://localhost/appid/yourendpoint -c 10 -r 10000
 ```
-
 
 # TODO
 
 
 '''
-
-# try:
-#     from dotenv import load_dotenv
-#     load_dotenv()  
-# except:
-#     pass # envs are just for docs

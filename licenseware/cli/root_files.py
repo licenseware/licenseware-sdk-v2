@@ -10,7 +10,7 @@ from jinja2 import Template
 
 from .github_workflows import create_github_workflows
 from .aws_cloud_formation import create_aws_cloud_formation
-from .debug_folder import create_debug_folder
+from .deploy_folder import create_deploy_folder
 
 # Underscore tells pyoc3 to ignore them from creating docs 
 # (otherwise an error will occur)  
@@ -61,19 +61,18 @@ def create_test_environment():
 
 
 def create_root_files(app_id: str):
-    personal_suffix = generate_id(3)
 
     for rname, fname in resources_filenames.items():
         if not os.path.exists(fname):
             raw_contents = pkg_resources.read_text(resources, rname)
             tmp = Template(raw_contents)
 
-            file_contents = tmp.render(app_id=app_id, personal_suffix=personal_suffix)
+            file_contents = tmp.render(app_id=app_id)
 
             with open(fname, 'w') as f:
                 f.write(file_contents)
 
     create_github_workflows(app_id)
     create_aws_cloud_formation(app_id)
-    create_debug_folder(app_id)
+    create_deploy_folder(app_id)
     create_test_environment()
