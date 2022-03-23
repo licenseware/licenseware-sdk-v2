@@ -4,7 +4,7 @@ Here all cli functions are gathered and decorated with typer app decorator.
 
 """
 import os
-import re
+import random
 import time
 import shutil
 import typer
@@ -12,6 +12,8 @@ from .app_dirs import create_app_dirs
 from .report import create_report
 from .uploader import create_uploader
 from .report_component import create_report_component
+from .env_data import get_env_value
+from licenseware.test_generator import TestGenerator
 
 
 
@@ -126,74 +128,39 @@ def build_sdk_docs():
 @app.command()
 def recreate_files():
     """ Recreate files that are needed but missing  """
-    
-    if not os.path.exists(".env"):
-        raise Exception("File `.env` not found")
-    
-    with open(".env", "r") as f:
-        data = f.read() 
-    
-    m = re.search(r'.*APP_ID=(.+).*', data)
-    if not m: raise Exception("APP_ID not found in .env") 
-    app_id = m.group(1)
-    create_app_dirs(app_id)
 
-
-@app.command()
-def start_mock_server():
-    """
-        Start the mock server needed which is a placeholder for registry-service and auth-service
-        Same as `make mock`
-    """
-    os.system("make mock")
+    create_app_dirs(get_env_value("APP_ID"))
 
 
 
 @app.command()
-def start_dev_server():
-    """
-        Start the development server (flask server with debug on)
-        Same as `make dev`
-    """
-    os.system("make dev")
-
-
-
-@app.command()
-def start_prod_server():
-    """
-        Start the production server (uwsgi server with 4 processes)
-        Same as `make prod`
-    """
-    os.system("make prod")
-
-    
-    
-@app.command()
-def start_background_worker():
-    """
-        Start the redis background worker with 4 processes and with queue of app id from .env
-        Same as `make worker`
-    """
-    os.system("make worker")
-    
-    
-@app.command()
-def run_dev():
+def create_tests(test_email: str = None, swagger_url: str = None):
     """ 
-        Start development environment 
-        Same as `make run-dev` 
-    """
-    
-    os.system("make run-dev")
-    
-    
+        Create tests from swagger docs
 
-@app.command()
-def run_prod():
-    """ 
-        Start production environment 
-        Same as `make run-prod`
+        Command example:
+        
+        >> licenseware create-tests --test-email=alin+test@licenseware.io --swagger-url=http://localhost:5000/integration/swagger.json
+        
+        Or
+
+        >> licenseware create-tests
+
+        On the second command defaults will we used
+
     """
-    
-    os.system("make run-prod")
+
+    if swagger_url is None:
+        base_url = get_env_value("APP_HOST")
+        swagger_url = base_url + '/' + get_env_value("APP_ID").replace("-service", "") + "/swagger.json"
+
+    if test_email is None:
+        test_email = f"alin+{random.randint(1000, 9999)}@licenseware.io"
+
+    typer.echo(f"Generating tests for '{test_email}' from '{swagger_url}'")
+
+    tg = TestGenerator(swagger=swagger_url, email=test_email)
+
+    tg.generate_tests()
+
+    typer.echo("Tests generated! Checkout `tests` folder!")

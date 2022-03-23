@@ -1,0 +1,103 @@
+import pytest
+from licenseware.common.constants import envs
+from licenseware.mongodata import collection
+from licenseware.test_helpers.auth import AuthHelper
+from licenseware.test_helpers.flask_request import get_flask_request, get_request_files
+from licenseware.utils.logger import log
+from flask.testing import Client
+from main import app
+
+
+@pytest.fixture
+def c():
+    with app.test_client() as client:
+        yield client
+
+
+def increase_quota(uploader_id: str):
+    with collection(envs.MONGO_COLLECTION_UTILIZATION_NAME) as col:
+        res = col.find_one(filter={"uploader_id": uploader_id})
+        if res is None:
+            return
+        if res["monthly_quota"] <= 1:
+            col.update_one(
+                filter={"uploader_id": uploader_id},
+                update={"$inc": {"monthly_quota": 9999}},
+            )
+
+
+# tox tests/test_*
+# tox tests/{{ test_file_name }}
+
+
+{% for req in request_data %}
+{% if req['method'] == 'get' %}
+# tox tests/{{ test_file_name }}::{{ test_function_name + '_get' }}
+def {{ test_function_name + '_get' }}(c: Client):
+    """ {{ req['doc'] }} """
+    
+    auth_headers = AuthHelper("{{ email }}").get_auth_headers()
+
+    response = c.get(
+        f"{envs.APP_PATH}{{ req['route'] }}",
+        query_string={{ req['query_string']|pprint|indent(7, False) }},
+        headers=auth_headers
+    )
+    print("GET", response.data)
+    assert response.status_code == 200
+
+
+{% endif %}
+{% if req['method'] == 'post' %}
+# tox tests/{{ test_file_name }}::{{ test_function_name + '_post' }}
+def {{ test_function_name + '_post' }}(c: Client):
+    """ {{ req['doc'] }} """
+    
+    auth_headers = AuthHelper("{{ email }}").get_auth_headers()
+
+    response = c.post(
+        f"{envs.APP_PATH}{{ req['route'] }}", 
+        json={{ req['payload']|pprint|indent(7, False) }}, 
+        #data={"files[]": get_request_files("./test_files/rl/file1.csv")},
+        headers=auth_headers
+    )
+    print("POST", response.data)
+    assert response.status_code == 201
+
+
+{% endif %}
+{% if req['method'] == 'put' %}
+# tox tests/{{ test_file_name }}::{{ test_function_name + '_put' }}
+def {{ test_function_name + '_put' }}(c: Client):
+    """ {{ req['doc'] }} """
+    
+    auth_headers = AuthHelper("{{ email }}").get_auth_headers()
+
+    response = c.put(
+        f"{envs.APP_PATH}{{ req['route'] }}", 
+        json={{ req['payload']|pprint|indent(7, False) }}, 
+        headers=auth_headers
+    )
+    print("PUT", response.data)
+    assert response.status_code == 200
+
+
+{% endif %}
+{% if req['method'] == 'delete' %}
+# tox tests/{{ test_file_name }}::{{ test_function_name + '_delete' }}
+def {{ test_function_name + '_delete' }}(c: Client):
+    """ {{ req['doc'] }} """
+    
+    auth_headers = AuthHelper("{{ email }}").get_auth_headers()
+
+    response = c.delete(
+        f"{envs.APP_PATH}{{ req['route'] }}", 
+        json={{ req['payload']|pprint|indent(7, False) }}, 
+        headers=auth_headers
+    )
+    print("DELETE", response.data)
+    assert response.status_code == 200
+    
+
+{% endif %}
+{% endfor %}
