@@ -25,7 +25,7 @@ class DevOpsCreator:
         if os.path.exists(file_path): return
 
         raw_contents = pkg_resources.read_text(github_workflows_templates, template_filename)
-        file_contents = Template(raw_contents).render(**template_vars)
+        file_contents = Template(raw_contents, trim_blocks=True, lstrip_blocks=True).render(**template_vars)
         with open(file_path, 'w') as f:
             f.write(file_contents)
 
@@ -40,7 +40,7 @@ class DevOpsCreator:
     def create_deploy_on_test_workflow_file(self):
         
         self.create_file(
-            filename="app_name.yml.jinja".replace("app_name", self.app_name), 
+            filename="app_name.yml".replace("app_name", self.app_name), 
             template_filename="app_name.yml.jinja",
             app_title=self.app_title,
             app_name=self.app_name,

@@ -91,9 +91,9 @@ jobs:
           name: dev-{{ app_name }}-api
           template: cloudformation-templates/{{ app_name }}-api.yml
           no-fail-on-empty-changeset: "1"
-{% raw %}
+          {% raw %}
           role-arn: arn:aws:iam::${{ steps.creds.outputs.aws-account-id }}:role/github-actions-cloudformation-stack-role-dev
-{% endraw %}
+          {% endraw %}
           parameter-overrides: >-
             LoadBalancerPath=/{{ app_name }}/*,
             LoadBalancerPriority={{ load_balancer_priority }},

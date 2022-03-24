@@ -44,7 +44,7 @@ class AppPackageCreator:
         file_path = os.path.join(pkg_path, '__init__.py')
         if os.path.exists(file_path): return
         raw_contents = pkg_resources.read_text(templates, 'app__init__.py.jinja')
-        file_contents = Template(raw_contents).render()
+        file_contents = Template(raw_contents, trim_blocks=True, lstrip_blocks=True).render()
         with open(file_path, 'w') as f:
             f.write(file_contents)
 

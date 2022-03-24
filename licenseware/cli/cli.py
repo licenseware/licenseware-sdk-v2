@@ -39,15 +39,15 @@ def new_app(app_id: str):
 
   
         
-# @app.command()
-# def new_uploader(uploader_id: str):
-#     """ 
-#         Given uploader_id build a new uploader 
+@app.command()
+def new_uploader(uploader_id: str):
+    """ 
+        Given uploader_id build a new uploader 
         
-#         The package structure for the uploader will be created, imports and registration will be handled also.
-#     """
-#     create_uploader(uploader_id)
-#     # typer.echo("Uploader structure created")
+        The package structure for the uploader will be created, imports and registration will be handled also.
+    """
+    # create_uploader(uploader_id)
+    # typer.echo("Uploader structure created")
     
     
 # @app.command()
