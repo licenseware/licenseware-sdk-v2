@@ -44,6 +44,7 @@ jobs:
           labels: |
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
 {% endraw %}
+
   deploy-{{ app_name }}-api:
     needs: build-image
     name: Deploy {{ app_title }}Api
@@ -101,13 +102,11 @@ jobs:
             ContainerPort=5000,
             EnvTag=dev,
             ServiceName=dev-{{ app_name }}-api,
-{% raw %}
-            ImageUrl=${{ steps.build-image.outputs.image }}
-{% endraw %}
+            ImageUrl={% raw %}${{ steps.build-image.outputs.image }}{% endraw %}
+
       - name: Print service URL
         env:
-{% raw %}
-          URL: ${{ steps.service-stack.outputs.ServiceURL }}
-{% endraw %}
+          URL: {% raw %}${{ steps.service-stack.outputs.ServiceURL }}{% endraw %}
+          
         run: |
           echo "Service URL: $URL"
