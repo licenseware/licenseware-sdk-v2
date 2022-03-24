@@ -1,5 +1,3 @@
-# TODO this package could be cleaner
-
 from .cli import app
 
 

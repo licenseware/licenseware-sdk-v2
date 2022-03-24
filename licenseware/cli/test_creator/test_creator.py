@@ -1,12 +1,10 @@
-import importlib.resources as pkg_resources
-import json
 import os
 import re
-
+import json
 import requests
 from jinja2 import Template
-
-from . import test_templates, utils
+import importlib.resources as pkg_resources
+from . import templates, utils
 
 allowed_requests = ["GET", "PUT", "POST", "DELETE", "OPTIONS"]
 
@@ -22,7 +20,7 @@ sdk_routes = [
 ]
 
 
-class TestGenerator:
+class TestCreator:
     def __init__(
         self,
         swagger: str,
@@ -223,7 +221,7 @@ class TestGenerator:
 
             # fpath = os.path.join(self.test_path, file)
             raw_contents = pkg_resources.read_text(
-                test_templates, "test_template.jinja"
+                templates, "test_template.jinja"
             )
             tmp = Template(raw_contents, trim_blocks=True, lstrip_blocks=True)
             file_contents = tmp.render(
