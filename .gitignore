@@ -4,7 +4,7 @@ test_files
 *.csv
 *.xlsx
 Untitled.ipynb
-
+licenseware/resources/odb-service
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
