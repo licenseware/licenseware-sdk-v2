@@ -4,7 +4,7 @@ When this endpoint is called the registration information from all `App` entitie
 
 """
 
-
+from flask import request
 from flask_restx import Api, Resource
 from licenseware.decorators.auth_decorators import machine_check
 from licenseware.registry_service import register_all
@@ -39,7 +39,7 @@ def add_refresh_registration_route(api:Api, appvars:dict):
                 report_components = report_components, 
                 uploaders = uploaders
             )
-            
+
             return response, status_code
             
             

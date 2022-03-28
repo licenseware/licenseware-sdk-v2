@@ -6,7 +6,7 @@ Notice that history report route/path is provided but is not implemented that's 
 
 """
 
-from typing import List, Callable
+from typing import List, Callable, Dict
 from dataclasses import dataclass
 
 from flask import Flask
@@ -89,6 +89,7 @@ class AppBuilder:
             flags: list = [],
             features: List[FeatureBuilder] = [],
             editable_tables: List[EditableTable] = [],
+            broker_funcs: Dict[str, List[Callable]] = None,
             app_meta: dict = None,
             activated_tenants_func: Callable = get_activated_tenants,
             tenants_with_data_func: Callable = get_tenants_with_data,
@@ -120,6 +121,7 @@ class AppBuilder:
         self.icon = icon
         self.editable_tables = editable_tables
         self.editable_tables_schemas = editable_tables_schemas
+        self.broker_funcs = broker_funcs or {}
         self.app_meta = app_meta
         # Add to self activated tenants and tenants with data
         self.activated_tenants_func = activated_tenants_func
