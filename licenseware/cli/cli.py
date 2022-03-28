@@ -12,6 +12,7 @@ from .app_pkg_creator import AppPackageCreator
 from .devops_creator import DevOpsCreator
 from .app_root_files_creator import AppRootFilesCreator
 from .uploader_creator import UploaderCreator
+from .report_creator import ReportCreator
 # from .report import create_report
 # from .uploader import create_uploader
 # from .report_component import create_report_component
@@ -55,16 +56,18 @@ def new_uploader(uploader_id: str):
     typer.echo(f"Uploader `{uploader_id}` created")
     
     
-# @app.command()
-# def new_report(report_id: str):
-#     """ 
-#         Given report_id build a new report 
+@app.command()
+def new_report(report_id: str):
+    """ 
+        Given report_id build a new report 
         
-#         The package structure for the report will be created, imports and registration will be handled also.
-#     """
-#     create_report(report_id)
-#     # typer.echo("Report structure created")
+        The package structure for the report will be created, imports and registration will be handled also.
+    """
+
+    ReportCreator(report_id).create()
+    typer.echo(f"Report `{report_id}` created")
     
+ 
     
 # @app.command()
 # def new_report_component(component_id: str, component_type: str):
