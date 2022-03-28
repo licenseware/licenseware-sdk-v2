@@ -53,9 +53,10 @@ class envs:
     REGISTER_REPORT_COMPONENT_URL:str = REGISTER_REPORT_URL + '/v1' + '/components'
     
     APP_HOST:str = os.environ['APP_HOST']
-    QUEUE_NAME:str = APP_ID if '-service' not in APP_ID else APP_ID.replace('-service', '') #ifmp-service => ifmp
-    APP_PATH:str = "/" + QUEUE_NAME
+    QUEUE_NAME:str = APP_ID
+    APP_PATH:str = "/" + APP_ID
     BASE_URL:str = APP_HOST + APP_PATH
+    
     UPLOAD_PATH:str = '/uploads'
     REPORT_PATH:str = '/reports'
     FEATURE_PATH:str = '/features'

@@ -1,8 +1,8 @@
 import os
 import random
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 from licenseware.cli.base_creator import BaseCreator
-
+from licenseware.cli.utils import get_random_int
 from .templates import github_workflows_templates
 from .templates import aws_cloud_formation_templates
 from .templates import deploy_templates
@@ -11,10 +11,10 @@ from .templates import root_templates
 
 @dataclass
 class paths:
-    github_workflows: str = '.github/workflows',
-    aws_cloudformation: str = './cloudformation-templates',
-    deploy_folder: str = './deploy',
-    deploy_jupyter_folder: str = './deploy/jupyter',
+    github_workflows: str = '.github/workflows'
+    aws_cloudformation: str = './cloudformation-templates'
+    deploy_folder: str = './deploy'
+    deploy_jupyter_folder: str = './deploy/jupyter'
     root: str = "./"
 
 
@@ -23,8 +23,6 @@ class DevOpsCreator(BaseCreator):
     def __init__(self, app_id: str):
         super().__init__(app_id)
 
-    def get_random_int(self):
-        return random.randint(10000, 99999)
 
     def create_lint(self):
         self.create_file(
@@ -47,7 +45,7 @@ class DevOpsCreator(BaseCreator):
             filepath=paths.github_workflows,
             template_filename="app-dash.yml.jinja",
             template_resource=github_workflows_templates,
-            load_balancer_priority=self.get_random_int()
+            load_balancer_priority=get_random_int()
         )
 
 
@@ -58,7 +56,7 @@ class DevOpsCreator(BaseCreator):
             filepath=paths.github_workflows,
             template_filename="app-dash-prod.yml.jinja",
             template_resource=github_workflows_templates,
-            load_balancer_priority=self.get_random_int()
+            load_balancer_priority=get_random_int()
         )
 
 
@@ -89,16 +87,17 @@ class DevOpsCreator(BaseCreator):
             filepath=paths.deploy_folder,
             template_filename="env.app_title.jinja",
             template_resource=deploy_templates,
-            redis_db = self.get_random_int()
+            redis_db = get_random_int()
         )
 
         self.create_file(
             filename=".env.debug",
             filepath=paths.deploy_folder,
-            template_filename="env.app_title.jinja",
+            template_filename="env.debug.jinja",
             template_resource=deploy_templates,
-            redis_db = self.get_random_int()
+            redis_db = get_random_int()
         )
+
 
 
     def create_deploy_jupyter_files(self):
@@ -107,14 +106,14 @@ class DevOpsCreator(BaseCreator):
             filename="docker-compose.yml", 
             filepath=paths.deploy_jupyter_folder,
             template_resource=deploy_templates,
-            redis_db = self.get_random_int()
+            redis_db = get_random_int()
         )
 
         self.create_file(
             filename="requirements.txt",
             filepath=paths.deploy_jupyter_folder,
             template_resource=deploy_templates,
-            redis_db = self.get_random_int()
+            redis_db = get_random_int()
         )
 
     def create_devops_root_files(self):
@@ -138,7 +137,7 @@ class DevOpsCreator(BaseCreator):
 
     def create(self):
 
-        for _, path in paths.items():
+        for _, path in asdict(paths()).items():
             if not os.path.exists(path): os.makedirs(path)
 
         self.create_lint()

@@ -1,1 +1,0 @@
-git+https://git@github.com/licenseware/licenseware-sdk-v2.git

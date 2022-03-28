@@ -1,5 +1,10 @@
 import os
 import re
+import random
+
+
+def get_random_int():
+    return random.randint(1000, 9999)
 
 
 def get_env_value(envkey: str):

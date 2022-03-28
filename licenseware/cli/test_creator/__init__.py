@@ -1,1 +1,1 @@
-from .test_creator import TestGenerator
+from .test_creator import TestCreator
