@@ -40,8 +40,10 @@ class BaseCreator(metaclass=ABCMeta):
         **template_vars
     ):
 
+
         file_path = os.path.join(filepath, filename)
         if os.path.exists(file_path): return
+        if not os.path.exists(filepath): os.makedirs(filepath)
 
         raw_contents = pkg_resources.read_text(template_resource, template_filename or filename + '.jinja')
         file_contents = Template(raw_contents).render(

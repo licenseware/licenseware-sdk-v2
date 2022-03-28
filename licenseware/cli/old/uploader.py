@@ -41,6 +41,7 @@ def _create_uploader_validator_file(path: str, uploader_id: str):
 
 
 def _add_uploader_import_to_app_init_file(uploader_id: str):
+    
     import_uploader_str = f'from app.uploaders.{uploader_id} import {uploader_id}_uploader'
     register_uploader_str = f'App.register_uploader({uploader_id}_uploader)'
 
