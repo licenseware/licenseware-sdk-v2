@@ -48,16 +48,6 @@ dramatiq main:App.broker -p4 --watch ./ --queues odb
 
 ```
 
-Using the licenseware CLI if DEBUG is found true in evironment variables it will start with the `--watch` flag.
-
-```bash
-
-licenseware start-background-worker
-
-```
-
-
-
 """
 
 from flask import Flask
