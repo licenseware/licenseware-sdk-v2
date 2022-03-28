@@ -13,6 +13,7 @@ from .devops_creator import DevOpsCreator
 from .app_root_files_creator import AppRootFilesCreator
 from .uploader_creator import UploaderCreator
 from .report_creator import ReportCreator
+from .report_component_creator import ReportComponentCreator
 # from .report import create_report
 # from .uploader import create_uploader
 # from .report_component import create_report_component
@@ -69,23 +70,23 @@ def new_report(report_id: str):
     
  
     
-# @app.command()
-# def new_report_component(component_id: str, component_type: str):
-#     """
-#         Given component_id and component_type build a new report component 
+@app.command()
+def new_report_component(component_id: str, component_type: str):
+    """
+        Given component_id and component_type build a new report component 
 
-#         Some component types are:
-#         - summary
-#         - pie
-#         - bar_vertical
-#         - table
+        Some component types are:
+        - summary
+        - pie
+        - bar_vertical
+        - table
     
-    
-#         The package structure for the report component will be created, imports and registration will be handled manually.
+        The package structure for the report component will be created, imports and registration will be handled manually.
         
-#     """
-#     create_report_component(component_id, component_type)
-#     # typer.echo("Report component structure created")
+    """
+    
+    ReportComponentCreator(component_id, component_type).create()
+    typer.echo(f"Report component `{component_id}` of type `{component_type}` created")
     
     
 
