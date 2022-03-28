@@ -5,6 +5,7 @@ from jinja2 import Template
 from .templates import github_workflows_templates
 from .templates import aws_cloud_formation_templates
 from .templates import deploy_templates
+from .templates import root_templates
 import importlib.resources as pkg_resources
 
 
@@ -12,7 +13,8 @@ paths = dict(
     github_workflows = '.github/workflows',
     aws_cloudformation = './cloudformation-templates',
     deploy_folder = './deploy',
-    deploy_jupyter_folder = './deploy/jupyter'
+    deploy_jupyter_folder = './deploy/jupyter',
+    root = "./"
 )
 
 
@@ -141,7 +143,25 @@ class DevOpsCreator:
             template_resource=deploy_templates,
             redis_db = self.get_random_int()
         )
-    
+
+    def create_devops_root_files(self):
+
+        for file in ['docker-compose.yml', 'docker-entrypoint.sh', "Dockerfile", 
+        "Dockerfile.stack", "makefile", "pre-commit-config.yaml", 
+        "Procfile", "Procfile.stack"]:
+            self.create_file(
+                filename=file,
+                template_path=paths['root'],
+                template_resource=root_templates
+            )
+
+        self.create_file(
+            filename=".dockerignore",
+            template_filename="dockerignore.jinja",
+            template_path=paths['root'],
+            template_resource=root_templates
+        )
+
 
     def create(self):
 
@@ -159,4 +179,6 @@ class DevOpsCreator:
 
         self.create_deploy_envs_files()
         self.create_deploy_jupyter_files()
+
+        self.create_devops_root_files()
 
