@@ -77,8 +77,6 @@ class envs:
     # Another solution would be to extend this class and import it from the file you are extending it.
     COLLECTION_PREFIX = os.getenv("COLLECTION_PREFIX", QUEUE_NAME.upper())
     MONGO_COLLECTION_DATA_NAME:str = COLLECTION_PREFIX + "Data"
-    MONGO_COLLECTION_NORMALIZED_DATA_NAME:str = COLLECTION_PREFIX + "NormalizedData"
-    MONGO_COLLECTION_LICENSED_DATA_NAME:str = COLLECTION_PREFIX + "LicenseAssignmentData"
     MONGO_COLLECTION_UTILIZATION_NAME: str = COLLECTION_PREFIX + "Quota"
     MONGO_COLLECTION_ANALYSIS_NAME: str = COLLECTION_PREFIX + "History"  # Depreciated use MONGO_COLLECTION_HISTORY_NAME instead
     MONGO_COLLECTION_HISTORY_NAME: str = COLLECTION_PREFIX + "ProcessingHistory"
