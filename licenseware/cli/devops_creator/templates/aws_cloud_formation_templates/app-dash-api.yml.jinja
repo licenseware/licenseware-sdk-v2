@@ -201,7 +201,7 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
       HealthCheckIntervalSeconds: !Ref "HealthCheckIntervalSeconds"
-      HealthCheckPath: /{{ app_name }}/swagger.json
+      HealthCheckPath: /{{ app_dash }}/swagger.json
       HealthCheckProtocol: HTTP
       HealthCheckTimeoutSeconds: !Ref "HealthCheckTimeoutSeconds"
       HealthyThresholdCount: 2

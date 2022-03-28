@@ -45,7 +45,7 @@ jobs:
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
 {% endraw %}
 
-  deploy-{{ app_name }}-api:
+  deploy-{{ app_dash }}-api:
     needs: build-image
     name: Deploy {{ app_title }}Api
     runs-on: ubuntu-latest
@@ -89,19 +89,19 @@ jobs:
         id: service-stack
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
-          name: dev-{{ app_name }}-api
-          template: cloudformation-templates/{{ app_name }}-api.yml
+          name: dev-{{ app_dash }}-api
+          template: cloudformation-templates/{{ app_dash }}-api.yml
           no-fail-on-empty-changeset: "1"
           {% raw %}
           role-arn: arn:aws:iam::${{ steps.creds.outputs.aws-account-id }}:role/github-actions-cloudformation-stack-role-dev
           {% endraw %}
           parameter-overrides: >-
-            LoadBalancerPath=/{{ app_name }}/*,
+            LoadBalancerPath=/{{ app_dash }}/*,
             LoadBalancerPriority={{ load_balancer_priority }},
-            EnvFileArn=arn:aws:s3:::dev.lware.environment/{{ app_name }}-api.env,
+            EnvFileArn=arn:aws:s3:::dev.lware.environment/{{ app_dash }}-api.env,
             ContainerPort=5000,
             EnvTag=dev,
-            ServiceName=dev-{{ app_name }}-api,
+            ServiceName=dev-{{ app_dash }}-api,
             ImageUrl={% raw %}${{ steps.build-image.outputs.image }}{% endraw %}
 
       - name: Print service URL
