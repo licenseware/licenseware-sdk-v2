@@ -30,7 +30,7 @@ class DevOpsCreator:
         if os.path.exists(file_path): return
 
         raw_contents = pkg_resources.read_text(template_resource, template_filename or filename + '.jinja')
-        file_contents = Template(raw_contents, trim_blocks=True, lstrip_blocks=True).render(**template_vars)
+        file_contents = Template(raw_contents).render(**template_vars)
         with open(file_path, 'w') as f:
             f.write(file_contents)
 
@@ -79,10 +79,23 @@ class DevOpsCreator:
     def create_deploy_on_dev_cloudformation_file(self):
 
         self.create_file(
-            filename="app_name_prod.yml".replace("app_name", self.app_name), 
-            template_filename="app_name_prod.yml.jinja",
-            template_path=github_workflows_path,
-            template_resource=github_workflows_templates,
+            filename="app_name-api.yml".replace("app_name", self.app_name), 
+            template_filename="app_name-api.yml.jinja",
+            template_path=aws_cloudformation_path,
+            template_resource=aws_cloud_formation_templates,
+            app_title=self.app_title,
+            app_name=self.app_name,
+            load_balancer_priority=self.get_load_balancer_priority()
+        )
+
+
+    def create_deploy_on_prod_cloudformation_file(self):
+
+        self.create_file(
+            filename="app_name-api_prod.yml".replace("app_name", self.app_name), 
+            template_filename="app_name-api_prod.yml.jinja",
+            template_path=aws_cloudformation_path,
+            template_resource=aws_cloud_formation_templates,
             app_title=self.app_title,
             app_name=self.app_name,
             load_balancer_priority=self.get_load_balancer_priority()
@@ -95,6 +108,9 @@ class DevOpsCreator:
         if not os.path.exists(github_workflows_path): 
             os.makedirs(github_workflows_path)
 
+        if not os.path.exists(aws_cloudformation_path): 
+            os.makedirs(aws_cloudformation_path)
+
         self.create_lint()
         self.create_release_publish_notif()
 
@@ -102,4 +118,5 @@ class DevOpsCreator:
         self.create_deploy_on_prod_workflow_file()
         
         self.create_deploy_on_dev_cloudformation_file()
+        self.create_deploy_on_prod_cloudformation_file()
 

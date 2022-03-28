@@ -38,12 +38,6 @@ Parameters:
     Type: Number
     Default: 1
     Description: How many copies of the service task to run
-  Role:
-    Type: String
-    Default: ""
-    Description:
-      (Optional) An IAM role to give the service's containers if the code within needs to
-      access other AWS resources like S3 buckets, DynamoDB tables, etc
   HealthCheckIntervalSeconds:
     Type: Number
     Default: 60
@@ -75,9 +69,6 @@ Parameters:
     Type: String
     Default: EC2
 
-Conditions:
-  HasCustomRole: !Not [!Equals [!Ref "Role", ""]]
-
 
 Resources:
   # A log group for storing the stdout logs from this service's containers
@@ -85,7 +76,6 @@ Resources:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: !Sub {% raw %}${EnvTag}{% endraw %}-service-{% raw %}${ServiceName}{% endraw %}
-
   # The task definition. This is a simple metadata description of what
   # container to run, and what resource requirements it has.
   TaskDefinition:
@@ -121,34 +111,8 @@ Resources:
               Value: !Ref "NumThreads"
             - Name: FILE_UPLOAD_PATH
               Value: !Ref "UploadPath"
-          EnvironmentFiles:
-            - Type: s3
-              Value: !Ref "EnvFileArn"
-{% endraw %}
-
-          MountPoints:
-            - SourceVolume: {{ app_title }}ApiStorage
-              ContainerPath: !Ref "UploadPath"
-              ReadOnly: false
-        {% raw %}
-        - Name: !Sub {% raw %}${ServiceName}{% endraw %}-worker
-        {% endraw %}
-          Image: !Ref "ImageUrl"
-          MemoryReservation: 256
-          Command: ["/bin/sh", "-c", "exec honcho start worker"]
-          LogConfiguration:
-            LogDriver: "awslogs"
-            Options:
-              {% raw %}
-              awslogs-group: !Sub {% raw %}${EnvTag}{% endraw %}-service-{% raw %}${ServiceName}{% endraw %}
-              {% endraw %}
-              awslogs-region: !Ref "AWS::Region"
-              awslogs-stream-prefix: !Ref "ServiceName"
-          Environment:
             - Name: NUM_BACKGROUND_WORKERS
               Value: !Ref "NumBackgroundWorkers"
-            - Name: FILE_UPLOAD_PATH
-              Value: !Ref "UploadPath"
           EnvironmentFiles:
             - Type: s3
               Value: !Ref "EnvFileArn"
@@ -167,7 +131,7 @@ Resources:
   {{ app_title }}Storage:
     Type: AWS::EFS::FileSystem
 
-  {{ app_title }}ApiServiceStorageMountTargetA:
+  {{ app_title }}ApiStorageMountTargetA:
     Type: AWS::EFS::MountTarget
     Properties:
       FileSystemId: !Ref {{ app_title }}Storage
@@ -176,7 +140,7 @@ Resources:
       SecurityGroups:
         - Fn::ImportValue: !Sub {% raw %}${EnvTag}{% endraw %}:EFSAccessSecurityGroup
 
-  {{ app_title }}ApiServiceStorageMountTargetB:
+  {{ app_title }}ApiStorageMountTargetB:
     Type: AWS::EFS::MountTarget
     Properties:
       FileSystemId: !Ref {{ app_title }}Storage
@@ -188,7 +152,7 @@ Resources:
   {{ app_title }}EfsAccessPoint:
     Type: AWS::EFS::AccessPoint
     Properties:
-      FileSystemId: !Ref {{ app_title }}ServiceStorage
+      FileSystemId: !Ref {{ app_title }}Storage
       PosixUser:
         Gid: "1000"
         Uid: "1000"
@@ -272,9 +236,9 @@ Outputs:
         - ""
         - - Fn::ImportValue: !Sub {% raw %}${EnvTag}{% endraw %}:ExternalUrl
           - !Join ["", !Split ["*", !Ref LoadBalancerPath]]
-  {{ app_title }}ServiceStorage:
+  {{ app_title }}Storage:
     Description: The {{ app_title }} storage
-    Value: !Ref "{{ app_title }}ServiceStorage"
+    Value: !Ref "{{ app_title }}Storage"
     Export:
-      Name: !Sub {% raw %}${EnvTag}{% endraw %}:{{ app_title }}ServiceStorage
+      Name: !Sub {% raw %}${EnvTag}{% endraw %}:{{ app_title }}Storage
 
