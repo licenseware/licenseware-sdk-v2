@@ -1,10 +1,10 @@
 version: "3.8"
 
 services:
-  {{ app_dash }}-jupyter:
+  {{ entity_dash }}-jupyter:
     image: ghcr.io/licenseware/lware-jupyter
-    container_name: lware-{{ app_dash }}-jupyter
-    hostname: {{ app_dash }}-jupyter
+    container_name: lware-{{ entity_dash }}-jupyter
+    hostname: {{ entity_dash }}-jupyter
     restart: unless-stopped
     volumes:
       - "../../app:/home/licenseware/app:ro"
@@ -13,7 +13,7 @@ services:
     ports:
       - "127.0.0.1:8888:8888"
     env_file:
-      - ../.env.{{ app_title }}
+      - ../.env.{{ entity_title }}
     networks:
       - gateway
       - mongo

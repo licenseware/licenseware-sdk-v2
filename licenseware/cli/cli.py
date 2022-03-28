@@ -11,6 +11,7 @@ import typer
 from .app_pkg_creator import AppPackageCreator
 from .devops_creator import DevOpsCreator
 from .app_root_files_creator import AppRootFilesCreator
+from .uploader_creator import UploaderCreator
 # from .report import create_report
 # from .uploader import create_uploader
 # from .report_component import create_report_component
@@ -49,8 +50,9 @@ def new_uploader(uploader_id: str):
         
         The package structure for the uploader will be created, imports and registration will be handled also.
     """
-    # create_uploader(uploader_id)
-    # typer.echo("Uploader structure created")
+    
+    UploaderCreator(uploader_id).create()
+    typer.echo(f"Uploader `{uploader_id}` created")
     
     
 # @app.command()

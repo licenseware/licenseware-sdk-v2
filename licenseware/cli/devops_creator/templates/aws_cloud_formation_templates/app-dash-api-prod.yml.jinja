@@ -59,7 +59,7 @@ Parameters:
     Description: How much memory in megabytes to give the container
   RedisContainerName:
     Type: String
-    Default: "{{ app_dash }}-redis"
+    Default: "{{ entity_dash }}-redis"
   RedisContainerCpu:
     Type: Number
     Default: 1024
@@ -128,7 +128,7 @@ Resources:
             - Type: s3
               Value: !Ref 'EnvFileArn'
           MountPoints:
-            - SourceVolume: {{ app_title }}ApiStorage
+            - SourceVolume: {{ entity_title }}ApiStorage
               ContainerPath: !Ref 'UploadPath'
               ReadOnly: false
           DependsOn:
@@ -139,38 +139,38 @@ Resources:
           Memory: !Ref 'RedisContainerMemory'
           Image: redis:6-alpine
       Volumes:
-        - Name: {{ app_title }}ApiStorage
+        - Name: {{ entity_title }}ApiStorage
           EFSVolumeConfiguration:
-            FilesystemId: !Ref {{ app_title }}Storage
+            FilesystemId: !Ref {{ entity_title }}Storage
             TransitEncryption: "ENABLED"
             AuthorizationConfig:
-              AccessPointId: !Ref {{ app_title }}EfsAccessPoint
+              AccessPointId: !Ref {{ entity_title }}EfsAccessPoint
 
-  {{ app_title }}Storage:
+  {{ entity_title }}Storage:
     Type: AWS::EFS::FileSystem
 
-  {{ app_title }}ApiStorageMountTargetA:
+  {{ entity_title }}ApiStorageMountTargetA:
     Type: AWS::EFS::MountTarget
     Properties:
-      FileSystemId: !Ref {{ app_title }}Storage
+      FileSystemId: !Ref {{ entity_title }}Storage
       SubnetId: 
         Fn::ImportValue: !Sub {% raw %}${EnvTag}{% endraw %}-lware-vpc-PrivateSubnetA
       SecurityGroups:
       - Fn::ImportValue: !Sub {% raw %}${EnvTag}{% endraw %}:EFSAccessSecurityGroup
 
-  {{ app_title }}ApiStorageMountTargetB:
+  {{ entity_title }}ApiStorageMountTargetB:
     Type: AWS::EFS::MountTarget
     Properties:
-      FileSystemId: !Ref {{ app_title }}Storage
+      FileSystemId: !Ref {{ entity_title }}Storage
       SubnetId: 
         Fn::ImportValue: !Sub {% raw %}${EnvTag}{% endraw %}-lware-vpc-PrivateSubnetB
       SecurityGroups:
       - Fn::ImportValue: !Sub {% raw %}${EnvTag}{% endraw %}:EFSAccessSecurityGroup
 
-  {{ app_title }}EfsAccessPoint:
+  {{ entity_title }}EfsAccessPoint:
     Type: AWS::EFS::AccessPoint
     Properties:
-      FileSystemId: !Ref {{ app_title }}Storage
+      FileSystemId: !Ref {{ entity_title }}Storage
       PosixUser:
         Gid: '1000'
         Uid: '1000'
@@ -254,8 +254,8 @@ Outputs:
         - ""
         - - Fn::ImportValue: !Sub {% raw %}${EnvTag}{% endraw %}:ExternalUrl
           - !Join [ "", !Split [ "*" , !Ref LoadBalancerPath ] ]
-  {{ app_title }}Storage:
-    Description: The {{ app_title }} storage
-    Value: !Ref '{{ app_title }}Storage'
+  {{ entity_title }}Storage:
+    Description: The {{ entity_title }} storage
+    Value: !Ref '{{ entity_title }}Storage'
     Export:
-      Name: !Sub {% raw %}${EnvTag}{% endraw %}:{{ app_title }}Storage
+      Name: !Sub {% raw %}${EnvTag}{% endraw %}:{{ entity_title }}Storage

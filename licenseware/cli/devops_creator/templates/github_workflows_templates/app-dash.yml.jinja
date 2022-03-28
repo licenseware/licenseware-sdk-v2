@@ -1,4 +1,4 @@
-name: Deploy {{ app_title }}Api DEV
+name: Deploy {{ entity_title }}Api DEV
 concurrency: dev-deploy
 
 on:
@@ -45,9 +45,9 @@ jobs:
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
 {% endraw %}
 
-  deploy-{{ app_dash }}-api:
+  deploy-{{ entity_dash }}-api:
     needs: build-image
-    name: Deploy {{ app_title }}Api
+    name: Deploy {{ entity_title }}Api
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -72,7 +72,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
           logout: false
 {% endraw %}
-      - name: Build, tag, and push {{ app_title }}Api image
+      - name: Build, tag, and push {{ entity_title }}Api image
         id: build-image
 {% raw %}
         env:
@@ -89,19 +89,19 @@ jobs:
         id: service-stack
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
-          name: dev-{{ app_dash }}-api
-          template: cloudformation-templates/{{ app_dash }}-api.yml
+          name: dev-{{ entity_dash }}-api
+          template: cloudformation-templates/{{ entity_dash }}-api.yml
           no-fail-on-empty-changeset: "1"
           {% raw %}
           role-arn: arn:aws:iam::${{ steps.creds.outputs.aws-account-id }}:role/github-actions-cloudformation-stack-role-dev
           {% endraw %}
           parameter-overrides: >-
-            LoadBalancerPath=/{{ app_dash }}/*,
+            LoadBalancerPath=/{{ entity_dash }}/*,
             LoadBalancerPriority={{ load_balancer_priority }},
-            EnvFileArn=arn:aws:s3:::dev.lware.environment/{{ app_dash }}-api.env,
+            EnvFileArn=arn:aws:s3:::dev.lware.environment/{{ entity_dash }}-api.env,
             ContainerPort=5000,
             EnvTag=dev,
-            ServiceName=dev-{{ app_dash }}-api,
+            ServiceName=dev-{{ entity_dash }}-api,
             ImageUrl={% raw %}${{ steps.build-image.outputs.image }}{% endraw %}
 
       - name: Print service URL

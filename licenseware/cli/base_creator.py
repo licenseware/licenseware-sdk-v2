@@ -8,13 +8,14 @@ from abc import ABCMeta, abstractmethod
 
 class BaseCreator(metaclass=ABCMeta):
 
-    def __init__(self, app_id: str):
-        app_idli = app_id.strip().replace("-", "|").replace("_", "|").split("|")
-        self.app_title = "".join([v.capitalize() for v in app_idli]) # odb-service => OdbService
-        self.app_dash = "-".join([v.lower() for v in app_idli]) # odb-service => odb-service
-        self.app_dash_upper = "-".join([v.upper() for v in app_idli]) # odb-service => ODB-SERVICE
-        self.app_underscore = "_".join([v.lower() for v in app_idli]) # odb-service => odb_service
-        self.app_underscore_upper = "_".join([v.upper() for v in app_idli]) # odb-service => ODB_SERVICE
+    def __init__(self, entity_id: str):
+        self.entity_id = entity_id
+        entity_idli = entity_id.strip().replace("-", "|").replace("_", "|").split("|")
+        self.entity_title = "".join([v.capitalize() for v in entity_idli]) # odb-service => OdbService
+        self.entity_dash = "-".join([v.lower() for v in entity_idli]) # odb-service => odb-service
+        self.entity_dash_upper = "-".join([v.upper() for v in entity_idli]) # odb-service => ODB-SERVICE
+        self.entity_underscore = "_".join([v.lower() for v in entity_idli]) # odb-service => odb_service
+        self.entity_underscore_upper = "_".join([v.upper() for v in entity_idli]) # odb-service => ODB_SERVICE
 
 
     @classmethod
@@ -45,11 +46,11 @@ class BaseCreator(metaclass=ABCMeta):
         raw_contents = pkg_resources.read_text(template_resource, template_filename or filename + '.jinja')
         file_contents = Template(raw_contents).render(
             **{
-                'app_title': self.app_title, 
-                'app_dash': self.app_dash,
-                'app_dash_upper': self.app_dash_upper,
-                'app_underscore': self.app_underscore,
-                'app_underscore_upper': self.app_underscore_upper
+                'entity_title': self.entity_title, 
+                'entity_dash': self.entity_dash,
+                'entity_dash_upper': self.entity_dash_upper,
+                'entity_underscore': self.entity_underscore,
+                'entity_underscore_upper': self.entity_underscore_upper
             }, **template_vars
         )
 
