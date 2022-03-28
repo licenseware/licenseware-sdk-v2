@@ -1,0 +1,145 @@
+# {{ app_title }}
+
+[![Deploy {{ app_title }}Api DEV](https://github.com/licenseware/{{ app_dash }}/actions/workflows/{{ app_dash }}-api.yml/badge.svg)](https://github.com/licenseware/{{ app_dash }}/actions/workflows/{{ app_dash }}-api.yml)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [How to run it?](#how-to-run-it)
+  - [Prerequisites](#prerequisites)
+  - [Intro](#intro)
+  - [VSCode](#vscode)
+    - [VScode Prerequisites](#vscode-prerequisites)
+    - [Run](#run)
+  - [docker-compose](#docker-compose)
+  - [Jupyter notebook](#jupyter-notebook)
+    - [Installing extra dependencies](#installing-extra-dependencies)
+- [Contribute](#contribute)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+## How to run it?
+
+**NOTE**: Some services need other services to be up and running 
+
+### Prerequisites
+
+Prior to running anything anywhere, you'll need to run the required services that the
+app needs in order to function properly. Those required stacks can be found at the
+address below.
+
+<https://github.com/licenseware/stack-manager-v2>
+
+### Intro
+
+To run the application, whether you're making a change to the app or just macking a
+change for a feature/bug/etc. you have 2 approaches. The first is for the people who
+want to have line-by-line debugging ability in their environment and to see what is
+exactly going on. There is a vscode configuration for them.
+
+For another group who are just interested in bringing up the application and doesn't
+want to have a debugging feature, you can jump into the `docker-compose` version.
+
+**Important Note**: Regardless of which approach you choose, you will need the
+[stack-manager](https://github.com/licenseware/stack-manager-v2). The app will not
+function without it.
+
+### VSCode
+
+#### VScode Prerequisites
+
+Create a virtual environment using the following command:
+
+```bash
+# first: pip install virtualenv
+virtualenv -p <path-to-python3.8> venv
+pip install -r requirements-dev.txt
+```
+
+#### Run
+
+In order to run the app in your vscode IDE, you will find proper configuration under the
+[.vscode](./.vscode) directory.
+
+There are entries for every process defined under the [Procfile](./Procfile.stack) and
+you can run either or both.
+
+If you ever needed to overwrite any environmental variable (e.g. if you are running
+your database/cache on some other ports), don't touch the [.env](./deploy/.env.debug).
+Instead, try to overwrite the values from the `env` key inside the
+[vscode config](./.vscode/launch.json). For example:
+
+```bash
+...
+    "env": {
+        "MY_KEY": "MY_VALUE",
+    },
+...
+```
+
+**Important Note**: Be aware that running the app in this way, you'll not be able to
+access the APIs from the gateway (e.g. `/odb/reports/odb_usage` is not
+accessible through port `80`). Instead, you'll need to send your request to the specific
+port of the application(e.g. `localhost:5000/odb/reports/odb_usage`).
+
+### docker-compose
+
+To run the stack just for the sake of having an instance up and running, simply run:
+
+```bash
+docker-compose up -d
+```
+
+### Jupyter notebook
+
+For all of our beloved data scientists who are interested in having a jupyter notebook
+up and running to work with the app and the data at the same time, there's also a
+`jupyter-notebook` available and for running it, all you have to do is simply running
+the following `make` entry:
+
+```bash
+# to start
+make jupyter-up
+
+# to stop
+make jupyter-down
+```
+
+After running it, head to the following URL to see your cool notebook running:
+
+<http://localhost:8888/?token=lware>
+
+#### Installing extra dependencies
+
+If you ever needed some extra python libraries, you have two options:
+
+1. Run `pip install` from inside the `jupyter-notebook`
+2. Place a requirement file under [this path](./deploy/jupyter) with the name starting
+with `requirements` and ending with `.txt`; for example `requirements-extra.txt`. After
+placing the file, rerun the app using `make jupyter-up` and it will pick-up all the
+entries you specified in your *requirements* file.
+
+## Contribute
+
+First of all, install `pre-commit` dependencies with the following command:
+
+```bash
+pip install pre-commit
+```
+
+Then, simply run this command:
+
+```bash
+pre-commit install
+```
+
+Now, upon each commit, you will see a couple of stages running to make sure
+that your code/change is linted properly. This is to make sure that the code is
+consistent across all the team members.
+
+If any of your files have changed because of the `pre-commit` hooks, you'll
+need to re-stage them like you normally do: `git add FILE ...`. And then commit
+one more time and you are good to go.
+
+We appreciate your trouble!

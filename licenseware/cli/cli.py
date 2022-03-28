@@ -10,6 +10,7 @@ import shutil
 import typer
 from .app_pkg_creator import AppPackageCreator
 from .devops_creator import DevOpsCreator
+from .app_root_files_creator import AppRootFilesCreator
 # from .report import create_report
 # from .uploader import create_uploader
 # from .report_component import create_report_component
@@ -33,9 +34,11 @@ def new_app(app_id: str):
     """
     
     AppPackageCreator.create()
-    typer.echo("App package created")
     DevOpsCreator(app_id).create()
-    typer.echo("DevOps files/folders created")
+    AppRootFilesCreator(app_id).create()
+    
+    typer.echo("App files/folders created")
+
 
   
         
