@@ -23,3 +23,5 @@ tests
 wheel_sdk
 makefile
 mock_server.py
+sdk-docs
+.idea
