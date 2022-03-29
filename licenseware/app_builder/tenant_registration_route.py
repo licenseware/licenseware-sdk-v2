@@ -8,10 +8,11 @@ When this endpoint is called info about Tenant `App` activation and utilization 
 from flask import request
 from flask_restx import Api, Resource
 from licenseware.decorators.auth_decorators import machine_check
-from licenseware.decorators.caching import clear_caches_for_tenant_id
+from licenseware.decorators.caching import clear_caches_for_tenant_id, trigger_broker_funcs
 from licenseware.decorators import failsafe
 from licenseware.tenants import  get_activated_tenants, get_tenants_with_data
 from licenseware.utils.logger import log
+from licenseware.utils.miscellaneous import serialize_flask_request
 
 
 
@@ -50,6 +51,8 @@ def add_tenant_registration_route(api:Api, appvars:dict):
             
             last_update_date = None
             if data_available: last_update_date = tenants_with_data[0]['last_update_date']
+
+            trigger_broker_funcs(request, appvars['broker_funcs'])
             
             return {
                 "app_activated": app_activated,
