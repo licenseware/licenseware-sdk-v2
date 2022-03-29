@@ -18,7 +18,7 @@ with open("requirements.txt", "r") as f:
     
     
     
-VERSION = '2.0.2'
+VERSION = '2.0.3'
 
 
 if os.path.exists("./CHANGELOG.md"):

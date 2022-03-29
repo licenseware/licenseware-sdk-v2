@@ -1,0 +1,15 @@
+from .worker import {{ entity_underscore }}_worker
+from .validator import {{ entity_underscore }}_validator
+
+from licenseware.uploader_builder import UploaderBuilder
+
+
+{{ entity_underscore }}_uploader = UploaderBuilder(
+    name="{{ entity_title }}", 
+    uploader_id = "{{ entity_underscore }}",
+    description="Upload files for processing", 
+    accepted_file_types=['.xls', '.xlsx'],
+    validator_class={{ entity_underscore }}_validator,
+    worker_function={{ entity_underscore }}_worker,
+    quota_units = 1
+)

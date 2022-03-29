@@ -1,0 +1,114 @@
+name: Deploy {{ entity_title }}Api PROD
+concurrency: prod-deploy
+
+on:
+  release:
+    types:
+      - published
+
+{% raw %}
+env:
+  REGISTRY: ghcr.io
+  IMAGE_TAG: ${{ github.ref_name }}
+  TARGET_IMAGE: ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+  ECR_REPOSITORY: ${{ github.repository }}
+  REGION: eu-central-1
+{% endraw %}
+
+jobs:
+  build-image:
+    name: Build image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+{% raw %}
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          logout: false
+
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: ${{ env.TARGET_IMAGE }}
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+{% endraw %}
+
+  deploy-{{ entity_dash }}-api:
+    needs: build-image
+    name: Deploy {{ entity_title }}Api
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+{% raw %}
+      - name: Configure AWS credentials
+        id: creds
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}
+          aws-region: ${{ env.REGION }}
+{% endraw %}
+      - name: Login ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+{% raw %}
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          logout: false
+{% endraw %}
+      - name: Build, tag, and push {{ entity_title }}Api image
+        id: build-image
+{% raw %}
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ env.ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ env.IMAGE_TAG }}
+        run: |
+          docker pull ${{ env.TARGET_IMAGE }}
+          docker tag ${{ env.TARGET_IMAGE }} $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+{% endraw %}
+      - name: Deploy ECS service with CloudFormation
+        id: service-stack
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: prod-{{ entity_dash }}-api
+          template: cloudformation-templates/{{ entity_dash }}-api-prod.yml
+          no-fail-on-empty-changeset: "1"
+          {% raw %}
+          role-arn: arn:aws:iam::${{ steps.creds.outputs.aws-account-id }}:role/github-actions-cloudformation-stack-role-prod
+          {% endraw %}
+          parameter-overrides: >-
+            LoadBalancerPath=/{{ entity_dash }}/*,
+            LoadBalancerPriority={{ load_balancer_priority }},
+            EnvFileArn=arn:aws:s3:::prod.lware.environment/{{ entity_dash }}-api.env,
+            ContainerPort=5000,
+            EnvTag=prod,
+            ServiceName=prod-{{ entity_dash }}-api,
+            ImageUrl={% raw %}${{ steps.build-image.outputs.image }}{% endraw %}
+
+      - name: Print service URL
+        env:
+          URL: {% raw %}${{ steps.service-stack.outputs.ServiceURL }}{% endraw %}
+          
+        run: |
+          echo "Service URL: $URL"

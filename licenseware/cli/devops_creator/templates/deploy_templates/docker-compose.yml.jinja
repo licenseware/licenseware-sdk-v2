@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  {{ entity_dash }}-jupyter:
+    image: ghcr.io/licenseware/lware-jupyter
+    container_name: lware-{{ entity_dash }}-jupyter
+    hostname: {{ entity_dash }}-jupyter
+    restart: unless-stopped
+    volumes:
+      - "../../app:/home/licenseware/app:ro"
+      - "../../main.py:/home/licenseware/main.py:ro"
+      - "./:/pip.d/:ro"
+    ports:
+      - "127.0.0.1:8888:8888"
+    env_file:
+      - ../.env.{{ entity_title }}
+    networks:
+      - gateway
+      - mongo
+      - redis
+
+networks:
+  gateway:
+    name: lware-gateway
+    external: true
+  mongo:
+    name: lware-mongo
+    external: true
+  redis:
+    name: lware-redis
+    external: true

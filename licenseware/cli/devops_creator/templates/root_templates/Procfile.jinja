@@ -1,0 +1,2 @@
+web: opentelemetry-instrument uwsgi -M --http-socket 0.0.0.0:5000 -w main:app --processes ${NUM_PROCESSORS:-4} --threads ${NUM_THREADS:-2} --enable-threads
+worker: dramatiq main:App.broker -p ${NUM_BACKGROUND_WORKERS:-4} --queues {{ entity_dash }}

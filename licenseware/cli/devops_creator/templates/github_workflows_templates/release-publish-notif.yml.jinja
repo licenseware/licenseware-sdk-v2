@@ -1,0 +1,33 @@
+name: Notify interested people on new release
+
+on:
+  release:
+    types:
+      - published
+
+{% raw %}
+env:
+  SUBJECT: "New Release ${{ github.repository }}:${{ github.ref_name }}"
+  FROM_EMAIL: contact@licenseware.io
+{% endraw %}
+
+jobs:
+  release-notification:
+    name: release notification
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        to-emails:
+          - contact@licenseware.io
+          - chris@licenseware.io
+          - meysam@licenseware.io
+{% raw %}
+    steps:
+      - uses: licenseware/send-email-notification@v1
+        with:
+          api-key: ${{ secrets.SENDGRID_API_KEY }}
+          subject: ${{ env.SUBJECT }}
+          from-email: ${{ env.FROM_EMAIL }}
+          to-email: ${{ matrix.to-emails }}
+          markdown-body: ${{ github.event.release.body }}
+{% endraw %}
