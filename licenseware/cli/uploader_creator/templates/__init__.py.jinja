@@ -7,7 +7,7 @@ from licenseware.uploader_builder import UploaderBuilder
 {{ entity_underscore }}_uploader = UploaderBuilder(
     name="{{ entity_title }}", 
     uploader_id = "{{ entity_underscore }}",
-    description="", 
+    description="Upload files for processing", 
     accepted_file_types=['.xls', '.xlsx'],
     validator_class={{ entity_underscore }}_validator,
     worker_function={{ entity_underscore }}_worker,
