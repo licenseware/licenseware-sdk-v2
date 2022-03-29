@@ -16,7 +16,7 @@ from marshmallow import Schema, fields
 from licenseware.decorators.auth_decorators import authorization_check
 from licenseware.decorators import failsafe
 from licenseware.utils.logger import log
-from licenseware.utils.miscellaneous import build_restx_model
+from licenseware.common import marshmallow_to_restx_model
 
 from licenseware.uploader_builder import UploaderBuilder
 from typing import List
@@ -25,7 +25,17 @@ from typing import List
 
 class FilenamesValidationSchema(Schema):
     filenames = fields.List(fields.Str, required=True)
-    
+
+class FilenamesRespValidationSchema(Schema):
+    status = fields.Str()
+    filename = fields.Str()
+    message = fields.Str()
+
+class FilenamesRespSchema(Schema):
+    status = fields.Str(metadata=dict(description="Statuses: `success` or `failed`"))
+    message = fields.Str()
+    validation = fields.List(fields.Nested(FilenamesRespValidationSchema))
+    event_id = fields.Str(metadata=dict(description="The `event_id` which needs to be returned as a query param when uploading these files"))
     
 
 def create_uploader_resource(uploader:UploaderBuilder):
@@ -42,8 +52,9 @@ def create_uploader_resource(uploader:UploaderBuilder):
 
 def get_filenames_validation_namespace(ns: Namespace, uploaders:List[UploaderBuilder]):
     
-    restx_model = build_restx_model(ns, FilenamesValidationSchema)
-    
+    filenames_model = marshmallow_to_restx_model(ns, FilenamesValidationSchema)
+    filenames_resp_model = marshmallow_to_restx_model(ns, FilenamesRespSchema)
+
     for uploader in uploaders:
         
         if uploader.validator_class is None: continue
@@ -53,14 +64,13 @@ def get_filenames_validation_namespace(ns: Namespace, uploaders:List[UploaderBui
         @ns.doc(
             description='Validating the list of filenames provided',
             responses={
-                200 : 'Filenames are valid', 
-                400 : 'Filenames sent for validation must be in a list of strings format',
                 402 : 'Quota exceeded',
                 403 : "Missing `Tenant` or `Authorization` information",
                 500 : 'Something went wrong while handling the request' 
             }
         )
-        @ns.expect(restx_model)
+        @ns.expect(filenames_model)
+        @ns.response(code=200, description="Filenames validation response", model=filenames_resp_model)
         class TempUploaderResource(UR): ...
 
         

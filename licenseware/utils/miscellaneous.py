@@ -93,6 +93,8 @@ def get_json_schema(schema: Schema):
 
 def build_restx_model(ns, schema: Schema, model_name: str = None):
     """ 
+        !DEPRECIATED - use `marshmallow_to_restx_model`function instead 
+        
         Convert a marshmallow schema to a flask restx model 
         Resulted restx model can be used for swagger (body, marshal_with, expect, etc) 
     """

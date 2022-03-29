@@ -57,7 +57,10 @@ def get_filestream_validation_namespace(ns: Namespace, uploaders:List[UploaderBu
         
         @ns.doc(
             description="Upload files received on `files[]` for processing",
-            params={'clear_data': 'Boolean parameter, warning, will clear existing data'},
+            params={
+                'clear_data': 'Boolean parameter, warning, will clear existing data',
+                'event_id': 'The uuid4 string received on filenames validation'
+            },
             responses={
                 200 : 'Files are valid',
                 400 : "File list is empty or files are not on 'files[]' key",
