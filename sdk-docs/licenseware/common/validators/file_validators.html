@@ -1,0 +1,896 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>licenseware.common.validators.file_validators API documentation</title>
+<meta name="description" content="Validator for streams of files and files …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>licenseware.common.validators.file_validators</code></h1>
+</header>
+<section id="section-intro">
+<p>Validator for streams of files and files.</p>
+<pre><code class="language-py">
+from licenseware.common.validators.file_validators import GeneralValidator, validate_filename
+
+v = GeneralValidator(
+    input_object,           - required: file path, string or stream
+    required_input_type = None,    - required: 'excel', 'csv', 'txt', 'string', 'stream'
+    required_sheets   = [], - sheets names list that needs to be found in 'excel'
+    required_columns  = [], - columns names list that needs to be found in 'excel', 'csv'
+    text_contains_all = [], - text list that needs to be found in 'txt', 'string', 'stream'
+    text_contains_any = [], - text list that needs to be found in 'txt', 'string', 'stream'
+    min_rows_number   = 0,  - minimum rows needed for 'excel', 'csv'
+    header_starts_at  = 0   - row number where the header with columns starts (count starts from 0)
+    buffer = 9000           - bytes buffer to read from stream FileStorage object
+)
+
+
+valid_input = True
+
+try:
+    v.validate() # valid
+except:
+    valid_input = False # not valid
+
+
+
+</code></pre>
+<p>You can also import individually the function bellow:</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+
+Validator for streams of files and files.
+
+
+```py
+
+from licenseware.common.validators.file_validators import GeneralValidator, validate_filename
+
+v = GeneralValidator(
+    input_object,           - required: file path, string or stream
+    required_input_type = None,    - required: &#39;excel&#39;, &#39;csv&#39;, &#39;txt&#39;, &#39;string&#39;, &#39;stream&#39;
+    required_sheets   = [], - sheets names list that needs to be found in &#39;excel&#39;
+    required_columns  = [], - columns names list that needs to be found in &#39;excel&#39;, &#39;csv&#39;
+    text_contains_all = [], - text list that needs to be found in &#39;txt&#39;, &#39;string&#39;, &#39;stream&#39;
+    text_contains_any = [], - text list that needs to be found in &#39;txt&#39;, &#39;string&#39;, &#39;stream&#39;
+    min_rows_number   = 0,  - minimum rows needed for &#39;excel&#39;, &#39;csv&#39;
+    header_starts_at  = 0   - row number where the header with columns starts (count starts from 0)
+    buffer = 9000           - bytes buffer to read from stream FileStorage object
+)
+
+
+valid_input = True
+
+try:
+    v.validate() # valid
+except:
+    valid_input = False # not valid
+
+
+
+```
+
+You can also import individually the function bellow:
+
+
+&#34;&#34;&#34;
+
+
+import os, re
+import itertools
+from numpy import isin, require
+import pandas as pd
+from io import BytesIO
+from licenseware.utils.logger import log
+import traceback
+
+
+def validate_text_contains_all(text, text_contains_all, regex_escape=True):
+    &#34;&#34;&#34;
+        Raise exception if contents of the text file don&#39;t contain all items in text_contains_all list
+    &#34;&#34;&#34;
+
+    if not text_contains_all: return
+
+    matches_count = 0
+    for txt_to_find in text_contains_all:
+        pattern = re.compile(re.escape(txt_to_find) if regex_escape else txt_to_find, flags=re.IGNORECASE)
+        match = re.search(pattern, text)
+        if match: matches_count += 1
+
+    if matches_count &lt; len(text_contains_all):
+        raise ValueError(f&#39;File must contain the all following keywords: {&#34;, &#34;.join(text_contains_all)}&#39;)
+
+
+
+def validate_text_contains_any(text, text_contains_any, regex_escape=True):
+    &#34;&#34;&#34;
+        Raise exception if contents of the text file don&#39;t contain at least one item in text_contains_any list
+    &#34;&#34;&#34;
+
+    if not text_contains_any: return
+    
+    for txt_to_find in text_contains_any:
+        pattern = re.compile(re.escape(txt_to_find) if regex_escape else txt_to_find, flags=re.IGNORECASE)
+        match = re.search(pattern, text)
+        if match: return
+
+    raise ValueError(f&#39;File must contain at least one of the following keywords: {&#34;, &#34;.join(text_contains_any)}&#39;)
+
+
+def _columns_validator(file_columns, required_columns, raise_error=True):
+    if isinstance(file_columns, list):
+        common_cols = list(set.intersection(set(required_columns), set(file_columns)))
+        if sorted(required_columns) != sorted(common_cols):
+            missing_cols = set.difference(set(required_columns), set(file_columns))
+            if raise_error:
+                raise ValueError(f&#39;Table does not contain required columns: {missing_cols}&#39;)
+            return False
+        return True
+    else:
+        if not all(col in file_columns for col in required_columns):
+            if raise_error:
+                raise ValueError(f&#39;Table does not contain required columns: {required_columns}&#39;)
+            return False
+        return True
+
+
+def _get_columns(df, required_sheets):
+    if isinstance(df, dict):
+        given_columns = []
+        for sheet, table in df.items():
+            if sheet not in required_sheets: continue
+            given_columns.append(table.columns.tolist())
+        given_columns = set(itertools.chain.from_iterable(given_columns))
+    elif isinstance(df, pd.DataFrame):
+        given_columns = df.columns
+    else:
+        given_columns = df.split(&#34;\n&#34;)[0]
+    return given_columns
+
+
+def validate_columns(df, required_columns, required_sheets=[]):
+    if not required_columns: return
+    
+    file_columns = _get_columns(df, required_sheets)
+    
+    if isinstance(required_columns[0], tuple) and len(required_columns) &gt; 1:
+        for rc in required_columns:
+            if _columns_validator(file_columns, rc, raise_error=False):
+                return
+        else:
+            raise ValueError(f&#39;Table does not contain required columns: {required_columns}&#39;)
+    else:
+        _columns_validator(file_columns, required_columns, raise_error=True)
+
+
+def _sheets_validator(sheets, required_sheets, raise_error=True):
+
+    common_sheets = list(set.intersection(set(sheets), set(required_sheets)))
+
+    if sorted(required_sheets) != sorted(common_sheets):
+        missing_sheets = set.difference(set(required_sheets), set(sheets))
+        if raise_error:
+            raise ValueError(f&#34;File doesn&#39;t contain the following needed sheets: {missing_sheets}&#34;)
+        return False
+
+    return True
+
+
+def validate_sheets(file, required_sheets):
+    &#34;&#34;&#34;
+        Raise error if required_sheets are not found in file
+
+        required_sheets = [
+            (&#39;tabvInfo&#39;, &#39;tabvCPU&#39;, &#39;tabvHost&#39;, &#39;tabvCluster&#39;),
+            (&#39;vInfo&#39;, &#39;vCPU&#39;, &#39;vHost&#39;, &#39;vCluster&#39;),
+        ]
+
+        or 
+
+        required_sheets = &#39;tabvInfo&#39;, &#39;tabvCPU&#39;, &#39;tabvHost&#39;, &#39;tabvCluster&#39;
+
+    &#34;&#34;&#34;
+
+    if not required_sheets: return
+
+    sheets = pd.ExcelFile(file).sheet_names
+    
+    # Registry service saves tuples as lists
+    if (isinstance(required_sheets[0], tuple) or isinstance(required_sheets[0], list)) and len(required_sheets) &gt; 1:
+        for rs in required_sheets:
+            if _sheets_validator(sheets, rs, raise_error=False):
+                return # one validation succeded
+    else:
+        _sheets_validator(sheets, required_sheets, raise_error=True)
+
+
+def validate_rows_number(df, min_rows_number, required_sheets=[]):
+    &#34;&#34;&#34;
+        Raise error if minimum_rows_number is not satisfied
+    &#34;&#34;&#34;
+
+    if not min_rows_number: return
+
+    if isinstance(df, dict):
+        for sheet, table in df.items():
+            if sheet not in required_sheets: continue
+            if table.shape[0] &lt; min_rows_number:
+                raise ValueError(f&#39;Expected {sheet} to have at least {min_rows_number} row(s)&#39;)
+    else:
+        if df.count(&#34;\n&#34;) &lt; min_rows_number:
+            raise ValueError(f&#39;Expected table to have at least {min_rows_number} row(s)&#39;)
+
+
+def validate_filename(filename:str, contains:list, endswith:list = None, regex_escape:bool = True):
+    &#34;&#34;&#34;
+        Check if filename contains all needed keywords and all accepted file types
+    &#34;&#34;&#34;
+    if endswith is None:
+        endswith = []
+
+    if not isinstance(filename, str): 
+        raise ValueError(&#34;filename must be a string&#34;)
+
+    validate_text_contains_any(filename, contains, regex_escape)
+    
+    if endswith:
+        for file_type in endswith:
+            if filename.lower().endswith(file_type): return
+
+        raise ValueError(f&#34;Filename doesn&#39;t end with any of the specified values: {&#39;, &#39;.join(endswith)}&#34;)
+
+
+class GeneralValidator:
+
+    def __init__(
+            self,
+            input_object,
+            required_input_type=None,
+            required_sheets=[],
+            required_columns=[],
+            text_contains_all=[],
+            text_contains_any=[],
+            regex_escape = True,
+            min_rows_number=0,
+            header_starts_at=0,
+            buffer=9000,
+    ):
+
+        self.input_object = input_object
+        self.required_input_type = required_input_type
+        self.required_sheets = required_sheets
+        self.required_columns = required_columns
+        self.text_contains_all = text_contains_all
+        self.text_contains_any = text_contains_any
+        self.regex_escape = regex_escape
+        self.min_rows_number = min_rows_number
+        self.header_starts_at = header_starts_at
+        self.skip_validate_type = False
+        # Making sure we don&#39;t miss characters
+        self.buffer = buffer + sum([len(c) for c in required_columns]) + len(text_contains_all) + len(text_contains_any)
+        # Calling validation on init, raise Exception if something is wrong
+        self.validate()
+        
+
+    def _validate_type(self):
+        &#34;&#34;&#34;
+            Determine which handler to use based on input type provided 
+            Raise error if file/obj type is not as expected (excel/txt file, or string/stream) 
+        &#34;&#34;&#34;
+        
+        if isinstance(self.input_object, str): 
+            if not os.path.exists(self.input_object):
+                self.required_input_type = &#39;string&#39;
+                return 
+
+
+        if &#34;stream&#34; in str(dir(self.input_object)):
+            if self.required_input_type == &#39;excel&#39;:
+                self.required_input_type = &#39;excel-stream&#39;
+                return
+            else:
+                self.required_input_type = &#39;stream&#39;
+                return
+
+        if (
+                self.required_columns == []
+                and
+                self.text_contains_any or self.text_contains_all
+        ):
+            self.required_input_type = &#39;txt&#39;
+            return
+
+        if os.path.exists(self.input_object):
+
+            if self.input_object.endswith(&#39;.xlsx&#39;) or self.input_object.endswith(&#39;.xls&#39;):
+                self.required_input_type = &#34;excel&#34;
+
+            elif self.input_object.endswith(&#39;.csv&#39;):
+                self.required_input_type = &#34;csv&#34;
+
+            elif self.input_object.endswith(&#39;.txt&#39;):
+                self.required_input_type = &#34;txt&#34;
+        else:
+            self.required_input_type = &#34;string&#34;
+
+    def _check_required_input_type(self):
+        allowed_input_types = [&#39;excel&#39;, &#39;csv&#39;, &#39;txt&#39;, &#39;string&#39;, &#39;stream&#39;, &#39;excel-stream&#39;]
+        if not self.required_input_type: return
+        if self.required_input_type not in allowed_input_types:
+            raise ValueError(&#39;Only &#34;.xlsx&#34;, &#34;.xls&#34;, &#34;.csv&#34;, &#34;.txt&#34; files types are accepted!&#39;)
+
+    def _parse_excel_stream(self):
+        
+        self.input_object.seek(0)
+        xlobj = pd.ExcelFile(BytesIO(self.input_object.stream.read()))
+        sheets = xlobj.sheet_names
+
+        if len(sheets) == 1:
+            return pd.read_excel(
+                xlobj,
+                nrows=self.min_rows_number,
+                skiprows=self.header_starts_at
+            )
+
+        dfs = {}
+        for sheet in sheets:
+            if sheet not in self.required_sheets: continue
+            dfs[sheet] = pd.read_excel(
+                xlobj,
+                sheet_name=sheet,
+                nrows=self.min_rows_number,
+                skiprows=self.header_starts_at
+            )
+        return dfs
+
+    def _parse_excel(self):
+
+        sheets = pd.ExcelFile(self.input_object).sheet_names
+
+        if len(sheets) == 1:
+            return pd.read_excel(
+                self.input_object, nrows=self.min_rows_number, skiprows=self.header_starts_at
+            )
+
+        dfs = {}
+        for sheet in sheets:
+            if sheet not in self.required_sheets: continue
+            dfs[sheet] = pd.read_excel(
+                self.input_object, sheet_name=sheet, nrows=self.min_rows_number, skiprows=self.header_starts_at
+            )
+
+        return dfs
+
+
+    def _sniff_delimiter(self):
+        reader = pd.read_csv(self.input_object, sep=None, iterator=True, engine=&#39;python&#39;)
+        delimiter = reader._engine.data.dialect.delimiter
+        reader.close()
+        if delimiter in [&#34;,&#34;,&#34;;&#34;]:
+            log.info(f&#34;Sniffed delimiter &#39;{delimiter}&#39; for {self.input_object}&#34;)
+            return delimiter
+        else:
+            log.warning(f&#34;Sniffed illegal delimiter {delimiter} for {self.input_object}&#34;)
+            return &#34;,&#34;
+
+
+    def _parse_csv(self):
+        df =  pd.read_csv(
+                self.input_object, nrows=self.min_rows_number, skiprows=self.header_starts_at,
+                delimiter=self._sniff_delimiter()
+            )
+        return df
+
+
+    def _parse_data(self):
+
+        if self.required_input_type == &#34;excel-stream&#34;:
+            return self._parse_excel_stream()
+
+        if self.required_input_type == &#34;excel&#34;:
+            return self._parse_excel()
+
+        elif self.required_input_type == &#34;csv&#34;:
+            return self._parse_csv()
+
+        elif self.required_input_type == &#34;txt&#34;:
+            with open(self.input_object, &#39;r&#39;, encoding=&#39;utf8&#39;, errors=&#39;ignore&#39;) as f:
+                text = f.read(self.buffer)
+            return text
+
+        elif self.required_input_type == &#34;string&#34;:
+            return self.input_object
+
+        elif self.required_input_type == &#34;stream&#34;:
+            self.input_object.seek(0)
+            if self.min_rows_number:
+                return self.input_object.stream.read().decode(&#39;utf8&#39;, &#39;ignore&#39;)
+            else:
+                return self.input_object.stream.read(self.buffer).decode(&#39;utf8&#39;, &#39;ignore&#39;)
+
+
+        else:
+            raise ValueError(&#34;File contents are badly formated and cannot be read!&#34;)
+
+    def validate(self):
+        &#34;&#34;&#34; 
+            When called run all validators on `input_object` parameter
+        &#34;&#34;&#34;
+        self._check_required_input_type()
+        self._validate_type()
+        data = self._parse_data()
+        
+        validate_text_contains_all(data, self.text_contains_all, self.regex_escape)
+        validate_text_contains_any(data, self.text_contains_any, self.regex_escape)
+        validate_sheets(self.input_object, self.required_sheets)
+        validate_columns(data, self.required_columns, self.required_sheets)
+        validate_rows_number(data, self.min_rows_number, self.required_sheets)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="licenseware.common.validators.file_validators.validate_columns"><code class="name flex">
+<span>def <span class="ident">validate_columns</span></span>(<span>df, required_columns, required_sheets=[])</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def validate_columns(df, required_columns, required_sheets=[]):
+    if not required_columns: return
+    
+    file_columns = _get_columns(df, required_sheets)
+    
+    if isinstance(required_columns[0], tuple) and len(required_columns) &gt; 1:
+        for rc in required_columns:
+            if _columns_validator(file_columns, rc, raise_error=False):
+                return
+        else:
+            raise ValueError(f&#39;Table does not contain required columns: {required_columns}&#39;)
+    else:
+        _columns_validator(file_columns, required_columns, raise_error=True)</code></pre>
+</details>
+</dd>
+<dt id="licenseware.common.validators.file_validators.validate_filename"><code class="name flex">
+<span>def <span class="ident">validate_filename</span></span>(<span>filename: str, contains: list, endswith: list = None, regex_escape: bool = True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Check if filename contains all needed keywords and all accepted file types</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def validate_filename(filename:str, contains:list, endswith:list = None, regex_escape:bool = True):
+    &#34;&#34;&#34;
+        Check if filename contains all needed keywords and all accepted file types
+    &#34;&#34;&#34;
+    if endswith is None:
+        endswith = []
+
+    if not isinstance(filename, str): 
+        raise ValueError(&#34;filename must be a string&#34;)
+
+    validate_text_contains_any(filename, contains, regex_escape)
+    
+    if endswith:
+        for file_type in endswith:
+            if filename.lower().endswith(file_type): return
+
+        raise ValueError(f&#34;Filename doesn&#39;t end with any of the specified values: {&#39;, &#39;.join(endswith)}&#34;)</code></pre>
+</details>
+</dd>
+<dt id="licenseware.common.validators.file_validators.validate_rows_number"><code class="name flex">
+<span>def <span class="ident">validate_rows_number</span></span>(<span>df, min_rows_number, required_sheets=[])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Raise error if minimum_rows_number is not satisfied</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def validate_rows_number(df, min_rows_number, required_sheets=[]):
+    &#34;&#34;&#34;
+        Raise error if minimum_rows_number is not satisfied
+    &#34;&#34;&#34;
+
+    if not min_rows_number: return
+
+    if isinstance(df, dict):
+        for sheet, table in df.items():
+            if sheet not in required_sheets: continue
+            if table.shape[0] &lt; min_rows_number:
+                raise ValueError(f&#39;Expected {sheet} to have at least {min_rows_number} row(s)&#39;)
+    else:
+        if df.count(&#34;\n&#34;) &lt; min_rows_number:
+            raise ValueError(f&#39;Expected table to have at least {min_rows_number} row(s)&#39;)</code></pre>
+</details>
+</dd>
+<dt id="licenseware.common.validators.file_validators.validate_sheets"><code class="name flex">
+<span>def <span class="ident">validate_sheets</span></span>(<span>file, required_sheets)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Raise error if required_sheets are not found in file</p>
+<p>required_sheets = [
+('tabvInfo', 'tabvCPU', 'tabvHost', 'tabvCluster'),
+('vInfo', 'vCPU', 'vHost', 'vCluster'),
+]</p>
+<p>or </p>
+<p>required_sheets = 'tabvInfo', 'tabvCPU', 'tabvHost', 'tabvCluster'</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def validate_sheets(file, required_sheets):
+    &#34;&#34;&#34;
+        Raise error if required_sheets are not found in file
+
+        required_sheets = [
+            (&#39;tabvInfo&#39;, &#39;tabvCPU&#39;, &#39;tabvHost&#39;, &#39;tabvCluster&#39;),
+            (&#39;vInfo&#39;, &#39;vCPU&#39;, &#39;vHost&#39;, &#39;vCluster&#39;),
+        ]
+
+        or 
+
+        required_sheets = &#39;tabvInfo&#39;, &#39;tabvCPU&#39;, &#39;tabvHost&#39;, &#39;tabvCluster&#39;
+
+    &#34;&#34;&#34;
+
+    if not required_sheets: return
+
+    sheets = pd.ExcelFile(file).sheet_names
+    
+    # Registry service saves tuples as lists
+    if (isinstance(required_sheets[0], tuple) or isinstance(required_sheets[0], list)) and len(required_sheets) &gt; 1:
+        for rs in required_sheets:
+            if _sheets_validator(sheets, rs, raise_error=False):
+                return # one validation succeded
+    else:
+        _sheets_validator(sheets, required_sheets, raise_error=True)</code></pre>
+</details>
+</dd>
+<dt id="licenseware.common.validators.file_validators.validate_text_contains_all"><code class="name flex">
+<span>def <span class="ident">validate_text_contains_all</span></span>(<span>text, text_contains_all, regex_escape=True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Raise exception if contents of the text file don't contain all items in text_contains_all list</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def validate_text_contains_all(text, text_contains_all, regex_escape=True):
+    &#34;&#34;&#34;
+        Raise exception if contents of the text file don&#39;t contain all items in text_contains_all list
+    &#34;&#34;&#34;
+
+    if not text_contains_all: return
+
+    matches_count = 0
+    for txt_to_find in text_contains_all:
+        pattern = re.compile(re.escape(txt_to_find) if regex_escape else txt_to_find, flags=re.IGNORECASE)
+        match = re.search(pattern, text)
+        if match: matches_count += 1
+
+    if matches_count &lt; len(text_contains_all):
+        raise ValueError(f&#39;File must contain the all following keywords: {&#34;, &#34;.join(text_contains_all)}&#39;)</code></pre>
+</details>
+</dd>
+<dt id="licenseware.common.validators.file_validators.validate_text_contains_any"><code class="name flex">
+<span>def <span class="ident">validate_text_contains_any</span></span>(<span>text, text_contains_any, regex_escape=True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Raise exception if contents of the text file don't contain at least one item in text_contains_any list</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def validate_text_contains_any(text, text_contains_any, regex_escape=True):
+    &#34;&#34;&#34;
+        Raise exception if contents of the text file don&#39;t contain at least one item in text_contains_any list
+    &#34;&#34;&#34;
+
+    if not text_contains_any: return
+    
+    for txt_to_find in text_contains_any:
+        pattern = re.compile(re.escape(txt_to_find) if regex_escape else txt_to_find, flags=re.IGNORECASE)
+        match = re.search(pattern, text)
+        if match: return
+
+    raise ValueError(f&#39;File must contain at least one of the following keywords: {&#34;, &#34;.join(text_contains_any)}&#39;)</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="licenseware.common.validators.file_validators.GeneralValidator"><code class="flex name class">
+<span>class <span class="ident">GeneralValidator</span></span>
+<span>(</span><span>input_object, required_input_type=None, required_sheets=[], required_columns=[], text_contains_all=[], text_contains_any=[], regex_escape=True, min_rows_number=0, header_starts_at=0, buffer=9000)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class GeneralValidator:
+
+    def __init__(
+            self,
+            input_object,
+            required_input_type=None,
+            required_sheets=[],
+            required_columns=[],
+            text_contains_all=[],
+            text_contains_any=[],
+            regex_escape = True,
+            min_rows_number=0,
+            header_starts_at=0,
+            buffer=9000,
+    ):
+
+        self.input_object = input_object
+        self.required_input_type = required_input_type
+        self.required_sheets = required_sheets
+        self.required_columns = required_columns
+        self.text_contains_all = text_contains_all
+        self.text_contains_any = text_contains_any
+        self.regex_escape = regex_escape
+        self.min_rows_number = min_rows_number
+        self.header_starts_at = header_starts_at
+        self.skip_validate_type = False
+        # Making sure we don&#39;t miss characters
+        self.buffer = buffer + sum([len(c) for c in required_columns]) + len(text_contains_all) + len(text_contains_any)
+        # Calling validation on init, raise Exception if something is wrong
+        self.validate()
+        
+
+    def _validate_type(self):
+        &#34;&#34;&#34;
+            Determine which handler to use based on input type provided 
+            Raise error if file/obj type is not as expected (excel/txt file, or string/stream) 
+        &#34;&#34;&#34;
+        
+        if isinstance(self.input_object, str): 
+            if not os.path.exists(self.input_object):
+                self.required_input_type = &#39;string&#39;
+                return 
+
+
+        if &#34;stream&#34; in str(dir(self.input_object)):
+            if self.required_input_type == &#39;excel&#39;:
+                self.required_input_type = &#39;excel-stream&#39;
+                return
+            else:
+                self.required_input_type = &#39;stream&#39;
+                return
+
+        if (
+                self.required_columns == []
+                and
+                self.text_contains_any or self.text_contains_all
+        ):
+            self.required_input_type = &#39;txt&#39;
+            return
+
+        if os.path.exists(self.input_object):
+
+            if self.input_object.endswith(&#39;.xlsx&#39;) or self.input_object.endswith(&#39;.xls&#39;):
+                self.required_input_type = &#34;excel&#34;
+
+            elif self.input_object.endswith(&#39;.csv&#39;):
+                self.required_input_type = &#34;csv&#34;
+
+            elif self.input_object.endswith(&#39;.txt&#39;):
+                self.required_input_type = &#34;txt&#34;
+        else:
+            self.required_input_type = &#34;string&#34;
+
+    def _check_required_input_type(self):
+        allowed_input_types = [&#39;excel&#39;, &#39;csv&#39;, &#39;txt&#39;, &#39;string&#39;, &#39;stream&#39;, &#39;excel-stream&#39;]
+        if not self.required_input_type: return
+        if self.required_input_type not in allowed_input_types:
+            raise ValueError(&#39;Only &#34;.xlsx&#34;, &#34;.xls&#34;, &#34;.csv&#34;, &#34;.txt&#34; files types are accepted!&#39;)
+
+    def _parse_excel_stream(self):
+        
+        self.input_object.seek(0)
+        xlobj = pd.ExcelFile(BytesIO(self.input_object.stream.read()))
+        sheets = xlobj.sheet_names
+
+        if len(sheets) == 1:
+            return pd.read_excel(
+                xlobj,
+                nrows=self.min_rows_number,
+                skiprows=self.header_starts_at
+            )
+
+        dfs = {}
+        for sheet in sheets:
+            if sheet not in self.required_sheets: continue
+            dfs[sheet] = pd.read_excel(
+                xlobj,
+                sheet_name=sheet,
+                nrows=self.min_rows_number,
+                skiprows=self.header_starts_at
+            )
+        return dfs
+
+    def _parse_excel(self):
+
+        sheets = pd.ExcelFile(self.input_object).sheet_names
+
+        if len(sheets) == 1:
+            return pd.read_excel(
+                self.input_object, nrows=self.min_rows_number, skiprows=self.header_starts_at
+            )
+
+        dfs = {}
+        for sheet in sheets:
+            if sheet not in self.required_sheets: continue
+            dfs[sheet] = pd.read_excel(
+                self.input_object, sheet_name=sheet, nrows=self.min_rows_number, skiprows=self.header_starts_at
+            )
+
+        return dfs
+
+
+    def _sniff_delimiter(self):
+        reader = pd.read_csv(self.input_object, sep=None, iterator=True, engine=&#39;python&#39;)
+        delimiter = reader._engine.data.dialect.delimiter
+        reader.close()
+        if delimiter in [&#34;,&#34;,&#34;;&#34;]:
+            log.info(f&#34;Sniffed delimiter &#39;{delimiter}&#39; for {self.input_object}&#34;)
+            return delimiter
+        else:
+            log.warning(f&#34;Sniffed illegal delimiter {delimiter} for {self.input_object}&#34;)
+            return &#34;,&#34;
+
+
+    def _parse_csv(self):
+        df =  pd.read_csv(
+                self.input_object, nrows=self.min_rows_number, skiprows=self.header_starts_at,
+                delimiter=self._sniff_delimiter()
+            )
+        return df
+
+
+    def _parse_data(self):
+
+        if self.required_input_type == &#34;excel-stream&#34;:
+            return self._parse_excel_stream()
+
+        if self.required_input_type == &#34;excel&#34;:
+            return self._parse_excel()
+
+        elif self.required_input_type == &#34;csv&#34;:
+            return self._parse_csv()
+
+        elif self.required_input_type == &#34;txt&#34;:
+            with open(self.input_object, &#39;r&#39;, encoding=&#39;utf8&#39;, errors=&#39;ignore&#39;) as f:
+                text = f.read(self.buffer)
+            return text
+
+        elif self.required_input_type == &#34;string&#34;:
+            return self.input_object
+
+        elif self.required_input_type == &#34;stream&#34;:
+            self.input_object.seek(0)
+            if self.min_rows_number:
+                return self.input_object.stream.read().decode(&#39;utf8&#39;, &#39;ignore&#39;)
+            else:
+                return self.input_object.stream.read(self.buffer).decode(&#39;utf8&#39;, &#39;ignore&#39;)
+
+
+        else:
+            raise ValueError(&#34;File contents are badly formated and cannot be read!&#34;)
+
+    def validate(self):
+        &#34;&#34;&#34; 
+            When called run all validators on `input_object` parameter
+        &#34;&#34;&#34;
+        self._check_required_input_type()
+        self._validate_type()
+        data = self._parse_data()
+        
+        validate_text_contains_all(data, self.text_contains_all, self.regex_escape)
+        validate_text_contains_any(data, self.text_contains_any, self.regex_escape)
+        validate_sheets(self.input_object, self.required_sheets)
+        validate_columns(data, self.required_columns, self.required_sheets)
+        validate_rows_number(data, self.min_rows_number, self.required_sheets)</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="licenseware.common.validators.file_validators.GeneralValidator.validate"><code class="name flex">
+<span>def <span class="ident">validate</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>When called run all validators on <code>input_object</code> parameter</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def validate(self):
+    &#34;&#34;&#34; 
+        When called run all validators on `input_object` parameter
+    &#34;&#34;&#34;
+    self._check_required_input_type()
+    self._validate_type()
+    data = self._parse_data()
+    
+    validate_text_contains_all(data, self.text_contains_all, self.regex_escape)
+    validate_text_contains_any(data, self.text_contains_any, self.regex_escape)
+    validate_sheets(self.input_object, self.required_sheets)
+    validate_columns(data, self.required_columns, self.required_sheets)
+    validate_rows_number(data, self.min_rows_number, self.required_sheets)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="licenseware.common.validators" href="index.html">licenseware.common.validators</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="licenseware.common.validators.file_validators.validate_columns" href="#licenseware.common.validators.file_validators.validate_columns">validate_columns</a></code></li>
+<li><code><a title="licenseware.common.validators.file_validators.validate_filename" href="#licenseware.common.validators.file_validators.validate_filename">validate_filename</a></code></li>
+<li><code><a title="licenseware.common.validators.file_validators.validate_rows_number" href="#licenseware.common.validators.file_validators.validate_rows_number">validate_rows_number</a></code></li>
+<li><code><a title="licenseware.common.validators.file_validators.validate_sheets" href="#licenseware.common.validators.file_validators.validate_sheets">validate_sheets</a></code></li>
+<li><code><a title="licenseware.common.validators.file_validators.validate_text_contains_all" href="#licenseware.common.validators.file_validators.validate_text_contains_all">validate_text_contains_all</a></code></li>
+<li><code><a title="licenseware.common.validators.file_validators.validate_text_contains_any" href="#licenseware.common.validators.file_validators.validate_text_contains_any">validate_text_contains_any</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="licenseware.common.validators.file_validators.GeneralValidator" href="#licenseware.common.validators.file_validators.GeneralValidator">GeneralValidator</a></code></h4>
+<ul class="">
+<li><code><a title="licenseware.common.validators.file_validators.GeneralValidator.validate" href="#licenseware.common.validators.file_validators.GeneralValidator.validate">validate</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

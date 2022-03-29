@@ -7,6 +7,16 @@ from abc import ABCMeta, abstractmethod
 
 
 class BaseCreator(metaclass=ABCMeta):
+    """
+        This class uses the given `entity_id` which can be: uploader_id, report_id, app_id etc
+        The `entity_id` will have multiple derivate shapes (see bellow transformations in the __init__ method) 
+        which will be passed to jinja templates as template variables
+
+        Each file creation class should inherit (if possible) from this class.
+
+        As an example you can see `licenseware/cli/uploader_creator` package.
+
+    """
 
     def __init__(self, entity_id: str):
         self.entity_id = entity_id
@@ -40,6 +50,18 @@ class BaseCreator(metaclass=ABCMeta):
         **template_vars
     ):
 
+        """
+        
+        This methods uses the jinja template to generate a new file.
+
+        :filename - the filename of the output
+        :filepath - the path where the file should be saved
+        :template_resource - the resource module which contains the .jinja template
+        :template_filename - the jinja template filename 
+        (if not provided will look for filename.jinja in the template_resource package)
+        :template_vars - the variables that should be passed to the jinja template
+
+        """
 
         file_path = os.path.join(filepath, filename)
         if os.path.exists(file_path): return

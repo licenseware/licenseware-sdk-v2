@@ -67,9 +67,9 @@ repo.delete()
 """
 
 from marshmallow import Schema
-from repository.mongo import MongoRepository
-from repository.postgres import PostgresRepository
-from repository.postgres import PostgresMigrations
+from licenseware.repository.mongo.mongo_repository import MongoRepository
+from licenseware.repository.postgres.postgres_repository import PostgresRepository
+from licenseware.repository.postgres.postgres_migrations import PostgresMigrations
 
 
 class RepoDb:

@@ -227,7 +227,7 @@ from sqlalchemy.engine.cursor import CursorResult
 
 from marshmallow import Schema, fields
 from marshmallow.exceptions import ValidationError
-from repository.interface import RepositoryInterface
+from licenseware.repository.interface import RepositoryInterface
 
 from .postgres_migrations import PostgresMigrations
 
