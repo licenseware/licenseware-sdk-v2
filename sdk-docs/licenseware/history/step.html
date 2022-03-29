@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>licenseware.history.step API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>licenseware.history.step</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import os
+import shutil
+import datetime
+from licenseware import mongodata
+from licenseware.common.constants import envs, states
+from .history_schemas import HistorySchema
+from licenseware.utils.logger import log as logg
+
+
+def save_filename_validation(metadata, response):
+
+    data = {
+        &#34;tenant_id&#34;: metadata[&#34;tenant_id&#34;],
+        &#34;event_id&#34;: metadata[&#34;event_id&#34;],
+        &#34;app_id&#34;: metadata[&#34;app_id&#34;],
+        &#34;uploader_id&#34;: metadata[&#34;uploader_id&#34;],
+        &#34;filename_validation&#34;: response[&#34;validation&#34;],
+        &#34;filename_validation_updated_at&#34;: datetime.datetime.utcnow().isoformat(),
+        &#34;updated_at&#34;: datetime.datetime.utcnow().isoformat()
+    }
+
+    return mongodata.insert(
+        schema=HistorySchema,
+        data=data,
+        collection=envs.MONGO_COLLECTION_HISTORY_NAME
+    )
+
+
+def copy_files_uploaded_on_event_folder(data):
+    &#34;&#34;&#34;
+        Files uploaded are saved in another folder for the purpose of replicating the errors
+        Files will be deleted after 1 month (iso date specifies when files will be deleted)
+    &#34;&#34;&#34;
+    expiration_iso_date = (datetime.datetime.utcnow() + datetime.timedelta(days=30)).date().isoformat()
+    folder_name = f&#34;{data[&#39;tenant_id&#39;]}_{data[&#39;event_id&#39;]}_{expiration_iso_date}&#34;
+    folder_path = os.path.join(envs.FILE_UPLOAD_PATH, folder_name)
+
+    if not os.path.exists(folder_path): os.makedirs(folder_path)
+
+    files_uploaded_on_event = []
+    for fp in data[&#34;files_uploaded&#34;]:
+        save_path = os.path.join(folder_path, os.path.basename(fp))
+        shutil.copy2(src=fp, dst=save_path)
+        files_uploaded_on_event.append(save_path)
+
+    return files_uploaded_on_event
+
+
+def save_file_content_validation(metadata, response):
+
+    if &#34;event_data&#34; not in response:
+        logg.info(&#34;Parameter `event_data` not found on response from `upload_files`&#34;)
+        return
+
+    file_content_validation = []
+    for cv in response[&#34;event_data&#34;]:
+        file_content_validation.extend(cv[&#34;validation_response&#34;][&#39;validation&#39;])
+
+    filepaths = []
+    for cv in response[&#34;event_data&#34;]:
+        filepaths.extend(cv[&#34;filepaths&#34;])
+
+    data = {
+        &#34;tenant_id&#34;: metadata[&#34;tenant_id&#34;],
+        &#34;event_id&#34;: metadata[&#34;event_id&#34;],
+        &#34;app_id&#34;: metadata[&#34;app_id&#34;],
+        &#34;uploader_id&#34;: metadata[&#34;uploader_id&#34;],
+        &#34;file_content_validation&#34;: file_content_validation,
+        &#34;files_uploaded&#34;: filepaths,
+        &#34;updated_at&#34;: datetime.datetime.utcnow().isoformat()
+    }
+
+    data[&#34;files_uploaded&#34;] = copy_files_uploaded_on_event_folder(data)
+    data[&#34;file_content_validation_updated_at&#34;] = datetime.datetime.utcnow().isoformat()
+
+    return mongodata.update(
+        schema=HistorySchema,
+        match={
+            &#34;tenant_id&#34;: metadata[&#34;tenant_id&#34;],
+            &#34;event_id&#34;: metadata[&#34;event_id&#34;]
+        },
+        new_data=data,
+        collection=envs.MONGO_COLLECTION_HISTORY_NAME
+    )
+
+
+def save_processing_details(metadata, response):
+
+    data = {
+        &#34;tenant_id&#34;: metadata[&#34;tenant_id&#34;],
+        &#34;event_id&#34;: metadata[&#34;event_id&#34;],
+        &#34;app_id&#34;: metadata[&#34;app_id&#34;],
+        &#34;uploader_id&#34;: metadata[&#34;uploader_id&#34;],
+        &#34;updated_at&#34;: datetime.datetime.utcnow().isoformat(),
+        &#34;processing_details&#34;: [{
+            &#34;step&#34;: metadata[&#39;step&#39;],
+            &#34;filepath&#34;: metadata[&#34;filepath&#34;],
+            &#34;status&#34;: response[&#34;status&#34;],
+            &#34;success&#34;: response[&#34;success&#34;],
+            &#34;error&#34;: response[&#34;error&#34;],
+            &#34;traceback&#34;: response[&#34;traceback&#34;],
+            &#34;callable&#34;: metadata[&#39;callable&#39;],
+            &#34;source&#34;: metadata[&#39;source&#39;],
+            &#34;updated_at&#34;: datetime.datetime.utcnow().isoformat()
+        }]
+    }
+
+    return mongodata.update(
+        schema=HistorySchema,
+        match={
+            &#34;tenant_id&#34;: metadata[&#34;tenant_id&#34;],
+            &#34;event_id&#34;: metadata[&#34;event_id&#34;]
+        },
+        new_data=data,
+        append=True,
+        collection=envs.MONGO_COLLECTION_HISTORY_NAME
+    )
+
+
+def save_step(
+        metadata,
+        response,
+        on_success_save: any = None,
+        on_failure_save: any = None,
+        raised_error: bool = False
+):
+    # We can&#39;t track files without an event_id
+    if metadata[&#39;event_id&#39;] is None: return
+
+    if metadata[&#39;callable&#39;] == &#39;validate_filenames&#39;:
+        return save_filename_validation(metadata, response[0])
+
+    if metadata[&#39;callable&#39;] == &#39;upload_files&#39;:
+        return save_file_content_validation(metadata, response[0])
+
+    # Success cases
+    if not raised_error and on_success_save:
+        return save_processing_details(metadata, {
+            &#34;status&#34;: states.SUCCESS,
+            &#34;success&#34;: on_success_save,
+            &#34;error&#34;: None,
+            &#34;traceback&#34;: None
+        })
+    if not raised_error and not on_success_save:
+        return save_processing_details(metadata, {
+            &#34;status&#34;: states.SUCCESS,
+            &#34;success&#34;: None,
+            &#34;error&#34;: None,
+            &#34;traceback&#34;: None
+        })
+
+    # Failed cases
+    if raised_error and on_failure_save:
+        return save_processing_details(metadata, {
+            &#34;status&#34;: states.FAILED,
+            &#34;success&#34;: None,
+            &#34;error&#34;: on_failure_save,
+            &#34;traceback&#34;: response[&#39;traceback&#39;]
+        })
+
+    if raised_error and not on_failure_save:
+        return save_processing_details(metadata, {
+            &#34;status&#34;: states.FAILED,
+            &#34;success&#34;: None,
+            &#34;error&#34;: response[&#39;error&#39;],
+            &#34;traceback&#34;: response[&#39;traceback&#39;]
+        })
+
+
+
+
+
+
+
+
+
+# File validation response
+# {
+#   &#34;status&#34;: &#34;success&#34;,
+#   &#34;message&#34;: &#34;Filenames are valid&#34;,
+#   &#34;validation&#34;: [
+#     {
+#       &#34;status&#34;: &#34;success&#34;,
+#       &#34;filename&#34;: &#34;rvtools.xlsx&#34;,
+#       &#34;message&#34;: &#34;Filename is valid&#34;
+#     },
+#     {
+#       &#34;status&#34;: &#34;success&#34;,
+#       &#34;filename&#34;: &#34;options.csv&#34;,
+#       &#34;message&#34;: &#34;Filename is valid&#34;
+#     }
+#   ]
+# }
+
+# Upload files response
+# {
+#   &#34;status&#34;: &#34;success&#34;,
+#   &#34;message&#34;: &#34;Event sent&#34;,
+#   &#34;event_data&#34;: {
+#     &#34;tenant_id&#34;: &#34;b37761e3-6926-4cc1-88c7-4d0478b04adf&#34;,
+#     &#34;uploader_id&#34;: &#34;universal_uploader&#34;,
+#     &#34;filepaths&#34;: [
+#       &#34;/tmp/lware/b37761e3-6926-4cc1-88c7-4d0478b04adf/cpuq.txt&#34;
+#     ],
+#     &#34;flask_request&#34;: {
+#       &#34;Host&#34;: &#34;localhost&#34;,
+#       &#34;Connection&#34;: &#34;keep-alive&#34;,
+#       &#34;X-Forwarded-For&#34;: &#34;172.18.0.1&#34;,
+#       &#34;X-Forwarded-Proto&#34;: &#34;http&#34;,
+#       &#34;X-Forwarded-Host&#34;: &#34;localhost&#34;,
+#       &#34;X-Forwarded-Port&#34;: &#34;80&#34;,
+#       &#34;X-Forwarded-Path&#34;: &#34;/universal-uploader/uploads/universal_uploader/files&#34;,
+#       &#34;X-Real-Ip&#34;: &#34;172.18.0.1&#34;,
+#       &#34;Content-Length&#34;: &#34;6655&#34;,
+#       &#34;Sec-Ch-Ua&#34;: &#34;\&#34; Not A;Brand\&#34;;v=\&#34;99\&#34;, \&#34;Chromium\&#34;;v=\&#34;99\&#34;, \&#34;Google Chrome\&#34;;v=\&#34;99\&#34;&#34;,
+#       &#34;Sec-Ch-Ua-Mobile&#34;: &#34;?0&#34;,
+#       &#34;Authorization&#34;: &#34;eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NDczMjg4MzAsImlhdCI6MTY0NzI0MjQyNSwic3ViIjoiMzc0MmQ4ODgtNzNjNS00MTA1LTk4OTgtYjIwZjZhMmNlMjM1In0.3IrFRs4-VQiYzUCTc_QgZKQo8NVnbdSmRWmU4s7eRfE&#34;,
+#       &#34;Tenantid&#34;: &#34;b37761e3-6926-4cc1-88c7-4d0478b04adf&#34;,
+#       &#34;Content-Type&#34;: &#34;multipart/form-data; boundary=----WebKitFormBoundaryFy5k1hbwcuEa1dsf&#34;,
+#       &#34;Accept&#34;: &#34;application/json&#34;,
+#       &#34;User-Agent&#34;: &#34;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36&#34;,
+#       &#34;Sec-Ch-Ua-Platform&#34;: &#34;\&#34;Linux\&#34;&#34;,
+#       &#34;Origin&#34;: &#34;http://localhost&#34;,
+#       &#34;Sec-Fetch-Site&#34;: &#34;same-origin&#34;,
+#       &#34;Sec-Fetch-Mode&#34;: &#34;cors&#34;,
+#       &#34;Sec-Fetch-Dest&#34;: &#34;empty&#34;,
+#       &#34;Referer&#34;: &#34;http://localhost/universal-uploader/docs&#34;,
+#       &#34;Accept-Encoding&#34;: &#34;gzip, deflate, br&#34;,
+#       &#34;Accept-Language&#34;: &#34;en-US,en;q=0.9,ro;q=0.8,it;q=0.7,fr;q=0.6&#34;,
+#       &#34;Cookie&#34;: &#34;PGADMIN_LANGUAGE=en; username-localhost-8889=\&#34;2|1:0|10:1646133817|23:username-localhost-8889|44:ZTZkMjJhN2NkZWM2NDNmZDkxYTVkNTVjYTg0NjRlM2E=|38b7f9e169bfa62662aa3ff1d146050f2964b793dc3902120ba90c4e20535626\&#34;; username-localhost-8888=\&#34;2|1:0|10:1646996386|23:username-localhost-8888|44:MmQzODg2ODhjY2E0NDY1Yzg1Y2FhOWUwY2EzYjRlZDY=|e72eb76bbecc87382940894602d81bb601977e231173ac0d2922d8fc4b1218b4\&#34;; _xsrf=2|3ea9ea76|6ebac8ec76a4cd27fed85d0eb847f7bd|1646996386; mongo-express=s%3AVAettPkb_tNq0EZQcZqY96UKMb4vQ_s1.m02RdaZSFY5qVSrgPU%2FkfwHsrhojQX0P8gGOnjMZ1Ys&#34;
+#     },
+#     &#34;validation_response&#34;: {
+#       &#34;tenant_id&#34;: &#34;b37761e3-6926-4cc1-88c7-4d0478b04adf&#34;,
+#       &#34;status&#34;: &#34;success&#34;,
+#       &#34;message&#34;: &#34;Files are valid&#34;,
+#       &#34;validation&#34;: [
+#         {
+#           &#34;status&#34;: &#34;success&#34;,
+#           &#34;filename&#34;: &#34;cpuq.txt&#34;,
+#           &#34;filepath&#34;: &#34;/tmp/lware/b37761e3-6926-4cc1-88c7-4d0478b04adf/cpuq.txt&#34;,
+#           &#34;message&#34;: &#34;Filename is valid&#34;
+#         }
+#       ]
+#     }
+#   }
+# }
+
+
+
+
+# {
+#     &#39;callable&#39;: &#39;validate_filenames_no_flask_request&#39;,
+#     &#39;docs&#39;: &#39;Validate filenames received&#39;, &#39;source&#39;:
+#     &#39;/home/acmt/Documents/lware/licenseware-sdk-v2/tests/test_history.py&#39;,
+#     &#39;tenant_id&#39;: &#39;123&#39;,
+#     &#39;event_id&#39;: &#39;wer&#39;,
+#     &#39;app_id&#39;: &#39;app&#39;,
+#     &#39;uploader_id&#39;: &#39;rv_tools&#39;
+# }
+
+
+
+# {
+#     &#34;tenant_id&#34;: &#34;xxx&#34;,
+#     &#34;event_id&#34;: &#34;xxxx&#34;,
+#     &#34;app_id&#34;: &#34;&#34;,
+#     &#34;uploader_id&#34;: &#34;rv_lite&#34;,
+#     &#34;entities_ids&#34;: [
+#         &#34;uuid4 strings&#34;
+#     ],
+#     &#34;filename_validation&#34;: [
+#         {&#34;file_path&#34;: &#34;/path/file&#34;, &#34;response&#34;: the filename validation response},
+#         etc
+#     ],
+#     &#34;file_content_validatio nr bulk file should look:&#34;: [
+#         {&#34;file_path&#34;: &#34;/path/file&#34;, &#34;response&#34;: the file content validation response},
+#         etc
+#     ],
+#     &#34;files_uploaded&#34;: [file_path1, file_path2, file_path3],
+#     &#34;processing_details&#34;: [
+#             {
+#                 &#34;step&#34;: &#34;Getting machines CPU cores&#34;,
+#                 &#34;error&#34;: &#34;Value in column x not an integer&#34;,
+#                 &#34;processed_file_path&#34;: &#34;path/to/file/processed&#34;,
+#                 &#34;traceback&#34;: &#34;traceback error&#34;
+#             }
+#             etc
+#     ]
+# }</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="licenseware.history.step.copy_files_uploaded_on_event_folder"><code class="name flex">
+<span>def <span class="ident">copy_files_uploaded_on_event_folder</span></span>(<span>data)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Files uploaded are saved in another folder for the purpose of replicating the errors
+Files will be deleted after 1 month (iso date specifies when files will be deleted)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def copy_files_uploaded_on_event_folder(data):
+    &#34;&#34;&#34;
+        Files uploaded are saved in another folder for the purpose of replicating the errors
+        Files will be deleted after 1 month (iso date specifies when files will be deleted)
+    &#34;&#34;&#34;
+    expiration_iso_date = (datetime.datetime.utcnow() + datetime.timedelta(days=30)).date().isoformat()
+    folder_name = f&#34;{data[&#39;tenant_id&#39;]}_{data[&#39;event_id&#39;]}_{expiration_iso_date}&#34;
+    folder_path = os.path.join(envs.FILE_UPLOAD_PATH, folder_name)
+
+    if not os.path.exists(folder_path): os.makedirs(folder_path)
+
+    files_uploaded_on_event = []
+    for fp in data[&#34;files_uploaded&#34;]:
+        save_path = os.path.join(folder_path, os.path.basename(fp))
+        shutil.copy2(src=fp, dst=save_path)
+        files_uploaded_on_event.append(save_path)
+
+    return files_uploaded_on_event</code></pre>
+</details>
+</dd>
+<dt id="licenseware.history.step.save_file_content_validation"><code class="name flex">
+<span>def <span class="ident">save_file_content_validation</span></span>(<span>metadata, response)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def save_file_content_validation(metadata, response):
+
+    if &#34;event_data&#34; not in response:
+        logg.info(&#34;Parameter `event_data` not found on response from `upload_files`&#34;)
+        return
+
+    file_content_validation = []
+    for cv in response[&#34;event_data&#34;]:
+        file_content_validation.extend(cv[&#34;validation_response&#34;][&#39;validation&#39;])
+
+    filepaths = []
+    for cv in response[&#34;event_data&#34;]:
+        filepaths.extend(cv[&#34;filepaths&#34;])
+
+    data = {
+        &#34;tenant_id&#34;: metadata[&#34;tenant_id&#34;],
+        &#34;event_id&#34;: metadata[&#34;event_id&#34;],
+        &#34;app_id&#34;: metadata[&#34;app_id&#34;],
+        &#34;uploader_id&#34;: metadata[&#34;uploader_id&#34;],
+        &#34;file_content_validation&#34;: file_content_validation,
+        &#34;files_uploaded&#34;: filepaths,
+        &#34;updated_at&#34;: datetime.datetime.utcnow().isoformat()
+    }
+
+    data[&#34;files_uploaded&#34;] = copy_files_uploaded_on_event_folder(data)
+    data[&#34;file_content_validation_updated_at&#34;] = datetime.datetime.utcnow().isoformat()
+
+    return mongodata.update(
+        schema=HistorySchema,
+        match={
+            &#34;tenant_id&#34;: metadata[&#34;tenant_id&#34;],
+            &#34;event_id&#34;: metadata[&#34;event_id&#34;]
+        },
+        new_data=data,
+        collection=envs.MONGO_COLLECTION_HISTORY_NAME
+    )</code></pre>
+</details>
+</dd>
+<dt id="licenseware.history.step.save_filename_validation"><code class="name flex">
+<span>def <span class="ident">save_filename_validation</span></span>(<span>metadata, response)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def save_filename_validation(metadata, response):
+
+    data = {
+        &#34;tenant_id&#34;: metadata[&#34;tenant_id&#34;],
+        &#34;event_id&#34;: metadata[&#34;event_id&#34;],
+        &#34;app_id&#34;: metadata[&#34;app_id&#34;],
+        &#34;uploader_id&#34;: metadata[&#34;uploader_id&#34;],
+        &#34;filename_validation&#34;: response[&#34;validation&#34;],
+        &#34;filename_validation_updated_at&#34;: datetime.datetime.utcnow().isoformat(),
+        &#34;updated_at&#34;: datetime.datetime.utcnow().isoformat()
+    }
+
+    return mongodata.insert(
+        schema=HistorySchema,
+        data=data,
+        collection=envs.MONGO_COLLECTION_HISTORY_NAME
+    )</code></pre>
+</details>
+</dd>
+<dt id="licenseware.history.step.save_processing_details"><code class="name flex">
+<span>def <span class="ident">save_processing_details</span></span>(<span>metadata, response)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def save_processing_details(metadata, response):
+
+    data = {
+        &#34;tenant_id&#34;: metadata[&#34;tenant_id&#34;],
+        &#34;event_id&#34;: metadata[&#34;event_id&#34;],
+        &#34;app_id&#34;: metadata[&#34;app_id&#34;],
+        &#34;uploader_id&#34;: metadata[&#34;uploader_id&#34;],
+        &#34;updated_at&#34;: datetime.datetime.utcnow().isoformat(),
+        &#34;processing_details&#34;: [{
+            &#34;step&#34;: metadata[&#39;step&#39;],
+            &#34;filepath&#34;: metadata[&#34;filepath&#34;],
+            &#34;status&#34;: response[&#34;status&#34;],
+            &#34;success&#34;: response[&#34;success&#34;],
+            &#34;error&#34;: response[&#34;error&#34;],
+            &#34;traceback&#34;: response[&#34;traceback&#34;],
+            &#34;callable&#34;: metadata[&#39;callable&#39;],
+            &#34;source&#34;: metadata[&#39;source&#39;],
+            &#34;updated_at&#34;: datetime.datetime.utcnow().isoformat()
+        }]
+    }
+
+    return mongodata.update(
+        schema=HistorySchema,
+        match={
+            &#34;tenant_id&#34;: metadata[&#34;tenant_id&#34;],
+            &#34;event_id&#34;: metadata[&#34;event_id&#34;]
+        },
+        new_data=data,
+        append=True,
+        collection=envs.MONGO_COLLECTION_HISTORY_NAME
+    )</code></pre>
+</details>
+</dd>
+<dt id="licenseware.history.step.save_step"><code class="name flex">
+<span>def <span class="ident">save_step</span></span>(<span>metadata, response, on_success_save: <built-in function any> = None, on_failure_save: <built-in function any> = None, raised_error: bool = False)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def save_step(
+        metadata,
+        response,
+        on_success_save: any = None,
+        on_failure_save: any = None,
+        raised_error: bool = False
+):
+    # We can&#39;t track files without an event_id
+    if metadata[&#39;event_id&#39;] is None: return
+
+    if metadata[&#39;callable&#39;] == &#39;validate_filenames&#39;:
+        return save_filename_validation(metadata, response[0])
+
+    if metadata[&#39;callable&#39;] == &#39;upload_files&#39;:
+        return save_file_content_validation(metadata, response[0])
+
+    # Success cases
+    if not raised_error and on_success_save:
+        return save_processing_details(metadata, {
+            &#34;status&#34;: states.SUCCESS,
+            &#34;success&#34;: on_success_save,
+            &#34;error&#34;: None,
+            &#34;traceback&#34;: None
+        })
+    if not raised_error and not on_success_save:
+        return save_processing_details(metadata, {
+            &#34;status&#34;: states.SUCCESS,
+            &#34;success&#34;: None,
+            &#34;error&#34;: None,
+            &#34;traceback&#34;: None
+        })
+
+    # Failed cases
+    if raised_error and on_failure_save:
+        return save_processing_details(metadata, {
+            &#34;status&#34;: states.FAILED,
+            &#34;success&#34;: None,
+            &#34;error&#34;: on_failure_save,
+            &#34;traceback&#34;: response[&#39;traceback&#39;]
+        })
+
+    if raised_error and not on_failure_save:
+        return save_processing_details(metadata, {
+            &#34;status&#34;: states.FAILED,
+            &#34;success&#34;: None,
+            &#34;error&#34;: response[&#39;error&#39;],
+            &#34;traceback&#34;: response[&#39;traceback&#39;]
+        })</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="licenseware.history" href="index.html">licenseware.history</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="licenseware.history.step.copy_files_uploaded_on_event_folder" href="#licenseware.history.step.copy_files_uploaded_on_event_folder">copy_files_uploaded_on_event_folder</a></code></li>
+<li><code><a title="licenseware.history.step.save_file_content_validation" href="#licenseware.history.step.save_file_content_validation">save_file_content_validation</a></code></li>
+<li><code><a title="licenseware.history.step.save_filename_validation" href="#licenseware.history.step.save_filename_validation">save_filename_validation</a></code></li>
+<li><code><a title="licenseware.history.step.save_processing_details" href="#licenseware.history.step.save_processing_details">save_processing_details</a></code></li>
+<li><code><a title="licenseware.history.step.save_step" href="#licenseware.history.step.save_step">save_step</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

@@ -1,31 +1,3 @@
-docker_command = COMPOSE_HTTP_TIMEOUT=200 docker-compose -f docker-compose.yml
-
-
-# App
-
-up:
-	$(docker_command) up -d --remove-orphans --force-recreate
-down:
-	$(docker_command) down
-
-
-prod:	
-	uwsgi --http 0.0.0.0:5000 -w main:app --processes 4
-
-mock:
-	uwsgi --http 0.0.0.0:4000 -w mock_server:app --processes 4
-	
-dev:
-	python3 main.py
-
-worker:
-	dramatiq main:App.broker -p4 --watch .
-
-# This starts mock, dev and worker
-run-dev:
-	honcho start -f Procfile.local
-
-
 test:
 	rm -rf tests/__pycache__
 	python3 -m unittest tests/*
@@ -94,6 +66,7 @@ sdk-dev-docs:
 	pdoc --http : licenseware
 
 sdk-docs:
+	echo "Make sure to uninstall `licenseware` package if you have it installed globally"
 	pdoc --html --output-dir sdk-docs licenseware
 	
 

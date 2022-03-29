@@ -1510,3 +1510,8 @@ baton -u http://localhost/appid/yourendpoint -c 10 -r 10000
 
 
 '''
+
+from licenseware.utils.miscellaneous import set_environment_variables
+
+
+set_environment_variables(env_path="./.env")

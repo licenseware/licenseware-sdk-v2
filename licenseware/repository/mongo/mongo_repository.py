@@ -1,6 +1,6 @@
 from typing import List, Union
 from marshmallow import Schema
-from repository.interface import RepositoryInterface
+from licenseware.repository.interface import RepositoryInterface
 
 
     
