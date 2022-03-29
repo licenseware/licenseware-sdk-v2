@@ -4,38 +4,42 @@ Here all cli functions are gathered and decorated with typer app decorator.
 
 """
 import os
-import random
 import time
 import shutil
 import typer
-from .app_dirs import create_app_dirs
-from .report import create_report
-from .uploader import create_uploader
-from .report_component import create_report_component
-from .env_data import get_env_value
-from licenseware.test_generator import TestGenerator
+from .utils import get_env_value, get_random_int
+from .app_pkg_creator import AppPackageCreator
+from .devops_creator import DevOpsCreator
+from .app_root_files_creator import AppRootFilesCreator
+from .uploader_creator import UploaderCreator
+from .report_creator import ReportCreator
+from .report_component_creator import ReportComponentCreator
+from .test_creator import TestCreator
 
 
 
 app = typer.Typer(
     name="Licenseware CLI",
     help="""
-    Useful CLI commands for automatic code generation, files and folders creation.
+    Useful CLI commands for automatic files/folders/code creation
     """
 )
 
 
 @app.command()
-def new_app(app_id:str):
+def new_app(app_id: str):
     """ 
-        Given app_id build a new app
-        
-        The package structure for the app will be created and the app_id will be added to .env file
-         
+        Create the base package for a service 
     """
-    create_app_dirs(app_id)
-    # typer.echo("App structure created")
     
+    AppPackageCreator.create()
+    DevOpsCreator(app_id).create()
+    AppRootFilesCreator(app_id).create()
+    
+    typer.echo("App files/folders created")
+
+
+  
         
 @app.command()
 def new_uploader(uploader_id: str):
@@ -44,8 +48,9 @@ def new_uploader(uploader_id: str):
         
         The package structure for the uploader will be created, imports and registration will be handled also.
     """
-    create_uploader(uploader_id)
-    # typer.echo("Uploader structure created")
+    
+    UploaderCreator(uploader_id).create()
+    typer.echo(f"Uploader `{uploader_id}` created")
     
     
 @app.command()
@@ -55,9 +60,11 @@ def new_report(report_id: str):
         
         The package structure for the report will be created, imports and registration will be handled also.
     """
-    create_report(report_id)
-    # typer.echo("Report structure created")
+
+    ReportCreator(report_id).create()
+    typer.echo(f"Report `{report_id}` created")
     
+ 
     
 @app.command()
 def new_report_component(component_id: str, component_type: str):
@@ -70,14 +77,25 @@ def new_report_component(component_id: str, component_type: str):
         - bar_vertical
         - table
     
-    
         The package structure for the report component will be created, imports and registration will be handled manually.
         
     """
-    create_report_component(component_id, component_type)
-    # typer.echo("Report component structure created")
+    
+    ReportComponentCreator(component_id, component_type).create()
+    typer.echo(f"Report component `{component_id}` of type `{component_type}` created")
     
     
+
+@app.command()
+def recreate_files():
+    """ Recreate files that are needed but missing  """
+
+    app_id = get_env_value("APP_ID")
+    AppPackageCreator.create()
+    DevOpsCreator(app_id).create()
+    AppRootFilesCreator(app_id).create()
+    typer.echo("Inexisting files were recreated")
+
 
 
 @app.command()
@@ -126,14 +144,6 @@ def build_sdk_docs():
 
 
 @app.command()
-def recreate_files():
-    """ Recreate files that are needed but missing  """
-
-    create_app_dirs(get_env_value("APP_ID"))
-
-
-
-@app.command()
 def create_tests(test_email: str = None, swagger_url: str = None):
     """ 
         Create tests from swagger docs
@@ -152,14 +162,14 @@ def create_tests(test_email: str = None, swagger_url: str = None):
 
     if swagger_url is None:
         base_url = get_env_value("APP_HOST")
-        swagger_url = base_url + '/' + get_env_value("APP_ID").replace("-service", "") + "/swagger.json"
+        swagger_url = base_url + '/' + get_env_value("APP_ID") + "/swagger.json"
 
     if test_email is None:
-        test_email = f"alin+{random.randint(1000, 9999)}@licenseware.io"
+        test_email = f"alin+{get_random_int()}@licenseware.io"
 
     typer.echo(f"Generating tests for '{test_email}' from '{swagger_url}'")
 
-    tg = TestGenerator(swagger=swagger_url, email=test_email)
+    tg = TestCreator(swagger=swagger_url, email=test_email)
 
     tg.generate_tests()
 

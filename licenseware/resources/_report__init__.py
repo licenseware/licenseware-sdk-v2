@@ -1,1 +1,0 @@
-from .{{ report_id }} import {{ report_id }}_report

@@ -1,0 +1,18 @@
+from licenseware.report_builder import ReportBuilder
+# from app.report_components import some_report_component
+
+
+# Component order is determined by it's position in the list
+report_components=[
+    # some_report_component       
+]
+
+
+{{ entity_underscore }}_report = ReportBuilder(
+    name="{{ entity_title }}",
+    report_id="{{ entity_underscore }}",
+    description="Reports returned based on processed data",
+    report_components=report_components
+)
+
+

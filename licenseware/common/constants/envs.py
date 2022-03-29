@@ -52,10 +52,20 @@ class envs:
     REGISTER_REPORT_URL:str = REGISTRY_SERVICE_URL + '/v1' + '/reports'
     REGISTER_REPORT_COMPONENT_URL:str = REGISTER_REPORT_URL + '/v1' + '/components'
     
+
+    # NEW -service is NOT removed from appid
+    # APP_HOST:str = os.environ['APP_HOST']
+    # QUEUE_NAME:str = APP_ID
+    # APP_PATH:str = "/" + APP_ID
+    # BASE_URL:str = APP_HOST + APP_PATH
+
+    # OLD -service is removed from appid 
+    # DEPRECIATED - keep NEW after testing
     APP_HOST:str = os.environ['APP_HOST']
     QUEUE_NAME:str = APP_ID if '-service' not in APP_ID else APP_ID.replace('-service', '') #ifmp-service => ifmp
     APP_PATH:str = "/" + QUEUE_NAME
     BASE_URL:str = APP_HOST + APP_PATH
+
     UPLOAD_PATH:str = '/uploads'
     REPORT_PATH:str = '/reports'
     FEATURE_PATH:str = '/features'

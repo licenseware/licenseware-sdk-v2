@@ -1,0 +1,50 @@
+docker_command = COMPOSE_HTTP_TIMEOUT=200 docker-compose -f docker-compose.yml
+
+
+# Build local image
+
+IMAGE_TAG=latest
+build-image:
+	docker build -t ghcr.io/licenseware/odb-service:$(IMAGE_TAG) .
+
+pull-image:
+	docker pull ghcr.io/licenseware/odb-service:$(IMAGE_TAG)
+
+	
+jupyter-up:
+	cd ./deploy/jupyter && docker-compose up -d
+	echo "Head to http://localhost:8888/?token=lware to see your jupyter notebook"
+
+jupyter-down:
+	cd ./deploy/jupyter && docker-compose down
+
+up:
+	$(docker_command) up -d --remove-orphans --force-recreate
+down:
+	$(docker_command) down
+	
+run-dev:
+	honcho start -f Procfile.stack
+
+run-worker:
+	dramatiq main:App.broker -p4
+	
+run-tests:
+	rm -rf tests/__pycache__
+	tox tests/*
+
+dev-docs:
+	pdoc --http : app
+
+docs:
+	pdoc --html --output-dir docs app
+
+logs:
+	$(docker_command) logs -ft
+
+build-wheel:
+	python3 setup.py bdist_wheel sdist
+	rm -rf build
+	rm -rf licenseware.egg-info 
+	mv dist wheel_sdk 
+
