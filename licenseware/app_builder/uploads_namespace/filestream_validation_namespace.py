@@ -6,6 +6,7 @@ We need to separate the resource from the restx namespace, otherwise the resourc
 """
 
 
+from statistics import mode
 from flask import request
 from flask_restx import Namespace, Resource 
 
@@ -13,10 +14,38 @@ from licenseware.decorators.auth_decorators import authorization_check
 from licenseware.decorators import failsafe
 from licenseware.tenants import clear_tenant_data 
 from werkzeug.datastructures import FileStorage
+from marshmallow import Schema, fields
+from licenseware.common import marshmallow_to_restx_model
 
 from licenseware.uploader_builder import UploaderBuilder
 from typing import List
 
+
+class FileUploadDetailedValidationSchema(Schema):
+    status = fields.Str()
+    message = fields.Str()
+    filename = fields.Str()
+    filepath = fields.Str()
+
+class FileUploadValidationSchema(Schema):
+    tenant_id = fields.Str()
+    status = fields.Str()
+    message = fields.Str()
+    validation = fields.List(fields.Nested(FileUploadDetailedValidationSchema))
+
+class FileUploadEventDataSchema(Schema):
+    tenant_id = fields.Str()
+    uploader_id = fields.Str()
+    event_id = fields.Str()
+    filepaths = fields.List(fields.Str)
+    flask_request = fields.List(fields.Raw)
+    validation_response = fields.Nested(FileUploadValidationSchema)
+
+class FileUploadRespSchema(Schema):
+    status = fields.Str()
+    message = fields.Str()
+    event_data = fields.List(fields.Nested(FileUploadEventDataSchema)) 
+    event_id = fields.Str()
 
     
 def create_uploader_resource(uploader:UploaderBuilder):
@@ -34,10 +63,10 @@ def create_uploader_resource(uploader:UploaderBuilder):
         
     return FileStreamValidate
 
-
-    
     
 def get_filestream_validation_namespace(ns: Namespace, uploaders:List[UploaderBuilder]):
+
+    file_validation_resp_model = marshmallow_to_restx_model(ns, FileUploadRespSchema)
     
     file_upload_parser = ns.parser()
     file_upload_parser.add_argument(
@@ -62,7 +91,6 @@ def get_filestream_validation_namespace(ns: Namespace, uploaders:List[UploaderBu
                 'event_id': 'The uuid4 string received on filenames validation'
             },
             responses={
-                200 : 'Files are valid',
                 400 : "File list is empty or files are not on 'files[]' key",
                 402 : 'Quota exceeded',
                 403 : "Missing `Tenant` or `Authorization` information",
@@ -70,6 +98,7 @@ def get_filestream_validation_namespace(ns: Namespace, uploaders:List[UploaderBu
             },
         )
         @ns.expect(file_upload_parser)
+        @ns.response(code=200, description="Upload response", model=file_validation_resp_model)
         class TempUploaderResource(UR): ...
         
         
