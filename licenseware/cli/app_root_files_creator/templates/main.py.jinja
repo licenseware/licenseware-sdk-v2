@@ -15,4 +15,5 @@ if os.getenv('ENVIRONMENT') in {'prod', 'production'}:
 
 
 if __name__ == "__main__":
+    os.system("export `cat ./deploy/.env.debug`")
     app.run(port=5000, debug=True)
