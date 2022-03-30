@@ -8,7 +8,7 @@ from licenseware.common.constants import envs
 from licenseware.utils.logger import log
 from werkzeug.utils import secure_filename as werkzeug_secure_filename
 
-accepted_archives = ('.zip', '.tar', '.tar.bz2', 'tar.gz', 'tgz',)
+accepted_archives = ('.zip', '.tar', '.tar.bz2', '.tar.gz', '.tgz',)
 
 
 def is_archive(filepath: str):
