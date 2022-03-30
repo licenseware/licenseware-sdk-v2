@@ -65,9 +65,16 @@ from .features_namespace import (
     get_features_namespace
 )
 
+from .data_sync_namespace import data_sync_namespace
+from .data_sync_namespace import (
+    get_data_sync_namespace
+)
+
+
 from .download_as_route import add_download_as_route
 
 
+# TODO there are some paths in both envs and base paths identify them and remove redundant data
 @dataclass
 class base_paths:
     app_activation_path: str = '/activate_app'
@@ -78,6 +85,7 @@ class base_paths:
     tenant_registration_path: str = '/register_tenant'
     terms_and_conditions_path: str = '/terms_and_conditions'
     features_path: str = '/features'
+    data_sync_path: str = '/data-sync'
 
 
 class AppBuilder:
@@ -86,25 +94,16 @@ class AppBuilder:
             self,
             name: str,
             description: str,
-            flags: list = [],
-            features: List[FeatureBuilder] = [],
-            editable_tables: List[EditableTable] = [],
-            broker_funcs: Dict[str, List[Callable]] = None,
+            flags: list = None,
             app_meta: dict = None,
-            activated_tenants_func: Callable = get_activated_tenants,
-            tenants_with_data_func: Callable = get_tenants_with_data,
-            app_activation_path: str = None,
-            register_app_path: str = None,
-            refresh_registration_path: str = None,
-            editable_tables_path: str = None,
-            history_report_path: str = None,
-            tenant_registration_path: str = None,
-            terms_and_conditions_path: str = None,
-            features_path: str = None,
-            icon: str = "default.png",
+            features: List[FeatureBuilder] = None,
+            editable_tables: List[EditableTable] = None,
+            editable_tables_schemas: List[Schema] = None,
+            data_sync_schema: Schema = None,
+            broker_funcs: Dict[str, List[Callable]] = None,
             doc_authorizations: dict = swagger_authorization_header,
             api_decorators: list = None,
-            editable_tables_schemas: List[Schema] = [],
+            icon: str = "default.png",
             **options
     ):
 
@@ -116,27 +115,24 @@ class AppBuilder:
             self.app_id = self.app_id + envs.DEPLOYMENT_SUFFIX
 
         self.description = description
-        self.features = features
-        self.flags = flags
-        self.icon = icon
-        self.editable_tables = editable_tables
-        self.editable_tables_schemas = editable_tables_schemas
-        self.broker_funcs = broker_funcs or {}
+        self.flags = flags or []
         self.app_meta = app_meta
-        # Add to self activated tenants and tenants with data
-        self.activated_tenants_func = activated_tenants_func
-        self.tenants_with_data_func = tenants_with_data_func
-        self.activated_tenants = None
-        self.tenants_with_data = None
+        self.features = features or []
+        self.data_sync_schema = data_sync_schema
+        self.editable_tables = editable_tables or []
+        self.editable_tables_schemas = editable_tables_schemas or []
+        self.broker_funcs = broker_funcs or {}
+        self.icon = icon
 
-        self.app_activation_path = app_activation_path or base_paths.app_activation_path
-        self.register_app_path = register_app_path or base_paths.register_app_path
-        self.refresh_registration_path = refresh_registration_path or base_paths.refresh_registration_path
-        self.editable_tables_path = editable_tables_path or base_paths.editable_tables_path
-        self.history_report_path = history_report_path or base_paths.history_report_path
-        self.tenant_registration_path = tenant_registration_path or base_paths.tenant_registration_path
-        self.terms_and_conditions_path = terms_and_conditions_path or base_paths.terms_and_conditions_path
-        self.features_path = features_path or base_paths.features_path
+        self.app_activation_path = base_paths.app_activation_path
+        self.register_app_path = base_paths.register_app_path
+        self.refresh_registration_path = base_paths.refresh_registration_path
+        self.editable_tables_path = base_paths.editable_tables_path
+        self.history_report_path = base_paths.history_report_path
+        self.tenant_registration_path = base_paths.tenant_registration_path
+        self.terms_and_conditions_path = base_paths.terms_and_conditions_path
+        self.features_path = base_paths.features_path
+        self.data_sync_path = base_paths.data_sync_path
 
         self.app_activation_url = envs.BASE_URL + self.app_activation_path
         self.refresh_registration_url = envs.BASE_URL + self.refresh_registration_path
@@ -145,6 +141,7 @@ class AppBuilder:
         self.tenant_registration_url = envs.BASE_URL + self.tenant_registration_path
         self.terms_and_conditions_url = envs.BASE_URL + self.terms_and_conditions_path
         self.features_url = envs.BASE_URL + self.features_path
+        self.data_sync_url = envs.BASE_URL + self.data_sync_path
 
         self.authorizations = doc_authorizations
         self.decorators = api_decorators
@@ -250,6 +247,8 @@ class AppBuilder:
         self.add_report_components_routes()
         self.add_editables_routes()
         self.add_features_routes()
+        self.add_data_sync_routes()
+
 
     def add_uploads_routes(self):
 
@@ -311,12 +310,23 @@ class AppBuilder:
                 func(ns=features_namespace, features=self.features)
             )
 
-    def register_app(self):
-        """
-            Sending registration payloads to registry-service
-        """
 
-        # Converting from objects to dictionaries
+    def add_data_sync_routes(self):
+
+        if self.data_sync_schema is None: 
+            return
+
+        ns_funcs = [
+            get_data_sync_namespace
+        ]
+
+        for func in ns_funcs:
+            self.register_namespace(
+                func(ns=data_sync_namespace, data_sync_schema=self.data_sync_schema)
+            )
+
+
+    def get_serialized_app_dict(self):
 
         app_dict = \
             {k: v
@@ -338,8 +348,13 @@ class AppBuilder:
              }
 
         app_dict['features'] = [f.get_details() for f in self.features]
-        app_dict['tenants_with_app_activated'] = self.activated_tenants_func()
-        app_dict['tenants_with_data_available'] = self.tenants_with_data_func()
+        app_dict['tenants_with_app_activated'] = get_activated_tenants()
+        app_dict['tenants_with_data_available'] = get_tenants_with_data()
+
+        return app_dict
+
+
+    def get_serialized_reports(self):
 
         reports = \
             [
@@ -363,6 +378,11 @@ class AppBuilder:
                 for r in self.reports
             ]
 
+        return reports
+
+
+    def get_serialized_uploaders(self):
+
         uploaders = \
             [
                 {k: v
@@ -385,6 +405,10 @@ class AppBuilder:
                  }
                 for r in self.uploaders
             ]
+        
+        return uploaders
+
+    def get_serialized_report_components(self):
 
         report_components = \
             [
@@ -404,6 +428,20 @@ class AppBuilder:
                  }
                 for r in self.report_components
             ]
+
+        return report_components
+
+
+    def register_app(self):
+        """
+            Sending registration payloads to registry-service
+        """
+
+        # Converting from objects to dictionaries
+        app_dict = self.get_serialized_app_dict()
+        reports = self.get_serialized_reports()
+        uploaders = self.get_serialized_uploaders()
+        report_components = self.get_serialized_report_components()
 
         payload = {
             'data': dict(

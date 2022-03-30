@@ -12,7 +12,7 @@ There are 2 ways we can add new endpoints to the main Api:
 - The second one is to create a new package (folder) just like we did with `uploads_namespace`, declare the `Namespace` in the __init__.py file and the functions needed. The functions and the namespace created will be imported in the `AppBuilder` class and invoked. See `uploads_namespace` for a full example.
 
 
-       
+All default routes should be created in this package 
 
 
 """

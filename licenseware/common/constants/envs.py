@@ -69,6 +69,7 @@ class envs:
     UPLOAD_PATH:str = '/uploads'
     REPORT_PATH:str = '/reports'
     FEATURE_PATH:str = '/features'
+    DATA_SYNC_PATH:str = '/data-sync'
     REPORT_COMPONENT_PATH:str = '/report-components'
     UPLOAD_URL:str = BASE_URL + UPLOAD_PATH
     REPORT_URL:str = BASE_URL + REPORT_PATH
