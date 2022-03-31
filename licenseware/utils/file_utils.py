@@ -8,7 +8,7 @@ from licenseware.common.constants import envs
 from licenseware.utils.logger import log
 from werkzeug.utils import secure_filename as werkzeug_secure_filename
 
-accepted_archives = ('.zip', '.tar', '.tar.bz2',)
+accepted_archives = ('.zip', '.tar', '.tar.bz2', '.tar.gz', '.tgz',)
 
 
 def is_archive(filepath: str):
@@ -30,7 +30,8 @@ def unzip(file_path: str):
         Returns the path where the file was extracted
     """
 
-    if not is_archive(file_path): return None
+    if not is_archive(file_path): 
+        raise ValueError(f"Invalid archive type, currently accepting: {accepted_archives}")
 
     file_name = os.path.basename(file_path)
     file_dir = os.path.dirname(file_path)
