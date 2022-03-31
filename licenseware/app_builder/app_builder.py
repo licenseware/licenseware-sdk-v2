@@ -400,7 +400,8 @@ class AppBuilder:
                      'upload_validation_url',
                      'quota_validation_url',
                      'status_check_url',
-                     'validation_parameters'
+                     'validation_parameters',
+                     'query_params_on_upload'
                  ]
                  }
                 for r in self.uploaders
