@@ -7,6 +7,8 @@ from marshmallow import Schema, fields, INCLUDE
 from pymongo import ASCENDING
 import time
 
+#! OUTDATED - pagination needs to be implemented
+
 
 class AllowAllSchema(Schema):
     class Meta:
@@ -16,11 +18,10 @@ class AllowAllSchema(Schema):
 
 
 class ReportSnapshot:
-
     def __init__(self, report: type, flask_request: Request):
         self.report = report
         self.request = flask_request
-        self.tenant_id = flask_request.headers.get('Tenantid')
+        self.tenant_id = flask_request.headers.get("Tenantid")
 
     def add_report_components_data(self):
 
@@ -29,10 +30,10 @@ class ReportSnapshot:
         rcomponents = []
         for comp in self.report.components:
             comp_payload = comp.get_registration_payload()
-            comp_payload['component_data'] = comp.get_data(self.request)
+            comp_payload["component_data"] = comp.get_data(self.request)
             rcomponents.append(comp_payload)
 
-        report_metadata['report_components'] = rcomponents
+        report_metadata["report_components"] = rcomponents
 
         return report_metadata
 
@@ -40,13 +41,13 @@ class ReportSnapshot:
 
         report_data = self.add_report_components_data()
 
-        report_data['tenant_id'] = self.tenant_id
-        report_data['report_snapshot_date'] = datetime.utcnow().isoformat()
+        report_data["tenant_id"] = self.tenant_id
+        report_data["report_snapshot_date"] = datetime.utcnow().isoformat()
 
         mongodata.insert(
             schema=AllowAllSchema,
             collection=envs.MONGO_COLLECTION_REPORT_SNAPSHOTS_NAME,
-            data=report_data
+            data=report_data,
         )
 
         return report_data
