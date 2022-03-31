@@ -21,3 +21,4 @@ sendgrid==6.9.1
 trend-app-protect==4.6.2
 typer==0.4.0
 uWSGI==2.0.19.1
+werkzeug==2.0.3
