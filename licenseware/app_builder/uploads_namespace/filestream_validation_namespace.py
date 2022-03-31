@@ -106,8 +106,11 @@ def get_filestream_validation_namespace(ns: Namespace, uploaders:List[UploaderBu
         if uploader.query_params_on_upload:
             
             params_dict = {}
-            for param_name, param_description in uploader.query_params_on_upload.items():
-                params_dict[param_name] = { 'description': param_description }
+            for param in uploader.query_params_on_upload:
+                params_dict[param['id']] = { 
+                    'description': param['description'],
+                    'allowed_values': param['allowed_values'],
+                }
             
             TempUploaderResource.__apidoc__.update({'params': params_dict})
         

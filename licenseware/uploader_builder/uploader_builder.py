@@ -56,7 +56,7 @@ class UploaderBuilder:
             status_check_path: str = None,
             max_retries: int = 0,
             query_params_on_validation: dict = None,
-            query_params_on_upload: dict = None,
+            query_params_on_upload: list = [],
             one_event_per_file: bool = False,
             collections_list: list = [envs.MONGO_COLLECTION_DATA_NAME],
             **options
