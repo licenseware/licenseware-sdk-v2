@@ -15,41 +15,47 @@ from flask import Request
 from licenseware.utils.logger import log
 
 
-def serialize_flask_request(flask_request: Request):
-    """ Convert flask request object into a dict """
-    flask_headers = dict(
-        flask_request.headers) if flask_request.headers else {}
+def get_flask_request_dict(flask_request: Request):
+    """Convert flask request object into a dict"""
+    flask_headers = dict(flask_request.headers) if flask_request.headers else {}
     flask_json = dict(flask_request.json) if flask_request.json else {}
     flask_args = dict(flask_request.args) if flask_request.args else {}
 
     return {**flask_json, **flask_headers, **flask_args}
 
 
+def serialize_flask_request(flask_request: Request):
+    log.warning(
+        "Please use `get_flask_request_dict` instead. This was a bad naming function, will be removed"
+    )
+    return get_flask_request_dict(flask_request)
+
+
 def set_environment_variables(*, envs: dict = None, env_path: str = ".env"):
     """
 
-        In the case we need to set some environment variables
-        either providing a dict or loading from .env file this function may come in handy
+    In the case we need to set some environment variables
+    either providing a dict or loading from .env file this function may come in handy
 
-        Make sure to call the `set_environment_variables` before the envs are needed!
+    Make sure to call the `set_environment_variables` before the envs are needed!
 
-        ```py
+    ```py
 
-            from licenseware.utils.miscellaneous import set_environment_variables
-            set_environment_variables()
+        from licenseware.utils.miscellaneous import set_environment_variables
+        set_environment_variables()
 
 
-            App = AppBuilder(
-                name = 'App Name',
-                description = 'App long description',
-                flags = [flags.BETA]
-            )
+        App = AppBuilder(
+            name = 'App Name',
+            description = 'App long description',
+            flags = [flags.BETA]
+        )
 
-        ```
+    ```
 
     """
 
-    if os.getenv('ENVIRONMENT') not in ['local', None]:
+    if os.getenv("ENVIRONMENT") not in ["local", None]:
         return
 
     if envs:
@@ -59,7 +65,7 @@ def set_environment_variables(*, envs: dict = None, env_path: str = ".env"):
     with open(env_path, "r") as f:
         env_vars = {}
         for v in f.readlines():
-            vli = v.strip().split('=')
+            vli = v.strip().split("=")
             if len(vli) == 2:
                 env_vars[vli[0]] = vli[1]
             else:
@@ -69,21 +75,21 @@ def set_environment_variables(*, envs: dict = None, env_path: str = ".env"):
 
 
 def generate_id(length=6):
-    """ Create a random series of digits of length specified """
+    """Create a random series of digits of length specified"""
     return "".join([random.choice(list(string.digits)) for _ in range(length)])
 
 
 def flat_dict(li: List[dict]) -> dict:
     """
-        - input_list = [{'width': 'full'}, {'height': '100vh'}]
-        - output_dict = {'width': 'full', 'height': '100vh'}
+    - input_list = [{'width': 'full'}, {'height': '100vh'}]
+    - output_dict = {'width': 'full', 'height': '100vh'}
     """
     return {k: v for dict_ in li for k, v in dict_.items()}
 
 
 def get_json_schema(schema: Schema):
     """
-        Generate json schema from marshmallow schema class
+    Generate json schema from marshmallow schema class
     """
 
     json_schema = JSONSchema().dump(schema())["definitions"][schema.__name__]
@@ -92,11 +98,11 @@ def get_json_schema(schema: Schema):
 
 
 def build_restx_model(ns, schema: Schema, model_name: str = None):
-    """ 
-        !DEPRECIATED - use `marshmallow_to_restx_model`function instead 
-        
-        Convert a marshmallow schema to a flask restx model 
-        Resulted restx model can be used for swagger (body, marshal_with, expect, etc) 
+    """
+    !DEPRECIATED - use `marshmallow_to_restx_model`function instead
+
+    Convert a marshmallow schema to a flask restx model
+    Resulted restx model can be used for swagger (body, marshal_with, expect, etc)
     """
 
     model_name = model_name or schema.__name__
@@ -107,17 +113,9 @@ def build_restx_model(ns, schema: Schema, model_name: str = None):
     return restx_model
 
 
-http_methods = ['GET', 'POST', 'PUT', 'DELETE']
+http_methods = ["GET", "POST", "PUT", "DELETE"]
 
 swagger_authorization_header = {
-    'Tenantid': {
-        'type': 'apiKey',
-        'in': 'header',
-        'name': 'Tenantid'
-    },
-    'Authorization': {
-        'type': 'apiKey',
-        'in': 'header',
-        'name': 'Authorization'
-    }
+    "Tenantid": {"type": "apiKey", "in": "header", "name": "Tenantid"},
+    "Authorization": {"type": "apiKey", "in": "header", "name": "Authorization"},
 }

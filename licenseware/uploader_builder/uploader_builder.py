@@ -9,7 +9,7 @@ from licenseware.quota import Quota
 from licenseware.notifications import notify_upload_status
 from licenseware.uploader_validator.uploader_validator import UploaderValidator
 from licenseware import history
-from licenseware.utils.miscellaneous import serialize_flask_request
+from licenseware.utils.miscellaneous import get_flask_request_dict
 
 
 class UploaderBuilder:
@@ -39,27 +39,27 @@ class UploaderBuilder:
     """
 
     def __init__(
-            self,
-            name: str,
-            uploader_id: str,
-            description: str,
-            accepted_file_types: list,
-            validator_class: UploaderValidator,
-            worker_function: Callable,
-            quota_units: int,
-            flags: list = [],
-            status: str = states.IDLE,
-            icon: str = "default.png",
-            upload_path: str = None,
-            upload_validation_path: str = None,
-            quota_validation_path: str = None,
-            status_check_path: str = None,
-            max_retries: int = 0,
-            query_params_on_validation: dict = None,
-            query_params_on_upload: list = [],
-            one_event_per_file: bool = False,
-            collections_list: list = [envs.MONGO_COLLECTION_DATA_NAME],
-            **options
+        self,
+        name: str,
+        uploader_id: str,
+        description: str,
+        accepted_file_types: list,
+        validator_class: UploaderValidator,
+        worker_function: Callable,
+        quota_units: int,
+        flags: list = [],
+        status: str = states.IDLE,
+        icon: str = "default.png",
+        upload_path: str = None,
+        upload_validation_path: str = None,
+        quota_validation_path: str = None,
+        status_check_path: str = None,
+        max_retries: int = 0,
+        query_params_on_validation: dict = None,
+        query_params_on_upload: list = [],
+        one_event_per_file: bool = False,
+        collections_list: list = [envs.MONGO_COLLECTION_DATA_NAME],
+        **options,
     ):
 
         if envs.DEPLOYMENT_SUFFIX is not None:
@@ -88,7 +88,7 @@ class UploaderBuilder:
                 # hours * seconds * miliseconds
                 time_limit=4 * 3600 * 1000,
                 actor_name=self.uploader_id,
-                queue_name=envs.QUEUE_NAME
+                queue_name=envs.QUEUE_NAME,
             )
 
         self.accepted_file_types = accepted_file_types
@@ -100,8 +100,12 @@ class UploaderBuilder:
 
         # Paths for internal usage
         self.upload_path = upload_path or f"/{self.uploader_id}/files"
-        self.upload_validation_path = upload_validation_path or f"/{self.uploader_id}/validation"
-        self.quota_validation_path = quota_validation_path or f"/{self.uploader_id}/quota"
+        self.upload_validation_path = (
+            upload_validation_path or f"/{self.uploader_id}/validation"
+        )
+        self.quota_validation_path = (
+            quota_validation_path or f"/{self.uploader_id}/quota"
+        )
         self.status_check_path = status_check_path or f"/{self.uploader_id}/status"
 
         # Urls for registry service
@@ -123,51 +127,59 @@ class UploaderBuilder:
 
     @history.log
     def validate_filenames(self, flask_request: Request):
-        """ Validate file names provided by user """
+        """Validate file names provided by user"""
 
         response, status_code = self.validator_class.get_filenames_response(
-            flask_request)
+            flask_request
+        )
 
         if status_code == 200:
             quota_response, quota_status_code = self.validator_class.calculate_quota(
-                flask_request, update_quota_units=False)
-            if quota_status_code != 200: return quota_response, quota_status_code
+                flask_request, update_quota_units=False
+            )
+            if quota_status_code != 200:
+                return quota_response, quota_status_code
 
         return response, status_code
 
     def get_filepaths(self, event: dict, flask_request: Request):
 
         response, status_code = self.validator_class.get_file_objects_response(
-            flask_request)
+            flask_request
+        )
         if status_code != 200:
             notify_upload_status(event, status=states.IDLE)
             return response, status_code
 
         quota_response, quota_status_code = self.validator_class.calculate_quota(
-            flask_request)
+            flask_request
+        )
         if quota_status_code != 200:
             notify_upload_status(event, status=states.IDLE)
             return quota_response, quota_status_code
 
-        valid_filepaths = self.validator_class.get_only_valid_filepaths_from_objects_response(
-            response)
+        valid_filepaths = (
+            self.validator_class.get_only_valid_filepaths_from_objects_response(
+                response
+            )
+        )
         if not valid_filepaths:
-            return {'status': states.FAILED, 'message': 'No valid files provided'}, 400
+            return {"status": states.FAILED, "message": "No valid files provided"}, 400
 
         return {"response": response, "filepaths": valid_filepaths}
 
     @history.log
     def upload_files(self, flask_request: Request, event_id: str = None):
-        """ Validate file content provided by user and send files for processing if they are valid """
+        """Validate file content provided by user and send files for processing if they are valid"""
 
         given_event_id = flask_request.args.get("event_id") or event_id
 
         tenant_id = flask_request.headers.get("TenantId")
 
         event = {
-            'tenant_id': flask_request.headers.get("Tenantid"),
-            'uploader_id': self.uploader_id,
-            'event_id': given_event_id
+            "tenant_id": flask_request.headers.get("Tenantid"),
+            "uploader_id": self.uploader_id,
+            "event_id": given_event_id,
         }
         notify_upload_status(event, status=states.RUNNING)
 
@@ -176,40 +188,56 @@ class UploaderBuilder:
         if not isinstance(fp, dict):
             return fp
 
-        serialized_flask_request = serialize_flask_request(flask_request)
+        serialized_flask_request = get_flask_request_dict(flask_request)
 
         if self.one_event_per_file:
             events = [
                 {
-                    'tenant_id': tenant_id,
-                    'uploader_id': self.uploader_id,
-                    'event_id': given_event_id,
-                    'filepaths': [filepath],
-                    'flask_request': serialized_flask_request,
-                    'validation_response': fp['response']
+                    "tenant_id": tenant_id,
+                    "uploader_id": self.uploader_id,
+                    "event_id": given_event_id,
+                    "filepaths": [filepath],
+                    "flask_request": serialized_flask_request,
+                    "validation_response": fp["response"],
                 }
-                for filepath in fp['filepaths']
+                for filepath in fp["filepaths"]
             ]
             [
-                self.worker.send(event) for event in events if validate_event(event, raise_error=False)
+                self.worker.send(event)
+                for event in events
+                if validate_event(event, raise_error=False)
             ]
-            return {'status': states.SUCCESS, 'message': 'Event sent', 'event_data': events}, 200
+            return {
+                "status": states.SUCCESS,
+                "message": "Event sent",
+                "event_data": events,
+            }, 200
         else:
-            event.update({
-                'filepaths': fp['filepaths'],
-                'flask_request': serialized_flask_request,
-                'validation_response': fp['response']
-            })
+            event.update(
+                {
+                    "filepaths": fp["filepaths"],
+                    "flask_request": serialized_flask_request,
+                    "validation_response": fp["response"],
+                }
+            )
 
             if not validate_event(event, raise_error=False):
                 log.error(event)
                 notify_upload_status(event, status=states.IDLE)
-                return {'status': states.FAILED, 'message': 'Event not valid', 'event_data': event}, 400
+                return {
+                    "status": states.FAILED,
+                    "message": "Event not valid",
+                    "event_data": event,
+                }, 400
 
             log.info("Sending event: " + str(event))
             self.worker.send(event)
 
-            return {'status': states.SUCCESS, 'message': 'Event sent', 'event_data': [event]}, 200
+            return {
+                "status": states.SUCCESS,
+                "message": "Event sent",
+                "event_data": [event],
+            }, 200
 
     def init_tenant_quota(self, tenant_id: str, auth_token: str):
 
@@ -219,7 +247,7 @@ class UploaderBuilder:
             tenant_id=tenant_id,
             auth_token=auth_token,
             uploader_id=self.uploader_id,
-            units=self.quota_units
+            units=self.quota_units,
         )
 
         response, status_code = q.init_quota()
@@ -237,10 +265,9 @@ class UploaderBuilder:
             tenant_id=tenant_id,
             auth_token=auth_token,
             uploader_id=self.uploader_id,
-            units=self.quota_units
+            units=self.quota_units,
         )
 
         response, status_code = q.check_quota()
 
         return response, status_code
-
