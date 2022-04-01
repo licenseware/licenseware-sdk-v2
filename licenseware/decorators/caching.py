@@ -1,12 +1,9 @@
 import pickle
 from functools import wraps
-from typing import List, Callable, Dict
-
-from flask import Request
+from typing import Callable
 
 from licenseware.dependencies.redis_cache import RedisCache
 from licenseware.utils.common import get_http_request_tenant_id
-from licenseware.utils.miscellaneous import serialize_flask_request
 
 
 caching_database = RedisCache()
@@ -74,10 +71,3 @@ def clear_caches_for_tenant_id(tenant_id: str = None):
     if tenant_id is not None:
         keys = caching_database.smembers(tenant_id)
         caching_database.delete(tenant_id, *keys)
-
-
-def trigger_broker_funcs(flask_request: Request, broker_funcs: Dict[str, List[Callable]]):
-    if flask_request.path in broker_funcs:
-        flask_request_dict = serialize_flask_request(flask_request)
-        for broker_func in broker_funcs[flask_request.path]:
-            broker_func.send(flask_request_dict)

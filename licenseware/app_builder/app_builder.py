@@ -43,7 +43,7 @@ from .uploads_namespace import (
     get_filenames_validation_namespace,
     get_filestream_validation_namespace,
     get_status_namespace,
-    get_quota_namespace
+    get_quota_namespace,
 )
 
 from .reports_namespace import reports_namespace
@@ -52,23 +52,17 @@ from .reports_namespace import (
     get_report_metadata_namespace,
     get_report_components_namespace,
     get_report_image_preview_namespace,
-    get_report_image_preview_dark_namespace
+    get_report_image_preview_dark_namespace,
 )
 
 from .report_components_namespace import report_components_namespace
-from .report_components_namespace import (
-    get_report_individual_components_namespace
-)
+from .report_components_namespace import get_report_individual_components_namespace
 
 from .features_namespace import features_namespace
-from .features_namespace import (
-    get_features_namespace
-)
+from .features_namespace import get_features_namespace
 
 from .data_sync_namespace import data_sync_namespace
-from .data_sync_namespace import (
-    get_data_sync_namespace
-)
+from .data_sync_namespace import get_data_sync_namespace
 
 
 from .download_as_route import add_download_as_route
@@ -77,34 +71,47 @@ from .download_as_route import add_download_as_route
 # TODO there are some paths in both envs and base paths identify them and remove redundant data
 @dataclass
 class base_paths:
-    app_activation_path: str = '/activate_app'
-    register_app_path: str = '/register_app'
-    refresh_registration_path: str = '/refresh_registration'
-    editable_tables_path: str = '/editable_tables'
-    history_report_path: str = '/reports/history_report'
-    tenant_registration_path: str = '/register_tenant'
-    terms_and_conditions_path: str = '/terms_and_conditions'
-    features_path: str = '/features'
-    data_sync_path: str = '/data-sync'
+    app_activation_path: str = "/activate_app"
+    register_app_path: str = "/register_app"
+    refresh_registration_path: str = "/refresh_registration"
+    editable_tables_path: str = "/editable_tables"
+    history_report_path: str = "/reports/history_report"
+    tenant_registration_path: str = "/register_tenant"
+    terms_and_conditions_path: str = "/terms_and_conditions"
+    features_path: str = "/features"
+    data_sync_path: str = "/data-sync"
+
+
+def add_app_path_to_broker_funcs(broker_funcs):
+    """Add /app-path prefix to given paths"""
+
+    if broker_funcs is None:
+        return {}
+
+    broker_funcs_path = {}
+    for path, funcli in broker_funcs.items():
+        app_path = path if envs.APP_PATH in path else envs.APP_PATH + path
+        broker_funcs_path[app_path] = funcli
+
+    return broker_funcs_path
 
 
 class AppBuilder:
-
     def __init__(
-            self,
-            name: str,
-            description: str,
-            flags: list = None,
-            app_meta: dict = None,
-            features: List[FeatureBuilder] = None,
-            editable_tables: List[EditableTable] = None,
-            editable_tables_schemas: List[Schema] = None,
-            data_sync_schema: Schema = None,
-            broker_funcs: Dict[str, List[Callable]] = None,
-            doc_authorizations: dict = swagger_authorization_header,
-            api_decorators: list = None,
-            icon: str = "default.png",
-            **options
+        self,
+        name: str,
+        description: str,
+        flags: list = None,
+        app_meta: dict = None,
+        features: List[FeatureBuilder] = None,
+        editable_tables: List[EditableTable] = None,
+        editable_tables_schemas: List[Schema] = None,
+        data_sync_schema: Schema = None,
+        broker_funcs: Dict[str, List[Callable]] = None,
+        doc_authorizations: dict = swagger_authorization_header,
+        api_decorators: list = None,
+        icon: str = "default.png",
+        **options,
     ):
 
         self.name = name
@@ -121,7 +128,7 @@ class AppBuilder:
         self.data_sync_schema = data_sync_schema
         self.editable_tables = editable_tables or []
         self.editable_tables_schemas = editable_tables_schemas or []
-        self.broker_funcs = broker_funcs or {}
+        self.broker_funcs = add_app_path_to_broker_funcs(broker_funcs)
         self.icon = icon
 
         self.app_activation_path = base_paths.app_activation_path
@@ -145,7 +152,7 @@ class AppBuilder:
 
         self.authorizations = doc_authorizations
         self.decorators = api_decorators
-        # parameters with default values provided can be added stright to __init__  
+        # parameters with default values provided can be added stright to __init__
         # otherwise added them to options until apps are actualized
         self.options = options
 
@@ -161,22 +168,22 @@ class AppBuilder:
 
         self.appvars = vars(self)
 
-    def init_app(
-            self,
-            app: Flask,
-            register: bool = False
-    ):
+    def init_app(self, app: Flask, register: bool = False):
 
-        # This hides flask_restx `X-fields` from swagger headers  
-        app.config['RESTX_MASK_SWAGGER'] = False
+        # This hides flask_restx `X-fields` from swagger headers
+        app.config["RESTX_MASK_SWAGGER"] = False
 
         @app.after_request
         def after_request(response):
-            response.headers.set('Access-Control-Allow-Origin', '*')
-            response.headers.set('Access-Control-Allow-Headers', 'Content-Type,Authorization,TenantId,Tenantid')
-            response.headers.set('Access-Control-Allow-Methods',
-                                 'GET,PUT,POST,DELETE,OPTIONS')
-            response.headers.set('Access-Control-Allow-Credentials', 'true')
+            response.headers.set("Access-Control-Allow-Origin", "*")
+            response.headers.set(
+                "Access-Control-Allow-Headers",
+                "Content-Type,Authorization,TenantId,Tenantid",
+            )
+            response.headers.set(
+                "Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS"
+            )
+            response.headers.set("Access-Control-Allow-Credentials", "true")
 
             return response
 
@@ -184,15 +191,18 @@ class AppBuilder:
 
         self.app = app
 
-        if not self.uploaders: log.warning("No uploaders provided")
-        if not self.reports: log.warning("No reports provided")
+        if not self.uploaders:
+            log.warning("No uploaders provided")
+        if not self.reports:
+            log.warning("No reports provided")
 
         self.authenticate_app()
         self.init_api()
         self.init_routes()
         self.init_namespaces()
         self.init_broker()
-        if register: self.register_app()
+        if register:
+            self.register_app()
 
         return self.app
 
@@ -201,7 +211,9 @@ class AppBuilder:
         return self.broker
 
     def authenticate_app(self):
-        response, status_code = Authenticator.connect(max_retries='infinite', wait_seconds=2)
+        response, status_code = Authenticator.connect(
+            max_retries="infinite", wait_seconds=2
+        )
         if status_code != 200:
             raise Exception("App failed to authenticate!")
         log.info("Authentification succeded!")
@@ -219,13 +231,13 @@ class AppBuilder:
             decorators=self.decorators,
             authorizations=self.authorizations,
             security=list(self.authorizations.keys()),
-            doc=self.prefix + '/docs'
+            doc=self.prefix + "/docs",
         )
 
     def init_routes(self):
 
         # Here we are adding the routes available for each app
-        # Api must be passed from route function back to this context 
+        # Api must be passed from route function back to this context
         api_funcs = [
             add_refresh_registration_route,
             add_editable_tables_route,
@@ -234,13 +246,13 @@ class AppBuilder:
             add_app_registration_route,
             add_terms_and_conditions_route,
             add_download_as_route,
-            add_features_route
+            add_features_route,
         ]
 
         for func in api_funcs:
             self.api = func(self.api, self.appvars)
 
-        # Another way is to group routes in namespaces 
+        # Another way is to group routes in namespaces
         # This way the url prefix is specified only in the namespace
         self.add_uploads_routes()
         self.add_reports_routes()
@@ -249,14 +261,13 @@ class AppBuilder:
         self.add_features_routes()
         self.add_data_sync_routes()
 
-
     def add_uploads_routes(self):
 
         ns_funcs = [
             get_filenames_validation_namespace,
             get_filestream_validation_namespace,
             get_status_namespace,
-            get_quota_namespace
+            get_quota_namespace,
         ]
 
         for func in ns_funcs:
@@ -271,23 +282,22 @@ class AppBuilder:
             get_report_metadata_namespace,
             get_report_components_namespace,
             get_report_image_preview_namespace,
-            get_report_image_preview_dark_namespace
+            get_report_image_preview_dark_namespace,
         ]
 
         for func in ns_funcs:
-            self.register_namespace(
-                func(ns=reports_namespace, reports=self.reports)
-            )
+            self.register_namespace(func(ns=reports_namespace, reports=self.reports))
 
     def add_report_components_routes(self):
 
-        ns_funcs = [
-            get_report_individual_components_namespace
-        ]
+        ns_funcs = [get_report_individual_components_namespace]
 
         for func in ns_funcs:
             self.register_namespace(
-                func(ns=report_components_namespace, report_components=self.report_components)
+                func(
+                    ns=report_components_namespace,
+                    report_components=self.report_components,
+                )
             )
 
     def add_editables_routes(self):
@@ -301,141 +311,135 @@ class AppBuilder:
 
     def add_features_routes(self):
 
-        ns_funcs = [
-            get_features_namespace
-        ]
+        ns_funcs = [get_features_namespace]
 
         for func in ns_funcs:
-            self.register_namespace(
-                func(ns=features_namespace, features=self.features)
-            )
-
+            self.register_namespace(func(ns=features_namespace, features=self.features))
 
     def add_data_sync_routes(self):
 
-        if self.data_sync_schema is None: 
+        if self.data_sync_schema is None:
             return
 
-        ns_funcs = [
-            get_data_sync_namespace
-        ]
+        ns_funcs = [get_data_sync_namespace]
 
         for func in ns_funcs:
             self.register_namespace(
                 func(ns=data_sync_namespace, data_sync_schema=self.data_sync_schema)
             )
 
-
     def get_serialized_app_dict(self):
 
-        app_dict = \
-            {k: v
-             for k, v in self.appvars.items() if k in [
-                 'app_id',
-                 'name',
-                 'description',
-                 'flags',
-                 'icon',
-                 'refresh_registration_url',
-                 'app_activation_url',
-                 'editable_tables_url',
-                 'history_report_url',
-                 'tenant_registration_url',
-                 'terms_and_conditions_url',
-                 'features_url',
-                 'app_meta'
-             ]
-             }
+        app_dict = {
+            k: v
+            for k, v in self.appvars.items()
+            if k
+            in [
+                "app_id",
+                "name",
+                "description",
+                "flags",
+                "icon",
+                "refresh_registration_url",
+                "app_activation_url",
+                "editable_tables_url",
+                "history_report_url",
+                "tenant_registration_url",
+                "terms_and_conditions_url",
+                "features_url",
+                "app_meta",
+            ]
+        }
 
-        app_dict['features'] = [f.get_details() for f in self.features]
-        app_dict['tenants_with_app_activated'] = get_activated_tenants()
-        app_dict['tenants_with_data_available'] = get_tenants_with_data()
+        app_dict["features"] = [f.get_details() for f in self.features]
+        app_dict["tenants_with_app_activated"] = get_activated_tenants()
+        app_dict["tenants_with_data_available"] = get_tenants_with_data()
 
         return app_dict
 
-
     def get_serialized_reports(self):
 
-        reports = \
-            [
-                {k: v
-                 for k, v in vars(r).items()
-                 if k in [
-                     'app_id',
-                     'report_id',
-                     'name',
-                     'description',
-                     'flags',
-                     'url',
-                     'preview_image_url',
-                     'preview_image_dark_url',
-                     'report_components',
-                     'connected_apps',
-                     'filters',
-                     'registrable'
-                 ]
-                 }
-                for r in self.reports
-            ]
+        reports = [
+            {
+                k: v
+                for k, v in vars(r).items()
+                if k
+                in [
+                    "app_id",
+                    "report_id",
+                    "name",
+                    "description",
+                    "flags",
+                    "url",
+                    "preview_image_url",
+                    "preview_image_dark_url",
+                    "report_components",
+                    "connected_apps",
+                    "filters",
+                    "registrable",
+                ]
+            }
+            for r in self.reports
+        ]
 
         return reports
 
-
     def get_serialized_uploaders(self):
 
-        uploaders = \
-            [
-                {k: v
-                 for k, v in vars(r).items()
-                 if k in [
-                     'app_id',
-                     'uploader_id',
-                     'name',
-                     'description',
-                     'accepted_file_types',
-                     'flags',
-                     'status',
-                     'icon',
-                     'upload_url',
-                     'upload_validation_url',
-                     'quota_validation_url',
-                     'status_check_url',
-                     'validation_parameters',
-                     'query_params_on_upload'
-                 ]
-                 }
-                for r in self.uploaders
-            ]
-        
+        uploaders = [
+            {
+                k: v
+                for k, v in vars(r).items()
+                if k
+                in [
+                    "app_id",
+                    "uploader_id",
+                    "name",
+                    "description",
+                    "accepted_file_types",
+                    "flags",
+                    "status",
+                    "icon",
+                    "upload_url",
+                    "upload_validation_url",
+                    "quota_validation_url",
+                    "status_check_url",
+                    "validation_parameters",
+                    "query_params_on_upload",
+                ]
+            }
+            for r in self.uploaders
+        ]
+
         return uploaders
 
     def get_serialized_report_components(self):
 
-        report_components = \
-            [
-                {k: v
-                 for k, v in vars(r).items()
-                 if k in [
-                     'app_id',
-                     'component_id',
-                     'url',
-                     'order',
-                     'style_attributes',
-                     'attributes',
-                     'title',
-                     'type',
-                     'filters'
-                 ]
-                 }
-                for r in self.report_components
-            ]
+        report_components = [
+            {
+                k: v
+                for k, v in vars(r).items()
+                if k
+                in [
+                    "app_id",
+                    "component_id",
+                    "url",
+                    "order",
+                    "style_attributes",
+                    "attributes",
+                    "title",
+                    "type",
+                    "filters",
+                ]
+            }
+            for r in self.report_components
+        ]
 
         return report_components
 
-
     def register_app(self):
         """
-            Sending registration payloads to registry-service
+        Sending registration payloads to registry-service
         """
 
         # Converting from objects to dictionaries
@@ -445,11 +449,11 @@ class AppBuilder:
         report_components = self.get_serialized_report_components()
 
         payload = {
-            'data': dict(
+            "data": dict(
                 apps=[app_dict],
                 reports=reports,
                 uploaders=uploaders,
-                report_components=report_components
+                report_components=report_components,
             )
         }
 
@@ -461,7 +465,9 @@ class AppBuilder:
 
         for feature in self.features:
             if feature.feature_id == feature_instance.feature_id:
-                raise Exception(f"Feature id '{feature_instance.feature_id}' was already declared")
+                raise Exception(
+                    f"Feature id '{feature_instance.feature_id}' was already declared"
+                )
 
         self.features.append(feature_instance)
 
@@ -469,7 +475,9 @@ class AppBuilder:
 
         for uploader in self.uploaders:
             if uploader.uploader_id == uploader_instance.uploader_id:
-                raise Exception(f"Uploader id '{uploader_instance.uploader_id}' was already declared")
+                raise Exception(
+                    f"Uploader id '{uploader_instance.uploader_id}' was already declared"
+                )
 
         self.uploaders.append(uploader_instance)
 
@@ -477,7 +485,9 @@ class AppBuilder:
 
         for report in self.reports:
             if report.report_id == report_instance.report_id:
-                raise Exception(f"Report id '{report_instance.report_id}' was already declared")
+                raise Exception(
+                    f"Report id '{report_instance.report_id}' was already declared"
+                )
 
         self.reports.append(report_instance)
 
@@ -485,15 +495,19 @@ class AppBuilder:
 
         for rep_component in self.report_components:
             if rep_component.component_id == report_component_instance.component_id:
-                raise Exception(f"Report component_id: '{report_component_instance.component_id}' was already declared")
+                raise Exception(
+                    f"Report component_id: '{report_component_instance.component_id}' was already declared"
+                )
 
         metadata = report_component_instance.get_registration_payload()
 
-        report_component_instance.order = metadata['order'] or len(self.report_components) + 1
-        report_component_instance.type = metadata.pop('component_type')
-        report_component_instance.style_attributes = metadata['style_attributes']
-        report_component_instance.attributes = metadata['attributes']
-        report_component_instance.filters = metadata['filters']
+        report_component_instance.order = (
+            metadata["order"] or len(self.report_components) + 1
+        )
+        report_component_instance.type = metadata.pop("component_type")
+        report_component_instance.style_attributes = metadata["style_attributes"]
+        report_component_instance.attributes = metadata["attributes"]
+        report_component_instance.filters = metadata["filters"]
 
         self.report_components.append(report_component_instance)
 
@@ -505,14 +519,19 @@ class AppBuilder:
 
         for registered_table in self.editable_tables:
             registered_table: EditableTable
-            if registered_table.schema.__name__ == editable_table_instance.schema.__name__:
-                raise Exception(f"Editable table '{registered_table.schema.__name__}' already registered")
+            if (
+                registered_table.schema.__name__
+                == editable_table_instance.schema.__name__
+            ):
+                raise Exception(
+                    f"Editable table '{registered_table.schema.__name__}' already registered"
+                )
 
         self.editable_tables.append(editable_table_instance)
         self.editable_tables_schemas.append(editable_table_instance.schema)
 
     def register_namespace(self, ns: Namespace, path: str = None):
-        """ Used for custom restx namespaces """
+        """Used for custom restx namespaces"""
         self.custom_namespaces.append((ns, path))
 
     def init_namespaces(self):
