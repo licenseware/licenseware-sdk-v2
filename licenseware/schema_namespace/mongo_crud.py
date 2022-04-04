@@ -119,7 +119,9 @@ class MongoCrud:
         new_data = query.copy()
         new_data.pop("_id", None)
 
-        new_data = dict(query, **{"updated_at": datetime.datetime.utcnow().isoformat()})
+        new_data = dict(
+            new_data, **{"updated_at": datetime.datetime.utcnow().isoformat()}
+        )
 
         updated_docs = m.update(
             schema=self.schema,
