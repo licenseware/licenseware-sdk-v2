@@ -20,7 +20,7 @@ class MongoDataSync(MongoCrud):
 
         query = self.get_query(flask_request)
         coll = mongodata.get_collection(self.collection)
-        return coll.find(query)
+        return list(coll.find(query))
 
 
 class DataSyncRoute(SchemaNamespace):
