@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Union
 from flask import Request
 from licenseware.common.constants import envs, states
 from licenseware.registry_service.register_uploader import register_uploader
