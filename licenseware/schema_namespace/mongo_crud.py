@@ -69,9 +69,6 @@ class MongoCrud:
             f"Mongo CRUD Request: {query} (schema: {self.schema.__name__}, collection: {self.collection})"
         )
 
-        if flask_request.method in ["POST", "PUT"]:
-            query.pop("_id", None)
-
         return query
 
     def get_data(self, flask_request: Request):
@@ -102,6 +99,7 @@ class MongoCrud:
     def post_data(self, flask_request: Request):
 
         query = self.get_query(flask_request)
+        query.pop("_id", None)
 
         data = dict(query, **{"updated_at": datetime.datetime.utcnow().isoformat()})
 
@@ -118,12 +116,15 @@ class MongoCrud:
 
         query = self.get_query(flask_request)
 
+        new_data = query.copy()
+        new_data.pop("_id", None)
+
+        new_data = dict(query, **{"updated_at": datetime.datetime.utcnow().isoformat()})
+
         updated_docs = m.update(
             schema=self.schema,
             match=query,
-            new_data=dict(
-                query, **{"updated_at": datetime.datetime.utcnow().isoformat()}
-            ),
+            new_data=new_data,
             collection=self.collection,
             append=False,
         )
