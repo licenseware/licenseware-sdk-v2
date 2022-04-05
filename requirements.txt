@@ -19,6 +19,6 @@ redis==3.5.3
 requests==2.25.1
 sendgrid==6.9.1
 trend-app-protect==4.6.2
-typer==0.4.0
+typer==0.4.1
 uWSGI==2.0.19.1
 werkzeug==2.0.3
