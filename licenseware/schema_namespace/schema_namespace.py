@@ -274,6 +274,18 @@ class SchemaNamespace:
 
         ns.add_resource(SchemaResource, "")
 
+        if "GET" not in allowed_methods:
+            ns.hide(SchemaResource.get)
+
+        if "PUT" not in allowed_methods:
+            ns.hide(SchemaResource.put)
+
+        if "POST" not in allowed_methods:
+            ns.hide(SchemaResource.post)
+
+        if "DELETE" not in allowed_methods:
+            ns.hide(SchemaResource.delete)
+
         return ns
 
     def create_indexes(self):

@@ -45,11 +45,14 @@ class DataSyncRoute(SchemaNamespace):
 
 def get_data_sync_namespace(ns: Namespace, data_sync_schema: Schema):
 
+    class DataSyncSchema(data_sync_schema):
+        ...
+
     collection_name = None
     if hasattr(data_sync_schema, 'Meta'):
         if hasattr(data_sync_schema.Meta, 'mongo_collection_name'):
             collection_name = data_sync_schema.Meta.mongo_collection_name
 
-    ns = DataSyncRoute(ns, data_sync_schema, collection_name).initialize()
+    ns = DataSyncRoute(ns, DataSyncSchema, collection_name).initialize()
 
     return ns
