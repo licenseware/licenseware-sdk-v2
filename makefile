@@ -72,8 +72,8 @@ sdk-docs:
 
 install-sdk:
 	pip3 uninstall -y licenseware
-	python3 setup.py bdist_wheel sdist
-	pip3 install ./dist/licenseware-2.0.3-py3-none-any.whl
+	python3 setup.py bdist_wheel sdist 
+	pip3 install ./dist/licenseware-2.0.3-py3-none-any.whl --force-reinstall
 	rm -rf build
 	rm -rf licenseware.egg-info
 	rm -rf wheel_sdk
@@ -86,5 +86,10 @@ build-wheel:
 	rm -rf licenseware.egg-info 
 	mv dist wheel_sdk 
 
+# Build local image
+image_tag=latest
 build-image:
-	docker build -t ghcr.io/licenseware/licenseware-sdk-v2 .
+	docker build -t ghcr.io/licenseware/licenseware-sdk-v2:$(image_tag) .
+
+build-image-no-cache:
+	docker build -t ghcr.io/licenseware/licenseware-sdk-v2:$(image_tag) . --no-cache
