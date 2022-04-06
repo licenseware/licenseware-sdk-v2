@@ -230,7 +230,8 @@ def log(*dargs, on_success_save: str = None, on_failure_save: str = None, on_fai
                     success: null,
                     source: '/home/acmt/Documents/lware/licenseware-sdk-v2/tests/test_history.py',
                     updated_at: '2022-03-15T10:14:34.434117',
-                    filepath: '/tmp/lware/b37761e3-6926-4cc1-88c7-4d0478b04adf/cpuq.txt'
+                    filepath: '/tmp/lware/b37761e3-6926-4cc1-88c7-4d0478b04adf/cpuq.txt',
+                    file_name: "cpuq.txt"
                 },
                 {
                     step: 'Getting some data out of provided cpuq.txt file',
@@ -241,7 +242,8 @@ def log(*dargs, on_success_save: str = None, on_failure_save: str = None, on_fai
                     success: 'Entities added successfully',
                     source: '/home/acmt/Documents/lware/licenseware-sdk-v2/tests/test_history.py',
                     updated_at: '2022-03-15T10:14:34.454749',
-                    filepath: '/tmp/lware/b37761e3-6926-4cc1-88c7-4d0478b04adf/cpuq.txt'
+                    filepath: '/tmp/lware/b37761e3-6926-4cc1-88c7-4d0478b04adf/cpuq.txt',
+                    file_name: "cpuq.txt"
                 },
                 {
                     step: 'Getting some data out of provided cpuq.txt file',
@@ -252,7 +254,8 @@ def log(*dargs, on_success_save: str = None, on_failure_save: str = None, on_fai
                     success: null,
                     source: '/home/acmt/Documents/lware/licenseware-sdk-v2/tests/test_history.py',
                     updated_at: '2022-03-15T10:14:34.462103',
-                    filepath: '/tmp/lware/b37761e3-6926-4cc1-88c7-4d0478b04adf/cpuq.txt'
+                    filepath: '/tmp/lware/b37761e3-6926-4cc1-88c7-4d0478b04adf/cpuq.txt',
+                    file_name: "cpuq.txt"
                 },
                 {
                     step: 'proc_func_within_class',
@@ -263,7 +266,8 @@ def log(*dargs, on_success_save: str = None, on_failure_save: str = None, on_fai
                     success: null,
                     source: '/home/acmt/Documents/lware/licenseware-sdk-v2/tests/test_history.py',
                     updated_at: '2022-03-15T10:14:34.470259',
-                    filepath: '/tmp/lware/b37761e3-6926-4cc1-88c7-4d0478b04adf/cpuq.txt'
+                    filepath: '/tmp/lware/b37761e3-6926-4cc1-88c7-4d0478b04adf/cpuq.txt',
+                    file_name: "cpuq.txt"
                 }
             ],
             entities: [
@@ -279,7 +283,6 @@ def log(*dargs, on_success_save: str = None, on_failure_save: str = None, on_fai
     def _decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
-            print(f"History kwargs: on_success_save:{on_success_save}, on_failure_save:{on_failure_save}, on_failure_return:{on_failure_return}")
             # Handle case where files are uploaded and event_id is not provided in the query params
             if f.__name__ == 'upload_files' and len(args) > 1:
                 if hasattr(args[1], "args"):

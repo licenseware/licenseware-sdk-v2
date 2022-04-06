@@ -25,6 +25,7 @@ class ProcessingDetailsSchema(Schema):
     callable = fields.String(required=False, allow_none=True)
     source = fields.String(required=False, allow_none=True)
     updated_at = fields.String(required=True)
+    file_name = fields.String(required=True)
 
 
 class HistorySchema(Schema):
@@ -42,5 +43,4 @@ class HistorySchema(Schema):
 
 
 class EntitiesSchema(Schema):
-    entities = fields.List(fields.String, required=True, validate=validate_uuid4)
-
+    entities = fields.List(fields.Raw, required=True)
