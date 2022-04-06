@@ -101,6 +101,7 @@ def save_processing_details(metadata, response):
             "traceback": response["traceback"],
             "callable": metadata['callable'],
             "source": metadata['source'],
+            "file_name": metadata['file_name'],
             "updated_at": datetime.datetime.utcnow().isoformat()
         }]
     }

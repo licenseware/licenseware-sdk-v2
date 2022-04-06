@@ -28,8 +28,6 @@ def create_metadata(
 def get_metadata(func, func_args, func_kwargs):
     """ Getting all the data needed to identify and track files uploaded (function name, source and tenant_id) """
 
-    print("History inputs:", func.__name__, func_args, func_kwargs)
-
     metadata = {
         'callable': func.__name__,
         'step': func.__doc__.strip() if func.__doc__ else func.__name__,
@@ -38,10 +36,10 @@ def get_metadata(func, func_args, func_kwargs):
         'event_id': event.get_event_id(func, func_args, func_kwargs),
         'app_id': envs.APP_ID,
         'uploader_id': uploader.get_uploader_id(func, func_args, func_kwargs),
-        'filepath': file.get_filepath(func, func_args, func_kwargs)
+        'filepath': file.get_filepath(func, func_args, func_kwargs),
     }
 
-    print("History output metadata:", metadata)
+    # log.info(f"History output metadata {metadata}")
 
     if metadata['tenant_id'] is None:
         raise Exception(
@@ -60,6 +58,9 @@ def get_metadata(func, func_args, func_kwargs):
         if func.__name__ not in ['validate_filenames', 'upload_files']:
             raise Exception(
                 f"No `filepath` found can't create history (see: '{metadata['callable']}' from '{metadata['source']}')")
+
+    if isinstance(metadata['filepath'], str):
+        metadata['file_name'] = metadata['filepath'].split('/')[-1]
 
     return metadata
 
