@@ -4,17 +4,18 @@ import os
 
 from licenseware.utils.logger import log
 
+REGISTRY_SERVICE_URL = os.getenv("REGISTRY_SERVICE_URL")
 
 class ExternalDataService:
+
     @staticmethod
-    def _get_all_components(headers):
-        registry_service_url = os.getenv("REGISTRY_SERVICE_URL")
+    def _get_registry_service_data(headers, endpoint):
         try:
-            comp_data = requests.get(
-                url=f"{registry_service_url}/components",
+            reg_data = requests.get(
+                url=f"{REGISTRY_SERVICE_URL}/{endpoint}",
                 headers=headers
             )
-            return comp_data.json()
+            return reg_data.json()
         except Exception:
             log.error(traceback.format_exc())
             return [{
@@ -39,7 +40,7 @@ class ExternalDataService:
                 "Authorization": _request.headers.get("Authorization"),
             }
             
-            registry_service_components = ExternalDataService._get_all_components(headers)
+            registry_service_components = ExternalDataService._get_registry_service_data(headers, "components")
             service_url = ExternalDataService._get_component_url(
                 components=registry_service_components,
                 app_id=app_id,
@@ -64,3 +65,31 @@ class ExternalDataService:
         except Exception:
             log.error(traceback.format_exc())
             return False
+
+    @staticmethod
+    def _get_uploader_url(uploaders, app_id, uploader_id):
+        try:
+            return [d['upload_url'] for d in uploaders['data'] if d['app_id'] == app_id and d['uploader_id'] == uploader_id][0]
+        except IndexError:
+            log.error(traceback.format_exc())
+            return False
+    
+    @staticmethod
+    def get_upload_url(_request, app_id, uploader_id):
+        headers = {
+            "TenantId": _request.headers.get("TenantId"),
+            "Authorization": _request.headers.get("Authorization"),
+        }
+        registry_service_uploaders = ExternalDataService._get_registry_service_data(headers, "uploaders")
+
+        upload_url = ExternalDataService._get_uploader_url(
+            uploaders=registry_service_uploaders, 
+            app_id=app_id, 
+            uploader_id=uploader_id
+            )
+        
+        if not upload_url:
+            return None
+        
+        return upload_url
+
