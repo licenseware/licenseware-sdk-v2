@@ -36,9 +36,9 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         min_rows_number:int = 0,
         header_starts_at:int = 0,
         buffer:int = 9000,
-        filename_valid_message = "Filename is valid",
+        filename_valid_message = "File is valid",
         filename_invalid_message =  None,
-        filename_ignored_message =  "Filename is ignored",
+        filename_ignored_message =  "File is ignored",
         ignored_by_uup:bool = False, # ignored from universal uploader matcher
         _uploader_id:str = None,
         _quota_units:int = None, 
@@ -165,6 +165,30 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
             ignored_by_uup = self.ignored_by_uup
         )
             
+
+    def get_full_validation_response(self, filepath:str):
+
+        filename = os.path.basename(filepath)
+        filename_validation_response = self.validate_filenames([filename])
+        file_name_ok = filename_validation_response[0]['status'] == states.SUCCESS
+        file_response = filename_validation_response[0]['message']
+        
+        content_validation_response = self.validate_filepaths_content([filepath])
+        log.info(content_validation_response)
+        file_content_ok = content_validation_response[0]['status'] == states.SUCCESS
+        content_response = content_validation_response[0]['message']
+    
+        log.info(f"{filename} - file_name_ok:{file_name_ok}, file_content_ok:{file_content_ok}")
+        log.info(f"{self.uploader_id} - {all([file_name_ok, file_content_ok])}")
+        
+        fileok = all([file_name_ok, file_content_ok])
+
+        return {
+            "status": states.SUCCESS if fileok else states.SKIPPED,
+            "name": file_name_ok,
+            "content": file_content_ok,
+            "message": f"Name: {file_response}; Content: {content_response}"
+        }
 
         
     def valid_filepath(self, filepath:str):
