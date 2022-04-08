@@ -189,7 +189,7 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
             "status": states.SUCCESS if fileok else states.SKIPPED,
             "name": file_name_ok,
             "content": file_content_ok,
-            "message": message
+            "message": message or "File is valid"
         }
 
         
