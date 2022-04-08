@@ -187,6 +187,7 @@ class AppBuilder:
 
             return response
 
+        # TODO CORS protection
         # CORS(app)
 
         self.app = app
@@ -211,6 +212,9 @@ class AppBuilder:
         return self.broker
 
     def authenticate_app(self):
+
+        if envs.DESKTOP_ENVIRONMENT: return 
+
         response, status_code = Authenticator.connect(
             max_retries="infinite", wait_seconds=2
         )

@@ -51,7 +51,10 @@ class ReportComponentCreator(BaseCreator):
 
         files = ['__init__.py', 'report_component.py']
         filepath = os.path.join(paths.report_components, self.entity_underscore)
-        
+
+        if not os.path.exists(filepath):
+            self.add_report_component_import()
+
         for file in files: 
             self.create_file(
                 filename=file,
@@ -59,5 +62,3 @@ class ReportComponentCreator(BaseCreator):
                 template_resource=templates,
                 component_type=self.component_type
             )
-
-        self.add_report_component_import()

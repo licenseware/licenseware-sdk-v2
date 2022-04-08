@@ -11,6 +11,13 @@ def register_upload_status(**kwargs):
         Send uploader processing status to registry service
     """
 
+
+    if envs.DESKTOP_ENVIRONMENT: return {
+               "status": "success",
+               "message": "Skipped on desktop environment",
+               "content": kwargs
+           }, 200
+
     payload = {
         'data': [
             {

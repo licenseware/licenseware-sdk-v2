@@ -11,6 +11,12 @@ def register_uploader(**kwargs):
         Send a post request to registry service to make uploader available in front-end
     """
 
+    if envs.DESKTOP_ENVIRONMENT: return {
+               "status": "success",
+               "message": "Skipped on desktop environment",
+               "content": kwargs
+           }, 200
+
     payload = {
         'data': [{
             "app_id": kwargs['app_id'],
