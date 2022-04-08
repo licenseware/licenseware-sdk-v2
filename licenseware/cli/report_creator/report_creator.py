@@ -47,6 +47,9 @@ class ReportCreator(BaseCreator):
 
         files = ['__init__.py', 'report.py']
         filepath = os.path.join(paths.reports, self.entity_underscore)
+
+        if not os.path.exists(filepath):
+            self.add_report_import()
         
         for file in files: 
             self.create_file(
@@ -54,6 +57,3 @@ class ReportCreator(BaseCreator):
                 filepath=filepath,
                 template_resource=templates
             )
-
-        self.add_report_import()
-        

@@ -118,7 +118,7 @@ class DevOpsCreator(BaseCreator):
 
     def create_devops_root_files(self):
 
-        for file in ['docker-compose.yml', 'docker-entrypoint.sh', "Dockerfile", 
+        for file in ['docker-compose.yml', 'docker-compose-mongo.yml', 'docker-entrypoint.sh', "Dockerfile", 
         "Dockerfile.stack", "makefile", "pre-commit-config.yaml", 
         "Procfile", "Procfile.stack"]:
             self.create_file(

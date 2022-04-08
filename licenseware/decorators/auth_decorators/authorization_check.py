@@ -23,6 +23,9 @@ def authorization_check(f):
     """ Checks if a user is authorized """
     @wraps(f)
     def decorated(*args, **kwargs):
+
+        if envs.DESKTOP_ENVIRONMENT: return f(*args, **kwargs)
+
         fail_message = "Missing Tenant or Authorization information"
         headers = dict(request.headers)
         # log.debug(headers.keys())

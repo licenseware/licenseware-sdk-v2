@@ -46,7 +46,10 @@ class UploaderCreator(BaseCreator):
 
         files = ['__init__.py', 'validator.py', 'worker.py']
         filepath = os.path.join(paths.uploaders, self.entity_underscore)
-        
+
+        if not os.path.exists(filepath):
+            self.add_uploader_import()
+
         for file in files: 
             self.create_file(
                 filename=file,
@@ -54,6 +57,5 @@ class UploaderCreator(BaseCreator):
                 template_resource=templates
             )
 
-        self.add_uploader_import()
 
         

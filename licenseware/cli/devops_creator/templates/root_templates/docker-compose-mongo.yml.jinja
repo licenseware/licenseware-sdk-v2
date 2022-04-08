@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+
+  redis_db_local:
+    container_name: redis_db_local
+    image: redis:6-buster
+    restart: unless-stopped
+    volumes:
+      - 'redisdatalocal:/data'
+    ports:
+      - '6379:6379'
+
+  mongo_db_local:
+    container_name: mongo_db_local
+    image: mongo:4.2-bionic
+    restart: unless-stopped
+    volumes:
+      - 'mongodatalocal:/data/database'
+    ports:
+      - '27017:27017'
+    environment:
+      - 'MONGO_DATABASE_NAME=db'
+      - 'MONGO_CONNECTION_STRING=mongodb://localhost:27017/db'
+
+  mongo_express_local:
+    container_name: mongo_express_local
+    image: mongo-express
+    restart: unless-stopped
+    ports:
+      - '8081:8081'
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo_db_local
+    depends_on:
+      - mongo_db_local
+
+volumes:
+  mongodatalocal: null
+  redisdatalocal: null

@@ -16,8 +16,11 @@ def registration_failed(retries_so_far: int, exception):
     queue_name=envs.QUEUE_NAME
 )
 def register_all(payload:dict):
-    
+
+    if envs.DESKTOP_ENVIRONMENT: return
+
     log.info("Sending payload to registry-service") 
+    
     
     registration = requests.post(
         url=envs.REGISTER_ALL_URL, 

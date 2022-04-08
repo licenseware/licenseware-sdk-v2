@@ -10,6 +10,8 @@ def authenticated_machine(f):
     """
     @wraps(f)
     def decorated(*args, **kwargs):   
+
+        if envs.DESKTOP_ENVIRONMENT: return f(*args, **kwargs)
         
         response, status_code = Authenticator.connect()
         if status_code not in {200, 201}:

@@ -64,7 +64,7 @@ class BaseCreator(metaclass=ABCMeta):
         """
 
         file_path = os.path.join(filepath, filename)
-        if os.path.exists(file_path): return
+        if os.path.exists(file_path): return False
         if not os.path.exists(filepath): os.makedirs(filepath)
 
         raw_contents = pkg_resources.read_text(template_resource, template_filename or filename + '.jinja')
@@ -80,3 +80,5 @@ class BaseCreator(metaclass=ABCMeta):
 
         with open(file_path, 'w') as f:
             f.write(file_contents)
+
+        return True

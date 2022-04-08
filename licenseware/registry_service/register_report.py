@@ -7,6 +7,15 @@ from licenseware.common.validators.registry_payload_validators import validate_r
 
 @authenticated_machine
 def register_report(**kwargs):
+
+
+    if envs.DESKTOP_ENVIRONMENT: return {
+               "status": "success",
+               "message": "Skipped on desktop environment",
+               "content": kwargs
+           }, 200
+
+
     payload = {
         'data': [{
             "app_id": kwargs['app_id'],

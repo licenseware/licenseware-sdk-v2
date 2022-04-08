@@ -32,7 +32,7 @@ def get_metadata(func, func_args, func_kwargs):
         'callable': func.__name__,
         'step': func.__doc__.strip() if func.__doc__ else func.__name__,
         'source': str(inspect.getmodule(func)).split("from")[1].strip().replace("'", "").replace(">", ""),
-        'tenant_id': tenant.get_tenant_id(func, func_args, func_kwargs),
+        'tenant_id': tenant.get_tenant_id(func, func_args, func_kwargs) if not envs.DESKTOP_ENVIRONMENT else envs.DESKTOP_TENANT_ID,
         'event_id': event.get_event_id(func, func_args, func_kwargs),
         'app_id': envs.APP_ID,
         'uploader_id': uploader.get_uploader_id(func, func_args, func_kwargs),

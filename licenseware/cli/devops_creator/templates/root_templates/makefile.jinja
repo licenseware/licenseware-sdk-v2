@@ -33,6 +33,17 @@ run-tests:
 	rm -rf tests/__pycache__
 	tox tests/*
 
+
+start-mongo:
+	docker-compose -f docker-compose-mongo.yml up -d --remove-orphans --force-recreate
+
+stop-mongo:
+	docker-compose -f docker-compose-mongo.yml down
+
+logs-mongo:
+	docker-compose -f docker-compose-mongo.yml logs -ft
+
+
 dev-docs:
 	pdoc --http : app
 

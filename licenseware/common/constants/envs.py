@@ -18,6 +18,7 @@ That way we can call them like this `envs.get_auth_token()` instead of this `env
 """
 
 import os
+import uuid
 from dataclasses import dataclass
 
 
@@ -29,14 +30,16 @@ from dataclasses import dataclass
 class envs:
 
     # Environment variables available at startup
-    APP_ID: str = os.environ["APP_ID"]
-    LWARE_USER: str = os.environ["LWARE_IDENTITY_USER"]
-    LWARE_PASSWORD: str = os.environ["LWARE_IDENTITY_PASSWORD"]
-    ENVIRONMENT: str = os.getenv("ENVIRONMENT", "production")
+    DESKTOP_ENVIRONMENT: bool = os.getenv("ENVIRONMENT") == "desktop"
+    DESKTOP_TENANT_ID: str = str(uuid.uuid5(uuid.NAMESPACE_OID, "desktop-user"))
+    APP_ID: str = os.environ["APP_ID"] if not DESKTOP_ENVIRONMENT else 'api'
+    LWARE_USER: str = os.environ["LWARE_IDENTITY_USER"] if not DESKTOP_ENVIRONMENT else 'user'
+    LWARE_PASSWORD: str = os.environ["LWARE_IDENTITY_PASSWORD"] if not DESKTOP_ENVIRONMENT else 'pass'
     DEBUG: bool = os.getenv("DEBUG") == "true"
-    USE_BACKGROUND_WORKER: bool = os.getenv("USE_BACKGROUND_WORKER", "true") == "true"
+    ENVIRONMENT: str = os.getenv("ENVIRONMENT", "production") if not DESKTOP_ENVIRONMENT else 'desktop'
+    USE_BACKGROUND_WORKER: bool = os.getenv("USE_BACKGROUND_WORKER", "true") == "true" if not DESKTOP_ENVIRONMENT else False
 
-    AUTH_SERVICE_URL: str = os.environ["AUTH_SERVICE_URL"]
+    AUTH_SERVICE_URL: str = os.environ["AUTH_SERVICE_URL"] if not DESKTOP_ENVIRONMENT else 'AUTH_SERVICE_URL TODO'
     AUTH_MACHINES_URL: str = AUTH_SERVICE_URL + "/machines"
     AUTH_MACHINE_CHECK_URL: str = AUTH_SERVICE_URL + "/machine_authorization"
     AUTH_USER_CHECK_URL: str = AUTH_SERVICE_URL + "/verify"
@@ -44,7 +47,7 @@ class envs:
     AUTH_USER_PROFILE_URL: str = AUTH_SERVICE_URL + "/profile"
     AUTH_USER_TABLES_URL: str = AUTH_SERVICE_URL + "/users/tables"
 
-    REGISTRY_SERVICE_URL: str = os.environ["REGISTRY_SERVICE_URL"]
+    REGISTRY_SERVICE_URL: str = os.environ["REGISTRY_SERVICE_URL"] if not DESKTOP_ENVIRONMENT else 'REGISTRY_SERVICE_URL TODO'
     REGISTER_ALL_URL: str = REGISTRY_SERVICE_URL + "/v1" + "/registrations"
     REGISTER_APP_URL: str = REGISTRY_SERVICE_URL + "/v1" + "/apps"
     REGISTER_UPLOADER_URL: str = REGISTRY_SERVICE_URL + "/v1" + "/uploaders"
@@ -63,7 +66,7 @@ class envs:
 
     # OLD -service is removed from appid
     # DEPRECIATED - keep NEW after testing
-    APP_HOST: str = os.environ["APP_HOST"]
+    APP_HOST: str = os.environ["APP_HOST"] if not DESKTOP_ENVIRONMENT else 'REGISTRY_SERVICE_URL TODO'
     QUEUE_NAME: str = (
         APP_ID if "-service" not in APP_ID else APP_ID.replace("-service", "")
     )  # ifmp-service => ifmp

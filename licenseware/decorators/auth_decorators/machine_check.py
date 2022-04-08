@@ -12,6 +12,8 @@ def machine_check(f):
     """
     @wraps(f)
     def decorated(*args, **kwargs):
+
+        if envs.DESKTOP_ENVIRONMENT: return f(*args, **kwargs)
         
         fail_message = "Missing Authorization information"
         
