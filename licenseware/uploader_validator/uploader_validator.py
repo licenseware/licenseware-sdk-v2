@@ -183,11 +183,13 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
         
         fileok = all([file_name_ok, file_content_ok])
 
+        message = f"{'Name: ' + file_response if not file_name_ok else ''}{' Content: ' + content_response if not file_content_ok else ''}".strip()
+        
         return {
             "status": states.SUCCESS if fileok else states.SKIPPED,
             "name": file_name_ok,
             "content": file_content_ok,
-            "message": f"Name: {file_response}; Content: {content_response}"
+            "message": message
         }
 
         
