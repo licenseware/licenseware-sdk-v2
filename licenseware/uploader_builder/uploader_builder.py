@@ -172,14 +172,12 @@ class UploaderBuilder:
     def upload_files(self, flask_request: Request, event_id: str = None):
         """Validate file content provided by user and send files for processing if they are valid"""
 
-        given_event_id = flask_request.args.get("event_id") or event_id
-
         tenant_id = flask_request.headers.get("TenantId")
 
         event = {
             "tenant_id": flask_request.headers.get("Tenantid"),
             "uploader_id": self.uploader_id,
-            "event_id": given_event_id,
+            "event_id": event_id,
         }
         notify_upload_status(event, status=states.RUNNING)
 
@@ -195,7 +193,7 @@ class UploaderBuilder:
                 {
                     "tenant_id": tenant_id,
                     "uploader_id": self.uploader_id,
-                    "event_id": given_event_id,
+                    "event_id": event_id,
                     "filepaths": [filepath],
                     "flask_request": serialized_flask_request,
                     "validation_response": fp["response"],
