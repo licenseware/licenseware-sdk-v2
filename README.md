@@ -38,20 +38,30 @@ Basic app flow:
 
 Here are the steps needed for local development of an app:
 
-- Install the sdk : `pip3 install git+https://git@github.com/licenseware/licenseware-sdk-v2.git`;
+- Install the sdk globally or on a virtual environment (python3.8) with the following command: `pip3 install git+https://git@github.com/licenseware/licenseware-sdk-v2.git`;
+- Create a github repository following this naming convention `xxxx-service` (where `xxxx` it's an unique lowercase acronym for the service);
 - Clone the repo for your service;
 - CD in the cloned repo locally;
-- Create a new app : `licenseware new-app odb`;
-- Create a new uploader: `licenseware new-uploader lms_options`;
-- Update modules `validator.py` `worker.py` as per processing requirements needs for `lms_options` uploader_id. Modules created will be found here: `app/uploaders/lms_options`
-- Open the first terminal start the mock-server : `licenseware run-dev`;
-- Copy `docker-compose.yml` file to `Documents` folder start the databases `docker-compose up -d`;
+- Create a new app with the same name as the github repository: `licenseware new-app xxxx-service`;
+- Run `licenseware --help` to see more commands;
 
-You will have mongoexpress running at: `http://localhost:8081/`
 
-If ports are blocked by another process and you can't start the development servers use the commands bellow (ubuntu/debian):
-- `sudo fuser -k 4000/tcp` - kill process running on port `4000` to start the mock server;
-- `sudo fuser -k 5000/tcp` - kill process running on port `5000` to start the dev server;
+Each app depends on 2 services to run:
+- [Authentification service](https://github.com/licenseware/auth-service);
+- [Registry service](https://github.com/licenseware/registry-service);
+
+
+1. You can run the app locally (without the services mentioned up) by doing the following:
+- enter in `app/__init__.py` and uncomment the first 2 set_environment_environment lines at the top; 
+- make sure you have the default mongo connection string for mongo installed locally (`mongodb://localhost:27017/db`);
+- `python3 main.py` to start the app;
+- open url `localhost:5000/api/docs` for swagger endpoint testing;
+- if mongo in docker works on MAC M1 then you can use the following make commands: `make start-mongo`, `make stop-mongo`, `make logs-mongo`;
+- you will have mongoexpress running at: `http://localhost:8081/`.
+
+
+2. Runing the app with `stack-manager` which make available the Authentification service and Registry service:
+- [Click here and follow the stack manager docs](https://github.com/licenseware/stack-manager-v2)
 
 
 ## Installation 
@@ -407,16 +417,33 @@ App.register_report(virtualization_details_report)
 # CUSTOM RESTX NAMESPACES
 # We can add also custom namespaces to main IFMP Api
 
-custom_ns = Namespace(
-    name="Custom", 
-    description="This is a custom namespace with the app prefix"
-)
+from flask import Flask, request
+import flask_restx as restx
+from flask_restx import Resource, Api
+import marshmallow as ma
+from licenseware.common import marshmallow_to_restx_model # import the converter function
 
-@custom_ns.route("/custom-api-route")
-class CustomApiRoute(Resource):    
-    @custom_ns.doc("custom")
-    def get(self):
-        return "custom-api-route"
+app = Flask(__name__)
+api = Api(app)
+
+
+class SimpleNestedSchema(ma.Schema):
+    simple_nested_field = ma.fields.String(required=False, metadata={'description': 'the description of simple_nested_field'})
+
+class SimpleSchema(ma.Schema):
+    simple_field1 = ma.fields.String(required=True, metadata={'description': 'the description of simple_field1'})
+    simple_nest = ma.fields.Nested(SimpleNestedSchema)
+
+# Give it as parameters the flask-restx `Api` or `Namespace` instance and the Marshmallow schema
+simple_nest_from_schema = marshmallow_to_restx_model(api, SimpleSchema)
+
+
+@api.route('/marshmallow-simple-nest')
+class MaSimpleNest(Resource):
+    # Place it where you need a restx model
+    @api.expect(simple_nest_from_schema, validate=True)
+    def post(self):
+        return request.json
     
 # Add it to main app 
 # it will have the same namespace prefix /ifmp/v1/ + ns-prefix/custom-api-route
