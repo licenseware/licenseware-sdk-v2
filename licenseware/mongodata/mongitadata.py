@@ -454,22 +454,8 @@ def aggregate(pipeline, collection, as_list=True, db_name=None):
         :db_name    - specify other db if needed by default is MONGO_DATABASE_NAME from .env
 
     """
-    db_name = get_db_name(db_name)
-    collection_name = return_collection_name(collection)
-
-    log.info(f"MONGO_QUERY [{db_name}.{collection_name}]: {pipeline}")
-
-    with Connect.get_connection() as mongo_connection:
-        collection = mongo_connection[db_name][collection_name]
-        if not isinstance(collection, Collection):
-            return collection
-
-        found_docs = collection.aggregate(pipeline, allowDiskUse=True)
-
-        if as_list:
-            return [parse_doc(doc) for doc in found_docs]
-
-        return (parse_doc(doc) for doc in found_docs)
+    log.warning("aggregate not supported by mongita...")
+    return []
 
 
 def _append_query(dict_: dict) -> dict:
