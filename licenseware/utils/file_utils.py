@@ -1,8 +1,5 @@
 import os, re
 import shutil
-import zipfile
-import tarfile
-import traceback
 
 from licenseware.common.constants import envs
 from licenseware.utils.logger import log
@@ -117,3 +114,6 @@ def save_file(file, tenant_id=None, path=None):
     file.close()
 
     return file_path
+
+
+

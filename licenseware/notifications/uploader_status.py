@@ -16,6 +16,9 @@ def save_uploader_status(tenant_id: str, uploader_id: str, status: str, **overfl
     # Also, pretty hard to keep track of threads and multiprocessing
     # This will work in most cases, but some issues may appear when multiple uploads are made consecutively
 
+    if envs.DESKTOP_ENVIRONMENT and tenant_id is None:
+        tenant_id = envs.DESKTOP_TENANT_ID
+
     data = {
         "tenant_id": tenant_id,
         "uploader_id": uploader_id,
@@ -38,6 +41,10 @@ def save_uploader_status(tenant_id: str, uploader_id: str, status: str, **overfl
 
 def get_uploader_status(tenant_id: str, uploader_id: str):
 
+
+    if envs.DESKTOP_ENVIRONMENT and tenant_id is None:
+        tenant_id = envs.DESKTOP_TENANT_ID
+
     results = mongodata.fetch(
         match={
             "tenant_id": tenant_id,
@@ -52,7 +59,7 @@ def get_uploader_status(tenant_id: str, uploader_id: str):
 
     data = results[0]
 
-    current_date = datetime.datetime.utcnow().isoformat()
+    current_date = datetime.datetime.utcnow()
     last_update = dateparser.parse(data["last_update"])
     delta_minutes = (current_date - last_update).total_seconds() / 60
 
