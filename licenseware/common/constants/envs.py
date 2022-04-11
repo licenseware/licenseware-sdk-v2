@@ -39,7 +39,7 @@ class envs:
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "production") if not DESKTOP_ENVIRONMENT else 'desktop'
     USE_BACKGROUND_WORKER: bool = os.getenv("USE_BACKGROUND_WORKER", "true") == "true" if not DESKTOP_ENVIRONMENT else False
 
-    AUTH_SERVICE_URL: str = os.environ["AUTH_SERVICE_URL"] if not DESKTOP_ENVIRONMENT else 'AUTH_SERVICE_URL TODO'
+    AUTH_SERVICE_URL: str = os.environ["AUTH_SERVICE_URL"] if not DESKTOP_ENVIRONMENT else 'http://localhost:5000/api/auth'
     AUTH_MACHINES_URL: str = AUTH_SERVICE_URL + "/machines"
     AUTH_MACHINE_CHECK_URL: str = AUTH_SERVICE_URL + "/machine_authorization"
     AUTH_USER_CHECK_URL: str = AUTH_SERVICE_URL + "/verify"
@@ -47,7 +47,7 @@ class envs:
     AUTH_USER_PROFILE_URL: str = AUTH_SERVICE_URL + "/profile"
     AUTH_USER_TABLES_URL: str = AUTH_SERVICE_URL + "/users/tables"
 
-    REGISTRY_SERVICE_URL: str = os.environ["REGISTRY_SERVICE_URL"] if not DESKTOP_ENVIRONMENT else 'REGISTRY_SERVICE_URL TODO'
+    REGISTRY_SERVICE_URL: str = os.environ["REGISTRY_SERVICE_URL"] if not DESKTOP_ENVIRONMENT else 'http://localhost:5000/api/registry-service'
     REGISTER_ALL_URL: str = REGISTRY_SERVICE_URL + "/v1" + "/registrations"
     REGISTER_APP_URL: str = REGISTRY_SERVICE_URL + "/v1" + "/apps"
     REGISTER_UPLOADER_URL: str = REGISTRY_SERVICE_URL + "/v1" + "/uploaders"
@@ -66,7 +66,7 @@ class envs:
 
     # OLD -service is removed from appid
     # DEPRECIATED - keep NEW after testing
-    APP_HOST: str = os.environ["APP_HOST"] if not DESKTOP_ENVIRONMENT else 'REGISTRY_SERVICE_URL TODO'
+    APP_HOST: str = os.environ["APP_HOST"] if not DESKTOP_ENVIRONMENT else 'http://localhost:5000'
     QUEUE_NAME: str = (
         APP_ID if "-service" not in APP_ID else APP_ID.replace("-service", "")
     )  # ifmp-service => ifmp
