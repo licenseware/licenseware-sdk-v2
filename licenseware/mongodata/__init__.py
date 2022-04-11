@@ -1,7 +1,7 @@
 import os
 
 
-if os.getenv("ENVIRONMENT") == "desktop":
+if os.getenv("ENVIRONMENT") == "desktop" and os.getenv("MONGOLOCAL", "false") == "true":
 
     from .mongitadata import (
         insert, 
