@@ -174,8 +174,12 @@ class UploaderBuilder:
 
         tenant_id = flask_request.headers.get("TenantId")
 
+        if envs.DESKTOP_ENVIRONMENT and tenant_id is None:
+            log.warning(f"---------------------------------- DESKTOP_TENANT_ID")
+            tenant_id = envs.DESKTOP_TENANT_ID
+
         event = {
-            "tenant_id": flask_request.headers.get("Tenantid"),
+            "tenant_id": tenant_id,
             "uploader_id": self.uploader_id,
             "event_id": event_id,
         }
@@ -187,6 +191,8 @@ class UploaderBuilder:
             return fp
 
         serialized_flask_request = get_flask_request_dict(flask_request)
+
+        log.warning(f"---------------------------------- {serialized_flask_request}")
 
         if self.one_event_per_file:
             events = [

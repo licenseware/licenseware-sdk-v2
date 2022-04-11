@@ -285,7 +285,7 @@ def log(*dargs, on_success_save: str = None, on_failure_save: str = None, on_fai
         def wrapper(*args, **kwargs):
             
             metadata = get_metadata(f, args, kwargs)
-            
+
             if f.__name__ == "upload_files":
                 kwargs.update({'event_id': metadata['event_id']})
 

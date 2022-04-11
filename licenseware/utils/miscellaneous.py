@@ -15,13 +15,23 @@ from flask import Request
 from licenseware.utils.logger import log
 
 
+
 def get_flask_request_dict(flask_request: Request):
+    from licenseware.common.constants import envs
+
     """Convert flask request object into a dict"""
     flask_headers = dict(flask_request.headers) if flask_request.headers else {}
     flask_json = dict(flask_request.json) if flask_request.json else {}
     flask_args = dict(flask_request.args) if flask_request.args else {}
 
-    return {**flask_json, **flask_headers, **flask_args}
+    data = {**flask_json, **flask_headers, **flask_args}
+
+    if envs.DESKTOP_ENVIRONMENT and data.get('tenant_id', None) is None:
+        for tid in ['tenant_id', 'TenantId', 'Tenantid']:
+            data[tid] = envs.DESKTOP_TENANT_ID
+        data["Authorization"] = "Authorization not needed on desktop"
+        
+    return data
 
 
 def serialize_flask_request(flask_request: Request):

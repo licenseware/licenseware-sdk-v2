@@ -97,6 +97,9 @@ def save_file(file, tenant_id=None, path=None):
         Save to disk flask file stream
     """
 
+    if envs.DESKTOP_ENVIRONMENT and tenant_id is None:
+        tenant_id = envs.DESKTOP_TENANT_ID
+
     filename = secure_filename(file.filename)
 
     # dir_id = generate_id() # doing this to avoid overwriting already uploaded files 
