@@ -82,7 +82,7 @@ class envs:
     REPORT_URL: str = BASE_URL + REPORT_PATH
     FEATURES_URL: str = BASE_URL + FEATURE_PATH
     REPORT_COMPONENT_URL: str = BASE_URL + REPORT_COMPONENT_PATH
-    FILE_UPLOAD_PATH: str = os.getenv("FILE_UPLOAD_PATH", "tmp/lware")
+    FILE_UPLOAD_PATH: str = os.getenv("FILE_UPLOAD_PATH", "tmp/lware") if not DESKTOP_ENVIRONMENT else './files_to_process'
     DEPLOYMENT_SUFFIX: str = os.getenv("DEPLOYMENT_SUFFIX")
 
     # Mongo connection
