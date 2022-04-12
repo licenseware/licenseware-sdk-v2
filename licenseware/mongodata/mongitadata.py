@@ -529,9 +529,14 @@ def update(schema, match, new_data, collection, append=False, db_name=None):
 
         log.info(f"MONGO_QUERY [{db_name}.{collection_name}]: {_filter}")
 
+        # Mongita doesn't have update
+
+        matched_data = collection.find_one(filter=_filter)
+        new_full_data = {**matched_data, **new_data}
+        
         updated_docs_nbr = collection.replace_one(
             filter=_filter,
-            replacement=new_data
+            replacement=new_full_data
         ).modified_count
 
         return updated_docs_nbr
