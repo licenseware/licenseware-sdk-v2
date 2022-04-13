@@ -31,7 +31,7 @@ class envs:
 
     # Environment variables available at startup
     DESKTOP_ENVIRONMENT: bool = os.getenv("ENVIRONMENT") == "desktop"
-    DESKTOP_TENANT_ID: str = str(uuid.uuid5(uuid.NAMESPACE_OID, "desktop-user"))
+    DESKTOP_TENANT_ID: str = str(uuid.uuid5(uuid.NAMESPACE_OID, "desktop-user")) # '2655d513-9883-5b7e-8a14-c030bc1ca3b8'
     APP_ID: str = os.environ["APP_ID"] if not DESKTOP_ENVIRONMENT else 'api'
     LWARE_USER: str = os.environ["LWARE_IDENTITY_USER"] if not DESKTOP_ENVIRONMENT else 'user'
     LWARE_PASSWORD: str = os.environ["LWARE_IDENTITY_PASSWORD"] if not DESKTOP_ENVIRONMENT else 'pass'

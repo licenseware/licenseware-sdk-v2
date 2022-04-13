@@ -44,7 +44,7 @@ class UploaderCreator(BaseCreator):
 
     def create(self):
 
-        files = ['__init__.py', 'validator.py', 'worker.py']
+        files = ['__init__.py', 'validator.py', 'worker.py', 'encryptor.py']
         filepath = os.path.join(paths.uploaders, self.entity_underscore)
 
         if not os.path.exists(filepath):
