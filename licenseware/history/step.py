@@ -31,6 +31,9 @@ def copy_files_uploaded_on_event_folder(data):
         Files uploaded are saved in another folder for the purpose of replicating the errors
         Files will be deleted after 1 month (iso date specifies when files will be deleted)
     """
+    if envs.DESKTOP_ENVIRONMENT:
+        return []
+        
     expiration_iso_date = (datetime.datetime.utcnow() + datetime.timedelta(days=30)).date().isoformat()
     folder_name = f"{data['tenant_id']}_{data['event_id']}_{expiration_iso_date}"
     folder_path = os.path.join(envs.FILE_UPLOAD_PATH, folder_name)
