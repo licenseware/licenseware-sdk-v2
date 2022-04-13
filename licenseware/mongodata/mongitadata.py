@@ -532,7 +532,7 @@ def update(schema, match, new_data, collection, append=False, db_name=None):
         # Mongita doesn't have update
 
         matched_data = collection.find_one(filter=_filter)
-        new_full_data = {**matched_data, **new_data}
+        new_full_data = {**matched_data, **new_data} if matched_data else new_data
         
         updated_docs_nbr = collection.replace_one(
             filter=_filter,
