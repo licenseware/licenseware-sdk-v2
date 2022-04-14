@@ -1,0 +1,176 @@
+[BEGIN SCRIPT INFO]
+Script Name=./ct_cpuq.sh
+Script Version=19.1
+CT Version=19.1
+Script Command options=/tmp/ct_tmp_icaro02_11071/CPUQ
+Script Command shell=/bin/ksh
+Script Command user=ROOT
+Script Start Time=11/15/2019 13:58 CET
+Script End Time=11/15/2019 13:58 CET
+[END SCRIPT INFO]
+[BEGIN SYSTEM INFO]
+Machine Name=icaro02
+Operating System Name=SunOS
+Operating System Release=5.10
+System IP Address 1=10.4.5.85
++ /usr/sbin/prtconf 
+System Configuration:  Oracle Corporation  sun4v
+Memory size: 71680 Megabytes
+System Peripherals (Software Nodes):
+
+ORCL,SPARC-T4-1
+    scsi_vhci, instance #0
+    packages (driver not attached)
+        SUNW,builtin-drivers (driver not attached)
+        deblocker (driver not attached)
+        disk-label (driver not attached)
+        terminal-emulator (driver not attached)
+        dropins (driver not attached)
+        SUNW,asr (driver not attached)
+        kbd-translator (driver not attached)
+        obp-tftp (driver not attached)
+        vdisk-helper-pkg (driver not attached)
+        vnet-helper-pkg (driver not attached)
+        ufs-file-system (driver not attached)
+        hsfs-file-system (driver not attached)
+    chosen (driver not attached)
+    openprom (driver not attached)
+        client-services (driver not attached)
+    options, instance #0
+    aliases (driver not attached)
+    memory (driver not attached)
+    virtual-memory (driver not attached)
+    iscsi-hba (driver not attached)
+        disk (driver not attached)
+    reboot-memory (driver not attached)
+    virtual-devices, instance #0
+        flashprom (driver not attached)
+        random-number-generator, instance #0
+        console, instance #0
+        channel-devices, instance #0
+            disk, instance #0
+            disk, instance #1
+            disk, instance #2
+            disk, instance #3
+            pciv-communication, instance #0
+            virtual-domain-service, instance #0
+    cpu (driver not attached)
+    cpu (driver not attached)
+    cpu (driver not attached)
+    cpu (driver not attached)
+    cpu (driver not attached)
+    cpu (driver not attached)
+    cpu (driver not attached)
+    cpu (driver not attached)
+    cpu (driver not attached)
+    cpu (driver not attached)
+    cpu (driver not attached)
+    cpu (driver not attached)
+    cpu (driver not attached)
+    cpu (driver not attached)
+    cpu (driver not attached)
+    cpu (driver not attached)
+    cpu (driver not attached)
+    cpu (driver not attached)
+    cpu (driver not attached)
+    cpu (driver not attached)
+    cpu (driver not attached)
+    cpu (driver not attached)
+    cpu (driver not attached)
+    cpu (driver not attached)
+    pci, instance #0
+        pci, instance #0
+            pci, instance #1
+                pci, instance #2
+                    network, instance #0
+                pci, instance #3
+                    network, instance #1
+    ramdisk-root (driver not attached)
+    os-io (driver not attached)
+    iscsi, instance #0
+    pseudo, instance #0
++ /usr/sbin/prtdiag 
+System Configuration:  Oracle Corporation  sun4v SPARC T4-1
+Memory size: 71680 Megabytes
+
+================================ Virtual CPUs ================================
+
+
+CPU ID Frequency Implementation         Status
+------ --------- ---------------------- -------
+0      2848 MHz  SPARC-T4               on-line  
+1      2848 MHz  SPARC-T4               on-line  
+2      2848 MHz  SPARC-T4               on-line  
+3      2848 MHz  SPARC-T4               on-line  
+4      2848 MHz  SPARC-T4               on-line  
+5      2848 MHz  SPARC-T4               on-line  
+6      2848 MHz  SPARC-T4               on-line  
+7      2848 MHz  SPARC-T4               on-line  
+8      2848 MHz  SPARC-T4               on-line  
+9      2848 MHz  SPARC-T4               on-line  
+10     2848 MHz  SPARC-T4               on-line  
+11     2848 MHz  SPARC-T4               on-line  
+12     2848 MHz  SPARC-T4               on-line  
+13     2848 MHz  SPARC-T4               on-line  
+14     2848 MHz  SPARC-T4               on-line  
+15     2848 MHz  SPARC-T4               on-line  
+16     2848 MHz  SPARC-T4               on-line  
+17     2848 MHz  SPARC-T4               on-line  
+18     2848 MHz  SPARC-T4               on-line  
+19     2848 MHz  SPARC-T4               on-line  
+20     2848 MHz  SPARC-T4               on-line  
+21     2848 MHz  SPARC-T4               on-line  
+22     2848 MHz  SPARC-T4               on-line  
+23     2848 MHz  SPARC-T4               on-line  
+
+================================= IO Devices =================================
+Slot +            Bus   Name +                            Model        Speed 
+Status            Type  Path                                                 
+------------------------------------------------------------------------------
+MB                PCIE  network-pciex8086,10ca                         2.5GTx4
+                        /pci@400/pci@2/pci@0/pci@6/network@0,81     
+MB                PCIE  network-pciex8086,1520            SUNW,pcie-igb  5.0GTx4
+                        /pci@400/pci@2/pci@0/pci@c/network@0,81     
++ set +xv 
++ /usr/sbin/psrinfo -vp 
+The physical processor has 24 virtual processors (0-23)
+  SPARC-T4 (chipid 0, clock 2848 MHz)
++ set +xv 
++ [ -x /usr/bin/kstat ] 
++ /usr/bin/kstat cpu_info 
++ egrep core_id|on-line|offline 
++ awk  /core_id/ { Cores = $0 } /state/ { threadState = $0 ; printf("%s|%s\n", Cores, threadState) } 
++ + sortuniq  
+
+	core_id                         1026|	state                           on-line
+	core_id                         1029|	state                           on-line
+	core_id                         1032|	state                           on-line
++ set +xv 
+Oracle Corporation sun4v SPARC T4-1
++ /usr/sbin/virtinfo -ap 
+VERSION 1.0
+DOMAINROLE|impl=LDoms|control=false|io=true|service=false|root=false
+DOMAINNAME|name=icaro02
+DOMAINUUID|uuid=2a13b732-a89d-c421-d3d8-bbef1ac28450
+DOMAINCONTROL|name=t1cdrl02
+DOMAINCHASSIS|serialno=AK00176937
++ set +xv 
++ /sbin/zonename 
+ZONENAME=global
++ set +xv 
++ /usr/sbin/zoneadm list -cp 
+0:global:running:/::native:shared
++ /usr/sbin/zoneadm list -c 
++ echo_print \nZone global configuration: 
++ eval printf "%b\n" "$*" 
++ printf %b\n \nZone global configuration: 
+
+Zone global configuration:
++ /usr/sbin/zonecfg -z global info 
+zonename: global
+pool: 
++ /usr/sbin/pooladm 
+pooladm: couldn't open pools state file: Facility is not active
++ set +xv 
+4294967295	0	/tmp/ct_tmp_icaro02_11071/CPUQ/oramsgfile.11575
+[END SYSTEM INFO]
