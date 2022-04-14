@@ -14,7 +14,7 @@ def create_metadata(
         func_name: str = None,
         func_source: str = None,
 ):
-    return {
+    metadata = {
         'callable': func_name,
         'step': step,
         'source': func_source,
@@ -22,8 +22,13 @@ def create_metadata(
         'event_id': event_id,
         'app_id': envs.APP_ID,
         'uploader_id': uploader_id,
-        'filepath': filepath
+        'filepath': filepath,
     }
+    if isinstance(metadata['filepath'], str):
+        metadata['file_name'] = metadata['filepath'].split('/')[-1]
+    else: 
+        metadata['file_name'] = ""
+    return metadata
 
 
 def get_metadata(func, func_args, func_kwargs):
