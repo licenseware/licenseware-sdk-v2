@@ -1,3 +1,4 @@
+import os
 import inspect
 from licenseware.common.constants import envs
 
@@ -60,7 +61,7 @@ def get_metadata(func, func_args, func_kwargs):
                 f"No `filepath` found can't create history (see: '{metadata['callable']}' from '{metadata['source']}')")
 
     if isinstance(metadata['filepath'], str):
-        metadata['file_name'] = metadata['filepath'].split('/')[-1]
+        metadata['file_name'] = os.path.basename(metadata['filepath'])
 
     return metadata
 
