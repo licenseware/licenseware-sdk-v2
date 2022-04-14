@@ -5,6 +5,7 @@ test_files
 *.xlsx
 Untitled.ipynb
 wheel_sdk
+test_files*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
