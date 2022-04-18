@@ -601,3 +601,19 @@ def document_count(match, collection, db_name=None):
 
         return collection.with_options(
             write_concern=WriteConcern("majority")).count_documents(filter=match)
+
+
+def insert_many(schema, data: list, collection: str, db_name: str=None, ordered: bool=True):
+    """
+        Bulk insert to a collection.
+    """
+    db_name = get_db_name(db_name)
+    collection_name = return_collection_name(collection)
+    with Connect.get_connection() as mongo_connection:
+        collection = mongo_connection[db_name][collection_name]
+        new_data = validate_data(schema, data)
+        resp = collection.insert_many(
+                documents=new_data,
+                ordered=ordered
+            )
+        return resp
