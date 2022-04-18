@@ -20,6 +20,7 @@ if os.getenv("ENVIRONMENT") == "desktop" and os.getenv("MONGOLOCAL", "false") ==
 else:
 
     from .mongodata import (
+        insert_many,
         insert, 
         fetch, 
         update,
