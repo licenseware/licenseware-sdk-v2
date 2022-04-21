@@ -552,6 +552,8 @@ def delete(match, collection, db_name=None):
 
     with Connect.get_connection() as mongo_connection:
         collection = mongo_connection[db_name][collection_name]
+        if not match:
+            raise Exception("Deleting without filter is not permitted.")
         match = parse_match(match)
 
         if not isinstance(collection, Collection):
@@ -570,6 +572,9 @@ def delete_collection(collection, db_name=None):
     """
     db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
+
+    log.info(f"MONGO_QUERY [{db_name}.{collection_name}]")
+
     with Connect.get_connection() as mongo_connection:
         collection = mongo_connection[db_name][collection_name]
         if not isinstance(collection, Collection):
@@ -605,10 +610,15 @@ def document_count(match, collection, db_name=None):
 
 def insert_many(schema, data: list, collection: str, db_name: str=None, ordered: bool=True):
     """
-        Bulk insert to a collection.
+        Bulk insert documents to a collection.
+
+        Returns response from pymongo insert_many method
+        https://pymongo.readthedocs.io/en/stable/api/pymongo/results.html#pymongo.results.InsertManyResult
+
     """
     db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
+    log.info(f"MONGO_QUERY [{db_name}.{collection_name}]")
     with Connect.get_connection() as mongo_connection:
         collection = mongo_connection[db_name][collection_name]
         new_data = validate_data(schema, data)
