@@ -1,4 +1,4 @@
-from typing import Callable, Union, Dict, List
+from typing import Callable, Dict, List
 from flask import Request
 from licenseware.common.constants import envs, states
 from licenseware.registry_service.register_uploader import register_uploader
@@ -10,7 +10,7 @@ from licenseware.notifications import notify_upload_status
 from licenseware.uploader_validator.uploader_validator import UploaderValidator
 from licenseware import history
 from licenseware.utils.miscellaneous import get_flask_request_dict
-from licenseware.uploader_encryptor import UploaderEncrytor
+from licenseware.uploader_encryptor import UploaderEncryptor
 
 
 class UploaderBuilder:
@@ -49,7 +49,7 @@ class UploaderBuilder:
         worker_function: Callable,
         quota_units: int,
         flags: list = None,
-        encryptor_class: UploaderEncrytor = None,
+        encryptor_class: UploaderEncryptor = None,
         status: str = states.IDLE,
         icon: str = "default.png",
         upload_path: str = None,
