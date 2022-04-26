@@ -162,7 +162,11 @@ class UploaderEncrytor:
             if srcdir is None:
                 srcpathli = sourcepath.split(os.path.sep)
                 srcdir = srcpathli[0]
-                dstdir = srcdir + f"_{enctype}ed" 
+                if srcdir.startswith("."): # handle relative paths
+                    dstdir = f"{enctype}ed"
+                else:
+                    dstdir = srcdir + f"_{enctype}ed"
+                
 
             dstpathli = [dstdir] + destinationpath.split(os.path.sep)[1:]
             dstpath = os.path.join(*dstpathli)
