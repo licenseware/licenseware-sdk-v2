@@ -84,6 +84,11 @@ def get_filestream_validation_namespace(
         help="Upload files for processing",
     )
 
+    default_params={
+        "clear_data": "Boolean parameter, warning, will clear existing data",
+        "event_id": "The uuid4 string received on filenames validation",
+    }
+
     for uploader in uploaders:
 
         if uploader.worker is None:
@@ -93,10 +98,7 @@ def get_filestream_validation_namespace(
 
         @ns.doc(
             description="Upload files received on `files[]` for processing",
-            params={
-                "clear_data": "Boolean parameter, warning, will clear existing data",
-                "event_id": "The uuid4 string received on filenames validation",
-            },
+            params=default_params,
             responses={
                 400: "File list is empty or files are not on 'files[]' key",
                 402: "Quota exceeded",
@@ -129,7 +131,7 @@ def get_filestream_validation_namespace(
                 ) in uploader.query_params_on_upload.items():
                     params_dict[param_name] = {"description": param_description}
 
-            TempUploaderResource.__apidoc__.update({"params": params_dict})
+            TempUploaderResource.__apidoc__.update({"params": {**default_params, **params_dict}})
 
         UploaderResource = type(
             uploader.uploader_id.replace("_", "").capitalize() + "stream",
