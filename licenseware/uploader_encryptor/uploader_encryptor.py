@@ -29,6 +29,37 @@ class UploaderEncrytor:
     encryption_password = "secret password" # the password that will be used for encrypting and decrypting data
     You can also set password later with `set_password("password")`
 
+    Usage:
+
+    ```py
+
+    from licenseware.uploader_encryptor import UploaderEncrytor
+
+    filepaths = [
+        "test_files/RVTools.xlsx",
+        "test_files/LMS_OPTIONS_SECRET.csv",
+        "test_files/cpuq.txt",
+        "test_files/rl/deviceName_database_version.csv",
+        "test_files/rl/deviceName_database_options.csv",
+        "test_files/rl/deviceName_database_dba_feature.csv",
+    ]
+
+    ue = UploaderEncrytor(
+        filepaths=["deviceName", "database", "LMS_OPTIONS_(.*?).csv", "rl"],
+        filecontent=["Machine Name=(.+)", "System IP Address 1=(.+)"],
+        columns=["DB_NAME", "MACHINE_ID", "HOST_NAME", "INSTANCE_NAME", "Host", "Device"]
+    )
+
+    ue.set_password("password")
+
+    # Encrypt
+    encrypted_filepaths = ue.get_encrypted_filepaths(filepaths)
+
+    # Decrypt
+    decrypted_filepaths = ue.get_decrypted_filepaths(encrypted_filepaths)
+
+    ```
+
     """
 
     def __init__(
@@ -45,7 +76,7 @@ class UploaderEncrytor:
         self.encryption_password = encryption_password or "password"
         self.encryption_parameters = self.get_encryption_parameters()
         self.start_tag = "#startcrypted#"
-        self.end_tag = "endcrypted#"
+        self.end_tag = "#endcrypted#"
         self.store = None
 
     def set_password(self, password: str):
