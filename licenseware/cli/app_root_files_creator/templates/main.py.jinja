@@ -15,5 +15,7 @@ if os.getenv('ENVIRONMENT') in {'prod', 'production'}:
 
 
 if __name__ == "__main__":
-    os.system("export `cat ./deploy/.env.debug`")
+    # export `cat ./deploy/.env.debug`
     app.run(port=5000, debug=True)
+    # Use bellow if you get wierd CORS errors
+    # app.run(port=5000, debug=False, threaded=True)

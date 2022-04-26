@@ -3,9 +3,8 @@ from licenseware.uploader_encryptor import UploaderEncrytor
 
 
 {{ entity_underscore }}_encryptor = UploaderEncrytor(
-    filenames = None,
-    filepaths = None,
-    filecontent = None,
-    columns = None
+    filepaths=["deviceName", "database", "LMS_OPTIONS_(.*?).csv", "rl"],
+    filecontent=["Machine Name=(.+)", "System IP Address 1=(.+)"],
+    columns=["Host", "Device"]
 )
 
