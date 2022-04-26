@@ -31,10 +31,11 @@ class AESCipher:
         iv = Random.new().read(self.block_size)
         cipher = AES.new(self.key, AES.MODE_CBC, iv)
         encrypted_text = cipher.encrypt(plain_text.encode())
-        return b64encode(iv + encrypted_text).decode("utf-8")
+        iv_encrypted_text = iv + encrypted_text
+        return b64encode(iv_encrypted_text, altchars=b'-:').decode("utf-8")
 
     def decrypt(self, encrypted_text):
-        encrypted_text = b64decode(encrypted_text)
+        encrypted_text = b64decode(encrypted_text, altchars=b'-:')
         iv = encrypted_text[:self.block_size]
         cipher = AES.new(self.key, AES.MODE_CBC, iv)
         plain_text = cipher.decrypt(encrypted_text[self.block_size:]).decode("utf-8")
