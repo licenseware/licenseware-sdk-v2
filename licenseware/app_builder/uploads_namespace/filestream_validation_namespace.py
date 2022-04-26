@@ -16,6 +16,7 @@ from licenseware.tenants import clear_tenant_data
 from werkzeug.datastructures import FileStorage
 from marshmallow import Schema, fields
 from licenseware.common import marshmallow_to_restx_model
+from licenseware.utils.common import trigger_broker_funcs
 
 from licenseware.uploader_builder import UploaderBuilder
 from typing import List
@@ -63,7 +64,12 @@ def create_uploader_resource(uploader: UploaderBuilder):
                     request.headers.get("Tenantid"), uploader.collections_list
                 )
 
-            return uploader.upload_files(request)
+            upload_response = uploader.upload_files(request)
+            if uploader.broker_funcs:
+                trigger_broker_funcs(request, uploader.broker_funcs, upload_response=upload_response[0])
+
+            return upload_response
+
 
     return FileStreamValidate
 

@@ -82,20 +82,6 @@ class base_paths:
     data_sync_path: str = "/data-sync"
 
 
-def add_app_path_to_broker_funcs(broker_funcs):
-    """Add /app-path prefix to given paths"""
-
-    if broker_funcs is None:
-        return {}
-
-    broker_funcs_path = {}
-    for path, funcli in broker_funcs.items():
-        app_path = path if envs.APP_PATH in path else envs.APP_PATH + path
-        broker_funcs_path[app_path] = funcli
-
-    return broker_funcs_path
-
-
 class AppBuilder:
     def __init__(
         self,
@@ -128,7 +114,7 @@ class AppBuilder:
         self.data_sync_schema = data_sync_schema
         self.editable_tables = editable_tables or []
         self.editable_tables_schemas = editable_tables_schemas or []
-        self.broker_funcs = add_app_path_to_broker_funcs(broker_funcs)
+        self.broker_funcs = broker_funcs
         self.icon = icon
 
         self.app_activation_path = base_paths.app_activation_path
