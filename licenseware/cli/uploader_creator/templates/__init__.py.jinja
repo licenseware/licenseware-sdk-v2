@@ -1,5 +1,6 @@
 from .worker import {{ entity_underscore }}_worker
 from .validator import {{ entity_underscore }}_validator
+from .encryptor import {{ entity_underscore }}_encryptor
 
 from licenseware.uploader_builder import UploaderBuilder
 
@@ -11,5 +12,6 @@ from licenseware.uploader_builder import UploaderBuilder
     accepted_file_types=['.xls', '.xlsx'],
     validator_class={{ entity_underscore }}_validator,
     worker_function={{ entity_underscore }}_worker,
+    encryptor_class={{ entity_underscore }}_encryptor,
     quota_units = 1
 )

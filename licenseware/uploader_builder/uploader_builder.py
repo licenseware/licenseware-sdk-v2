@@ -10,6 +10,7 @@ from licenseware.notifications import notify_upload_status
 from licenseware.uploader_validator.uploader_validator import UploaderValidator
 from licenseware import history
 from licenseware.utils.miscellaneous import get_flask_request_dict
+from licenseware.uploader_encryptor import UploaderEncrytor
 
 
 class UploaderBuilder:
@@ -47,7 +48,8 @@ class UploaderBuilder:
         validator_class: UploaderValidator,
         worker_function: Callable,
         quota_units: int,
-        flags: list = [],
+        flags: list = None,
+        encryptor_class: UploaderEncrytor = None,
         status: str = states.IDLE,
         icon: str = "default.png",
         upload_path: str = None,
@@ -71,6 +73,9 @@ class UploaderBuilder:
         validator_class.uploader_id = uploader_id
         validator_class.quota_units = quota_units
         self.validation_parameters = validator_class.validation_parameters
+        # self.encryptor_class = encryptor_class
+        self.encryption_parameters = encryptor_class.encryption_parameters if encryptor_class else {}
+
         self.broker_funcs = broker_funcs
         self.uploader_id = uploader_id
         self.quota_units = quota_units
@@ -93,7 +98,7 @@ class UploaderBuilder:
             )
 
         self.accepted_file_types = accepted_file_types
-        self.flags = flags
+        self.flags = flags or []
         self.status = status
         self.icon = icon
         self.query_params_on_validation = query_params_on_validation

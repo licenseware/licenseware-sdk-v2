@@ -78,6 +78,7 @@ class UploaderEncrytor:
         self.start_tag = "#startcrypted#"
         self.end_tag = "#endcrypted#"
         self.store = None
+        
 
     def set_password(self, password: str):
         self.encryption_password = password

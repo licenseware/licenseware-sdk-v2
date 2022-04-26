@@ -31,7 +31,8 @@ def register_uploader(**kwargs):
             "upload_validation_url": kwargs['upload_validation_url'],
             "quota_validation_url": kwargs['quota_validation_url'],
             "status_check_url": kwargs['status_check_url'],
-            "validation_parameters": kwargs['validation_parameters']
+            "validation_parameters": kwargs['validation_parameters'],
+            "encryption_parameters": kwargs['encryption_parameters']
         }]
     }
 

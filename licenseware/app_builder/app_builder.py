@@ -395,6 +395,7 @@ class AppBuilder:
                     "quota_validation_url",
                     "status_check_url",
                     "validation_parameters",
+                    "encryption_parameters",
                     "query_params_on_upload",
                 ]
             }
