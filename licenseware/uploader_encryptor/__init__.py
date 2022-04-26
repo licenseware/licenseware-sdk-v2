@@ -1,1 +1,1 @@
-from .uploader_encryptor import UploaderEncrytor
+from .uploader_encryptor import UploaderEncryptor

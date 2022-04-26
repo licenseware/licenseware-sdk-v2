@@ -7,7 +7,7 @@ from licenseware.utils.aes import AESCipher
 
 
 
-class UploaderEncrytor:
+class UploaderEncryptor:
 
     """
 
@@ -44,7 +44,7 @@ class UploaderEncrytor:
         "test_files/rl/deviceName_database_dba_feature.csv",
     ]
 
-    ue = UploaderEncrytor(
+    ue = UploaderEncryptor(
         filepaths=["deviceName", "database", "LMS_OPTIONS_(.*?).csv", "rl"],
         filecontent=["Machine Name=(.+)", "System IP Address 1=(.+)"],
         columns=["DB_NAME", "MACHINE_ID", "HOST_NAME", "INSTANCE_NAME", "Host", "Device"]

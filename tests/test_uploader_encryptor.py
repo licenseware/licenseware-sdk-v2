@@ -1,7 +1,7 @@
 import os
 import shutil
 import unittest
-from licenseware.uploader_encryptor import UploaderEncrytor
+from licenseware.uploader_encryptor import UploaderEncryptor
 from licenseware.utils.aes import AESCipher
 
 
@@ -28,7 +28,7 @@ class TestUploaderEncryptor(unittest.TestCase):
         
         filepath = "test_filesSECRET/LMS_OPTIONS_SECRET.csv"
     
-        ue = UploaderEncrytor(
+        ue = UploaderEncryptor(
             filepaths=["SECRET"]
         )
 
@@ -43,7 +43,7 @@ class TestUploaderEncryptor(unittest.TestCase):
         
         filepath = "test_files/rl/deviceName_database_version.csv"
     
-        ue = UploaderEncrytor(
+        ue = UploaderEncryptor(
             filepaths=["deviceName", "database"]
         )
 
@@ -57,7 +57,7 @@ class TestUploaderEncryptor(unittest.TestCase):
 
         filepath = "test_files/LMS_OPTIONS_SECRET.csv"
 
-        ue = UploaderEncrytor(
+        ue = UploaderEncryptor(
             filepaths=["LMS_OPTIONS_(.*?).csv"]
         )
 
@@ -81,7 +81,7 @@ class TestUploaderEncryptor(unittest.TestCase):
             "test_files/rl/deviceName_database_dba_feature.csv",
         ]
 
-        ue = UploaderEncrytor(
+        ue = UploaderEncryptor(
             filepaths=["deviceName", "database", "LMS_OPTIONS_(.*?).csv", "rl"],
             filecontent=["Machine Name=(.+)", "System IP Address 1=(.+)"],
             columns=["DB_NAME", "MACHINE_ID", "HOST_NAME", "INSTANCE_NAME", "Host", "Device"]
@@ -116,7 +116,7 @@ class TestUploaderEncryptor(unittest.TestCase):
 
         values_to_encrypt_from_filecontent = ["Machine Name=(.+)", "System IP Address 1=(.+)"]
 
-        ue = UploaderEncrytor(
+        ue = UploaderEncryptor(
             filecontent=values_to_encrypt_from_filecontent
         )
 
