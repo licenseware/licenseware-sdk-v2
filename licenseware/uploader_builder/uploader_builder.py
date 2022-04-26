@@ -1,4 +1,4 @@
-from typing import Callable, Union
+from typing import Callable, Union, Dict, List
 from flask import Request
 from licenseware.common.constants import envs, states
 from licenseware.registry_service.register_uploader import register_uploader
@@ -55,6 +55,7 @@ class UploaderBuilder:
         quota_validation_path: str = None,
         status_check_path: str = None,
         max_retries: int = 0,
+        broker_funcs: Dict[str, List[Callable]] = None, 
         query_params_on_validation: dict = None,
         query_params_on_upload: list = [],
         one_event_per_file: bool = False,
@@ -70,7 +71,7 @@ class UploaderBuilder:
         validator_class.uploader_id = uploader_id
         validator_class.quota_units = quota_units
         self.validation_parameters = validator_class.validation_parameters
-
+        self.broker_funcs = broker_funcs
         self.uploader_id = uploader_id
         self.quota_units = quota_units
         self.name = name
