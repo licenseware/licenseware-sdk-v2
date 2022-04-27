@@ -34,13 +34,14 @@ def download_all(file_type: str, report: ReportBuilder, tenant_id: str, filename
 
         for comp in report.components:
             comp_data = comp.get_data(flask_request)
-            comp_df = download_func(
-                data=comp_data,
-                tenant_id=tenant_id,
-                send_file=False
-            )
+            if comp_data:
+                comp_df = download_func(
+                    data=comp_data,
+                    tenant_id=tenant_id,
+                    send_file=False
+                )
 
-            comp_df.to_excel(xlwriter, sheet_name=comp.title, index=False)
+                comp_df.to_excel(xlwriter, sheet_name=comp.title, index=False)
 
         xlwriter.save()
         xlwriter.close()
