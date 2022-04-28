@@ -349,6 +349,7 @@ class EditableTable:
                 "values": self.col_enum_values(field_data),
                 "required": self.col_required(field_data),
                 "visible": self.col_visible(field_name, field_data),
+                "hashable": self.col_hashable(field_name, field_data),
                 "entities_url": self.col_entities_url(field_data)
             })
 
@@ -381,6 +382,13 @@ class EditableTable:
     def col_visible(self, field_name, field_data):
         metadata = self.field_metadata(field_data)
         if 'visible' in metadata: return metadata['visible']
+        if field_name.startswith('_'): return False
+        if field_name in ['tenant_id']: return False
+        return False
+
+    def col_hashable(self, field_name, field_data):
+        metadata = self.field_metadata(field_data)
+        if 'hashable' in metadata: return metadata['hashable']
         if field_name.startswith('_'): return False
         if field_name in ['tenant_id']: return False
         return False
