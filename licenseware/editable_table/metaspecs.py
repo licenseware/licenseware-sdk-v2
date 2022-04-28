@@ -6,6 +6,7 @@ def metaspecs(
     visible:bool = True,
     distinct_key:str = None, 
     foreign_key:str = None,
+    hashable: bool = False,
     type:str = 'string'
 ):
    
@@ -14,6 +15,7 @@ def metaspecs(
         'visible': visible,
         'distinct_key': distinct_key,
         'foreign_key': foreign_key,
+        'hashable': hashable,
         'type': type
     }
     
