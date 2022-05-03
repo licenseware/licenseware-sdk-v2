@@ -21,5 +21,6 @@ def _valid_base64(sb: str):
 
 
 def validate_base64(value: str):	
+	
 	if not _valid_base64(value):
 		raise ValidationError("Not a valid base64 string")
