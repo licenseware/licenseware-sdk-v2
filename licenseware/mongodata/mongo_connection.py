@@ -22,6 +22,7 @@ from pymongo import MongoClient
 from marshmallow import Schema
 from contextlib import contextmanager
 from licenseware.common.constants import envs
+from licenseware.utils.escapehtml import escapehtml
 
 
 
@@ -36,6 +37,7 @@ def collection(collection_name:str, schema: Schema = None, data:any = None):
         if isinstance(data, list):
             data = schema(many=True).load(data)
         
+        data = escapehtml(data)
         
     with MongoClient(envs.MONGO_CONNECTION_STRING) as conn: 
         col = conn[envs.MONGO_DATABASE_NAME][collection_name]
