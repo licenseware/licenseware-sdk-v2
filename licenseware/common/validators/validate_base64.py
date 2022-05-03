@@ -5,7 +5,7 @@ from marshmallow import ValidationError
 def _valid_base64(sb: str):
 
 	try:
-		
+		if not sb: return True
 		if isinstance(sb, str):
 			# If there's any unicode here, an exception will be thrown and the function will return false
 			sb_bytes = bytes(sb, 'ascii')
