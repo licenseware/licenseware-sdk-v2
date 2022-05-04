@@ -52,6 +52,7 @@ environment:
 
 """
 
+from contextlib import suppress
 import os, sys, json
 from loguru import logger as log
 
@@ -83,6 +84,19 @@ class Placeholder(dict):  # HACK: to avoid `str.format_map` error on missing key
     def __missing__(self, key):
         return str(key)
 
+CRITICALS = [
+    "password",
+    "new_password",
+    "old_password",
+]
+
+def _get_payload(json_payload):
+    for key in CRITICALS:
+        with suppress(KeyError):
+            del json_payload[key]
+    return json_payload
+
+
 
 if not outside_flask:
     log.configure(
@@ -94,7 +108,7 @@ if not outside_flask:
             content_type=request.headers.get("Content-Type"),
             request_url=request.url,
             request_method=request.method,
-            json_payload=request.get_json() if request.get_json() and 'login' not in request.url and 'password' not in request.url else None,
+            json_payload=_get_payload(request.get_json()) if request.get_json() else None,
             multiform_payload=request.files if request.files else None,
         )
         if has_request_context()
