@@ -175,8 +175,8 @@ class AppBuilder:
             response.headers.set("Access-Control-Allow-Credentials", "true")
             
             # https://flask.palletsprojects.com/en/2.1.x/security/#security-csp
-            # response.headers['X-Content-Type-Options'] = 'nosniff'
-            # response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+            # XSS
+            response.headers['X-Content-Type-Options'] = 'nosniff'
 
             return response
 
