@@ -24,6 +24,12 @@ down:
 	$(docker_command) down
 	
 
+run-nostack-mongo:
+	export ENVIRONMENT=desktop && python3 main.py
+	
+run-nostack-nomongo:
+	export ENVIRONMENT=desktop && export MONGOLOCAL=true && python3 main.py
+	
 run-local:
 	honcho start -f Procfile.local
 	

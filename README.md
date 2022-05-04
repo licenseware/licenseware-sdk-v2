@@ -51,19 +51,26 @@ Each app depends on 2 services to run:
 - [Registry service](https://github.com/licenseware/registry-service);
 
 
-1. You can run the app locally (without the services mentioned up) by doing the following:
-- enter in `app/__init__.py` and uncomment the first 2 set_environment_environment lines at the top; 
-- make sure you have the default mongo connection string for mongo installed locally (`mongodb://localhost:27017/db`);
-- `python3 main.py` to start the app;
-- open url `localhost:5000/api/docs` for swagger endpoint testing;
-- if mongo in docker works on MAC M1 then you can use the following make commands: `make start-mongo`, `make stop-mongo`, `make logs-mongo`;
-- you will have mongoexpress running at: `http://localhost:8081/`.
-
-
-2. Runing the app with `stack-manager` which make available the Authentification service and Registry service:
+1. Runing the app with `stack-manager` which make available the Authentification service and Registry service:
 - [Click here and follow the stack manager docs](https://github.com/licenseware/stack-manager-v2)
 - If you have the stack-manager up and running and want to run the app without docker you can start locally with:
     - `make run-local` (the url will be available at `http://localhost:5000/your-app-id/docs`)
+
+
+2. Running the app without `stack-manager`:
+
+- make sure you have the default mongo connection string for mongo installed locally (`mongodb://localhost:27017/db`);
+- if mongo in docker works on MAC M1 then you can use the following make commands: `make start-mongo`, `make stop-mongo`, `make logs-mongo`;
+- you will have mongoexpress running at: `http://localhost:8081/`.
+- `make run-nostack-mongo` (this will start the app with only mongodb as a dependency);
+- open url `localhost:5000/api/docs` for swagger endpoint testing;
+
+3. Running the app without any external dependency:
+- `make run-nostack-nomongo` (this will start the app without needing mongodb up and running. 
+                            It uses [mongita](https://github.com/scottrogowski/mongita) to save data. 
+                            Mongita doesn't support aggregation pipelines so this method should be avoided.
+                            Also you can't view data with MongoDB Compass or Mongo Express.
+                        ); 
 
 
 ## Installation 
