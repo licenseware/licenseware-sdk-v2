@@ -23,12 +23,13 @@ up:
 down:
 	$(docker_command) down
 	
-run-dev:
+
+run-local:
+	honcho start -f Procfile.local
+	
+run-stack:
 	honcho start -f Procfile.stack
 
-run-worker:
-	dramatiq main:App.broker -p4
-	
 run-tests:
 	rm -rf tests/__pycache__
 	tox tests/*

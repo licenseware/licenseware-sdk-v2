@@ -120,7 +120,7 @@ class DevOpsCreator(BaseCreator):
 
         for file in ['docker-compose.yml', 'docker-compose-mongo.yml', 'docker-entrypoint.sh', "Dockerfile", 
         "Dockerfile.stack", "makefile", "pre-commit-config.yaml", 
-        "Procfile", "Procfile.stack"]:
+        "Procfile", "Procfile.stack", "Procfile.local"]:
             self.create_file(
                 filename=file,
                 filepath=paths.root,

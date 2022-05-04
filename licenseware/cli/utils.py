@@ -9,19 +9,17 @@ def get_random_int():
 
 def get_env_value(envkey: str):
 
-    if os.path.exists(".env"):
-        envfile = ".env"
-    elif os.path.exists(".envlocal"):
-        envfile = ".envlocal"
-    elif os.path.exists("tox.ini"):
-        envfile = "tox.ini"
+    if os.path.exists("./deploy/.env.debug"):
+        envfile = "./deploy/.env.debug"
+    elif os.path.exists("./tox.ini"):
+        envfile = "./tox.ini"
     else:
-        raise Exception("Neither .env, .envlocal or tox.ini file was found")
+        raise Exception("Neither ./deploy/.env.debug or ./tox.ini file was found")
     
     with open(envfile, "r") as f:
         data = f.read() 
     
     m = re.search(r'.*' + envkey + r'=(.+).*', data)
-    if not m: raise Exception(f"{envkey} not found in .env, .envlocal or tox.ini") 
+    if not m: raise Exception(f"{envkey} not found in ./deploy/.env.debug or ./tox.ini") 
 
     return m.group(1)
