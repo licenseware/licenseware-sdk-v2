@@ -99,7 +99,6 @@ from pymongo.write_concern import WriteConcern
 from pymongo.read_concern import ReadConcern
 
 from licenseware.utils.logger import log
-from licenseware.utils.escapehtml import escapehtml
 
 
 
@@ -115,7 +114,7 @@ def validate_data(schema, data):
     if isinstance(data, list):
         data = schema(many=True).load(data)
 
-    return escapehtml(data)
+    return data
 
 
 def valid_uuid(uuid_string):
