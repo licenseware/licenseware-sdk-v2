@@ -62,6 +62,8 @@ Each app depends on 2 services to run:
 
 2. Runing the app with `stack-manager` which make available the Authentification service and Registry service:
 - [Click here and follow the stack manager docs](https://github.com/licenseware/stack-manager-v2)
+- If you have the stack-manager up and running and want to run the app without docker you can start locally with:
+    - `make run-local` (the url will be available at `http://localhost:5000/your-app-id/docs`)
 
 
 ## Installation 

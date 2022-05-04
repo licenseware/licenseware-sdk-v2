@@ -36,11 +36,16 @@ class TestEscapeHtml(unittest.TestCase):
         assert type(escaped_data[0]) == type(data[0])
 
         # Dict
-        data = {"key": [1.1, {"keynested": {"keynestednested": ["values", 1,2,3]}}]}
+        data = {
+            "key": [1.1, {"keynested": {"keynestednested": ["values", 1,2,3]}}], 
+            "updated_at": "2022-04-14T05:25:13.000000Z"
+        }
         escaped_data = escapehtml(data)
+
         assert escaped_data == data
         assert type(escaped_data) == type(data)
         assert type(escaped_data['key']) == list
+        assert type(escaped_data['updated_at']) == str
         assert type(escaped_data['key'][0]) == float
         assert type(escaped_data['key'][1]) == dict
         assert type(escaped_data['key'][1]["keynested"]) == dict
