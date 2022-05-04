@@ -176,7 +176,7 @@ class AppBuilder:
             
             # https://flask.palletsprojects.com/en/2.1.x/security/#security-csp
             # XSS
-            # response.headers['X-Content-Type-Options'] = 'nosniff'
+            response.headers['X-Content-Type-Options'] = 'nosniff'
 
             return response
 
