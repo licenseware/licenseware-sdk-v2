@@ -22,6 +22,21 @@ import uuid
 from dataclasses import dataclass
 
 
+def get_upload_path_on_desktop():
+
+    default_upload_path = os.path.join(os.getcwd(), 'uploaded_files')
+    upload_path_file = os.path.join(os.getcwd(), "upload_path.txt")
+    if os.path.exists(upload_path_file):
+        with open(upload_path_file, "r") as f:
+            upload_path = f.read()
+        if upload_path == "":
+            return default_upload_path
+        else:
+            return upload_path
+
+    return default_upload_path
+
+
 # Atention!
 # > To keep this file short please add only variables used on most/all apps
 
@@ -72,7 +87,7 @@ class envs:
     REPORT_URL: str = BASE_URL + REPORT_PATH
     FEATURES_URL: str = BASE_URL + FEATURE_PATH
     REPORT_COMPONENT_URL: str = BASE_URL + REPORT_COMPONENT_PATH
-    FILE_UPLOAD_PATH: str = os.getenv("FILE_UPLOAD_PATH", "tmp/lware") if not DESKTOP_ENVIRONMENT else './files_to_process'
+    FILE_UPLOAD_PATH: str = os.getenv("FILE_UPLOAD_PATH", "tmp/lware") if not DESKTOP_ENVIRONMENT else get_upload_path_on_desktop()
     DEPLOYMENT_SUFFIX: str = os.getenv("DEPLOYMENT_SUFFIX")
 
     # Mongo connection
@@ -128,4 +143,6 @@ class envs:
 
     @classmethod
     def get_tenant_upload_path(cls, tenant_id: str):
-        return os.path.join(os.getenv("FILE_UPLOAD_PATH", "tmp/lware"), tenant_id)
+        DESKTOP_ENVIRONMENT = os.getenv("ENVIRONMENT") == "desktop"
+        FILE_UPLOAD_PATH = os.getenv("FILE_UPLOAD_PATH", "tmp/lware") if not DESKTOP_ENVIRONMENT else get_upload_path_on_desktop()
+        return os.path.join(FILE_UPLOAD_PATH, tenant_id)

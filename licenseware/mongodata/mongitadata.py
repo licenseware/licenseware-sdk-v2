@@ -119,7 +119,6 @@ from mongita.write_concern import WriteConcern
 from mongita.read_concern import ReadConcern
 
 from licenseware.utils.logger import log
-from licenseware.utils.escapehtml import escapehtml
 
 
 from contextlib import contextmanager
@@ -137,7 +136,7 @@ def validate_data(schema, data):
     if isinstance(data, list):
         data = schema(many=True).load(data)
 
-    return escapehtml(data)
+    return data
 
 
 def valid_uuid(uuid_string):
