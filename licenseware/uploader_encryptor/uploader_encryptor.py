@@ -4,7 +4,7 @@ import shutil
 from typing import List, Dict
 import pandas as pd
 from licenseware.utils.aes import AESCipher
-
+from licenseware.common.constants import envs
 
 
 class UploaderEncryptor:
@@ -157,15 +157,11 @@ class UploaderEncryptor:
         assert enctype in ["encrypt", "decrypt"]
 
         processed_filepaths = []
-        srcdir = None
         for sourcepath, destinationpath in filepaths_dict.items():
 
-            if srcdir is None:
-                srcpathli = sourcepath.split(os.path.sep)
-                srcdir = srcpathli[0]
-                dstdir = os.path.join(srcdir, f"{enctype}ed")
-            
-            dstpathli = [dstdir] + destinationpath.split(os.path.sep)[1:]
+            dstdir = os.path.join(envs.FILE_UPLOAD_PATH, f"{enctype}ed")
+
+            dstpathli = [dstdir] + destinationpath.replace(envs.FILE_UPLOAD_PATH, "").split(os.path.sep)[1:]
             dstpath = os.path.join(*dstpathli)
 
             root_path = os.path.dirname(dstpath)
@@ -174,8 +170,6 @@ class UploaderEncryptor:
 
             shutil.copy2(sourcepath, dstpath)
             processed_filepaths.append(dstpath)
-
-        # shutil.rmtree(srcdir)
 
         return processed_filepaths
 
