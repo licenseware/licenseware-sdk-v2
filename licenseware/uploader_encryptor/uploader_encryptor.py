@@ -75,8 +75,8 @@ class UploaderEncryptor:
         self.columns = columns or []
         self.encryption_password = encryption_password or "password"
         self.encryption_parameters = self.get_encryption_parameters()
-        self.start_tag = "#startcrypted#"
-        self.end_tag = "#endcrypted#"
+        self.start_tag = "#sc#"
+        self.end_tag = "#ec#"
         self.store = None
         
 
@@ -163,12 +163,8 @@ class UploaderEncryptor:
             if srcdir is None:
                 srcpathli = sourcepath.split(os.path.sep)
                 srcdir = srcpathli[0]
-                if srcdir.startswith("."): # handle relative paths
-                    dstdir = f"{enctype}ed"
-                else:
-                    dstdir = srcdir + f"_{enctype}ed"
-                
-
+                dstdir = os.path.join(srcdir, f"{enctype}ed")
+            
             dstpathli = [dstdir] + destinationpath.split(os.path.sep)[1:]
             dstpath = os.path.join(*dstpathli)
 
