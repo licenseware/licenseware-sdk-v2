@@ -76,7 +76,7 @@ class UploaderEncryptor:
         self.encryption_password = encryption_password or "password"
         self.encryption_parameters = self.get_encryption_parameters()
         self.start_tag = "#sc#"
-        self.end_tag = "#sc#"
+        self.end_tag = "#ec#"
         self.store = None
         
 
