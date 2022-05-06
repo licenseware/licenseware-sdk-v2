@@ -29,7 +29,8 @@ else:
         delete_collection, 
         aggregate,
         get_collection,
-        distinct
+        distinct,
+        create_collection
     ) 
 
     from .mongo_connection import collection
