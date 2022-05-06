@@ -97,6 +97,7 @@ from bson.json_util import dumps
 from bson.objectid import ObjectId
 from pymongo.write_concern import WriteConcern
 from pymongo.read_concern import ReadConcern
+from pymongo.errors import CollectionInvalid
 
 from licenseware.utils.logger import log
 
@@ -629,3 +630,41 @@ def insert_many(schema, data: list, collection: str, db_name: str=None, ordered:
                 ordered=ordered
             )
         return resp
+
+
+def create_timeseries_collection(collection_name: str, db_name: str=None, timeseries_config: dict=None):
+    db_name = get_db_name(db_name=db_name)
+    with Connect.get_connection() as mongo_connection:
+        db_conn = mongo_connection[db_name]
+        try:
+            db_conn.create_collection(
+                name=collection_name,
+                timeseries=timeseries_config
+            )
+        except Exception as err:
+            if "already exists" in err._message:
+                log.info(f"Collection {collection_name} already exists, skipping.")
+            else:
+                log.error(f"Could not create collection {collection_name}")
+
+
+def create_collection(collection_name: str, db_name: str=None, timeseries_config: dict=None):
+    # TODO generalize this overall for mongo dbs and collections to add indexes and any other config.
+    db_name = get_db_name(db_name=db_name)
+    if timeseries_config:
+        return create_timeseries_collection(
+            collection_name=collection_name,
+            timeseries_config=timeseries_config,
+            db_name=db_name
+        )
+    with Connect.get_connection() as mongo_connection:
+        db_conn = mongo_connection[db_name]
+        try:
+            db_conn.create_collection(
+                name=collection_name,
+            )
+        except Exception as err:
+            if "already exists" in err._message:
+                log.info(f"Collection {collection_name} already exists, skipping.")
+            else:
+                log.error(f"Could not create collection {collection_name}")

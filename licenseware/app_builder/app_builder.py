@@ -27,6 +27,9 @@ from licenseware.utils.dramatiq_redis_broker import broker
 from licenseware.utils.miscellaneous import swagger_authorization_header
 from licenseware.editable_table import EditableTable
 from licenseware.schema_namespace import SchemaNamespace
+from licenseware.mongodata import create_collection
+
+
 
 from .refresh_registration_route import add_refresh_registration_route
 from .editable_tables_route import add_editable_tables_route
@@ -549,3 +552,10 @@ class AppBuilder:
 
     def add_resource(self, resource: Resource, path: str):
         self.api.add_resource(resource, path)
+
+    def add_collection(self, collection_name: str, db_name: str=None, timeseries_config: dict=None):
+        create_collection(
+            collection_name=collection_name,
+            db_name=db_name,
+            timeseries_config=timeseries_config
+        )
