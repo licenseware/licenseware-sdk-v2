@@ -1,0 +1,58 @@
+from flask import request
+from flask_restx import Namespace, Resource
+from marshmallow import Schema, fields
+from licenseware.decorators import failsafe
+from licenseware.decorators.auth_decorators import authorization_check
+from licenseware.common import marshmallow_to_restx_model
+
+
+ns = Namespace(
+    name="{{ entity_title }}",
+    description="Some description",
+    prefix="/{{ entity_dash }}",
+    decorators=[authorization_check]
+)
+
+
+class {{ entity_title }}Schema(Schema):
+    name = fields.String()
+    address = fields.String()
+
+
+ns_model = marshmallow_to_restx_model(ns, {{ entity_title }}Schema)
+
+
+@ns.route("")
+class {{ entity_title }}Res(Resource):
+
+    @failsafe(fail_code=500)
+    @ns.param("query_param_name", "query_param_description")
+    @ns.response(200, "All good")
+    @ns.response(400, "All bad")
+    def get(self):
+        args = request.args.get("queryparams")
+        return "Add here your processing func"
+
+    @failsafe(fail_code=500)
+    @ns.expect(ns_model, validate=True)
+    @ns.response(200, "All good", model=ns_model)
+    def post(self):
+        args = request.args.get("queryparams")
+        payload = request.json
+        return "Add here your processing func"
+
+    @failsafe(fail_code=500)
+    @ns.expect(ns_model, validate=True)
+    @ns.response(200, "All good", model=ns_model)
+    def put(self):
+        args = request.args.get("queryparams")
+        payload = request.json
+        return "Add here your processing func"
+
+    @failsafe(fail_code=500)
+    @ns.expect(ns_model, validate=True)
+    @ns.response(200, "All good", model=ns_model)
+    def delete(self):
+        args = request.args.get("queryparams")
+        payload = request.json
+        return "Add here your processing func"

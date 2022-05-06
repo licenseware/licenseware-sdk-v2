@@ -9,6 +9,7 @@ import shutil
 import typer
 from .utils import get_env_value, get_random_int
 from .app_pkg_creator import AppPackageCreator
+from .restx_controller_creator import RestxControllerCreator
 from .devops_creator import DevOpsCreator
 from .app_root_files_creator import AppRootFilesCreator
 from .uploader_creator import UploaderCreator
@@ -39,7 +40,16 @@ def new_app(app_id: str):
     typer.echo("App files/folders created")
 
 
-  
+@app.command()
+def new_controller(controller_name: str):
+    """ 
+        Given controller_name create a new flask restx controller 
+    """
+
+    RestxControllerCreator(controller_name).create()
+    typer.echo(f"RestX Controller `{controller_name}` created")
+    
+
         
 @app.command()
 def new_uploader(uploader_id: str):
