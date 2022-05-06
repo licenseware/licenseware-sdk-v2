@@ -1249,9 +1249,12 @@ ifmp_app.register_namespace(custom_ns, path='/ns-prefix')
 
 If the custom namespace created is repetead for all apps consider adding it to `app_builder` package.
 
+You can also use the following CLI command to create a new boilerplate controller:
+```bash
+licenseware new-controller name
+```
 
-
-
+This will create the restx controller and handle the imports.
 
 
 
