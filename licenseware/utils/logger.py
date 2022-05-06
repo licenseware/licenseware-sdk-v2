@@ -90,10 +90,12 @@ CRITICALS = [
     "old_password",
 ]
 
+
 def _get_payload(json_payload):
+    json_payload_str = str(json_payload)
     for key in CRITICALS:
-        with suppress(KeyError):
-            del json_payload[key]
+        if key in json_payload_str:
+            return {"sensitive_information_alert": "no passwords allowed in logger"} 
     return json_payload
 
 
