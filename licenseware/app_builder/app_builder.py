@@ -27,6 +27,7 @@ from licenseware.utils.dramatiq_redis_broker import broker
 from licenseware.utils.miscellaneous import swagger_authorization_header
 from licenseware.editable_table import EditableTable
 from licenseware.schema_namespace import SchemaNamespace
+from licenseware.decorators.xss_decorator import xss_security
 
 from .refresh_registration_route import add_refresh_registration_route
 from .editable_tables_route import add_editable_tables_route
@@ -140,7 +141,10 @@ class AppBuilder:
         self.data_sync_url = envs.BASE_URL + self.data_sync_path
 
         self.authorizations = doc_authorizations
-        self.decorators = api_decorators
+
+        # Add xss security
+        self.decorators = [xss_security] if api_decorators is None else api_decorators + [xss_security] 
+        
         # parameters with default values provided can be added stright to __init__
         # otherwise added them to options until apps are actualized
         self.options = options
