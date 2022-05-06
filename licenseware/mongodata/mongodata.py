@@ -641,6 +641,7 @@ def create_timeseries_collection(collection_name: str, db_name: str=None, timese
                 name=collection_name,
                 timeseries=timeseries_config
             )
+            log.info(f"Successfully created collection {collection_name}.")
         except Exception as err:
             if "already exists" in err._message:
                 log.info(f"Collection {collection_name} already exists, skipping.")
@@ -663,6 +664,7 @@ def create_collection(collection_name: str, db_name: str=None, timeseries_config
             db_conn.create_collection(
                 name=collection_name,
             )
+            log.info(f"Successfully created collection {collection_name}.")
         except Exception as err:
             if "already exists" in err._message:
                 log.info(f"Collection {collection_name} already exists, skipping.")
