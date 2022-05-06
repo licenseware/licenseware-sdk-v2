@@ -10,10 +10,16 @@ class TestXSSDecorator(unittest.TestCase):
     def test_xss_validator(self):
 
         data = {
-            "test": 1
+            "test": "<img onerror=alert(bad)>"
+        }
+
+        with self.assertRaises(Exception):
+            xss_validator(data)
+
+
+        data = {
+            "test": "< good/>"
         }
 
         xss_validator(data)
-
-
 
