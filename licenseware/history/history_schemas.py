@@ -19,8 +19,9 @@ class ProcessingDetailsSchema(Schema):
     step = fields.String(required=True)
     filepath = fields.String(required=True)
     status = fields.String(required=True)
-    success = fields.String(required=False, allow_none=True)
-    error = fields.String(required=False, allow_none=True)
+    # Permisive on_success_save and on_failure_save
+    success = fields.Raw(required=False, allow_none=True)
+    error = fields.Raw(required=False, allow_none=True)
     traceback = fields.String(required=False, allow_none=True)
     callable = fields.String(required=False, allow_none=True)
     source = fields.String(required=False, allow_none=True)

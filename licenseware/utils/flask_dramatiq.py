@@ -61,8 +61,8 @@ licenseware start-background-worker
 """
 
 from flask import Flask
-from dramatiq import set_broker
 from threading import local
+from dramatiq import set_broker
 from dramatiq import Middleware
 from dramatiq import actor as register_actor
 from dramatiq.middleware import default_middleware
@@ -214,7 +214,7 @@ class Dramatiq:
         
     
     def actor(self, fn=None, **kw):
-        
+
         def decorator(fn):
             lazy_actor = LazyActor(self, fn, kw)
             self.actors.append(lazy_actor)
