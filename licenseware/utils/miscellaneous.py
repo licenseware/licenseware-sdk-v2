@@ -21,7 +21,11 @@ def get_flask_request_dict(flask_request: Request):
 
     """Convert flask request object into a dict"""
     flask_headers = dict(flask_request.headers) if flask_request.headers else {}
-    flask_json = dict(flask_request.json) if flask_request.json else {}
+
+    flask_json = {}
+    if flask_request.json is not None:
+        flask_json = {"flask_request_json": flask_request.json}
+      
     flask_args = dict(flask_request.args) if flask_request.args else {}
 
     data = {**flask_json, **flask_headers, **flask_args}
