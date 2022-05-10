@@ -8,17 +8,6 @@ from . import templates, utils
 
 allowed_requests = ["GET", "PUT", "POST", "DELETE", "OPTIONS"]
 
-sdk_routes = [
-    "/activate_app",
-    "/download/{file_type}",
-    "/editable_tables",
-    "/features",
-    "/refresh_registration",
-    "/register_app",
-    "/register_tenant",
-    "/terms_and_conditions",
-]
-
 
 class TestCreator:
     def __init__(
@@ -68,8 +57,6 @@ class TestCreator:
         paths = self.swagger_docs["paths"].keys()
         file_url = {}
         for path in paths:
-            if path in sdk_routes:
-                continue
             route = path
             path = re.sub(r"[^\w\s]", "_", path[1:])
             path = re.sub(r"_{2,100}", "_", path)
