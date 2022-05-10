@@ -48,7 +48,7 @@ class FileUploadEventDataSchema(Schema):
 class FileUploadRespSchema(Schema):
     status = fields.Str()
     message = fields.Str()
-    event_data = fields.List(fields.Nested(FileUploadEventDataSchema))
+    #event_data = fields.List(fields.Nested(FileUploadEventDataSchema))
     event_id = fields.Str()
 
 

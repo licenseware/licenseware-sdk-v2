@@ -217,7 +217,7 @@ class UploaderBuilder:
             return {
                 "status": states.SUCCESS,
                 "message": "Event sent",
-                "event_data": events,
+                # "event_data": events,
             }, 200
         else:
             event.update(
@@ -234,7 +234,7 @@ class UploaderBuilder:
                 return {
                     "status": states.FAILED,
                     "message": "Event not valid",
-                    "event_data": event,
+                    # "event_data": event,
                 }, 400
 
             log.info("Sending event: " + str(event))
@@ -243,7 +243,7 @@ class UploaderBuilder:
             return {
                 "status": states.SUCCESS,
                 "message": "Event sent",
-                "event_data": [event],
+                # "event_data": [event],
             }, 200
 
     def init_tenant_quota(self, tenant_id: str, auth_token: str):
