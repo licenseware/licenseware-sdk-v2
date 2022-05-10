@@ -1,0 +1,14 @@
+import os
+import pytest
+from licenseware import mongodata
+
+
+# pytest tests/test_{{ entity_underscore }}.py
+
+
+def test_{{ entity_underscore }}():
+
+    filespath = "test_files/{{ entity_underscore }}"
+    files = [os.path.join(f, filespath) for f in os.listdir(filespath)]
+    for f in files: assert os.path.exists(f)
+

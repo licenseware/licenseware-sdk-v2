@@ -29,10 +29,14 @@ def increase_quota(uploader_id: str):
 # tox tests/test_*
 # tox tests/{{ test_file_name }}
 
+# pytest tests/test_*
+# pytest tests/{{ test_file_name }}
+
 
 {% for req in request_data %}
 {% if req['method'] == 'get' %}
 # tox tests/{{ test_file_name }}::{{ test_function_name + '_get' }}
+# pytest tests/{{ test_file_name }}::{{ test_function_name + '_get' }}
 def {{ test_function_name + '_get' }}(c: Client):
     """ {{ req['doc'] }} """
     

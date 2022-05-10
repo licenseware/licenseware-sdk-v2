@@ -16,6 +16,7 @@ from .uploader_creator import UploaderCreator
 from .report_creator import ReportCreator
 from .report_component_creator import ReportComponentCreator
 from .test_creator import TestCreator
+from .unittest_file_creator import UnittestFileCreator
 
 
 
@@ -44,12 +45,23 @@ def new_app(app_id: str):
 def new_controller(controller_name: str):
     """ 
         Given controller_name create a new flask restx controller 
+        Imports and registration will be handled automatically
     """
 
     RestxControllerCreator(controller_name).create()
     typer.echo(f"RestX Controller `{controller_name}` created")
     
 
+@app.command()
+def new_unittest(test_name: str):
+    """ 
+        Given test_name create a new unittest for pytest
+        It will create also a folder for test files
+    """
+
+    UnittestFileCreator(test_name).create()
+    typer.echo(f"Unittest `{test_name}` created")
+    
         
 @app.command()
 def new_uploader(uploader_id: str):
