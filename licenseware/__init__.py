@@ -39,20 +39,39 @@ Basic app flow:
 
 Here are the steps needed for local development of an app:
 
-- Install the sdk : `pip3 install git+https://git@github.com/licenseware/licenseware-sdk-v2.git`;
+- Install the sdk globally or on a virtual environment (python3.8) with the following command: `pip3 install git+https://git@github.com/licenseware/licenseware-sdk-v2.git`;
+- Create a github repository following this naming convention `xxxx-service` (where `xxxx` it's an unique lowercase acronym for the service);
 - Clone the repo for your service;
 - CD in the cloned repo locally;
-- Create a new app : `licenseware new-app odb`;
-- Create a new uploader: `licenseware new-uploader lms_options`;
-- Update modules `validator.py` `worker.py` as per processing requirements needs for `lms_options` uploader_id. Modules created will be found here: `app/uploaders/lms_options`
-- Open the first terminal start the mock-server : `licenseware run-dev`;
-- Copy `docker-compose.yml` file to `Documents` folder start the databases `docker-compose up -d`;
+- Create a new app with the same name as the github repository: `licenseware new-app xxxx-service`;
+- Run `licenseware --help` to see more commands;
 
-You will have mongoexpress running at: `http://localhost:8081/`
 
-If ports are blocked by another process and you can't start the development servers use the commands bellow (ubuntu/debian):
-- `sudo fuser -k 4000/tcp` - kill process running on port `4000` to start the mock server;
-- `sudo fuser -k 5000/tcp` - kill process running on port `5000` to start the dev server;
+Each app depends on 2 services to run:
+- [Authentification service](https://github.com/licenseware/auth-service);
+- [Registry service](https://github.com/licenseware/registry-service);
+
+
+1. Runing the app with `stack-manager` which make available the Authentification service and Registry service:
+- [Click here and follow the stack manager docs](https://github.com/licenseware/stack-manager-v2)
+- If you have the stack-manager up and running and want to run the app without docker you can start locally with:
+    - `make run-local` (the url will be available at `http://localhost:5000/your-app-id/docs`)
+
+
+2. Running the app without `stack-manager`:
+
+- make sure you have the default mongo connection string for mongo installed locally (`mongodb://localhost:27017/db`);
+- if mongo in docker works on MAC M1 then you can use the following make commands: `make start-mongo`, `make stop-mongo`, `make logs-mongo`;
+- you will have mongoexpress running at: `http://localhost:8081/`.
+- `make run-nostack-mongo` (this will start the app with only mongodb as a dependency);
+- open url `localhost:5000/api/docs` for swagger endpoint testing;
+
+3. Running the app without any external dependency:
+- `make run-nostack-nomongo` (this will start the app without needing mongodb up and running. 
+                            It uses [mongita](https://github.com/scottrogowski/mongita) to save data. 
+                            Mongita doesn't support aggregation pipelines so this method should be avoided.
+                            Also you can't view data with MongoDB Compass or Mongo Express.
+                        ); 
 
 
 ## Installation 
@@ -408,16 +427,33 @@ App.register_report(virtualization_details_report)
 # CUSTOM RESTX NAMESPACES
 # We can add also custom namespaces to main IFMP Api
 
-custom_ns = Namespace(
-    name="Custom", 
-    description="This is a custom namespace with the app prefix"
-)
+from flask import Flask, request
+import flask_restx as restx
+from flask_restx import Resource, Api
+import marshmallow as ma
+from licenseware.common import marshmallow_to_restx_model # import the converter function
 
-@custom_ns.route("/custom-api-route")
-class CustomApiRoute(Resource):    
-    @custom_ns.doc("custom")
-    def get(self):
-        return "custom-api-route"
+app = Flask(__name__)
+api = Api(app)
+
+
+class SimpleNestedSchema(ma.Schema):
+    simple_nested_field = ma.fields.String(required=False, metadata={'description': 'the description of simple_nested_field'})
+
+class SimpleSchema(ma.Schema):
+    simple_field1 = ma.fields.String(required=True, metadata={'description': 'the description of simple_field1'})
+    simple_nest = ma.fields.Nested(SimpleNestedSchema)
+
+# Give it as parameters the flask-restx `Api` or `Namespace` instance and the Marshmallow schema
+simple_nest_from_schema = marshmallow_to_restx_model(api, SimpleSchema)
+
+
+@api.route('/marshmallow-simple-nest')
+class MaSimpleNest(Resource):
+    # Place it where you need a restx model
+    @api.expect(simple_nest_from_schema, validate=True)
+    def post(self):
+        return request.json
     
 # Add it to main app 
 # it will have the same namespace prefix /ifmp/v1/ + ns-prefix/custom-api-route
@@ -1214,9 +1250,12 @@ ifmp_app.register_namespace(custom_ns, path='/ns-prefix')
 
 If the custom namespace created is repetead for all apps consider adding it to `app_builder` package.
 
+You can also use the following CLI command to create a new boilerplate controller:
+```bash
+licenseware new-controller name
+```
 
-
-
+This will create the restx controller and handle the imports.
 
 
 
@@ -1488,6 +1527,9 @@ All imports an routes will be handled by the licenseware sdk.
 To sparse the logic you can create multiple sub-packages/modules.
 
 
+**For more information inspect licenseware package**
+
+
 <a name="working-on-sdk"></a>
 # Working on SDK
 
@@ -1506,10 +1548,4 @@ To sparse the logic you can create multiple sub-packages/modules.
 baton -u http://localhost/appid/yourendpoint -c 10 -r 10000
 ```
 
-# TODO
-
-
 '''
-
-# from licenseware.utils.miscellaneous import set_environment_variables
-# set_environment_variables(env_path="./.env")
