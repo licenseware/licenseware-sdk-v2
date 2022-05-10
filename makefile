@@ -66,8 +66,7 @@ sdk-dev-docs:
 	pdoc --http : licenseware
 
 sdk-docs:
-	echo "Make sure to uninstall `licenseware` package if you have it installed globally"
-	pdoc --html --output-dir sdk-docs licenseware
+	export ENVIRONMENT=desktop && pdoc --html --output-dir sdk-docs licenseware
 	
 
 force-install-sdk:
