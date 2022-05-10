@@ -66,8 +66,8 @@ from .features_namespace import get_features_namespace
 from .data_sync_namespace import data_sync_namespace
 from .data_sync_namespace import get_data_sync_namespace
 
-from .decrypt_namespace import decrypt_namespace
-from .decrypt_namespace import get_decrypt_namespace
+# from .decrypt_namespace import decrypt_namespace
+# from .decrypt_namespace import get_decrypt_namespace
 
 
 from .download_as_route import add_download_as_route
@@ -262,7 +262,7 @@ class AppBuilder:
         self.add_editables_routes()
         self.add_features_routes()
         self.add_data_sync_routes()
-        self.add_decrypt_routes()
+        #self.add_decrypt_routes()
 
 
     def add_uploads_routes(self):
@@ -332,14 +332,14 @@ class AppBuilder:
                 func(ns=data_sync_namespace, data_sync_schema=self.data_sync_schema)
             )
 
-    def add_decrypt_routes(self):
+    # def add_decrypt_routes(self):
 
-        ns_funcs = [get_decrypt_namespace]
+    #     ns_funcs = [get_decrypt_namespace]
 
-        for func in ns_funcs:
-            self.register_namespace(
-                func(ns=decrypt_namespace)
-            )
+    #     for func in ns_funcs:
+    #         self.register_namespace(
+    #             func(ns=decrypt_namespace)
+    #         )
 
     def get_serialized_app_dict(self):
 
