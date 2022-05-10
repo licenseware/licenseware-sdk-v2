@@ -12,7 +12,8 @@ if os.getenv("ENVIRONMENT") == "desktop" and os.getenv("MONGOLOCAL", "false") ==
         delete_collection, 
         aggregate,
         get_collection,
-        distinct
+        distinct,
+        create_collection
     ) 
 
     from .mongita_connection import collection
