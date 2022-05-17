@@ -1,5 +1,5 @@
 import re
-from flask import request
+from flask import request, Request
 from functools import wraps
 from licenseware.utils.logger import log
 from licenseware.utils.miscellaneous import get_flask_request_dict
@@ -95,3 +95,16 @@ def xss_security(f):
             return {'status': states.FAILED, 'message': "These inputs are not allowed (posible XSS)", 'reason': str(err)}, 406
         
     return decorated
+
+
+
+def xss_before_request():
+
+    request_dict = get_flask_request_dict(request)
+
+    try:
+        xss_validator(request_dict)
+    except Exception as err:    
+        log.warning(f'XSS ATTEMPT | Request headers: {dict(request.headers)} | URL {request.url} | Message: {request_dict}')
+        return {'status': states.FAILED, 'message': "These inputs are not allowed (posible XSS)", 'reason': str(err)}, 406
+

@@ -27,7 +27,7 @@ from licenseware.utils.dramatiq_redis_broker import broker
 from licenseware.utils.miscellaneous import swagger_authorization_header
 from licenseware.editable_table import EditableTable
 from licenseware.schema_namespace import SchemaNamespace
-from licenseware.decorators.xss_decorator import xss_security
+from licenseware.decorators.xss_decorator import xss_security, xss_before_request
 from licenseware.mongodata import create_collection
 
 from .refresh_registration_route import add_refresh_registration_route
@@ -143,9 +143,10 @@ class AppBuilder:
 
         self.authorizations = doc_authorizations
 
-        # Add xss security
-        self.decorators = [xss_security] if api_decorators is None else api_decorators + [xss_security] 
-        
+        # Add xss security (Got  bad request with this)
+        # self.decorators = [xss_security] if api_decorators is None else api_decorators + [xss_security] 
+        self.decorators = [] if api_decorators is None else api_decorators
+
         # parameters with default values provided can be added stright to __init__
         # otherwise added them to options until apps are actualized
         self.options = options
@@ -185,8 +186,9 @@ class AppBuilder:
 
             return response
 
-        # TODO CORS protection
-        # CORS(app)
+        # Trying this instead of a decorator
+        app.before_request(xss_before_request)
+
 
         self.app = app
 
