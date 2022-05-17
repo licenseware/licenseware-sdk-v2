@@ -17,3 +17,4 @@ from .register_report_payload_schema import RegisterReportPayloadSchema
 from .register_report_component_payload import RegisterReportComponentPayloadSchema
 from .wild_schema import WildSchema
 from .features_schema import FeaturesSchema
+from .integration_details_schema import IntegrationDetailsSchema

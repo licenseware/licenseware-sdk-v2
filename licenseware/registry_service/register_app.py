@@ -35,11 +35,13 @@ def register_app(**kwargs):
             "history_report_url": kwargs['history_report_url'],
             "tenant_registration_url": kwargs['tenant_registration_url'],
             "terms_and_conditions_url": kwargs['terms_and_conditions_url'],
-            "app_meta": kwargs['app_meta']
+            "app_meta": kwargs['app_meta'],
+            "integration_details": kwargs['integration_details']
         }]
     }
 
     log.info(payload)
+    # TODO - we should validate this earlier on init
     # validate_register_app_payload(payload)
 
     headers = {"Authorization": envs.get_auth_token()}
