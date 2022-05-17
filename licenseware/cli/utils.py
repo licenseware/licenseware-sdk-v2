@@ -4,7 +4,7 @@ import random
 
 
 def get_random_int():
-    return random.randint(1000, 9999)
+    return random.randint(10, 99)
 
 
 def get_env_value(envkey: str):

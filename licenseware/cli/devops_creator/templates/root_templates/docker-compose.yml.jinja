@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   {{ entity_dash }}:
-    image: ghcr.io/licenseware/odb-service:{% raw %}${{% endraw %}{{ entity_underscore_upper }}_IMAGE_TAG:-latest{% raw %}}{% endraw %}
+    image: ghcr.io/licenseware/{{ entity_dash }}:{% raw %}${{% endraw %}{{ entity_underscore_upper }}_IMAGE_TAG:-latest{% raw %}}{% endraw %}
     build:
       context: .
       dockerfile: Dockerfile.stack

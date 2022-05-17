@@ -41,7 +41,10 @@ class TestCreator:
             try:
                 return requests.get(self.swagger_url.replace('localhost', 'localhost:5000'), timeout=5).json()
             except:
-                raise Exception(f"URL: {self.swagger_url} not responding")
+                try:
+                    return requests.get(self.swagger_url.replace('-service', ''), timeout=5).json()
+                except:
+                    raise Exception(f"URL: {self.swagger_url} not responding")
 
     def get_swagger_docs_from_path(self):
         with open(self.swagger_path, "r") as j:

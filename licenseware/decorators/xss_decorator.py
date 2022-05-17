@@ -37,36 +37,44 @@ def xss_validator(request_dict: dict):
     if not re.search(r"<|>", string, re.I): return
 
     # string = "hTTP-EQUIV=XXXX with a folowup of charset=XXXXXX"
-    if re.search(r"HTTP-EQUIV\s{0,}=\s{0,}.*charset\s{0,}=\s{0,}.*", string, re.I):
-        raise Exception("Attempt at changing page charset!")
+    charset_change = re.search(r"HTTP-EQUIV\s{0,}=\s{0,}.*charset\s{0,}=\s{0,}.*", string, re.I)
+    if charset_change:
+        raise Exception(f"1.Attempt at changing page charset on: {charset_change.group()}")
 
     # string = "onclick = alert(XXXX);"
-    if re.search(r"on.{1,}\s{0,}=\s{0,}.{1,}", string, re.I):
-        raise Exception("Attempt at adding dom events!")
+    onchange_event = re.search(r"on.{1,}\s{0,}=\s{0,}.{1,}", string, re.I)
+    if onchange_event:
+        raise Exception(f"2.Attempt at adding js events on: {onchange_event.group()}")
 
     # string="JavaSCript: alert(x)"
-    if re.search(r"javascript\s{0,}:\s{0,}.{1,}", string, re.I):
-        raise Exception("Attempt at adding dom events!")
+    jsonchange_event = re.search(r"javascript\s{0,}:\s{0,}.{1,}", string, re.I)
+    if jsonchange_event:
+        raise Exception(f"3.Attempt at adding js events on: {jsonchange_event.group()}")
 
     # string="SRC=XX"
-    if re.search(r"src\s{0,}=\s{0,}.{1,}", string, re.I):
-        raise Exception("Attempt at adding dom events!")
+    js_script = re.search(r"src\s{0,}=\s{0,}.{1,}", string, re.I)
+    if js_script:
+        raise Exception(f"4.Attempt at adding inserting a js script on: {js_script.group()}")
 
     # string="a script img iframe, FRAMESET, EMBED, svg, input"
-    if re.search(r"a\s{1,}|script\s{1,}|img\s{1,}|iframe\s{1,}|frameset\s{1,}|embed\s{1,}|svg\s{1,}|input\s{1,}", string, re.I):
-        raise Exception("Attempt at adding dom events!")
+    mjs_script = re.search(r"a\s{1,}|script\s{1,}|img\s{1,}|iframe\s{1,}|frameset\s{1,}|embed\s{1,}|svg\s{1,}|input\s{1,}", string, re.I)
+    if mjs_script:
+        raise Exception(f"5.Attempt at adding inserting a script on: {mjs_script.group()}")
 
     # string="href=XX"
-    if re.search(r"href\s{0,}=\s{0,}.{1,}", string, re.I):
-        raise Exception("Attempt at adding dom events!")
+    link = re.search(r"href\s{0,}=\s{0,}.{1,}", string, re.I)
+    if link:
+        raise Exception(f"6.Attempt at adding a malicious link at: {link.group()}")
 
     # string="<!-- XXXX --> <? php ?>"
-    if re.search(r"<!--.*-->|<\?.*\?>", string, re.I):
-        raise Exception("Attempt at adding dom events!")
+    comments = re.search(r"<!--.*-->|<\?.*\?>", string, re.I)
+    if comments:
+        raise Exception(f"7.Attempt at adding js script inside comments on: {comments.group()}")
 
     # string="alert(XXXX), confirm(XXXX), prompt(XXXX), eval(XXXX)"
-    if re.search(r"alert\(.*\)|confirm\(.*\)|prompt\(.*\)|eval\(.*\)", string, re.I):
-        raise Exception("Attempt at adding dom events!")
+    js_alerts = re.search(r"alert\(.*\)|confirm\(.*\)|prompt\(.*\)|eval\(.*\)", string, re.I)
+    if js_alerts:
+        raise Exception(f"8.Attempt at adding js dialog boxes on: {js_alerts.group()}")
 
 
 
@@ -82,8 +90,8 @@ def xss_security(f):
         try:
             xss_validator(request_dict)
             return f(*args, **kwargs)
-        except:    
+        except Exception as err:    
             log.warning(f'XSS ATTEMPT | Request headers: {dict(request.headers)} | URL {request.url} | Message: {request_dict}')
-            return {'status': states.FAILED, 'message': "These inputs are not allowed"}, 406
+            return {'status': states.FAILED, 'message': "These inputs are not allowed (posible XSS)", 'reason': str(err)}, 406
         
     return decorated
