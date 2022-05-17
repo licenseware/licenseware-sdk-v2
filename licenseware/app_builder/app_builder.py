@@ -10,7 +10,6 @@ from typing import List, Callable, Dict
 from dataclasses import dataclass
 
 from flask import Flask
-from flask_cors import CORS
 from flask_restx import Api, Namespace, Resource
 from marshmallow.schema import Schema
 
@@ -27,7 +26,7 @@ from licenseware.utils.dramatiq_redis_broker import broker
 from licenseware.utils.miscellaneous import swagger_authorization_header
 from licenseware.editable_table import EditableTable
 from licenseware.schema_namespace import SchemaNamespace
-from licenseware.decorators.xss_decorator import xss_security, xss_before_request
+from licenseware.decorators.xss_decorator import xss_before_request
 from licenseware.mongodata import create_collection
 
 from .refresh_registration_route import add_refresh_registration_route
@@ -73,6 +72,9 @@ from .data_sync_namespace import get_data_sync_namespace
 from .download_as_route import add_download_as_route
 
 
+from licenseware.common.validators import validate_integration_details
+
+
 # TODO there are some paths in both envs and base paths identify them and remove redundant data
 @dataclass
 class base_paths:
@@ -101,6 +103,7 @@ class AppBuilder:
         broker_funcs: Dict[str, List[Callable]] = None,
         doc_authorizations: dict = swagger_authorization_header,
         api_decorators: list = None,
+        integration_details: List[dict] = None,
         icon: str = "default.png",
         **options,
     ):
@@ -122,6 +125,11 @@ class AppBuilder:
         self.broker_funcs = broker_funcs
         self.icon = icon
 
+        if integration_details is not None:
+            validate_integration_details(integration_details)
+        
+        self.integration_details = integration_details
+
         self.app_activation_path = base_paths.app_activation_path
         self.register_app_path = base_paths.register_app_path
         self.refresh_registration_path = base_paths.refresh_registration_path
@@ -142,9 +150,6 @@ class AppBuilder:
         self.data_sync_url = envs.BASE_URL + self.data_sync_path
 
         self.authorizations = doc_authorizations
-
-        # Add xss security (Got  bad request with this)
-        # self.decorators = [xss_security] if api_decorators is None else api_decorators + [xss_security] 
         self.decorators = [] if api_decorators is None else api_decorators
 
         # parameters with default values provided can be added stright to __init__
@@ -167,6 +172,7 @@ class AppBuilder:
 
         # This hides flask_restx `X-fields` from swagger headers
         app.config["RESTX_MASK_SWAGGER"] = False
+        app.before_request(xss_before_request)
 
         @app.after_request
         def after_request(response):
@@ -185,10 +191,6 @@ class AppBuilder:
             response.headers['X-Content-Type-Options'] = 'nosniff'
 
             return response
-
-        # Trying this instead of a decorator
-        app.before_request(xss_before_request)
-
 
         self.app = app
 
@@ -363,6 +365,7 @@ class AppBuilder:
                 "terms_and_conditions_url",
                 "features_url",
                 "app_meta",
+                "integration_details"
             ]
         }
 

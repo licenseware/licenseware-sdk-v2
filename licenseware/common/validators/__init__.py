@@ -10,3 +10,4 @@ from .validate_icon import validate_icon
 from .validate_uuid4 import validate_uuid4
 from .validate_event import validate_event
 from .validate_base64 import validate_base64
+from .validate_integration_details import validate_integration_details
