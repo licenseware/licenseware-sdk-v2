@@ -3,6 +3,7 @@ from marshmallow import (
     fields, 
     validate,    
 )
+from numpy import require
 
 from .report_component_filter_schema import FilterSchema
 from .report_component_schema import ComponentSchema
@@ -21,6 +22,7 @@ class ReportSchema(Schema):
     preview_image_url = fields.Url(required=False, allow_none=True)
     preview_image_dark_url = fields.Url(required=False, allow_none=True)
     registrable = fields.Boolean(required=False, allow_none=True)
+    private_for_tenants = fields.List(fields.Str, required=False, allow_none=True)
 
 
 class RegisterReportPayloadSchema(Schema):
