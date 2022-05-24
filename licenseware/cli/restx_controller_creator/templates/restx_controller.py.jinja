@@ -9,7 +9,7 @@ from licenseware.common import marshmallow_to_restx_model
 ns = Namespace(
     name="{{ entity_title }}",
     description="Some description",
-    prefix="/{{ entity_dash }}",
+    path="/{{ entity_dash }}",
     decorators=[authorization_check]
 )
 
@@ -26,6 +26,7 @@ ns_model = marshmallow_to_restx_model(ns, {{ entity_title }}Schema)
 class {{ entity_title }}Res(Resource):
 
     @failsafe(fail_code=500)
+    @ns.doc(description="Get some data")
     @ns.param("query_param_name", "query_param_description")
     @ns.response(200, "All good")
     @ns.response(400, "All bad")
@@ -34,6 +35,7 @@ class {{ entity_title }}Res(Resource):
         return "Add here your processing func"
 
     @failsafe(fail_code=500)
+    @ns.doc(description="Post some data")
     @ns.expect(ns_model, validate=True)
     @ns.response(200, "All good", model=ns_model)
     def post(self):
@@ -42,6 +44,7 @@ class {{ entity_title }}Res(Resource):
         return "Add here your processing func"
 
     @failsafe(fail_code=500)
+    @ns.doc(description="Put some data")
     @ns.expect(ns_model, validate=True)
     @ns.response(200, "All good", model=ns_model)
     def put(self):
@@ -50,6 +53,7 @@ class {{ entity_title }}Res(Resource):
         return "Add here your processing func"
 
     @failsafe(fail_code=500)
+    @ns.doc(description="Delete some data")
     @ns.expect(ns_model, validate=True)
     @ns.response(200, "All good", model=ns_model)
     def delete(self):
