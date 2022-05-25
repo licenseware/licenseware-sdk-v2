@@ -30,12 +30,17 @@ def unzip(file_path: str):
     if not is_archive(file_path): 
         raise ValueError(f"Invalid archive type, currently accepting: {accepted_archives}")
 
-    os.chmod(file_path, 0o777)
     
     file_name = os.path.basename(file_path)
     file_dir = os.path.dirname(file_path)
     extract_path = os.path.join(file_dir, file_name + "_extracted")
-    shutil.unpack_archive(file_path, extract_path)
+    
+    try:
+        shutil.unpack_archive(file_path, extract_path)
+    except:
+        if os.path.exists(extract_path):
+            shutil.rmtree(extract_path, ignore_errors=True)
+        shutil.unpack_archive(file_path, extract_path)
 
     return extract_path
 
