@@ -1,6 +1,6 @@
 import os, re
 import shutil
-
+import subprocess
 from licenseware.common.constants import envs
 from licenseware.utils.logger import log
 from werkzeug.utils import secure_filename as werkzeug_secure_filename
@@ -38,9 +38,17 @@ def unzip(file_path: str):
     try:
         shutil.unpack_archive(file_path, extract_path)
     except:
-        if os.path.exists(extract_path):
-            shutil.rmtree(extract_path, ignore_errors=True)
-        shutil.unpack_archive(file_path, extract_path)
+        # RUN apt install bzip2
+        shutil.rmtree(extract_path)
+        os.chmod(file_path, 432) # 432 is the int representation of the oct 660
+        cmd1 = ['mkdir', '-p', extract_path]
+        cmd = ['/bin/tar', '-xvf', file_path, '-C', extract_path]
+        subprocess.Popen(cmd1)
+        error = subprocess.Popen(cmd)
+        log.warning(error)
+    finally:
+        if not os.path.exists(extract_path):
+            os.makedirs(extract_path)
 
     return extract_path
 
