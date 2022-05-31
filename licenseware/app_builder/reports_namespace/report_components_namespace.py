@@ -46,16 +46,15 @@ def get_report_components_namespace(ns: Namespace, reports: List[ReportBuilder])
         column=fields.String,
         filter_type=fields.String,
         filter_value=fields.List(fields.String)
-    )
-                           )
+    ))
 
     for report in reports:
         for comp in report.components:
             ComponentRes = create_individual_report_component_resource(comp)
 
             params = {}
-            params[comp.component_id + '_limit'] = {'description': 'Rep. component: Limit the number of results'}
-            params[comp.component_id + '_skip'] = {'description': 'Rep. component: Skip the first n results'}
+            params[comp.component_id + '_limit'] = {'description': 'Limit the number of results'}
+            params[comp.component_id + '_skip'] = {'description': 'Skip the first n results'}
 
             docs = {
                 'get': {
