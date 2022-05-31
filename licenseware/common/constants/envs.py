@@ -20,21 +20,7 @@ That way we can call them like this `envs.get_auth_token()` instead of this `env
 import os
 import uuid
 from dataclasses import dataclass
-
-
-def get_upload_path_on_desktop():
-
-    default_upload_path = os.path.join(os.getcwd(), 'uploaded_files')
-    upload_path_file = os.path.join(os.getcwd(), "upload_path.txt")
-    if os.path.exists(upload_path_file):
-        with open(upload_path_file, "r") as f:
-            upload_path = f.read()
-        if upload_path == "":
-            return default_upload_path
-        else:
-            return upload_path
-
-    return default_upload_path
+from .envs_helpers import get_mongo_connection_string, get_upload_path_on_desktop
 
 
 # Atention!
@@ -47,14 +33,14 @@ class envs:
     # Environment variables available at startup
     DESKTOP_ENVIRONMENT: bool = os.getenv("ENVIRONMENT") == "desktop"
     DESKTOP_TENANT_ID: str = str(uuid.uuid5(uuid.NAMESPACE_OID, "desktop-user")) # '2655d513-9883-5b7e-8a14-c030bc1ca3b8'
-    APP_ID: str = os.environ["APP_ID"] if not DESKTOP_ENVIRONMENT else 'api'
-    LWARE_USER: str = os.environ["LWARE_IDENTITY_USER"] if not DESKTOP_ENVIRONMENT else 'user'
-    LWARE_PASSWORD: str = os.environ["LWARE_IDENTITY_PASSWORD"] if not DESKTOP_ENVIRONMENT else 'pass'
+    APP_ID: str = os.getenv("APP_ID", "") if not DESKTOP_ENVIRONMENT else 'api'
+    LWARE_USER: str = os.getenv("LWARE_IDENTITY_USER", "") if not DESKTOP_ENVIRONMENT else 'user'
+    LWARE_PASSWORD: str = os.getenv("LWARE_IDENTITY_PASSWORD", "") if not DESKTOP_ENVIRONMENT else 'pass'
     DEBUG: bool = os.getenv("DEBUG") == "true"
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "production") if not DESKTOP_ENVIRONMENT else 'desktop'
     USE_BACKGROUND_WORKER: bool = os.getenv("USE_BACKGROUND_WORKER", "true") == "true" if not DESKTOP_ENVIRONMENT else False
 
-    AUTH_SERVICE_URL: str = os.environ["AUTH_SERVICE_URL"] if not DESKTOP_ENVIRONMENT else 'http://localhost:5000/api/auth'
+    AUTH_SERVICE_URL: str = os.getenv("AUTH_SERVICE_URL", "") if not DESKTOP_ENVIRONMENT else 'http://localhost:5000/api/auth'
     AUTH_MACHINES_URL: str = AUTH_SERVICE_URL + "/machines"
     AUTH_MACHINE_CHECK_URL: str = AUTH_SERVICE_URL + "/machine_authorization"
     AUTH_USER_CHECK_URL: str = AUTH_SERVICE_URL + "/verify"
@@ -62,7 +48,7 @@ class envs:
     AUTH_USER_PROFILE_URL: str = AUTH_SERVICE_URL + "/profile"
     AUTH_USER_TABLES_URL: str = AUTH_SERVICE_URL + "/users/tables"
 
-    REGISTRY_SERVICE_URL: str = os.environ["REGISTRY_SERVICE_URL"] if not DESKTOP_ENVIRONMENT else 'http://localhost:5000/api/registry-service'
+    REGISTRY_SERVICE_URL: str = os.getenv("REGISTRY_SERVICE_URL", "") if not DESKTOP_ENVIRONMENT else 'http://localhost:5000/api/registry-service'
     REGISTER_ALL_URL: str = REGISTRY_SERVICE_URL + "/v1" + "/registrations"
     REGISTER_APP_URL: str = REGISTRY_SERVICE_URL + "/v1" + "/apps"
     REGISTER_UPLOADER_URL: str = REGISTRY_SERVICE_URL + "/v1" + "/uploaders"
@@ -73,7 +59,7 @@ class envs:
     REGISTER_REPORT_URL: str = REGISTRY_SERVICE_URL + "/v1" + "/reports"
     REGISTER_REPORT_COMPONENT_URL: str = REGISTER_REPORT_URL + "/v1" + "/components"
 
-    APP_HOST: str = os.environ['APP_HOST'] if not DESKTOP_ENVIRONMENT else 'http://localhost:5000'
+    APP_HOST: str = os.getenv('APP_HOST', "") if not DESKTOP_ENVIRONMENT else 'http://localhost:5000'
     QUEUE_NAME: str = APP_ID if os.path.exists("Procfile.local") else APP_ID.replace("-service", "")
     APP_PATH: str = "/" + QUEUE_NAME
     BASE_URL: str = APP_HOST + APP_PATH
@@ -95,7 +81,7 @@ class envs:
         os.getenv("MONGO_DATABASE_NAME") or os.getenv("MONGO_DB_NAME") or "db"
     )
     MONGO_CONNECTION_STRING: str = (
-        os.getenv("MONGO_CONNECTION_STRING") or "mongodb://localhost:27017/db"
+        os.getenv("MONGO_CONNECTION_STRING") or get_mongo_connection_string()
     )
 
     # !!! Add here ONLY collection names that are USED on ALL or MOST of the APPS !!!

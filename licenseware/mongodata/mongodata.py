@@ -100,7 +100,7 @@ from pymongo.read_concern import ReadConcern
 from pymongo.errors import CollectionInvalid
 
 from licenseware.utils.logger import log
-
+from licenseware.common.constants import envs
 
 
 
@@ -208,7 +208,7 @@ def return_collection_name(collection):
 class Connect(object):
     @staticmethod
     def get_connection():
-        return MongoClient(os.getenv("MONGO_CONNECTION_STRING"))
+        return MongoClient(os.getenv("MONGO_CONNECTION_STRING") or envs.MONGO_CONNECTION_STRING)
 
 
 def get_collection(collection, db_name=None):
