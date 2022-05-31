@@ -9,6 +9,7 @@ from licenseware.download import download_all
 
 
 def create_report_resource(report: ReportBuilder):
+
     class ReportController(Resource):
         @failsafe(fail_code=500)
         @authorization_check
@@ -36,27 +37,43 @@ def create_report_resource(report: ReportBuilder):
 
 
 def get_report_metadata_namespace(ns: Namespace, reports: List[ReportBuilder]):
-    for report in reports:
-        RR = create_report_resource(report)
 
-        @ns.doc(
-            description="Get report metadata",
-            responses={
-                200: 'Success',
-                403: "Missing `Tenantid` or `Authorization` information",
-                500: 'Something went wrong while handling the request'
-            },
-        )
-        @ns.param(name="download_as", description="Download all report components in csv, xlsx or pdf format.")
-        @ns.param(name="latest", description="Get latest saved report") # TODO remove when report_snapshot ready
-        class TempReportResource(RR): ...
+    for report in reports:
+
+        RR = create_report_resource(report)
+        
+        # Each table component must have limit/skip to avoid mongo document to large error
+        params = {}
+        for comp in report.components:
+            if comp.component_type != "table": continue
+            params[comp.component_id + "_limit"] = {'description': 'Limit the number of results'}
+            params[comp.component_id + "_skip"] = {'description': 'Skip the first n results'}
+            
+        docs = {
+            'get': {
+                'description': 'Get report metadata',
+                'params': {
+                    **params,
+                    'latest': {'description': 'Get the report in one call'},
+                    'download_as': {'description': 'Download table component as file type: csv, xlsx, json'}
+                },
+                'responses': {
+                    200: 'Success',
+                    403: 'Missing `Tenantid` or `Authorization` information',
+                    500: 'Something went wrong while handling the request'
+                }
+            }
+        }
+
+        RR.__apidoc__ = docs
 
         ReportResource = type(
             report.report_id.replace("_", "").capitalize() + 'metadata',
-            (TempReportResource,),
+            (RR,),
             {}
         )
 
         ns.add_resource(ReportResource, report.report_path)
+
 
     return ns

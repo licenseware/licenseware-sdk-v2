@@ -24,23 +24,24 @@ class {{ entity_title }}(BaseReportComponent):
         
     def get_data(self, flask_request):
 
-        limit = flask_request.args.get("limit")
-        skip = flask_request.args.get("skip")
-
-        if skip and not limit or limit and not skip:
-            return "Limit and skip must be set together", 400
-        
         match_filters = self.get_mongo_match_filters(flask_request)
+        if self.component_type == "table":
+            limit = flask_request.args.get(self.component_id + "_limit")
+            skip = flask_request.args.get(self.component_id + "_skip")
         
         pipeline = [
-            {
-                '$match': match_filters
-            }, #TODO
+            {"$match": match_filters}, #TODO
         ]
+
+        if self.component_type == "table":
+            if skip and limit:
+                pipeline.insert(-1, {"$limit": int(limit)})
+                pipeline.insert(-1, {"$skip": int(skip)})
 
         data = mongodata.aggregate(pipeline, collection=envs.MONGO_COLLECTION_DATA_NAME)
 
         return data
+
         
     
     
