@@ -13,6 +13,7 @@ from licenseware.download import download_as
 
 
 def create_individual_report_component_resource(component: BaseReportComponent):
+
     class ComponentRes(Resource):
 
         @failsafe(fail_code=500)
@@ -52,12 +53,15 @@ def get_report_components_namespace(ns: Namespace, reports: List[ReportBuilder])
         for comp in report.components:
             ComponentRes = create_individual_report_component_resource(comp)
 
+            params = {}
+            params[comp.component_id + '_limit'] = {'description': 'Rep. component: Limit the number of results'}
+            params[comp.component_id + '_skip'] = {'description': 'Rep. component: Skip the first n results'}
+
             docs = {
                 'get': {
                     'description': 'Get component data',
                     'params': {
-                        'limit': {'description': 'Limit the number of results'},
-                        'skip': {'description': 'Skip the first n results'},
+                        **params,
                         'download_as': {'description': 'Download table component as file type: csv, xlsx, json'}
                     },
                     'responses': {
@@ -68,10 +72,7 @@ def get_report_components_namespace(ns: Namespace, reports: List[ReportBuilder])
                 },
                 'post': {
                     'description': 'Get component data with an optional filter payload',
-                    'params': {
-                        'limit': {'description': 'Limit the number of results'},
-                        'skip': {'description': 'Skip the first n results'}
-                    },
+                    'params': params,
                     'validate': None,
                     'expect': [restx_model],
                     'responses': {
