@@ -22,10 +22,11 @@ class MongoCrud:
         self.collection = collection
 
     def get_params(self, flask_request: Request):
+        """Add query params that equal _id or id to the params dict"""
         params = {}
-        if flask_request.args is None:
-            return params
-        params = dict(flask_request.args) or {}
+        for key, value in flask_request.args.items():
+            if key == "_id" or key == "id":
+                params[key] = value
         return params
 
     def get_payload(self, flask_request: Request):
@@ -81,7 +82,8 @@ class MongoCrud:
                 pipeline.insert(0, {"$match": tenant})
                 result = m.aggregate(pipeline, collection=self.collection)
                 return result
-            result = m.fetch(match=tenant, collection=self.collection)
+            query = self.get_query(flask_request)
+            result = m.fetch(match=query, collection=self.collection)
             return result
         result = m.distinct(
             match=tenant, key=params["foreign_key"], collection=self.collection
