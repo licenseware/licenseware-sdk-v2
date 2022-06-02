@@ -7,12 +7,31 @@ class EncryptionSelector:
         Encryption rules are a list[dict] shaped:
 
         {
-            "target": any(filecontent, filename, columns),
-            "values": any(regex, columns),
+            "target": any("filecontent", "filename", "columns"),
+            "values": any("regex", "columns"),
             "description": "concise description for the rule",
             "uploader_id": "needs to match the uploader id from reg service"
         }
+        Usage:
 
+        ```py
+
+        from licenseware.utils import EncryptionSelector
+
+        encryption_rules = [
+            {
+                "target": "filecontent",
+                "values": [r"Machine Name=(.*)", r"Device Name=(.*)"],
+                "description": "encrypt device name",
+                "uploader_id": "cpuq"
+            },
+        ]
+
+        cpuq_encryption = EncryptionSelector(uploader_id="cpuq", encryption_rules=encryption_rules)
+        filecontent_rules = cpuq_encryption.filecontent_rules
+        filepaths_rules = cpuq_encryption.filepaths_rules
+        columns_rules = cpuq_encryption.columns_rules
+        ```
     """
 
     def __init__(self, uploader_id, encryption_rules):
@@ -21,6 +40,7 @@ class EncryptionSelector:
         self.filecontent_rules = self.get_rule("filecontent")
         self.filepaths_rules = self.get_rule("filename")
         self.columns_rules = self.get_rule("columns")
+        self.required_dict_keys = ["target", "values", "uploader_id"]
 
     def _get_uploader_rules(self, encryption_rules):
         return [x for x in encryption_rules if x["uploader_id"] == self.uploader_id]
@@ -28,6 +48,8 @@ class EncryptionSelector:
     def get_rule(self, rule_target):
         rules = []
         for rule in self.encryption_rules:
+            if not all(key in rule for key in self.required_dict_keys):
+                raise ValueError(f"Missing required dict keys for rule: {self.required_dict_keys}")
             if rule["target"] == rule_target:
                 self.append_new_rule(
                     new_rule=rule,
