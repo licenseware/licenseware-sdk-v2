@@ -1,34 +1,40 @@
 from flask import Request
 from datetime import datetime
-from licenseware import mongodata
-from licenseware.common.constants import envs
-from licenseware.utils.logger import log
 from marshmallow import Schema, fields, INCLUDE
-from pymongo import ASCENDING
-import time
 
-#! OUTDATED - pagination needs to be implemented
+from licenseware import mongodata
+from licenseware.mongodata import collection
+from licenseware.common.constants import envs
+from licenseware.utils.flask_request import get_flask_request
+
 
 
 class AllowAllSchema(Schema):
     class Meta:
         unknown = INCLUDE
 
-    report_snapshot_date = fields.Str(required=True)
-
 
 class ReportSnapshot:
-    def __init__(self, report: type, flask_request: Request):
+    def __init__(self, report: type, flask_request: Request, readonly: bool = False):
         self.report = report
-        self.request = flask_request
+        self.readonly = readonly
+        self.request = flask_request    
         self.tenant_id = flask_request.headers.get("Tenantid")
+        self.report_query = {
+            "tenant_id": self.tenant_id,
+            "report_id": self.report.report_id
+        }
 
-    def add_report_components_data(self):
+
+    def get_report_data(self):
+        # Avoid circular import 
+        from licenseware.report_components.base_report_component import BaseReportComponent
 
         report_metadata, status_code = self.report.return_json_payload()
 
         rcomponents = []
         for comp in self.report.components:
+            comp: BaseReportComponent
             comp_payload = comp.get_registration_payload()
             comp_payload["component_data"] = comp.get_data(self.request)
             rcomponents.append(comp_payload)
@@ -37,69 +43,116 @@ class ReportSnapshot:
 
         return report_metadata
 
-    def generate_snapshot(self):
 
-        report_data = self.add_report_components_data()
 
-        report_data["tenant_id"] = self.tenant_id
-        report_data["report_snapshot_date"] = datetime.utcnow().isoformat()
-
-        mongodata.insert(
-            schema=AllowAllSchema,
-            collection=envs.MONGO_COLLECTION_REPORT_SNAPSHOTS_NAME,
-            data=report_data,
+    def insert_report_metadata(self, report_metadata:dict):
+        
+        # Delete existing report snapshot
+        mongodata.delete(
+            match=self.report_query,
+            collection=envs.MONGO_COLLECTION_REPORT_SNAPSHOTS_NAME
         )
 
-        return report_data
+        # Add the new report snapshot
+        mongodata.insert(
+            schema=AllowAllSchema,
+            data=report_metadata,
+            collection=envs.MONGO_COLLECTION_REPORT_SNAPSHOTS_NAME
+        )
 
-    # def get_latest_snapshot(self):
-    #
-    #     start = time.time()
-    #
-    #     # Getting latest report snapshot
-    #     snapshots_collection = mongodata.get_collection(envs.MONGO_COLLECTION_REPORT_SNAPSHOTS_NAME)
-    #
-    #     latest_snapshot = snapshots_collection.find(
-    #         {
-    #             'tenant_id': self.tenant_id,
-    #             'report_id': self.report.report_id
-    #         }
-    #     ).sort("report_snapshot_date", ASCENDING).limit(1)
-    #
-    #     latest_snapshot = list(latest_snapshot)
-    #
-    #     snapshot_outdated = True
-    #     if latest_snapshot:
-    #         latest_snapshot = latest_snapshot[0]
-    #         latest_snapshot.pop('_id')  # ObjectId is not serializable
-    #
-    #         counted = mongodata.document_count(
-    #             match={
-    #                 'tenant_id': self.tenant_id,
-    #                 'updated_at': {'$gt': latest_snapshot['report_snapshot_date']}
-    #             },
-    #             collection=envs.MONGO_COLLECTION_ANALYSIS_NAME
-    #         )
-    #
-    #         snapshot_outdated = True if counted > 0 else False
-    #
-    #     if snapshot_outdated:
-    #         log.info("Returning generated report snapshot")
-    #         report_data = self.generate_snapshot()
-    #
-    #         end = time.time()
-    #         log.warning(f"Time elapsed: {end - start}")
-    #         # 0.6979179382324219 ~ 0.70
-    #         return report_data
-    #
-    #     end = time.time()
-    #     log.warning(f"Time elapsed: {end - start}")
-    #     # 0.02915167808532715 ~ 0.030
-    #     log.info("Returning latest report snapshot")
-    #     return latest_snapshot
 
-    def get_report_data(self):
+    def make_flask_request(self, comp, limit:int, skip:int):
+        
+        flask_request = None
 
-        report_data = self.generate_snapshot()
+        if comp.component_type == "table":
+            flask_request = get_flask_request(
+                headers={
+                    "Tenantid": self.tenant_id,
+                    "TenantId": self.tenant_id,
+                },
+                args={
+                    comp.component_id + "_limit": limit,
+                    comp.component_id + "_skip": skip
+                }
+            )
 
-        return report_data
+        return flask_request or self.request
+
+
+
+    def generate_snapshot(self):
+        # Avoid circular import 
+        from licenseware.report_components.base_report_component import BaseReportComponent
+
+        report_metadata, status_code = self.report.return_json_payload()
+        report_metadata["report_components"] = []
+        report_metadata["tenant_id"] = self.tenant_id
+        report_metadata["report_snapshot_date"] = datetime.utcnow().isoformat()
+        self.insert_report_metadata(report_metadata)
+        
+        skip = 0
+        limit = 500
+        inserted_components = set()
+        for comp in self.report.components:
+            comp: BaseReportComponent
+            comp_payload = comp.get_registration_payload()
+
+            # Base component data insert
+            if comp.component_id not in inserted_components:
+                comp_payload["component_data"] = []
+                mongodata.update(
+                    schema=AllowAllSchema,
+                    match=self.report_query,
+                    new_data={
+                        "report_components": [comp_payload]
+                    },
+                    collection=envs.MONGO_COLLECTION_REPORT_SNAPSHOTS_NAME,
+                    append=True
+                )
+                inserted_components.add(comp.component_id)
+            
+            if comp.component_type == "table":
+                # Get data with pagination (non-breaking) and append it to report components data
+                while True:
+                    
+                    flask_request = self.make_flask_request(comp, limit, skip)
+                    component_data = comp.get_data(flask_request)
+
+                    with collection(envs.MONGO_COLLECTION_REPORT_SNAPSHOTS_NAME) as col:
+                        col.update_one(
+                            filter={**self.report_query, "report_components.component_id": comp.component_id},
+                            update={
+                                "$addToSet": {
+                                    "report_components.$.component_data": {"$each": component_data}
+                                }
+                            }
+                        )
+
+                    if len(component_data) == 0:
+                        skip = 0 # reset skip
+                        break
+                    else: # increase offset
+                        skip += len(component_data) 
+
+            else:
+
+                component_data = comp.get_data(self.request)
+
+                with collection(envs.MONGO_COLLECTION_REPORT_SNAPSHOTS_NAME) as col:
+                    col.update_one(
+                        filter={**self.report_query, "report_components.component_id": comp.component_id},
+                        update={
+                            "$addToSet": {
+                                "report_components.$.component_data": {"$each": component_data}
+                            }
+                        }
+                    )
+
+
+    def get_snapshot_url(self):
+        
+        self.generate_snapshot()
+
+        return "TODO"
+

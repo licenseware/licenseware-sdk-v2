@@ -1,6 +1,5 @@
 import os, io
 from typing import Callable, List
-from licenseware.utils.logger import log
 from werkzeug.datastructures import FileStorage
 
 
@@ -31,7 +30,7 @@ def get_flask_request(
         headers: dict = None,
         args: dict = None,
         json: dict = None,
-        files: List = []
+        files: list = []
         # decorators: List[Callable] = [] #TODO
 ):
     """

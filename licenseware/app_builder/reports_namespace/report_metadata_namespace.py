@@ -16,11 +16,15 @@ def create_report_resource(report: ReportBuilder):
         def get(self):
 
             file_type = request.args.get('download_as')
-            latest = request.args.get('latest') # TODO remove when report_snapshot ready
+            latest = request.args.get('latest', 'false') 
+            snapshot = request.args.get('snapshot', 'false') 
             tenant_id = request.headers.get('Tenantid')
 
-            if latest is not None: # TODO remove when report_snapshot ready
+            if latest == "true": 
                 return report.get_report_snapshot(request)
+
+            if snapshot == "true": 
+                return report.get_readonly_report_url(request)
 
             if file_type is None:
                 return report.return_json_payload()
@@ -54,7 +58,8 @@ def get_report_metadata_namespace(ns: Namespace, reports: List[ReportBuilder]):
                 'description': 'Get report metadata',
                 'params': {
                     **params,
-                    'latest': {'description': 'Get the report in one call'},
+                    'latest': {'description': 'If `true` will get the report in one call. Make sure to add limit and skip.'},
+                    'snapshot': {'description': 'If `true` will get the read-only url of current generated report.'},
                     'download_as': {'description': 'Download table component as file type: csv, xlsx, json'}
                 },
                 'responses': {

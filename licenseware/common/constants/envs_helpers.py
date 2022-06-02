@@ -17,32 +17,34 @@ def get_mongo_connection_string():
 
     uri = {
         "simple_uri": "mongodb://localhost:27017/db",
-        "debug_uri": None,
-        "stack_uri": None,
+        "debug_uri": "mongodb://lware:lware-secret@localhost:27017",
+        "stack_uri": "mongodb://lware:lware-secret@mongo:27017",
     }
 
-
+    debug_data = None
     if os.path.exists("./deploy/.env.debug"):
         with open("./deploy/.env.debug", "r") as f:
             debug_data = f.read()
-
-    SERVICE_NAME = None
-    m = re.search(r'.*' + "SERVICE_NAME" + r'=(.+).*', debug_data)
-    if m:
-        SERVICE_NAME = m.group(1)
-
-    m = re.search(r'.*' + "MONGO_CONNECTION_STRING" + r'=(.+).*', debug_data)
-    if m:
-        uri["debug_uri"] = m.group(1)
+        m = re.search(r'.*' + "MONGO_CONNECTION_STRING" + r'=(.+).*', debug_data)
+        if m:
+            uri["debug_uri"] = m.group(1)
 
 
-    if os.path.exists("./deploy/.env." + SERVICE_NAME):
-        with open("./deploy/.env." + SERVICE_NAME, "r") as f:
-            data = f.read()
+    if debug_data is not None:
 
-    m = re.search(r'.*' + "MONGO_CONNECTION_STRING" + r'=(.+).*', data)
-    if m:
-        uri["stack_uri"] = m.group(1)
+        SERVICE_NAME = None
+        m = re.search(r'.*' + "SERVICE_NAME" + r'=(.+).*', debug_data)
+        if m:
+            SERVICE_NAME = m.group(1)
+
+            if os.path.exists("./deploy/.env." + SERVICE_NAME):
+                
+                with open("./deploy/.env." + SERVICE_NAME, "r") as f:
+                    data = f.read()
+
+                m = re.search(r'.*' + "MONGO_CONNECTION_STRING" + r'=(.+).*', data)
+                if m:
+                    uri["stack_uri"] = m.group(1)
 
     for mongo_uri in uri:
         # print("Trying: ", uri[mongo_uri])
