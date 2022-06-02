@@ -1,4 +1,5 @@
 RULE_KEYS = ["values"]
+REQUIRED_DICT_KEYS = ["target", "values", "uploader_id"]
 
 class EncryptionSelector:
     """
@@ -40,7 +41,6 @@ class EncryptionSelector:
         self.filecontent_rules = self.get_rule("filecontent")
         self.filepaths_rules = self.get_rule("filename")
         self.columns_rules = self.get_rule("columns")
-        self.required_dict_keys = ["target", "values", "uploader_id"]
 
     def _get_uploader_rules(self, encryption_rules):
         return [x for x in encryption_rules if x["uploader_id"] == self.uploader_id]
@@ -48,8 +48,8 @@ class EncryptionSelector:
     def get_rule(self, rule_target):
         rules = []
         for rule in self.encryption_rules:
-            if not all(key in rule for key in self.required_dict_keys):
-                raise ValueError(f"Missing required dict keys for rule: {self.required_dict_keys}")
+            if not all(key in rule for key in REQUIRED_DICT_KEYS):
+                raise ValueError(f"Missing required dict keys for rule: {REQUIRED_DICT_KEYS}")
             if rule["target"] == rule_target:
                 self.append_new_rule(
                     new_rule=rule,
