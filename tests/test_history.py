@@ -4,7 +4,7 @@ import traceback
 import uuid
 
 from licenseware import history
-from licenseware.test_helpers.flask_request import get_flask_request
+from licenseware.utils.flask_request import get_flask_request
 
 
 # python3 -m unittest tests/test_history.py
