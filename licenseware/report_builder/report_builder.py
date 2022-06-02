@@ -93,6 +93,10 @@ class ReportBuilder:
     def get_readonly_report_url(self, flask_request: Request):
         rs = ReportSnapshot(self, flask_request)
         return rs.get_snapshot_url()
+
+    def get_readonly_report(self, flask_request: Request):
+        rs = ReportSnapshot(self, flask_request)
+        return rs.get_report_snapshot()
         
 
     def register_report(self):

@@ -15,9 +15,8 @@ class AllowAllSchema(Schema):
 
 
 class ReportSnapshot:
-    def __init__(self, report: type, flask_request: Request, readonly: bool = False):
+    def __init__(self, report: type, flask_request: Request):
         self.report = report
-        self.readonly = readonly
         self.request = flask_request    
         self.tenant_id = flask_request.headers.get("Tenantid")
         self.report_query = {
@@ -151,8 +150,24 @@ class ReportSnapshot:
 
 
     def get_snapshot_url(self):
-        
         self.generate_snapshot()
+        return envs.BASE_URL + self.report.report_path + f"/snapshot?tenant_id={self.tenant_id}"
 
-        return "TODO"
+
+    def get_report_snapshot(self):
+
+        owner_tenant = self.request.args.get("tenant_id")
+
+        if owner_tenant is None:
+            raise Exception("The `tenant_id` of the report owner must be provided in the query params")
+
+        results = mongodata.fetch(
+            match={
+                "tenant_id": owner_tenant,
+                "report_id": self.report.report_id
+            },
+            collection=envs.MONGO_COLLECTION_REPORT_SNAPSHOTS_NAME
+        )
+
+        return results[0] if len(results) == 1 else {}
 

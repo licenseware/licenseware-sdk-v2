@@ -59,7 +59,7 @@ def get_report_metadata_namespace(ns: Namespace, reports: List[ReportBuilder]):
                 'params': {
                     **params,
                     'latest': {'description': 'If `true` will get the report in one call. Make sure to add limit and skip.'},
-                    'snapshot': {'description': 'If `true` will get the read-only url of current generated report.'},
+                    'snapshot': {'description': 'If `true` will get the read-only url of current generated report. You can later call full report on `report_id`/snapshot'},
                     'download_as': {'description': 'Download table component as file type: csv, xlsx, json'}
                 },
                 'responses': {
