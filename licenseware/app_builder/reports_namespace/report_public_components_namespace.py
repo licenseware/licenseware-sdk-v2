@@ -24,15 +24,13 @@ def create_individual_report_component_resource(component: BaseReportComponent):
         @failsafe(fail_code=500)
         @public_token_check
         def get(self):
+            return component.get_data(request)
 
-            tenant_id = request.headers.get('Tenantid')
-            data = component.get_data(request)
-
-        
     return ComponentRes
 
 
-def get_report_components_namespace(ns: Namespace, reports: List[ReportBuilder]):
+def get_public_report_components_namespace(ns: Namespace, reports: List[ReportBuilder]):
+    
     restx_model = ns.model('ComponentFilter', dict(
         column=fields.String,
         filter_type=fields.String,
@@ -49,22 +47,28 @@ def get_report_components_namespace(ns: Namespace, reports: List[ReportBuilder])
 
             docs = {
                 'get': {
-                    'description': 'Get component data',
-                    'params': params,
+                    'description': 'Get public component data',
+                    'params': {
+                        **params,
+                        "public_token": {"description": "The token which will be used to return data"}
+                    },
                     'responses': {
                         200: 'Success',
-                        403: 'Missing `Tenantid` or `Authorization` information',
+                        403: 'Public token missing or invalid',
                         500: 'Something went wrong while handling the request'
                     }
                 },
                 'post': {
-                    'description': 'Get component data with an optional filter payload',
-                    'params': params,
+                    'description': 'Get public component data with an optional filter payload',
+                    'params': {
+                        **params,
+                        "public_token": {"description": "The token which will be used to return data"}
+                    },
                     'validate': None,
                     'expect': [restx_model],
                     'responses': {
                         200: 'Success',
-                        403: 'Missing `Tenantid` or `Authorization` information',
+                        403: 'Public token missing or invalid',
                         500: 'Something went wrong while handling the request'
                     }
                 }
@@ -78,6 +82,6 @@ def get_report_components_namespace(ns: Namespace, reports: List[ReportBuilder])
                 {}
             )
 
-            ns.add_resource(IRCResource, report.report_path + comp.component_path + "/public")
+            ns.add_resource(IRCResource, report.report_path + comp.public_component_path)
 
     return ns

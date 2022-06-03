@@ -36,6 +36,8 @@ from .app_activation_route import add_app_activation_route
 from .app_registration_route import add_app_registration_route
 from .terms_and_conditions_route import add_terms_and_conditions_route
 from .features_route import add_features_route
+from .public_token_route import add_public_token_route
+
 
 from .endpoint_builder_namespace import endpoint_builder_namespace
 
@@ -55,6 +57,8 @@ from .reports_namespace import (
     get_report_image_preview_namespace,
     get_report_image_preview_dark_namespace,
     get_report_snapshot_namespace,
+    get_public_report_metadata_namespace,
+    get_public_report_components_namespace,
 )
 
 from .report_components_namespace import report_components_namespace
@@ -87,6 +91,7 @@ class base_paths:
     tenant_registration_path: str = "/register_tenant"
     terms_and_conditions_path: str = "/terms_and_conditions"
     features_path: str = "/features"
+    tokens_path: str = "/tokens"
     data_sync_path: str = "/data-sync"
 
 
@@ -139,6 +144,7 @@ class AppBuilder:
         self.tenant_registration_path = base_paths.tenant_registration_path
         self.terms_and_conditions_path = base_paths.terms_and_conditions_path
         self.features_path = base_paths.features_path
+        self.tokens_path = base_paths.tokens_path
         self.data_sync_path = base_paths.data_sync_path
 
         self.app_activation_url = envs.BASE_URL + self.app_activation_path
@@ -148,6 +154,7 @@ class AppBuilder:
         self.tenant_registration_url = envs.BASE_URL + self.tenant_registration_path
         self.terms_and_conditions_url = envs.BASE_URL + self.terms_and_conditions_path
         self.features_url = envs.BASE_URL + self.features_path
+        self.tokens_url = envs.BASE_URL + self.tokens_path
         self.data_sync_url = envs.BASE_URL + self.data_sync_path
 
         self.authorizations = doc_authorizations
@@ -254,6 +261,7 @@ class AppBuilder:
             add_terms_and_conditions_route,
             add_download_as_route,
             add_features_route,
+            add_public_token_route,
         ]
 
         for func in api_funcs:
@@ -293,6 +301,8 @@ class AppBuilder:
             get_report_image_preview_namespace,
             get_report_image_preview_dark_namespace,
             get_report_snapshot_namespace,
+            get_public_report_metadata_namespace,
+            get_public_report_components_namespace,
         ]
 
         for func in ns_funcs:
@@ -325,6 +335,7 @@ class AppBuilder:
 
         for func in ns_funcs:
             self.register_namespace(func(ns=features_namespace, features=self.features))
+
 
     def add_data_sync_routes(self):
 
@@ -366,6 +377,7 @@ class AppBuilder:
                 "tenant_registration_url",
                 "terms_and_conditions_url",
                 "features_url",
+                "tokens_url",
                 "app_meta",
                 "integration_details"
             ]
@@ -391,6 +403,7 @@ class AppBuilder:
                     "description",
                     "flags",
                     "url",
+                    "public_url",
                     "preview_image_url",
                     "preview_image_dark_url",
                     "report_components",
@@ -445,6 +458,7 @@ class AppBuilder:
                     "app_id",
                     "component_id",
                     "url",
+                    "public_url",
                     "order",
                     "style_attributes",
                     "attributes",

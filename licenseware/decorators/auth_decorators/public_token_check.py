@@ -1,8 +1,9 @@
 from flask import request
 from functools import wraps
 from licenseware.utils.logger import log
-from licenseware.common.constants import envs
+from licenseware.utils.tokens import valid_public_token
 
+    
 
 def public_token_check(f):
     """ Checks if a public token si valid """
@@ -13,10 +14,14 @@ def public_token_check(f):
         headers = dict(request.headers)
 
         if public_token is None:
-            log.warning(f'AUTHORIZATION MISSING  | Request headers: {headers} | URL {request.url}')
-            return {"status": "fail", "message": "Query param: `public_token` not provided"}, 403
+            log.warning(f'PUBLIC TOKEN INVALID  | Request headers: {headers} | URL {request.url}')
+            return {"status": "fail", "message": "Public token missing or invalid"}, 403
 
-        # TODO - check token in db
+
+        if not valid_public_token(public_token):
+            log.warning(f'PUBLIC TOKEN INVALID  | Request headers: {headers} | URL {request.url}')
+            return {"status": "fail", "message": "Public token missing or invalid"}, 403
+
 
         return f(*args, **kwargs)
 

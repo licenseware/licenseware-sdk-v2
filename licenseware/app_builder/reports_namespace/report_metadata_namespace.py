@@ -15,10 +15,14 @@ def create_report_resource(report: ReportBuilder):
         @authorization_check
         def get(self):
 
+            public_url = request.args.get('public_url')
             file_type = request.args.get('download_as')
             latest = request.args.get('latest', 'false') 
             snapshot = request.args.get('snapshot', 'false') 
             tenant_id = request.headers.get('Tenantid')
+
+            if public_url == "true": 
+                return report.get_report_public_url(request)
 
             if latest == "true": 
                 return report.get_report_snapshot(request)
@@ -58,6 +62,7 @@ def get_report_metadata_namespace(ns: Namespace, reports: List[ReportBuilder]):
                 'description': 'Get report metadata',
                 'params': {
                     **params,
+                    'public_url': {'description': 'If `true` will return the public url for this report'},
                     'latest': {'description': 'If `true` will get the report in one call. Make sure to add limit and skip.'},
                     'snapshot': {'description': 'If `true` will get the read-only url of current generated report. You can later call full report on `report_id`/snapshot'},
                     'download_as': {'description': 'Download table component as file type: csv, xlsx, json'}

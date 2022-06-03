@@ -99,6 +99,7 @@ class envs:
         COLLECTION_PREFIX + "ReportSnapshots"
     )  #! OUTDATED NEEDS PAGINATION
     MONGO_COLLECTION_FEATURES_NAME: str = COLLECTION_PREFIX + "Features"
+    MONGO_COLLECTION_TOKEN_NAME: str = COLLECTION_PREFIX + "Tokens"
 
     # Redis connection
     REDIS_HOST: str = os.getenv("REDIS_HOST", "localhost")

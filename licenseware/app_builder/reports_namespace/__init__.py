@@ -18,7 +18,8 @@ from .report_components_namespace import get_report_components_namespace
 from .report_image_preview_namespace import get_report_image_preview_namespace
 from .report_image_preview_dark_namespace import get_report_image_preview_dark_namespace
 from .report_snapshot_namespace import get_report_snapshot_namespace
-
+from .report_public_metadata_namespace import get_public_report_metadata_namespace
+from .report_public_components_namespace import get_public_report_components_namespace
 
 # Here we are defining the uploads namespace which will be imported in app_builder
 reports_namespace = Namespace(

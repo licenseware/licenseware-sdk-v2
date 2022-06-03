@@ -18,7 +18,7 @@ def create_report_resource(report: ReportBuilder):
     return ReportController
 
 
-def get_report_metadata_namespace(ns: Namespace, reports: List[ReportBuilder]):
+def get_public_report_metadata_namespace(ns: Namespace, reports: List[ReportBuilder]):
 
     for report in reports:
 
@@ -33,14 +33,14 @@ def get_report_metadata_namespace(ns: Namespace, reports: List[ReportBuilder]):
             
         docs = {
             'get': {
-                'description': 'Get report metadata',
+                'description': 'Get public report metadata',
                 'params': {
                     **params,
                     "public_token": {"description": "The token which will be used to return data"}
                 },
                 'responses': {
                     200: 'Success',
-                    403: 'Missing `Tenantid` or `Authorization` information',
+                    403: 'Public token missing or invalid',
                     500: 'Something went wrong while handling the request'
                 }
             }
