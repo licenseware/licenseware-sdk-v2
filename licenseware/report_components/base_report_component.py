@@ -59,7 +59,7 @@ class BaseReportComponent:
         self.filters = filters
         self.path = path or '/' + component_id
         self.component_path = self.path if self.path.startswith('/') else '/' + self.path 
-        self.public_component_path = self.component_id + "/public"
+        self.public_component_path = self.component_path + "/public"
         self.url = envs.REPORT_COMPONENT_URL + self.component_path
         self.public_url = envs.REPORT_COMPONENT_URL + self.public_component_path
         self.order = order
