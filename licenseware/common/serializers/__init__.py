@@ -18,3 +18,4 @@ from .register_report_component_payload import RegisterReportComponentPayloadSch
 from .wild_schema import WildSchema
 from .features_schema import FeaturesSchema
 from .integration_details_schema import IntegrationDetailsSchema
+from .public_token_schema import PublicTokenSchema

@@ -22,6 +22,7 @@ def register_component(**kwargs):
             "app_id": kwargs['app_id'],
             "component_id": kwargs['component_id'],
             "url": kwargs['url'],
+            "public_url": kwargs['public_url'],
             "order": kwargs['order'],
             "style_attributes": kwargs['style_attributes'],
             "attributes": kwargs['attributes'],

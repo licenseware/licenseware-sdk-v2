@@ -6,6 +6,9 @@ from licenseware.report_components.build_match_expression import condition_switc
 from licenseware.report_components import BaseReportComponent
 from licenseware.report_snapshot import ReportSnapshot
 from licenseware.utils.logger import log
+from licenseware.utils.tokens import get_public_token
+
+
 
 
 class ReportBuilder:
@@ -50,12 +53,15 @@ class ReportBuilder:
         self.description = description
         self.components: List[BaseReportComponent] = report_components
         self.report_path = report_path or '/' + report_id
+        self.public_report_path = self.report_path + '/public'
         self.register_report_path = self.report_path + '/register'
         self.registrable = registrable
         self.connected_apps = connected_apps
         self.app_id = envs.APP_ID
         self.flags = flags
+
         self.url = envs.REPORT_URL + self.report_path
+        self.public_url = envs.REPORT_URL + self.public_report_path
         self.preview_image_path = self.report_path + '/preview_image'
         self.preview_image_dark_path = self.report_path + '/preview_image_dark'
         self.preview_image_url = envs.REPORT_URL + self.preview_image_path
@@ -80,24 +86,26 @@ class ReportBuilder:
             "report_components": self.report_components,
             "filters": self.filters,
             "url": self.url,
+            "public_url": self.public_url,
             "preview_image_url": self.preview_image_url,
             "preview_image_dark_url": self.preview_image_dark_url,
             "connected_apps": self.connected_apps
         }
         return payload, 200
 
+
+    def get_report_public_url(self, flask_request: Request):
+        token = get_public_token(flask_request.headers.get("TenantId"))
+        return self.public_url + "?public_token=" + token
+
+
     def get_report_snapshot(self, flask_request: Request):
         rs = ReportSnapshot(self, flask_request)
-        return rs.get_report_data()
+        return rs.get_report_snapshot()
 
-    def get_readonly_report_url(self, flask_request: Request):
+    def get_snapshot_url(self, flask_request: Request):
         rs = ReportSnapshot(self, flask_request)
         return rs.get_snapshot_url()
-
-    def get_readonly_report(self, flask_request: Request):
-        rs = ReportSnapshot(self, flask_request)
-        return rs.get_report_snapshot()
-        
 
     def register_report(self):
         return register_report(**self.reportvars)
