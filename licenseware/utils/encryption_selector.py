@@ -1,3 +1,5 @@
+from licenseware.utils.logger import log
+
 RULE_KEYS = ["values"]
 REQUIRED_DICT_KEYS = ["target", "values", "uploader_id"]
 
@@ -43,13 +45,20 @@ class EncryptionSelector:
         self.columns_rules = self.get_rule("columns")
 
     def _get_uploader_rules(self, encryption_rules):
-        return [x for x in encryption_rules if x["uploader_id"] == self.uploader_id]
+        uploader_rules = []
+        for d in encryption_rules:
+            if not isinstance(d["uploader_id"], list):
+                d["uploader_id"] = [d["uploader_id"]]
+            if self.uploader_id in d["uploader_id"]:
+                uploader_rules += [d]
+        return uploader_rules
     
     def get_rule(self, rule_target):
         rules = []
         for rule in self.encryption_rules:
             if not all(key in rule for key in REQUIRED_DICT_KEYS):
-                raise ValueError(f"Missing required dict keys for rule: {REQUIRED_DICT_KEYS}")
+                log.error(f"Missing required dict keys for parsing rule: {rule}, skipping")
+                continue
             if rule["target"] == rule_target:
                 self.append_new_rule(
                     new_rule=rule,
