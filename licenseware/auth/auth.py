@@ -55,6 +55,9 @@ class Authenticator:
             param: wait_seconds - wait time in seconds if authentification fails
             
         """
+        if os.getenv("AUTH_SERVICE_URL") is None: 
+            log.error("Environment variable `AUTH_SERVICE_URL` not available. Skipping machine authentification.")
+            return "Environment variable `AUTH_SERVICE_URL` not available", 500
          
         status_code = 500      
           

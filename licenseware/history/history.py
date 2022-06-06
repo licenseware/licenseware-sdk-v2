@@ -295,13 +295,14 @@ def log(*dargs, on_success_save: str = None, on_failure_save: str = None, on_fai
                 response = add_event_id_to_payload(metadata, response)
                 
                 # Remove event_data from uploaders response
-                if f.__name__ == "upload_files":
-                    try:
-                        safe_response = deepcopy(response[0])
-                        safe_response.pop("event_data")
-                        return safe_response, response[1]
-                    except Exception as err:
-                        logg.exception(err)
+                if not envs.DESKTOP_ENVIRONMENT:
+                    if f.__name__ == "upload_files": 
+                        try:
+                            safe_response = deepcopy(response[0])
+                            safe_response.pop("event_data")
+                            return safe_response, response[1]
+                        except Exception as err:
+                            logg.exception(err)
 
                 return response
             except Exception as err:
