@@ -11,3 +11,4 @@ from .validate_uuid4 import validate_uuid4
 from .validate_event import validate_event
 from .validate_base64 import validate_base64
 from .validate_integration_details import validate_integration_details
+from .validate__id import validate__id
