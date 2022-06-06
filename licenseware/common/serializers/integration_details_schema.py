@@ -1,12 +1,18 @@
 from marshmallow import Schema, fields
 
 
+
+class ShowDataSchema(Schema):
+    name = fields.String()
+    key = fields.String()
+    data = fields.List(fields.String)
+
+
+
 class IntegrationDetailsSchema(Schema):
-    app_id = fields.String(required=True)
-    name = fields.String(required=True)
-    description = fields.String(required=True)
-    integration_id = fields.String(required=True)
-    imported_data = fields.List(fields.String, required=True)
-    exported_data = fields.List(fields.String, required=True)
-    triggers = fields.List(fields.String, required=True)
-    
+    app_id = fields.String()
+    name = fields.String()
+    description = fields.String()
+    integration_id = fields.String()
+    data_to_show = fields.List(fields.Nested(ShowDataSchema))
+    status = fields.String()
