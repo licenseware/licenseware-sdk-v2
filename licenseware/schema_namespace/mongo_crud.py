@@ -3,6 +3,7 @@ from flask import Request
 from marshmallow.schema import Schema
 from licenseware import mongodata as m
 from licenseware.utils.logger import log
+from licenseware.common.validators import validate__id
 
 
 class MongoCrud:
@@ -25,8 +26,14 @@ class MongoCrud:
         """Add query params that equal _id or id to the params dict"""
         params = {}
         for key, value in flask_request.args.items():
-            if key == "_id" or key == "id":
-                params[key] = value
+            if key == "_id":
+                validate__id(value)
+                params["_id"] = value
+            if key == "id":
+                try:
+                    params["id"] = int(value)
+                except ValueError:
+                    raise Exception(f"Id can only be integer: {value}")
         return params
 
     def get_payload(self, flask_request: Request):
