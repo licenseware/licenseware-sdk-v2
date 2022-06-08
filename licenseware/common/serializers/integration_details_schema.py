@@ -11,6 +11,7 @@ class ShowDataSchema(Schema):
 
 class IntegrationDetailsSchema(Schema):
     app_id = fields.String()
+    app_url = fields.String()
     name = fields.String()
     description = fields.String()
     integration_id = fields.String()
