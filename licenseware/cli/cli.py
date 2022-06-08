@@ -3,9 +3,12 @@
 Here all cli functions are gathered and decorated with typer app decorator.
 
 """
+import json
 import os
 import time
 import shutil
+from urllib.parse import urljoin
+import requests
 import typer
 from .utils import get_env_value, get_random_int
 from .app_pkg_creator import AppPackageCreator
@@ -196,3 +199,19 @@ def create_tests(test_email: str = None, swagger_url: str = None):
     tg.generate_tests()
 
     typer.echo("Tests generated! Checkout `tests` folder!")
+
+
+auth = typer.Typer(name="auth")
+
+
+@auth.command()
+def login(email: str, password: str, server_url: str = "https://api.licenseware.io"):
+    url = urljoin(server_url, "/auth/login")
+    response = requests.post(url, json={"email": email, "password": password})
+    if response.status_code != 200:
+        raise Exception(f"Login failed: {response.text}")
+
+    print(json.dumps(response.json()))
+
+
+app.add_typer(auth)
