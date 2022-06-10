@@ -62,7 +62,7 @@ class ReportBuilder:
 
         self.url = envs.REPORT_URL + self.report_path
         self.public_url = envs.REPORT_URL + self.public_report_path
-        self.ui_public_url = envs.FRONTEND_URL + envs.REPORT_PATH + self.public_report_path
+        self.ui_public_url = envs.FRONTEND_URL + envs.APP_PATH + envs.REPORT_PATH + self.public_report_path
         self.preview_image_path = self.report_path + '/preview_image'
         self.preview_image_dark_path = self.report_path + '/preview_image_dark'
         self.preview_image_url = envs.REPORT_URL + self.preview_image_path
