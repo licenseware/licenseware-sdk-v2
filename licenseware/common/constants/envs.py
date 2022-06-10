@@ -22,13 +22,17 @@ import uuid
 from dataclasses import dataclass
 from .envs_helpers import get_mongo_connection_string, get_upload_path_on_desktop
 
+try:
+    import config
+except:
+    config = None
 
 # Atention!
 # > To keep this file short please add only variables used on most/all apps
 
 
 @dataclass
-class envs:
+class SettingsDefault:
 
     # Environment variables available at startup
     DESKTOP_ENVIRONMENT: bool = os.getenv("ENVIRONMENT") == "desktop"
@@ -135,3 +139,26 @@ class envs:
         DESKTOP_ENVIRONMENT = os.getenv("ENVIRONMENT") == "desktop"
         FILE_UPLOAD_PATH = os.getenv("FILE_UPLOAD_PATH", "tmp/lware") if not DESKTOP_ENVIRONMENT else get_upload_path_on_desktop()
         return os.path.join(FILE_UPLOAD_PATH, tenant_id)
+
+
+
+
+def get_config_environment():
+    if config is not None:
+        return config.ENVIRONMENT
+    return "prod"
+
+
+ENVIRONMENT = os.getenv("ENVIRONMENT", get_config_environment())
+
+if config is None:
+    envs = SettingsDefault
+else:
+    if os.getenv("ENVIRONMENT") in {"prod", "production"}:
+        envs = config.SettingsProduction
+    elif os.getenv("ENVIRONMENT") in {"dev", "development"}:
+        envs = config.SettingsDev
+    elif os.getenv("ENVIRONMENT") in {"local"}:
+        envs = config.SettingsLocal
+    else:
+        raise Exception("Config `envs` not set")
