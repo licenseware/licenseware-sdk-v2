@@ -63,6 +63,8 @@ class envs:
     QUEUE_NAME: str = APP_ID if os.path.exists("Procfile.local") else APP_ID.replace("-service", "")
     APP_PATH: str = "/" + QUEUE_NAME
     BASE_URL: str = APP_HOST + APP_PATH
+    FRONTEND_URL: str = os.getenv('FRONTEND_URL', "")
+    SECRET: str = os.getenv('SECRET', "")
 
     UPLOAD_PATH: str = "/uploads"
     REPORT_PATH: str = "/reports"

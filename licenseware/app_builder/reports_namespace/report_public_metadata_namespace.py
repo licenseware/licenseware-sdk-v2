@@ -24,18 +24,10 @@ def get_public_report_metadata_namespace(ns: Namespace, reports: List[ReportBuil
 
         RR = create_report_resource(report)
         
-        # Each table component must have limit/skip to avoid mongo document to large error
-        params = {}
-        for comp in report.components:
-            if comp.component_type != "table": continue
-            params[comp.component_id + "_limit"] = {'description': 'Limit the number of results'}
-            params[comp.component_id + "_skip"] = {'description': 'Skip the first n results'}
-            
         docs = {
             'get': {
                 'description': 'Get public report metadata',
                 'params': {
-                    **params,
                     "public_token": {"description": "The token which will be used to return data"}
                 },
                 'responses': {
