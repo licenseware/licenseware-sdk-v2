@@ -64,7 +64,7 @@ class envs:
     APP_PATH: str = "/" + QUEUE_NAME
     BASE_URL: str = APP_HOST + APP_PATH
     FRONTEND_URL: str = os.getenv('FRONTEND_URL', "")
-    SECRET: str = os.getenv('SECRET', "")
+    SECRET: str = os.getenv('SECRET', LWARE_PASSWORD)
 
     UPLOAD_PATH: str = "/uploads"
     REPORT_PATH: str = "/reports"
