@@ -36,6 +36,7 @@ def get_public_token(tenant_id: str, expire: int, report_id:str, ui_public_url:s
     token = jwt.encode({
         "tenant_id": tenant_id,
         "expire": expire,
+        "app_id": envs.APP_ID,
         "report_id": report_id,
         "ui_public_url": ui_public_url,
         "public_url": api_public_url,
@@ -45,6 +46,7 @@ def get_public_token(tenant_id: str, expire: int, report_id:str, ui_public_url:s
     data = dict(
         tenant_id = tenant_id,
         report_id = report_id,
+        app_id = envs.APP_ID,
         token = token,
         expiration_date = (datetime.datetime.utcnow() + datetime.timedelta(minutes=expire)).isoformat(),
     )
@@ -65,7 +67,7 @@ def get_public_token(tenant_id: str, expire: int, report_id:str, ui_public_url:s
 def delete_public_token(tenant_id: str, report_id:str):
 
     mongodata.delete(
-        match={"tenant_id": tenant_id, "report_id": report_id},
+        match={"tenant_id": tenant_id, "report_id": report_id, "app_id": envs.APP_ID},
         collection=envs.MONGO_COLLECTION_TOKEN_NAME
     )
 
