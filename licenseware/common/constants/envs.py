@@ -60,7 +60,7 @@ class envs:
     REGISTER_REPORT_COMPONENT_URL: str = REGISTER_REPORT_URL + "/v1" + "/components"
 
     APP_HOST: str = os.getenv('APP_HOST', "") if not DESKTOP_ENVIRONMENT else 'http://localhost:5000'
-    QUEUE_NAME: str = APP_ID if os.path.exists("Procfile.local") else APP_ID.replace("-service", "")
+    QUEUE_NAME: str = os.getenv("QUEUE_NAME", APP_ID.replace("-service", ""))
     APP_PATH: str = "/" + QUEUE_NAME
     BASE_URL: str = APP_HOST + APP_PATH
     FRONTEND_URL: str = os.getenv('FRONTEND_URL', "")
