@@ -244,11 +244,12 @@ class TestCreator:
             utils.create_init_file(init_file_path, self.email, self.password)
 
         for filename, contents in file_contents_dict.items():
+            filename = "_" + filename 
             if self.ignore_files is not None:
                 if filename in self.ignore_files:
                     continue
             test_path = os.path.join(self.test_path, filename)
-            test_exists = os.path.isfile(test_path)
+            test_exists = os.path.isfile(os.path.join(self.test_path, filename[1:])) or os.path.isfile(test_path)
 
             if self.overwrite_files:
                 utils.create_test_file(test_path, contents)
