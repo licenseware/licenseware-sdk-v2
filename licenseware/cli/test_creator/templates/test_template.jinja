@@ -14,7 +14,7 @@ def c():
         yield client
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def auth_headers():
     return AuthHelper(test_email, test_password).get_auth_headers()
 
