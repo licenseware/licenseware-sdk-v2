@@ -22,7 +22,7 @@ RUN pip wheel -r ${BUILDDIR}/${REQUIREMENTS} -w ${WHEELDIR}
 
 
 # STAGE 2: ready to run the server
-FROM base AS run
+FROM base AS pre-run
 
 ARG ENV=development
 ARG USER=licenseware
@@ -53,12 +53,27 @@ COPY --from=build ${BUILDDIR} ${BUILDDIR}
 COPY --from=build ${WHEELDIR} ${WHEELDIR}
 
 RUN pip install ${WHEELDIR}/* && \
-    rm -rf ${BUILDDIR} ${WHEELDIR} && \
-    mkdir ${APP_DIR}
+    rm -rf ${BUILDDIR} ${WHEELDIR}
 
 COPY --chown=${USER} . ${APP_DIR}
-RUN pip install ${APP_DIR} && rm -rf ${APP_DIR}
+RUN pip install ${APP_DIR} && \
+    rm -rf ${APP_DIR} 
 
 USER ${USER}
 
 ENTRYPOINT [ "/usr/local/bin/dumb-init", "--" ]
+
+
+FROM pre-run AS odbc
+
+USER root
+RUN apt update && \
+    apt install -y build-essential unixodbc-dev
+USER ${USER}
+
+RUN pip install pyodbc==4.0.32
+
+
+FROM pre-run AS run
+
+RUN echo ready!
