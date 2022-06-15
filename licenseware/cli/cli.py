@@ -191,7 +191,17 @@ def create_tests(test_email: str = None, swagger_url: str = None):
 
     typer.echo(f"Generating tests for '{test_email}' from '{swagger_url}'")
 
-    tg = TestCreator(swagger=swagger_url, email=test_email)
+    ignoretests = None
+    if os.path.exists(".ignoretests"):
+        typer.echo("Found `.ignoretests` file will ignore test creation for specified files")
+        with open(".ignoretests") as f:
+            ignoretests = f.readlines()
+        ignoretests = [f.strip() for f in ignoretests if (f.startswith("test_") or f.startswith("_test_")) and f.strip().endswith(".py")]
+        typer.echo(ignoretests)
+    else:
+        typer.echo("Didn't found `.ignoretests` will create tests for all endpoints")
+
+    tg = TestCreator(swagger=swagger_url, email=test_email, ignore_files=ignoretests)
 
     tg.generate_tests()
 
