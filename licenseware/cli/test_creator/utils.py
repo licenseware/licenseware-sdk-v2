@@ -37,16 +37,38 @@ def extract_headers(req_data):
 
 
 def create_init_file(init_file_path, test_email, test_password):
+    util_funcs = """
+
+def increase_quota(uploader_id: str):
+    with collection(envs.MONGO_COLLECTION_UTILIZATION_NAME) as col:
+        res = col.find_one(filter={"uploader_id": uploader_id})
+        if res is None:
+            return
+        if res["monthly_quota"] <= 1:
+            col.update_one(
+                filter={"uploader_id": uploader_id},
+                update={"$inc": {"monthly_quota": 9999}},
+            )
+
+
+def clear_quota():
+    with collection(envs.MONGO_COLLECTION_UTILIZATION_NAME) as col:
+        col.delete_many({})
+
+"""
+
     with open(init_file_path, "w") as f:
         f.write(f"""
 import warnings
+from licenseware.common.constants import envs
+from licenseware.mongodata import collection
 
 warnings.filterwarnings("ignore")
 
 test_email = "{test_email}"
 test_password = "{test_password}" 
 
-""")
+""" + util_funcs)
 
 
 def create_test_file(test_path, contents):
