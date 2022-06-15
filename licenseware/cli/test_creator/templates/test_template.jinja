@@ -2,11 +2,11 @@ import pytest
 from licenseware.common.constants import envs
 from licenseware.mongodata import collection
 from licenseware.test_helpers.auth import AuthHelper
-from licenseware.test_helpers.flask_request import get_flask_request, get_request_files
+from licenseware.utils.flask_request import get_flask_request, get_request_files
 from licenseware.utils.logger import log
 from flask.testing import Client
 from main import app
-
+from . import test_email, test_password
 
 @pytest.fixture
 def c():
@@ -40,7 +40,7 @@ def increase_quota(uploader_id: str):
 def {{ test_function_name + '_get' }}(c: Client):
     """ {{ req['doc'] }} """
     
-    auth_headers = AuthHelper("{{ email }}").get_auth_headers()
+    auth_headers = AuthHelper(test_email, test_password).get_auth_headers()
 
     response = c.get(
         f"{envs.APP_PATH}{{ req['route'] }}",
@@ -57,7 +57,7 @@ def {{ test_function_name + '_get' }}(c: Client):
 def {{ test_function_name + '_post' }}(c: Client):
     """ {{ req['doc'] }} """
     
-    auth_headers = AuthHelper("{{ email }}").get_auth_headers()
+    auth_headers = AuthHelper(test_email, test_password).get_auth_headers()
 
     response = c.post(
         f"{envs.APP_PATH}{{ req['route'] }}", 
@@ -75,7 +75,7 @@ def {{ test_function_name + '_post' }}(c: Client):
 def {{ test_function_name + '_put' }}(c: Client):
     """ {{ req['doc'] }} """
     
-    auth_headers = AuthHelper("{{ email }}").get_auth_headers()
+    auth_headers = AuthHelper(test_email, test_password).get_auth_headers()
 
     response = c.put(
         f"{envs.APP_PATH}{{ req['route'] }}", 
@@ -92,7 +92,7 @@ def {{ test_function_name + '_put' }}(c: Client):
 def {{ test_function_name + '_delete' }}(c: Client):
     """ {{ req['doc'] }} """
     
-    auth_headers = AuthHelper("{{ email }}").get_auth_headers()
+    auth_headers = AuthHelper(test_email, test_password).get_auth_headers()
 
     response = c.delete(
         f"{envs.APP_PATH}{{ req['route'] }}", 

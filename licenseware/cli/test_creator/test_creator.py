@@ -239,9 +239,9 @@ class TestCreator:
         init_exists = os.path.isfile(init_file_path)
 
         if self.overwrite_files:
-            utils.create_init_file(init_file_path)
+            utils.create_init_file(init_file_path, self.email, self.password)
         if not init_exists:
-            utils.create_init_file(init_file_path)
+            utils.create_init_file(init_file_path, self.email, self.password)
 
         for filename, contents in file_contents_dict.items():
             if self.ignore_files is not None:

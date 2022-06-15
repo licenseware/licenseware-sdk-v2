@@ -36,9 +36,17 @@ def extract_headers(req_data):
     return headers if headers else None
 
 
-def create_init_file(init_file_path):
+def create_init_file(init_file_path, test_email, test_password):
     with open(init_file_path, "w") as f:
-        f.write("# Add imports here")
+        f.write(f"""
+import warnings
+
+warnings.filterwarnings("ignore")
+
+test_email = "{test_email}"
+test_password = "{test_password}" 
+
+""")
 
 
 def create_test_file(test_path, contents):
