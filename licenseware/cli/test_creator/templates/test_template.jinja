@@ -6,29 +6,12 @@ from licenseware.utils.flask_request import get_flask_request, get_request_files
 from licenseware.utils.logger import log
 from flask.testing import Client
 from main import app
-from . import test_email, test_password
+from . import test_email, test_password, clear_quota, increase_quota 
 
 @pytest.fixture
 def c():
     with app.test_client() as client:
         yield client
-
-
-def increase_quota(uploader_id: str):
-    with collection(envs.MONGO_COLLECTION_UTILIZATION_NAME) as col:
-        res = col.find_one(filter={"uploader_id": uploader_id})
-        if res is None:
-            return
-        if res["monthly_quota"] <= 1:
-            col.update_one(
-                filter={"uploader_id": uploader_id},
-                update={"$inc": {"monthly_quota": 9999}},
-            )
-
-
-def clear_quota():
-    with collection(envs.MONGO_COLLECTION_UTILIZATION_NAME) as col:
-        col.delete_many({})
 
 
 # tox tests/test_*
