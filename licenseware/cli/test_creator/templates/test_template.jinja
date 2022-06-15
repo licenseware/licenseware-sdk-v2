@@ -8,7 +8,7 @@ from flask.testing import Client
 from main import app
 from . import test_email, test_password, clear_quota, increase_quota 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def c():
     with app.test_client() as client:
         yield client
