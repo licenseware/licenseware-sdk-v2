@@ -26,6 +26,11 @@ def increase_quota(uploader_id: str):
             )
 
 
+def clear_quota():
+    with collection(envs.MONGO_COLLECTION_UTILIZATION_NAME) as col:
+        col.delete_many({})
+
+
 # tox tests/test_*
 # tox tests/{{ test_file_name }}
 
