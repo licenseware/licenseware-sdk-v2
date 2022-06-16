@@ -67,8 +67,16 @@ ENTRYPOINT [ "/usr/local/bin/dumb-init", "--" ]
 FROM pre-run AS odbc
 
 USER root
+
+RUN apt update &&  \
+    apt install -y gnupg
+
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
+    curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list
+
 RUN apt update && \
-    apt install -y build-essential unixodbc-dev
+    apt install -y build-essential unixodbc-dev && \ 
+    ACCEPT_EULA=Y apt install -y msodbcsql18
 USER ${USER}
 
 RUN pip install pyodbc==4.0.32
