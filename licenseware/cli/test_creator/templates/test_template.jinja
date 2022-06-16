@@ -6,7 +6,8 @@ from licenseware.utils.flask_request import get_flask_request, get_request_files
 from licenseware.utils.logger import log
 from flask.testing import Client
 from main import app
-from . import test_email, test_password, clear_quota, increase_quota 
+from . import test_email, test_password, clear_db, increase_quota 
+
 
 @pytest.fixture(scope="module")
 def c():
@@ -22,14 +23,10 @@ def auth_headers():
 # tox tests/test_*
 # tox tests/{{ test_file_name }}
 
-# pytest tests/test_*
-# pytest tests/{{ test_file_name }}
-
 
 {% for req in request_data %}
 {% if req['method'] == 'get' %}
 # tox tests/{{ test_file_name }}::{{ test_function_name + '_get' }}
-# pytest tests/{{ test_file_name }}::{{ test_function_name + '_get' }}
 def {{ test_function_name + '_get' }}(c: Client, auth_headers: dict):
     """ {{ req['doc'] }} """
     

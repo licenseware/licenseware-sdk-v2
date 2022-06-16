@@ -21,9 +21,9 @@ from flask_restx import Resource, Namespace, fields
 from licenseware.decorators.failsafe_decorator import failsafe
 from licenseware.decorators.auth_decorators import authorization_check
 from licenseware.utils.logger import log
-
+from licenseware.common import marshmallow_to_restx_model
 from app.services.catalogs import get_all_catalogs
-    
+from app.serializers import CatalogSchema
 
 from app.utils.decorators import access_level
 from app.common.constants import rights
@@ -38,20 +38,7 @@ ns = Namespace(
 )
 
 
-catalog_model = ns.model("new_catalog", dict(    
-    catalog_name = fields.String(required=True, description='Catalog name'),
-    tags = fields.List(fields.String, description='List of tags/categories which this catalog belongs to'),
-    admins = fields.List(fields.String, required=True, description='List of admins for this catalog (emails)'),
-    users = fields.List(fields.String, required=False, description='List of users for this catalog (emails)')
-))
-
-
-catalog_model_list = ns.clone("catalogs_list", catalog_model, dict(
-    updated_at = fields.String(required=False),
-    catalog_id = fields.String(required=False),
-    product_requests_allowed = fields.Boolean(required=False),
-    number_of_products = fields.Integer()
-))
+catalog_model = marshmallow_to_restx_model(ns, CatalogSchema)
 
 
 @ns.route('')
@@ -62,20 +49,21 @@ class CrudApi(Resource):
     @ns.param('limit', 'Limit the number of results')
     @ns.param('skip', 'Skip the first n results')
     @ns.param('search_value', 'Search for a specific value')
-    @ns.response(200, description="List of all saved catalogs", model=[catalog_model_list]) 
+    @ns.response(200, description="List of all saved catalogs", model=[catalog_model]) 
     @ns.response(406, description="Access for this catalog is forbidden", model=None) 
     @ns.response(500, description="Could not get catalogs. Something went wrong.", model=None) 
     def get(self):
-        return get_all_catalogs(request)
+        # Extract data from request (this would make it easier for unit-test the function)
+        tenant_id = request.headers.get("TenantId)
+        payload = request.json
+        return get_all_catalogs(tenant_id, payload)
         
     # etc
     
     
 ```
 
-The function `get_all_catalogs` contains the logic required 
-to process the flask request received or other parameters/path parameters provided.
-
+The function `get_all_catalogs` contains the logic required.
 Function `get_all_catalogs` will return a response and a status_code.
 
 
@@ -96,130 +84,49 @@ and one separate for merging catalogs.
 
 Example of a test:
 
+TIP: this boilerplate can be created from terminal just by typing:
+- `licenseware create-tests` (the stack manager and the service needs to be up and running)
+
 ```py
-
 import pytest
-from unittest import TestCase
 from flask.testing import Client
-from licenseware.mongodata import collection
 from licenseware.common.constants import envs
-from licenseware.utils.logger import log
+from licenseware.test_helpers.auth import AuthHelper
 
-from main import app # this is used to get the flask test client and initialize app and workers
-from app.common.constants import collections
+from main import app
 
-from licenseware.test_helpers.auth import AuthHelper # this is useful to get authorization headers
+from . import clear_db, test_email, test_password
 
 
-# this will be used on all tests (in case of endpoint testing)
-@pytest.fixture
+@pytest.fixture(scope="module")
 def c():
     with app.test_client() as client:
         yield client
 
 
-
-@pytest.fixture
-def teardown():
-    clean_db()
-
+@pytest.fixture(scope="module")
+def auth_headers():
+    return AuthHelper(test_email, test_password).get_auth_headers()
 
 
-# some utilities functions specific to this test
-def increase_quota():
-    with collection(envs.MONGO_COLLECTION_UTILIZATION_NAME) as col:
-        res = col.find_one(filter={'uploader_id': 'catalogs_quota'})
-        if res is None: return
-        if res['monthly_quota'] <= 1:
-            col.update_one(
-                filter={'uploader_id': 'catalogs_quota'},
-                update={"$inc": {'monthly_quota': 9999}}
-            )
-
-# asserts can be used also instead of unittest.TestCase assertions
-T = TestCase()
+# tox tests/test_*
+# tox tests/test_product_requests_state_of_product_requests_plugin.py
 
 
-# some global variables used 
-main_admin = "alin+mainadmin@licenseware.io"
-
-catalog1 = "Catalog 1"
-catalog2 = "Catalog 2"
-catalog3 = "Catalog 3"
-catalog4 = "Catalog 4"
-cloned_lware_catalog = "Cloned Licenseware Catalog"
-
-user_email1 = "alin+user1@licenseware.io"
-user_email2 = "alin+user2@licenseware.io"
-user_email3 = "alin+user3@licenseware.io"
-user_email4 = "alin+user4@licenseware.io"
-
-admin_email1 = "alin+admin1@licenseware.io"
-admin_email2 = "alin+admin2@licenseware.io"
-admin_email3 = "alin+admin3@licenseware.io"
-admin_email4 = "alin+admin4@licenseware.io"
-
-
-# tox tests/test_catalogs.py
-
-
-# tox tests/test_catalogs.py::test_add_new_catalogs
-def test_add_new_catalogs(c: Client):
-
-    auth_headers = AuthHelper(main_admin).get_auth_headers()
+# tox tests/test_product_requests_state_of_product_requests_plugin.py::test_product_requests_state_of_product_requests_plugin_get
+def test_product_requests_state_of_product_requests_plugin_get(
+    c: Client, auth_headers: dict
+):
+    \""" Returns the current state of the 'Product Request' plugin/feature \"""
 
     response = c.get(
-        '/ssc/activate_app',
-        headers=auth_headers
+        f"{envs.APP_PATH}/product-requests/state-of-product-requests-plugin",
+        headers=auth_headers,
     )
+    print("GET", response.data)
+    assert response.status_code == 200
+    clear_db()
 
-    T.assertEqual(response.status_code, 200)
-
-    increase_quota()
-
-    catalogs = [
-        {
-            "catalog_name": catalog1,
-            "tags": ["IT"],
-            "admins": [main_admin, admin_email1],
-            "users": [user_email1]
-        },
-        {
-            "catalog_name": catalog2,
-            "tags": ["IT"],
-            "admins": [main_admin, admin_email2],
-            "users": [user_email2]
-        },
-        {
-            "catalog_name": catalog3,
-            "tags": ["IT"],
-            "admins": [main_admin, admin_email3],
-            "users": [user_email3]
-        }
-    ]
-
-    for payload in catalogs:
-        response = c.post(
-            '/ssc/catalogs',
-            json=payload,
-            headers=auth_headers
-        )
-
-        log.warning(response.data)
-        # log.warning(response.get_json())
-
-        T.assertEqual(response.status_code, 201)
-
-
-
-def test_something_else(c: Client):
-
-    result = get_somthing_from_db()
-    assert admin_email3 in result
-
-
-
-# etc
 
 ```
 
