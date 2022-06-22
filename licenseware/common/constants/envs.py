@@ -85,6 +85,11 @@ class envs:
     MONGO_CONNECTION_STRING: str = (
         os.getenv("MONGO_CONNECTION_STRING") or get_mongo_connection_string()
     )
+    MONGO_CONNECT_TIMEOUT: int = os.getenv("MONGO_CONNECT_TIMEOUT", "5000")  # 5s
+    MONGO_MIN_POOL_SIZE: int = os.getenv("MONGO_MIN_POOL_SIZE", "5")
+    MONGO_MAX_POOL_SIZE: int = os.getenv("MONGO_MAX_POOL_SIZE", "20")
+    MONGO_READ_CONCERN_LEVEL: str = os.getenv("MONGO_READ_CONCERN_LEVEL", "majority")
+    MONGO_WRITE_CONCERN_LEVEL: str = os.getenv("MONGO_WRITE_CONCERN_LEVEL", "majority")
 
     # !!! Add here ONLY collection names that are USED on ALL or MOST of the APPS !!!
     # For APP SPECIFIC mongo collection names you can always create a data class in `common`/`utils` or other app package.

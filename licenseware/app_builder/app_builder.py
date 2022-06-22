@@ -9,7 +9,7 @@ Notice that history report route/path is provided but is not implemented that's 
 from typing import List, Callable, Dict
 from dataclasses import dataclass
 
-from flask import Flask
+from flask import Flask, g
 from flask_restx import Api, Namespace, Resource
 from marshmallow.schema import Schema
 
@@ -28,6 +28,7 @@ from licenseware.editable_table import EditableTable
 from licenseware.schema_namespace import SchemaNamespace
 from licenseware.decorators.xss_decorator import xss_before_request
 from licenseware.mongodata import create_collection
+from licenseware.database import Database
 
 from .refresh_registration_route import add_refresh_registration_route
 from .editable_tables_route import add_editable_tables_route
@@ -172,12 +173,21 @@ class AppBuilder:
 
         self.appvars = vars(self)
 
-    def init_app(self, app: Flask, register: bool = False):
+    def init_app(self, app: Flask, register: bool = False, db_connection: Callable[[], Database] = None):
+        if db_connection is None:
+            from licenseware.mongodata import Connect
+            db_connection = Connect.get_connection
 
         # This hides flask_restx `X-fields` from swagger headers
         app.config["RESTX_MASK_SWAGGER"] = False
         app.before_request(xss_before_request)
 
+        self.db = db_connection()
+
+        @app.before_request
+        def before_request():
+            g.db = self.db
+        
         @app.after_request
         def after_request(response):
             response.headers.set("Access-Control-Allow-Origin", "*")

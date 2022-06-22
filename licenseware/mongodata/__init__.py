@@ -31,7 +31,8 @@ else:
         aggregate,
         get_collection,
         distinct,
-        create_collection
+        create_collection,
+        Connect,
     ) 
 
     from .mongo_connection import collection
