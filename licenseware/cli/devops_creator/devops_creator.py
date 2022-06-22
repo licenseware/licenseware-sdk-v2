@@ -118,9 +118,15 @@ class DevOpsCreator(BaseCreator):
 
     def create_devops_root_files(self):
 
-        for file in ['docker-compose.yml', 'docker-compose-mongo.yml', 'docker-entrypoint.sh', "Dockerfile", 
-        "Dockerfile.stack", "makefile", "pre-commit-config.yaml", 
-        "Procfile", "Procfile.stack", "Procfile.local"]:
+        for file in [
+            'docker-compose.yml', 
+            'docker-compose-mongo.yml', 
+            'docker-entrypoint.sh', 
+            "Dockerfile", 
+            "Makefile", 
+            "pre-commit-config.yaml", 
+            "Procfile"
+        ]:
             self.create_file(
                 filename=file,
                 filepath=paths.root,
@@ -143,11 +149,12 @@ class DevOpsCreator(BaseCreator):
         self.create_lint()
         self.create_release_publish_notif()
 
-        self.create_deploy_on_dev_workflow_file()
-        self.create_deploy_on_prod_workflow_file()
+        # TODO - Outdated 
+        # self.create_deploy_on_dev_workflow_file()
+        # self.create_deploy_on_prod_workflow_file()
         
-        self.create_deploy_on_dev_cloudformation_file()
-        self.create_deploy_on_prod_cloudformation_file()
+        # self.create_deploy_on_dev_cloudformation_file()
+        # self.create_deploy_on_prod_cloudformation_file()
 
         self.create_deploy_envs_files()
         self.create_deploy_jupyter_files()

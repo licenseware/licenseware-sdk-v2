@@ -55,10 +55,28 @@ def clear_quota():
     with collection(envs.MONGO_COLLECTION_UTILIZATION_NAME) as col:
         col.delete_many({})
 
+
+
+def clear_db():
+
+    cols = [
+        envs.MONGO_COLLECTION_UTILIZATION_NAME,
+        envs.MONGO_COLLECTION_ANALYSIS_NAME,
+        envs.MONGO_COLLECTION_HISTORY_NAME,
+        envs.MONGO_COLLECTION_TOKEN_NAME,
+        envs.MONGO_COLLECTION_DATA_NAME,
+    ]
+    
+    for name in cols:
+        with collection(name) as col:
+            col.delete_many({})
+
+
 """
 
     with open(init_file_path, "w") as f:
         f.write(f"""
+import os
 import warnings
 from licenseware.common.constants import envs
 from licenseware.mongodata import collection
@@ -67,6 +85,10 @@ warnings.filterwarnings("ignore")
 
 test_email = "{test_email}"
 test_password = "{test_password}" 
+
+if os.path.exists("coverage.svg"):
+    os.remove("coverage.svg")
+
 
 """ + util_funcs)
 
@@ -78,7 +100,7 @@ def create_test_file(test_path, contents):
 
 def order_by_request(request_data):
 
-    req_order = ["get", "post", "put", "delete"]
+    req_order = ["post", "get", "put", "delete"]
 
     desiredidx = []
     for req in req_order:
