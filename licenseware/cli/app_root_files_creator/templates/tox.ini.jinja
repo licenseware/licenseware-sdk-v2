@@ -5,7 +5,6 @@ envlist = py38
 skip_install = True
 setenv =
 
-
     APP_ID={{ entity_dash }}
     DEBUG=true
     ENVIRONMENT=local
@@ -23,10 +22,9 @@ setenv =
 
 deps =
     -r requirements-dev.txt
-    -r requirements-tests.txt
 
 commands =
     coverage run --source=app -m pytest -s -v {posargs}
-    coverage xml
     coverage html
     coverage report -m
+    coverage-badge -o coverage.svg

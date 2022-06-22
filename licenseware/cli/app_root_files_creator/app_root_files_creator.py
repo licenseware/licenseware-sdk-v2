@@ -4,15 +4,16 @@ from . import templates
 
 root_files = [
     'gitignore',
+    'ignoretests',
     'main.py',
     'README.md',
     'requirements.txt',
     'tox.ini',
+    'pytest.ini',
     'version.txt',
     'CHANGELOG.md',
     'setup.py',
     'requirements-dev.txt',
-    'requirements-tests.txt'
 ]
 
 
@@ -26,7 +27,7 @@ class AppRootFilesCreator(BaseCreator):
 
         for file in root_files:    
 
-            filename = file if file not in ['gitignore'] else '.' + file
+            filename = file if file not in ['ignoretests', 'gitignore'] else '.' + file
 
             self.create_file(
                 filename=filename,

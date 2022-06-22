@@ -1,2 +1,0 @@
-web: export `cat ./deploy/.env.debug` && python3 main.py
-worker: export `cat ./deploy/.env.debug` && dramatiq main:App.broker -p1 --queues {{ entity_dash }} --watch .
