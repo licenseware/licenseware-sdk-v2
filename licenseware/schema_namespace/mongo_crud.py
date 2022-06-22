@@ -119,7 +119,7 @@ class MongoCrud:
         if len(inserted_docs) == 0:
             return "Could not insert data", 400
 
-        return "SUCCESS"
+        return data
 
     def put_data(self, flask_request: Request):
 
@@ -143,7 +143,7 @@ class MongoCrud:
         if updated_docs == 0:
             return "Query had no match", 404
 
-        return "SUCCESS"
+        return new_data
 
     def delete_data(self, flask_request: Request):
 
