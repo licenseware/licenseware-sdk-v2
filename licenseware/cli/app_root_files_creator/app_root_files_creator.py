@@ -9,6 +9,7 @@ root_files = [
     'README.md',
     'requirements.txt',
     'tox.ini',
+    'pytest.ini',
     'version.txt',
     'CHANGELOG.md',
     'setup.py',

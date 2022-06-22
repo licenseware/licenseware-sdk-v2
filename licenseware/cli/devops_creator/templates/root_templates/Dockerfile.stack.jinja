@@ -1,5 +1,0 @@
-FROM ghcr.io/licenseware/licenseware-sdk-v2:latest
-
-COPY --chown=${USER} . .
-
-CMD ["honcho", "-f", "Procfile.stack", "start"]

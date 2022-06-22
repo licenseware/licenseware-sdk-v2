@@ -56,7 +56,6 @@ def clear_quota():
         col.delete_many({})
 
 
-
 def clear_db():
 
     cols = [
@@ -77,19 +76,14 @@ def clear_db():
     with open(init_file_path, "w") as f:
         f.write(f"""
 import os
-import warnings
 from licenseware.common.constants import envs
 from licenseware.mongodata import collection
-
-warnings.filterwarnings("ignore")
 
 test_email = "{test_email}"
 test_password = "{test_password}" 
 
 if os.path.exists("coverage.svg"):
     os.remove("coverage.svg")
-
-
 """ + util_funcs)
 
 
