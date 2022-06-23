@@ -112,12 +112,18 @@ class MongoCrud:
 
         data = dict(query, **{"updated_at": datetime.datetime.utcnow().isoformat()})
 
-        inserted_docs = m.insert(
+        inserted_ids = m.insert(
             schema=self.schema, collection=self.collection, data=data
         )
 
-        if len(inserted_docs) == 0:
+        if len(inserted_ids) == 0:
             return "Could not insert data", 400
+
+        if isinstance(data, dict):
+            return {"_id": inserted_ids[0], **data}
+
+        if isinstance(data, list) and len(data) == len(inserted_ids):
+            return [{"_id": inserted_ids[i], **d} for i, d in enumerate(data)]
 
         return data
 
