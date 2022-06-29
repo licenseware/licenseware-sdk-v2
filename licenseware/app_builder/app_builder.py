@@ -28,7 +28,7 @@ from licenseware.editable_table import EditableTable
 from licenseware.schema_namespace import SchemaNamespace
 from licenseware.decorators.xss_decorator import xss_before_request
 from licenseware.mongodata import create_collection
-from licenseware.database import Database
+from licenseware.dependencies.database import Database
 
 from .refresh_registration_route import add_refresh_registration_route
 from .editable_tables_route import add_editable_tables_route
