@@ -425,9 +425,9 @@ class AppBuilder:
 
         uploaders = [
             {
-                k: v
-                for k, v in vars(r).items()
-                if k
+                func_name: func
+                for func_name, func in vars(uploder_builder).items()
+                if func_name
                 in [
                     "app_id",
                     "uploader_id",
@@ -446,7 +446,7 @@ class AppBuilder:
                     "query_params_on_upload",
                 ]
             }
-            for r in self.uploaders
+            for uploder_builder in self.uploaders
         ]
 
         return uploaders
