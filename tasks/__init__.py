@@ -1,0 +1,1 @@
+from tests.test_flask_celery import processing_func
