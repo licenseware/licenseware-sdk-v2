@@ -1,6 +1,5 @@
-import uuid
-import datetime
 import jwt
+import datetime
 import dateutil.parser as dateparser
 from licenseware import mongodata
 from licenseware.common.constants import envs

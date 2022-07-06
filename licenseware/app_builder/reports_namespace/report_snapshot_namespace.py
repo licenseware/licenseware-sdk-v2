@@ -28,9 +28,6 @@ def get_report_snapshot_namespace(ns: Namespace, reports: List[ReportBuilder]):
                     For this to be available on get report metadata url, set query param `snapshot` to true.
                     The report will be created and available at this link. 
                 """,
-                'params': {
-                    'tenant_id': {'description': 'The tenant_id which owns the data'},
-                },
                 'responses': {
                     200: 'Success',
                     403: 'Missing `Tenantid` or `Authorization` information',
