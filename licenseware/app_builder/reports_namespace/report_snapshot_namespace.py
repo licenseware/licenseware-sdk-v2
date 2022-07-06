@@ -24,10 +24,14 @@ def get_report_snapshot_namespace(ns: Namespace, reports: List[ReportBuilder]):
         docs = {
             'get': {
                 'description': """
-                    Get full report. 
-                    For this to be available on get report metadata url, set query param `snapshot` to true.
-                    The report will be created and available at this link. 
+                    A GET request with no parameters will return a list of available snapshot versions.
+
                 """,
+                'params': {
+                    'version': {'description': 'Return report snapshot metadata for this version'},
+                    "report_id": {"description": "The number of minutes when `public_token` will expire"},
+                    'component_id': {'description': 'If `true` will get the read-only url of current generated report. You can later call full report on `report_id`/snapshot'},
+                },
                 'responses': {
                     200: 'Success',
                     403: 'Missing `Tenantid` or `Authorization` information',

@@ -17,16 +17,12 @@ def create_report_resource(report: ReportBuilder):
         def get(self):
 
             snapshot = request.args.get('snapshot') 
-            version = request.args.get('version') 
             public_url = request.args.get('public_url')
             file_type = request.args.get('download_as')
             tenant_id = request.headers.get('Tenantid')
 
-            if version is not None: 
-                return report.get_report_snapshot(request)
-
             if snapshot == "true": 
-                return report.get_snapshot_url(request)
+                return report.get_snapshot_version(request)
 
             if public_url == "true": 
                 return report.get_report_public_url(request)
@@ -63,7 +59,6 @@ def get_report_metadata_namespace(ns: Namespace, reports: List[ReportBuilder]):
                     'public_url': {'description': 'If `true` will return the public url for this report. If `false` will delete public url for this report.'},
                     "expire": {"description": "The number of minutes when `public_token` will expire"},
                     'snapshot': {'description': 'If `true` will get the read-only url of current generated report. You can later call full report on `report_id`/snapshot'},
-                    'version': {'description': 'Return the static snapshot report version specified'},
                     'download_as': {'description': 'Download table component as file type: csv, xlsx, json'}
                 },
                 'responses': {
