@@ -34,6 +34,8 @@ class MongoCrud:
                     params["id"] = int(value)
                 except ValueError:
                     raise Exception(f"Id can only be integer: {value}")
+            if key == "foreign_key":
+                params["foreign_key"] = value
         return params
 
     def get_payload(self, flask_request: Request):
