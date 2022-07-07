@@ -1,3 +1,4 @@
+from time import monotonic
 import uuid
 import string
 import random
@@ -138,6 +139,26 @@ class ReportSnapshot:
         results = mongodata.aggregate(pipeline, collection=envs.MONGO_COLLECTION_REPORT_SNAPSHOTS_NAME)
       
         return results 
+
+
+    def update_snapshot_component(self):
+
+        new_data = self.request.json["new_data"]
+        new_data.pop("_id", None)
+        
+        updated_doc = mongodata.update(
+            schema=AllowAllSchema,
+            match={
+                '_id': self.request.json["_id"],
+                'tenant_id': self.tenant_id,
+            },
+            new_data=new_data,
+            collection=envs.MONGO_COLLECTION_REPORT_SNAPSHOTS_NAME
+        )
+
+        if updated_doc:
+            return new_data
+        return "Didn't found any match on field `_id` on this `tenant_id`", 400
 
 
     def insert_report_metadata(self):

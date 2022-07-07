@@ -38,38 +38,38 @@ def create_report_snapshot_resource(report: ReportBuilder):
             return report.get_snapshot_component(request)
 
 
-
         @failsafe(fail_code=500)
         @authorization_check
         def put(self):
-            
-            version = request.args.get('version')
-            component_id = request.args.get('component_id')
-            
-            if version is None:
-                return "Parameter `version` must be specified", 400
+            return report.update_snapshot_component(request)
 
         
         @failsafe(fail_code=500)
         @authorization_check
         def delete(self):
-            
-            version = request.args.get('version')
-            component_id = request.args.get('component_id')
-            
-            if version is None:
-                return "Parameter `version` must be specified", 400
-        
+
+            return report.update_snapshot_component(request)
+
         
     return ReportController
 
 
 def get_report_snapshot_namespace(ns: Namespace, reports: List[ReportBuilder]):
 
-    restx_model = ns.model('ComponentFilter', dict(
+    filter_model = ns.model('SnapshotComponentFilter', dict(
         column=fields.String,
         filter_type=fields.String,
         filter_value=fields.List(fields.String)
+    ))
+
+    update_model = ns.model('SnapshotComponentUpdate', dict(
+        _id=fields.String,
+        new_data=fields.Raw
+    ))
+
+    delete_model = ns.model('SnapshotComponentDelete', dict(
+        _id=fields.String,
+        report_id=fields.String,
     ))
 
     for report in reports:
@@ -80,13 +80,24 @@ def get_report_snapshot_namespace(ns: Namespace, reports: List[ReportBuilder]):
             'post': {
                 'description': "Get component data with an optional filter payload",
                 'validate': None,
-                'expect': [restx_model],
+                'expect': [filter_model],
                 'params': {
                     'version': {'description': 'Snapshot version'},
                     'component_id': {'description': "Get data for this component. Make sure to fill the version."},
                     'limit': {'description': "Limit number of results for this component_id."},
                     'skip': {'description': "Skip/Offset number of results for this component_id."},
                 },
+            },
+            'put': {
+                'description': "Update component data found on `_id` field. \
+                 The update is schemaless so make sure to provide the full updated object.",
+                'validate': None,
+                'expect': [update_model],
+            },
+            'delete': {
+                'description': "Get component data with an optional filter payload",
+                'validate': None,
+                'expect': [delete_model],
             },
             'get': {
                 'description': "Get static report version of this report",

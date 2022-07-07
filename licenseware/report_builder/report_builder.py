@@ -124,6 +124,10 @@ class ReportBuilder:
         rs = ReportSnapshot(self, flask_request)
         return rs.get_snapshot_component()
 
+    def update_snapshot_component(self, flask_request: Request):
+        rs = ReportSnapshot(self, flask_request)
+        return rs.update_snapshot_component()
+
     def register_report(self):
         return register_report(**self.reportvars)
 
