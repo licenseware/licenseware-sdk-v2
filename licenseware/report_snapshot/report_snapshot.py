@@ -8,8 +8,7 @@ from marshmallow import Schema, INCLUDE
 from licenseware import mongodata
 from licenseware.mongodata import collection
 from licenseware.common.constants import envs
-# from licenseware.utils.flask_request import get_flask_request
-
+from licenseware.report_components.build_match_expression import build_match_expression
 
 
 
@@ -27,18 +26,119 @@ class AllowAllSchema(Schema):
 
 class ReportSnapshot:
     def __init__(self, report: type, flask_request: Request):
-        self.report = report
+        from licenseware.report_builder import ReportBuilder
+        self.report: ReportBuilder  = report
         self.request = flask_request    
         self.tenant_id = flask_request.headers.get("Tenantid")
         self.report_id = self.report.report_id
         self.report_uuid = str(uuid.uuid4()) 
-        self.version = shortid()
+        self.version = self.request.args.get("version", shortid()) 
         self.snapshot_date = datetime.utcnow().isoformat()
 
     def get_snapshot_version(self):
         snapshot = self.generate_snapshot()
         return f"Created snapshot version `{snapshot['version']}`"
          
+
+    def get_available_versions(self):
+
+        pipeline = [
+            {
+                '$match': {
+                    'tenant_id': self.tenant_id, 
+                    'report_id': self.report_id
+                }
+            }, {
+                '$group': {
+                    '_id': 0, 
+                    'versions': {
+                        '$addToSet': '$version'
+                    }
+                }
+            }, {
+                '$project': {
+                    '_id': 0, 
+                    'versions': '$versions'
+                }
+            }
+        ]
+
+        results = mongodata.aggregate(pipeline, collection=envs.MONGO_COLLECTION_REPORT_SNAPSHOTS_NAME)
+
+        return results[0] if len(results) == 1 else results
+
+
+    def get_snapshot_metadata(self):
+
+        results = mongodata.fetch(
+            match={
+                'tenant_id': self.tenant_id, 
+                'report_id': self.report_id,
+                'version': self.version,
+                'report_uuid': {"$exists": True}
+            },
+            collection=envs.MONGO_COLLECTION_REPORT_SNAPSHOTS_NAME
+        )
+
+        return results[0] if len(results) == 1 else results
+
+
+    
+    def get_mongo_match_filters(self):
+        """
+            Create a mongo `$match` filter with tenant_id and filters sent from frontend 
+        """
+        
+        if self.request.json is None:
+            received_filters = []
+        elif isinstance(self.request.json, dict):
+            received_filters = [self.request.json]
+        elif isinstance(self.request.json, list):
+            received_filters = self.request.json
+        else:
+            raise Exception("Only list or objects are accepted")
+
+        # Inserting filter by tenant_id
+        received_filters.insert(0, {
+            'column': 'tenant_id', 
+            'filter_type': 'equals', 
+            'filter_value': self.tenant_id
+        })
+            
+        filters = build_match_expression(received_filters)
+        
+        return filters
+
+
+    def get_snapshot_component(self):
+
+        limit = self.request.args.get("limit")
+        skip = self.request.args.get("skip")
+
+        if skip and not limit or limit and not skip:
+            return "Limit and skip must be set together", 400
+
+        match_filters = self.get_mongo_match_filters()
+        
+        pipeline = [
+            {"$match": {**match_filters, **{
+                'tenant_id': self.tenant_id,
+                'report_id': self.report_id,
+                'component_id': self.request.args.get("component_id"),
+                'version': self.version,
+                'for_report_uuid': {"$exists": True}
+            }}},
+        ]
+
+        if skip and limit:
+            pipeline.insert(-1, {"$limit": int(limit)})
+            pipeline.insert(-1, {"$skip": int(skip)})
+
+
+        results = mongodata.aggregate(pipeline, collection=envs.MONGO_COLLECTION_REPORT_SNAPSHOTS_NAME)
+      
+        return results 
+
 
     def insert_report_metadata(self):
 
@@ -58,8 +158,10 @@ class ReportSnapshot:
         return report_metadata
 
     def update_report_component_metadata(self, comp):
-        
+    
         comp_payload = comp.get_registration_payload()
+        query_params = f"?version={self.version}&component_id={comp.component_id}"
+        comp_payload["snapshot_url"] = self.report.snapshot_url + query_params
 
         mongodata.update(
             schema=AllowAllSchema,
@@ -102,15 +204,12 @@ class ReportSnapshot:
 
 
     def generate_snapshot(self):
-        # Avoid circular import 
-        from licenseware.report_components.base_report_component import BaseReportComponent
-
+    
         report_metadata = self.insert_report_metadata()
               
         inserted_components = set()
         for comp in self.report.components:
-            comp: BaseReportComponent
-
+        
             if comp.component_id in inserted_components:
                 continue
 

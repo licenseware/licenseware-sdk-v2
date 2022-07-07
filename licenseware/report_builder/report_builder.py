@@ -108,13 +108,21 @@ class ReportBuilder:
         tenant_id = flask_request.headers.get("TenantId")
         return delete_public_token(tenant_id, self.report_id)
 
-    def get_report_snapshot(self, flask_request: Request):
-        rs = ReportSnapshot(self, flask_request)
-        return rs.get_report_snapshot()
-
     def get_snapshot_version(self, flask_request: Request):
         rs = ReportSnapshot(self, flask_request)
         return rs.get_snapshot_version()
+
+    def get_available_versions(self, flask_request: Request):
+        rs = ReportSnapshot(self, flask_request)
+        return rs.get_available_versions()
+
+    def get_snapshot_metadata(self, flask_request: Request):
+        rs = ReportSnapshot(self, flask_request)
+        return rs.get_snapshot_metadata()
+
+    def get_snapshot_component(self, flask_request: Request):
+        rs = ReportSnapshot(self, flask_request)
+        return rs.get_snapshot_component()
 
     def register_report(self):
         return register_report(**self.reportvars)
