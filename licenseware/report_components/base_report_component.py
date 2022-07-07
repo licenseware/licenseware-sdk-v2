@@ -60,8 +60,10 @@ class BaseReportComponent:
         self.path = path or '/' + component_id
         self.component_path = self.path if self.path.startswith('/') else '/' + self.path 
         self.public_component_path = self.component_path + "/public"
+        self.snapshot_component_path = self.component_path + "/snapshot"
         self.url = envs.REPORT_COMPONENT_URL + self.component_path
         self.public_url = envs.REPORT_COMPONENT_URL + self.public_component_path
+        self.snapshot_url = envs.REPORT_COMPONENT_URL + self.snapshot_component_path
         self.order = order
         self.style_attributes = style_attributes
         self.attributes = attributes
@@ -242,6 +244,7 @@ class BaseReportComponent:
             "path": self.path,
             "url": self.url,
             "public_url": self.public_url,
+            "snapshot_url": self.snapshot_url,
             "style_attributes": self.style_attributes,
             "attributes": self.attributes,
             "component_type": self.component_type,

@@ -61,6 +61,7 @@ class ReportBuilder:
         self.flags = flags
 
         self.url = envs.REPORT_URL + self.report_path
+        self.snapshot_url = envs.REPORT_URL + self.report_path + "/snapshot"
         self.public_url = envs.REPORT_URL + self.public_report_path
         self.ui_public_url = envs.FRONTEND_URL + envs.REPORT_PATH + '/public'
         self.preview_image_path = self.report_path + '/preview_image'
@@ -88,6 +89,7 @@ class ReportBuilder:
             "filters": self.filters,
             "url": self.url,
             "public_url": self.public_url,
+            "snapshot_url": self.snapshot_url,
             "preview_image_url": self.preview_image_url,
             "preview_image_dark_url": self.preview_image_dark_url,
             "connected_apps": self.connected_apps
@@ -106,13 +108,29 @@ class ReportBuilder:
         tenant_id = flask_request.headers.get("TenantId")
         return delete_public_token(tenant_id, self.report_id)
 
-    def get_report_snapshot(self, flask_request: Request):
+    def get_snapshot_version(self, flask_request: Request):
         rs = ReportSnapshot(self, flask_request)
-        return rs.get_report_snapshot()
+        return rs.get_snapshot_version()
 
-    def get_snapshot_url(self, flask_request: Request):
+    def get_available_versions(self, flask_request: Request):
         rs = ReportSnapshot(self, flask_request)
-        return rs.get_snapshot_url()
+        return rs.get_available_versions()
+
+    def get_snapshot_metadata(self, flask_request: Request):
+        rs = ReportSnapshot(self, flask_request)
+        return rs.get_snapshot_metadata()
+
+    def get_snapshot_component(self, flask_request: Request):
+        rs = ReportSnapshot(self, flask_request)
+        return rs.get_snapshot_component()
+
+    def update_snapshot(self, flask_request: Request):
+        rs = ReportSnapshot(self, flask_request)
+        return rs.update_snapshot()
+
+    def delete_snapshot(self, flask_request: Request):
+        rs = ReportSnapshot(self, flask_request)
+        return rs.delete_snapshot()
 
     def register_report(self):
         return register_report(**self.reportvars)
