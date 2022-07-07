@@ -1,4 +1,3 @@
-from time import monotonic
 import uuid
 import string
 import random
@@ -15,7 +14,7 @@ from licenseware.report_components.build_match_expression import build_match_exp
 
 def shortid(length=6):
     # Not colision prof
-    # but enough when combined with tenant_id report_id
+    # but enough when combined with tenant_id
     return ''.join(random.choices(string.digits + string.ascii_uppercase, k=length))
 
 

@@ -25,6 +25,7 @@ def register_report(**kwargs):
             "flags": kwargs['flags'],
             "url": kwargs['url'],
             "public_url": kwargs['public_url'],
+            "snapshot_url": kwargs['snapshot_url'],
             "preview_image_url": kwargs['preview_image_url'],
             "preview_image_dark_url": kwargs['preview_image_dark_url'],
             "report_components": kwargs['report_components'],

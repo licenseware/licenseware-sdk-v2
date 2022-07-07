@@ -23,13 +23,13 @@ def register_component(**kwargs):
             "component_id": kwargs['component_id'],
             "url": kwargs['url'],
             "public_url": kwargs['public_url'],
+            "snapshot_url": kwargs['snapshot_url'],
             "order": kwargs['order'],
             "style_attributes": kwargs['style_attributes'],
             "attributes": kwargs['attributes'],
             "title": kwargs['title'],
             "component_type": kwargs['component_type'],
             "filters": kwargs['filters']
-
         }]
     }
 
