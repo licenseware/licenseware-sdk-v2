@@ -124,9 +124,13 @@ class ReportBuilder:
         rs = ReportSnapshot(self, flask_request)
         return rs.get_snapshot_component()
 
-    def update_snapshot_component(self, flask_request: Request):
+    def update_snapshot(self, flask_request: Request):
         rs = ReportSnapshot(self, flask_request)
-        return rs.update_snapshot_component()
+        return rs.update_snapshot()
+
+    def delete_snapshot(self, flask_request: Request):
+        rs = ReportSnapshot(self, flask_request)
+        return rs.delete_snapshot()
 
     def register_report(self):
         return register_report(**self.reportvars)

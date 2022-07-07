@@ -41,14 +41,13 @@ def create_report_snapshot_resource(report: ReportBuilder):
         @failsafe(fail_code=500)
         @authorization_check
         def put(self):
-            return report.update_snapshot_component(request)
+            return report.update_snapshot(request)
 
         
         @failsafe(fail_code=500)
         @authorization_check
         def delete(self):
-
-            return report.update_snapshot_component(request)
+            return report.delete_snapshot(request)
 
         
     return ReportController
@@ -62,14 +61,16 @@ def get_report_snapshot_namespace(ns: Namespace, reports: List[ReportBuilder]):
         filter_value=fields.List(fields.String)
     ))
 
-    update_model = ns.model('SnapshotComponentUpdate', dict(
+    update_model = ns.model('SnapshotUpdate', dict(
         _id=fields.String,
         new_data=fields.Raw
     ))
 
-    delete_model = ns.model('SnapshotComponentDelete', dict(
-        _id=fields.String,
-        report_id=fields.String,
+    delete_model = ns.model('SnapshotDelete', dict(
+        _id=fields.String(description="Delete document found on `_id`."),
+        report_uuid=fields.String(description="Delete report snapshot and ALL it's components found on `report_uuid`."),
+        component_uuid=fields.String(description="Delete component data found for field `component_uuid`."),
+        version=fields.String(description="Delete versions found for field `version`."),
     ))
 
     for report in reports:
@@ -78,9 +79,9 @@ def get_report_snapshot_namespace(ns: Namespace, reports: List[ReportBuilder]):
         
         docs = {
             'post': {
-                'description': "Get component data with an optional filter payload",
+                'description': "Get component data with an optional filter payload list",
                 'validate': None,
-                'expect': [filter_model],
+                'expect': [[filter_model]],
                 'params': {
                     'version': {'description': 'Snapshot version'},
                     'component_id': {'description': "Get data for this component. Make sure to fill the version."},
@@ -95,9 +96,9 @@ def get_report_snapshot_namespace(ns: Namespace, reports: List[ReportBuilder]):
                 'expect': [update_model],
             },
             'delete': {
-                'description': "Get component data with an optional filter payload",
+                'description': "Given a list of objects delete required data.",
                 'validate': None,
-                'expect': [delete_model],
+                'expect': [[delete_model]],
             },
             'get': {
                 'description': "Get static report version of this report",

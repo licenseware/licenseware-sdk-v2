@@ -5,7 +5,7 @@ import random
 from flask import Request
 from datetime import datetime
 from marshmallow import Schema, INCLUDE
-
+from bson.objectid import ObjectId
 from licenseware import mongodata
 from licenseware.mongodata import collection
 from licenseware.common.constants import envs
@@ -141,7 +141,7 @@ class ReportSnapshot:
         return results 
 
 
-    def update_snapshot_component(self):
+    def update_snapshot(self):
 
         new_data = self.request.json["new_data"]
         new_data.pop("_id", None)
@@ -160,6 +160,116 @@ class ReportSnapshot:
             return new_data
         return "Didn't found any match on field `_id` on this `tenant_id`", 400
 
+    def _id_belongs_to_report(self, _id: str):
+
+        results = mongodata.document_count(
+            match={
+                '_id': _id,
+                'tenant_id': self.tenant_id,
+                'report_uuid': {"$exists": True}
+            },
+            collection=envs.MONGO_COLLECTION_REPORT_SNAPSHOTS_NAME
+        )
+
+        return bool(results)
+
+
+
+    def _delete_by_ids(self):
+
+        ids_to_delete = []
+        for d in self.request.json:
+            if not d.get("_id"): continue
+            # we can't delete report metadata and leave it's components hanging 
+            if self._id_belongs_to_report(d["_id"]):
+                continue 
+            ids_to_delete.append(ObjectId(d["_id"]))
+
+        deleted_docs = mongodata.delete(
+            match={
+                '_id': {"$in": ids_to_delete},
+                'tenant_id': self.tenant_id,
+            },
+            collection=envs.MONGO_COLLECTION_REPORT_SNAPSHOTS_NAME
+        )
+
+        return deleted_docs
+
+
+    def _delete_by_versions(self):
+
+        versions_to_delete = []
+        for d in self.request.json:
+            if not d.get("version"): continue
+            versions_to_delete.append(d["version"])
+
+        deleted_docs = mongodata.delete(
+            match={
+                'version': {"$in": versions_to_delete},
+                'tenant_id': self.tenant_id,
+            },
+            collection=envs.MONGO_COLLECTION_REPORT_SNAPSHOTS_NAME
+        )
+
+        return deleted_docs
+
+
+    def _delete_by_component_uuids(self):
+        
+        component_uuids_to_delete = []
+        for d in self.request.json:
+            if not d.get("component_uuid"): continue
+            component_uuids_to_delete.append(d["component_uuid"])
+
+        deleted_docs = mongodata.delete(
+            match={
+                'component_uuid': {"$in": component_uuids_to_delete},
+                'tenant_id': self.tenant_id,
+            },
+            collection=envs.MONGO_COLLECTION_REPORT_SNAPSHOTS_NAME
+        )
+
+        return deleted_docs
+
+
+
+    def _delete_by_report_uuids(self):
+
+        report_uuids_to_delete = []
+        for d in self.request.json:
+            if not d.get("report_uuid"): continue
+            report_uuids_to_delete.append(d["report_uuid"])
+
+        d1 = mongodata.delete(
+            match={
+                'report_uuid': {"$in": report_uuids_to_delete},
+                'tenant_id': self.tenant_id,
+            },
+            collection=envs.MONGO_COLLECTION_REPORT_SNAPSHOTS_NAME
+        )
+
+        d2 = mongodata.delete(
+            match={
+                'for_report_uuid': {"$in": report_uuids_to_delete},
+                'tenant_id': self.tenant_id,
+            },
+            collection=envs.MONGO_COLLECTION_REPORT_SNAPSHOTS_NAME
+        )
+
+        deleted_docs = d1 + d2
+
+        return deleted_docs
+
+
+    def delete_snapshot(self):
+
+        self._delete_by_ids()
+        self._delete_by_versions()
+        self._delete_by_component_uuids()
+        self._delete_by_report_uuids()
+
+        return "Requested items were deleted"
+        
 
     def insert_report_metadata(self):
 

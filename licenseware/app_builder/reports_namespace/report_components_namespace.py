@@ -73,7 +73,7 @@ def get_report_components_namespace(ns: Namespace, reports: List[ReportBuilder])
                     'description': 'Get component data with an optional filter payload',
                     'params': params,
                     'validate': None,
-                    'expect': [restx_model],
+                    'expect': [[restx_model]],
                     'responses': {
                         200: 'Success',
                         403: 'Missing `Tenantid` or `Authorization` information',
