@@ -31,6 +31,7 @@ def register_report(**kwargs):
             "report_components": kwargs['report_components'],
             "connected_apps": kwargs['connected_apps'],
             "filters": kwargs['filters'],
+            "public_for_tenants": kwargs['public_for_tenants'],
             'registrable': kwargs['registrable']
         }]
     }

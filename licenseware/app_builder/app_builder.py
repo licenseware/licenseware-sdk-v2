@@ -405,6 +405,7 @@ class AppBuilder:
                     "connected_apps",
                     "filters",
                     "registrable",
+                    "public_for_tenants"
                 ]
             }
             for r in self.reports
