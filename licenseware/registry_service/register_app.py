@@ -2,7 +2,7 @@ import requests
 from licenseware.utils.logger import log
 from licenseware.common.constants import envs
 from licenseware.decorators.auth_decorators import authenticated_machine
-from licenseware.tenants import get_activated_tenants, get_tenants_with_data
+from licenseware.tenants import get_activated_tenants, get_tenants_with_data, get_tenants_with_public_reports
 from licenseware.common.validators.registry_payload_validators import validate_register_app_payload
 
 
@@ -24,6 +24,7 @@ def register_app(**kwargs):
             "name": kwargs['name'],
             "tenants_with_app_activated": get_activated_tenants(),
             "tenants_with_data_available": get_tenants_with_data(),
+            "tenants_with_public_reports": get_tenants_with_public_reports(),
             "description": kwargs['description'],
             "flags": kwargs['flags'],
             "icon": kwargs['icon'],

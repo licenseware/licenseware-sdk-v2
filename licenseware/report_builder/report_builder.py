@@ -7,6 +7,7 @@ from licenseware.report_components import BaseReportComponent
 from licenseware.report_snapshot import ReportSnapshot
 from licenseware.utils.logger import log
 from licenseware.utils.tokens import get_public_token, delete_public_token
+from licenseware.tenants import get_tenants_with_public_reports
 
 
 
@@ -70,6 +71,8 @@ class ReportBuilder:
         self.preview_image_dark_url = envs.REPORT_URL + self.preview_image_dark_path
         self.preview_image = preview_image
         self.preview_image_dark = preview_image_dark
+        self.public_for_tenants = get_tenants_with_public_reports(report_id=self.report_id)
+
 
         # Needed to overwrite report_components and filters
         self.report_components = []
@@ -90,6 +93,7 @@ class ReportBuilder:
             "url": self.url,
             "public_url": self.public_url,
             "snapshot_url": self.snapshot_url,
+            "public_for_tenants": get_tenants_with_public_reports(report_id=self.report_id),
             "preview_image_url": self.preview_image_url,
             "preview_image_dark_url": self.preview_image_dark_url,
             "connected_apps": self.connected_apps
@@ -133,8 +137,12 @@ class ReportBuilder:
         return rs.delete_snapshot()
 
     def register_report(self):
-        return register_report(**self.reportvars)
+        return register_report(**{
+            **self.reportvars,
+            **{"public_for_tenants": get_tenants_with_public_reports(report_id=self.report_id)}
+        })
 
+        
     def register_components(self):
 
         for order, component in enumerate(self.components):
