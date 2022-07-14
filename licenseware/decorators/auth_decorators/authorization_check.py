@@ -1,6 +1,6 @@
 import requests
 from requests import Response
-from flask import request, Request
+from flask import request
 from functools import wraps
 from licenseware.utils.logger import log
 from licenseware.common.constants import envs
@@ -54,7 +54,7 @@ def authorization_check(f):
             machine_response = False
             reports_paths = request.path.startswith((f"/{envs.APP_PATH}/reports", f"/{envs.APP_PATH}/report-components", ))
             if reports_paths and request.method in ["GET", "POST"]: 
-                machine_response = _cached_machine_check(request, auth_token=headers['Authorization'])
+                machine_response = _cached_machine_check(auth_token=headers['Authorization'])
 
             if machine_response is True:
                 log.info("Using `Authorization` for machines on this request")
