@@ -61,7 +61,12 @@ def get_public_token(tenant_id: str, expire: int, report_id:str, ui_public_url:s
 
     return token
 
-    
+
+def get_public_token_data(token: str):
+    data = jwt.decode(token, envs.SECRET, algorithm="HS256")
+    return data
+ 
+
 
 def delete_public_token(tenant_id: str, report_id:str):
 

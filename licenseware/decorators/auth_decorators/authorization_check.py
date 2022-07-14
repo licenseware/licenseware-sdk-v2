@@ -19,6 +19,17 @@ def _cached_auth_check(tenant_id: str, auth_token: str) -> Response:
     return response
 
 
+@cached(cache=TTLCache(maxsize=10, ttl=60))
+def _cached_machine_check(auth_token: str) -> Response:
+    response = requests.get(
+        url=envs.AUTH_MACHINE_CHECK_URL,
+        headers={"Authorization": auth_token}
+    )
+    return response
+
+
+
+
 def authorization_check(f):
     """ Checks if a user is authorized """
     @wraps(f)
@@ -38,8 +49,12 @@ def authorization_check(f):
         response = _cached_auth_check(tenant_id=headers['Tenantid'], auth_token=headers['Authorization'])
 
         if response.status_code != 200:
-            log.warning(f'AUTHORIZATION FAIL | Request headers: {headers} | URL {request.url} | Message: {response.text}')
-            return {'status': 'fail', 'message': fail_message}, 401
+            machine_response = _cached_machine_check(auth_token=headers['Authorization'])
+            if machine_response.status_code == 200:
+                log.info("Using `Authorization` for machines on this request")
+            else:
+                log.warning(f'AUTHORIZATION FAIL | Request headers: {headers} | URL {request.url} | Message: {response.text}')
+                return {'status': 'fail', 'message': fail_message}, 401
 
         return f(*args, **kwargs)
 
