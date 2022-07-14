@@ -111,9 +111,54 @@ class envs:
 
     REDIS_RESULT_CACHE_DB: int = int(os.getenv("REDIS_RESULT_CACHE_DB", "15"))
 
+    BROKER_IS_CELERY: bool = os.getenv("BROKER_IS_CELERY", True)
+    CELERY_APP_NAME: str = os.getenv("CELERY_APP_NAME", "licenseware")
+    CELERY_BROKER_URI: str = os.getenv("CELERY_BROKER_URI", "confluentkafka://localhost:9092")
+    CELERY_BROKER_CONN_MAX_RETRIES: int = os.getenv("CELERY_BROKER_CONN_MAX_RETRIES", 3)
+    CELERY_TASK_DEFAULT_RATE_LIMIT: str = os.getenv("CELERY_TASK_DEFAULT_RATE_LIMIT", "10/s")
+    CELERY_SERIALIZER: str = os.getenv("CELERY_SERIALIZER", "json")
+    CELERY_COMPRESSION: str = os.getenv("CELERY_COMPRESSION", "bzip2")
+    CELERY_RESULT_BACKEND: str = os.getenv("CELERY_RESULT_BACKEND")
+    CELERY_CONSUMER_OFFSET: str = os.getenv("CELERY_CONSUMER_OFFSET", "latest")
+    CELERY_USING_CONFLUENT: bool = os.getenv("CELERY_USING_CONFLUENT", False)
+    CELERY_CONFLUENT_SASL_USERNAME: str = os.getenv("CELERY_CONFLUENT_SASL_USERNAME")
+    CELERY_CONFLUENT_SASL_PASSWORD: str = os.getenv("CELERY_CONFLUENT_SASL_PASSWORD")
+    CELERY_CONFLUENT_TOPIC_METADATA_REFRESH_INTERVAL: int = int(
+        os.getenv("CELERY_CONFLUENT_TOPIC_METADATA_REFRESH_INTERVAL", 150_000))
+
     # Environment variables added later by the app
     # envs.method_name() - calls the variable dynamically
     # you can access class vars with cls.attr_name ex: cls.MONGO_COLLECTION_DATA_NAME
+
+    @classmethod
+    def celery_broker_transport_options(cls):
+        if not cls.CELERY_USING_CONFLUENT:
+            return {}
+
+        if not cls.CELERY_CONFLUENT_SASL_USERNAME or not cls.CELERY_CONFLUENT_SASL_PASSWORD:
+            raise Exception("sasl username and password are required for confluent")
+
+        bootstrap_server = cls.CELERY_BROKER_URI.replace("confluentkafka://", "")
+        security_protocol = "SASL_SSL"
+        sasl_mechanism = "PLAIN"
+        refresh_interval = cls.CELERY_CONFLUENT_TOPIC_METADATA_REFRESH_INTERVAL
+
+        return {
+            "security_protocol": security_protocol,
+            "kafka_common_config": {
+                "topic.metadata.refresh.interval.ms": refresh_interval,
+                "bootstrap.servers": bootstrap_server,
+                "security.protocol": security_protocol,
+                "sasl.mechanism": sasl_mechanism,
+                "sasl.username": cls.CELERY_CONFLUENT_SASL_USERNAME,
+                "sasl.password": cls.CELERY_CONFLUENT_SASL_PASSWORD,
+            },
+        }
+
+    @classmethod
+    def celery_kafka_consumer_config(cls):
+        return {"auto.offset.reset": cls.CELERY_CONSUMER_OFFSET}
+
     @classmethod
     def get_auth_token(cls):
         return os.getenv("AUTH_TOKEN")
