@@ -1,6 +1,6 @@
 import requests
 from requests import Response
-from flask import request
+from flask import request, Request
 from functools import wraps
 from licenseware.utils.logger import log
 from licenseware.common.constants import envs
@@ -21,11 +21,13 @@ def _cached_auth_check(tenant_id: str, auth_token: str) -> Response:
 
 @cached(cache=TTLCache(maxsize=10, ttl=60))
 def _cached_machine_check(auth_token: str) -> Response:
+
     response = requests.get(
         url=envs.AUTH_MACHINE_CHECK_URL,
         headers={"Authorization": auth_token}
     )
-    return response
+
+    return response.status_code == 200
 
 
 
@@ -49,8 +51,12 @@ def authorization_check(f):
         response = _cached_auth_check(tenant_id=headers['Tenantid'], auth_token=headers['Authorization'])
 
         if response.status_code != 200:
-            machine_response = _cached_machine_check(auth_token=headers['Authorization'])
-            if machine_response.status_code == 200:
+            machine_response = False
+            reports_paths = request.path.startswith((f"/{envs.APP_PATH}/reports", f"/{envs.APP_PATH}/report-components", ))
+            if reports_paths and request.method in ["GET", "POST"]: 
+                machine_response = _cached_machine_check(request, auth_token=headers['Authorization'])
+
+            if machine_response is True:
                 log.info("Using `Authorization` for machines on this request")
             else:
                 log.warning(f'AUTHORIZATION FAIL | Request headers: {headers} | URL {request.url} | Message: {response.text}')
