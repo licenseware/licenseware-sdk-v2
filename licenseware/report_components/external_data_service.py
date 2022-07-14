@@ -2,11 +2,42 @@ import requests
 import traceback
 import os
 
+from licenseware.auth import Authenticator
 from licenseware.utils.logger import log
+from licenseware.decorators.auth_decorators import authenticated_machine
+from licenseware.utils.tokens import get_public_token_data
+
+
 
 REGISTRY_SERVICE_URL = os.getenv("REGISTRY_SERVICE_URL")
 
 class ExternalDataService:
+
+
+    @staticmethod
+    def _get_headers(_request):
+
+        public_token = _request.args.get("public_token")
+            
+        if public_token is not None:   
+            # Saving some `trips` to auth
+            Authenticator.connect()
+
+            data = get_public_token_data(public_token)
+            
+            headers = {
+                "TenantId": data["tenant_id"],
+                "Authorization": os.getenv("AUTH_TOKEN"),
+            }
+
+        else:  
+            headers = {
+                "TenantId": _request.headers.get("TenantId"),
+                "Authorization": _request.headers.get("Authorization"),
+            }
+
+        return headers
+
 
     @staticmethod
     def _get_registry_service_data(headers: dict, endpoint: str) -> list:
@@ -35,10 +66,8 @@ class ExternalDataService:
     @staticmethod
     def get_data(_request, app_id: str, component_id: str, filter_payload: dict=None) -> list:
         try:
-            headers = {
-                "TenantId": _request.headers.get("TenantId"),
-                "Authorization": _request.headers.get("Authorization"),
-            }
+
+            headers = ExternalDataService._get_headers(_request)
             
             registry_service_components = ExternalDataService._get_registry_service_data(headers, "components")
             service_url = ExternalDataService._get_component_url(
