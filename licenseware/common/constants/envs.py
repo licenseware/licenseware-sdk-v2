@@ -152,12 +152,13 @@ class envs:
                 "sasl.mechanism": sasl_mechanism,
                 "sasl.username": cls.CELERY_CONFLUENT_SASL_USERNAME,
                 "sasl.password": cls.CELERY_CONFLUENT_SASL_PASSWORD,
+                "retries": 3,
+            },
+            "kafka_consumer_config": {
+                "allow.auto.create.topics": True,
+                "auto.offset.reset": cls.CELERY_CONSUMER_OFFSET,
             },
         }
-
-    @classmethod
-    def celery_kafka_consumer_config(cls):
-        return {"auto.offset.reset": cls.CELERY_CONSUMER_OFFSET}
 
     @classmethod
     def get_auth_token(cls):
