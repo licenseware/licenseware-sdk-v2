@@ -32,7 +32,7 @@ ARG DUMB_INIT='https://github.com/Yelp/dumb-init/releases/download/v1.2.5/dumb-i
 ARG APP_DIR=${SERVICEDIR}/app
 ARG FILE_UPLOAD_PATH=/tmp/lware
 
-RUN curl -Lo /usr/local/bin/dumb-init ${DUMB_INIT} && \
+RUN curl -sLo /usr/local/bin/dumb-init ${DUMB_INIT} && \
     chmod +x /usr/local/bin/dumb-init
 
 RUN useradd -m ${USER} && \
@@ -68,15 +68,13 @@ FROM pre-run AS odbc
 
 USER root
 
-RUN apt update &&  \
-    apt install -y gnupg
-
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
-    curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list
-
-RUN apt update && \
+RUN apt install -y gnupg && \
+    curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
+    curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list && \
+    apt update && \
     apt install -y build-essential unixodbc-dev && \ 
     ACCEPT_EULA=Y apt install -y msodbcsql18
+
 USER ${USER}
 
 RUN pip install pyodbc==4.0.32
