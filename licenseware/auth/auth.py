@@ -106,33 +106,5 @@ class Authenticator:
         if response.status_code == 200:
             return response.json(), 200
         
-        return self._create_machine()
-
-
-    def _create_machine(self):
-
-        if not envs.AUTH_MACHINES_URL:
-            return {
-                       "status": "fail",
-                       "message": "Please create an account before using this Licenseware SDK."
-                   }, 403
-
-        payload = {
-            "machine_name": self.machine_name,
-            "password": self.password
-        }
-
-        response = requests.post(self.auth_create_url, json=payload)
-        
-        if response.status_code == 201:
-            return response.json(), 200
-
-        return {
-                   "status": "fail",
-                   "message": "Could not create account",
-               }, 500
-        
-        
-        
-        
-        
+        log.error(f"Could not login with {self.machine_name}")
+        exit(1)
