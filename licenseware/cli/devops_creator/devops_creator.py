@@ -121,7 +121,7 @@ class DevOpsCreator(BaseCreator):
         for file in [
             'docker-compose.yml', 
             'docker-compose-mongo.yml', 
-            'docker-entrypoint.sh', 
+            'entrypoint.sh', 
             "Dockerfile", 
             "Makefile", 
             "pre-commit-config.yaml", 
