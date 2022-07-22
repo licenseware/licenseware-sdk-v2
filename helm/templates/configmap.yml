@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "<CHARTNAME>.fullname" . }}-config
+  labels:
+    {{- include "<CHARTNAME>.labels" . | nindent 4 }}
+data:
+  AUTH_SERVICE_URL: {{ required "missing required value: .Values.config.authService.url" .Values.config.authService.url }}
+  ENVIRONMENT: {{ .Values.metadata.env }}
+  FILE_UPLOAD_PATH: {{ required "missing required value: .Values.config.fileUploadPath" .Values.config.fileUploadPath }}
+  REDIS_HOST: {{ required "missing required value: .Values.config.redis.host" .Values.config.redis.host }}
+  REDIS_PORT: {{ .Values.config.redis.port | quote }}
+  REGISTRY_SERVICE_URL: {{ required "missing required value: .Values.config.registryService.url" .Values.config.registryService.url }}
+  {{- if .Values.config.appHost }}
+  APP_HOST: {{ .Values.config.appHost }}
+  {{- end }}
+  APP_ID: {{ default .Values.config.identity.user .Values.config.appId }}
+  LWARE_IDENTITY_USER: {{ required "missing required value: .Values.config.identity.user" .Values.config.identity.user }}
+  MONGO_DATABASE_NAME: {{ default .Values.config.identity.user .Values.config.mongo.databaseName }}
+  APP_PATH: {{ include "<CHARTNAME>.appUriPrefix" . }}
