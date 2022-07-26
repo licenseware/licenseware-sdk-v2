@@ -25,3 +25,4 @@ trend-app-protect==4.6.2
 typer==0.4.1
 uWSGI==2.0.19.1
 werkzeug==2.0.3
+confluent-kafka==1.9.0
