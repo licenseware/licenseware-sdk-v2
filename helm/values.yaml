@@ -18,7 +18,7 @@ global: # will overwrite all the apps
   strategy:
     rollingUpdate:
       maxSurge: 2
-      maxUnavailable: 1
+      maxUnavailable: 0
     type: RollingUpdate
 
   autoscaling:
