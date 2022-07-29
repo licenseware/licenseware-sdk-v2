@@ -5,11 +5,11 @@ metadata:
   labels:
     {{- include "<CHARTNAME>.dashboardLabels" . | nindent 4 }}
 spec:
-  type: {{ .Values.dashboardService.type }}
+  type: {{ .Values.dashboardApp.service.type }}
   ports:
-    - port: {{ .Values.dashboardService.port }}
-      targetPort: {{ .Values.dashboardService.containerPort }}
-      protocol: {{ .Values.dashboardService.protocol }}
-      name: {{ .Values.dashboardService.portName }}
+    - port: {{ .Values.dashboardApp.service.port }}
+      targetPort: {{ .Values.dashboardApp.service.containerPort }}
+      protocol: {{ .Values.dashboardApp.service.protocol }}
+      name: {{ .Values.dashboardApp.service.portName }}
   selector:
     {{- include "<CHARTNAME>.dashboardSelectorLabels" . | nindent 4 }}

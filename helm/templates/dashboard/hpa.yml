@@ -1,4 +1,4 @@
-{{- if .Values.autoscaling.enabled }}
+{{- if .Values.dashboardApp.autoscaling.enabled }}
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
@@ -10,16 +10,16 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: {{ include "<CHARTNAME>.dashboardAppName" . }}
-  minReplicas: {{ .Values.autoscaling.minReplicas }}
-  maxReplicas: {{ .Values.autoscaling.maxReplicas }}
+  minReplicas: {{ .Values.dashboardApp.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.dashboardApp.autoscaling.maxReplicas }}
   metrics:
-    {{- with .Values.autoscaling.targetCPUUtilizationPercentage }}
+    {{- with .Values.dashboardApp.autoscaling.targetCPUUtilizationPercentage }}
     - type: Resource
       resource:
         name: cpu
         targetAverageUtilization: {{ . }}
     {{- end }}
-    {{- with .Values.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- with .Values.dashboardApp.autoscaling.targetMemoryUtilizationPercentage }}
     - type: Resource
       resource:
         name: memory

@@ -1,9 +1,9 @@
-{{- if .Values.dashboardIngress.enabled -}}
+{{- if .Values.dashboardApp.ingress.enabled -}}
 {{- $fullName := include "<CHARTNAME>.dashboardAppName" . -}}
 {{- $svcPort := .Values.dashboardService.port -}}
-{{- if and .Values.dashboardIngress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) -}}
-  {{- if not (hasKey .Values.dashboardIngress.annotations "kubernetes.io/ingress.class") }}
-  {{- $_ := set .Values.dashboardIngress.annotations "kubernetes.io/ingress.class" .Values.dashboardIngress.className }}
+{{- if and .Values.dashboardApp.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) -}}
+  {{- if not (hasKey .Values.dashboardApp.ingress.annotations "kubernetes.io/ingress.class") }}
+  {{- $_ := set .Values.dashboardApp.ingress.annotations "kubernetes.io/ingress.class" .Values.dashboardApp.ingress.className }}
   {{- end }}
 {{- end }}
 {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
@@ -18,17 +18,17 @@ metadata:
   name: {{ $fullName }}
   labels:
     {{- include "<CHARTNAME>.dashboardLabels" . | nindent 4 }}
-  {{- with .Values.dashboardIngress.annotations }}
+  {{- with .Values.dashboardApp.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  {{- if and .Values.dashboardIngress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
-  ingressClassName: {{ .Values.dashboardIngress.className }}
+  {{- if and .Values.dashboardApp.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  ingressClassName: {{ .Values.dashboardApp.ingress.className }}
   {{- end }}
-  {{- if .Values.dashboardIngress.tls }}
+  {{- if .Values.dashboardApp.ingress.tls }}
   tls:
-    {{- range .Values.dashboardIngress.tls }}
+    {{- range .Values.dashboardApp.ingress.tls }}
     - hosts:
         {{- range .hosts }}
         - {{ . | quote }}
@@ -37,7 +37,7 @@ spec:
     {{- end }}
   {{- end }}
   rules:
-    {{- range .Values.dashboardIngress.hosts }}
+    {{- range .Values.dashboardApp.ingress.hosts }}
     - host: {{ .host | quote }}
       http:
         paths:

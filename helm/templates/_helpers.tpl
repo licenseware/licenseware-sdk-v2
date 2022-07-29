@@ -48,7 +48,6 @@ Selector labels
 {{- define "<CHARTNAME>.baseSelectorLabels" -}}
 app.kubernetes.io/name: {{ include "<CHARTNAME>.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
-{{ include "<CHARTNAME>.appDefinition" . }}
 {{- end }}
 
 {{/*
@@ -63,56 +62,37 @@ Create the name of the service account to use
 {{- end }}
 
 {{- define "<CHARTNAME>.appName" -}}
-{{ trimSuffix "-service" .Chart.Name }}
-{{- end }}
-
-{{- define "<CHARTNAME>.appDefinition" -}}
-licenseware.io/app: {{ include "<CHARTNAME>.appName" . }}
-licenseware.io/env: {{ .Values.metadata.env }}
-licenseware.io/tier: {{ .Values.metadata.tier }}
-licenseware.io/owner: {{ .Values.metadata.owner }}
-{{- end -}}
-
-{{- define "<CHARTNAME>.dashboardType" -}}
-licenseware.io/type: dashboard
-{{- end }}
-
-{{- define "<CHARTNAME>.webType" -}}
-licenseware.io/type: web
-{{- end }}
-
-{{- define "<CHARTNAME>.workerType" -}}
-licenseware.io/type: worker
-{{- end }}
-
-{{- define "<CHARTNAME>.dashboardSelectorLabels" -}}
-{{- include "<CHARTNAME>.baseSelectorLabels" . }}
-{{- include "<CHARTNAME>.dashboardType" . }}
+{{- trimSuffix "-service" .Chart.Name }}
 {{- end }}
 
 {{- define "<CHARTNAME>.dashboardLabels" -}}
 {{- include "<CHARTNAME>.baseLabels" . }}
-{{- include "<CHARTNAME>.dashboardType" . }}
+{{- .Values.dashboardApp.labels }}
 {{- end }}
 
-{{- define "<CHARTNAME>.webSelectorLabels" -}}
+{{- define "<CHARTNAME>.dashboardSelectorLabels" -}}
 {{- include "<CHARTNAME>.baseSelectorLabels" . }}
-{{- include "<CHARTNAME>.webType" . }}
+{{- .Values.dashboardApp.labels }}
 {{- end }}
 
 {{- define "<CHARTNAME>.webLabels" -}}
 {{- include "<CHARTNAME>.baseLabels" . }}
-{{- include "<CHARTNAME>.webType" . }}
+{{- .Values.webApp.labels | toYaml }}
+{{- end }}
+
+{{- define "<CHARTNAME>.webSelectorLabels" -}}
+{{- include "<CHARTNAME>.baseSelectorLabels" . }}
+{{- .Values.webApp.labels | toYaml }}
+{{- end }}
+
+{{- define "<CHARTNAME>.workerLabels" -}}
+{{- include "<CHARTNAME>.baseLabels" . }}
+{{- .Values.workerApp.labels | toYaml }}
 {{- end }}
 
 {{- define "<CHARTNAME>.workerSelectorLabels" }}
 {{- include "<CHARTNAME>.baseSelectorLabels" . }}
-{{- include "<CHARTNAME>.workerType" . }}
-{{- end }}
-
-{{- define "<CHARTNAME>.workerDeploymentLabels" -}}
-{{- include "<CHARTNAME>.baseLabels" . }}
-{{- include "<CHARTNAME>.workerType" . }}
+{{- .Values.workerApp.labels | toYaml }}
 {{- end }}
 
 {{- define "<CHARTNAME>.dashboardAppName" -}}
@@ -125,17 +105,6 @@ licenseware.io/type: worker
 
 {{- define "<CHARTNAME>.workerAppName" -}}
 {{- include "<CHARTNAME>.fullname" . }}-worker
-{{- end }}
-
-{{/*
-Always pull the latest image on production and otherwise, let the user choose
-*/}}
-{{- define "<CHARTNAME>.imagePullPolicy" -}}
-{{- if contains "prod" .Values.metadata.env }}
-{{- "Always" }}
-{{- else }}
-{{- default "IfNotPresent" .Values.image.pullPolicy }}
-{{- end }}
 {{- end }}
 
 {{- define "<CHARTNAME>.claimName" -}}
@@ -154,3 +123,10 @@ Always pull the latest image on production and otherwise, let the user choose
 {{- include "<CHARTNAME>.fullname" . }}-secret
 {{- end }}
 
+{{- define "<CHARTNAME>.dashboardCommand" -}}
+{{- if .Values.dashboardApp.command -}}
+{{- .Values.dashboardApp.command }}
+{{- else -}}
+uwsgi -M --http-socket=0.0.0.0:{{ .Values.webApp.service.containerPort }} -w main:app --processes=4 --enable-threads --threads=4
+{{- end }}
+{{- end }}

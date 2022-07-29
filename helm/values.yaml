@@ -1,5 +1,5 @@
 commonLabels:
-  licenseware.io/app: { { trimSuffix "-service" .Chart.Name } }
+  licenseware.io/app: licenseware # change this to app name e.g. ifmp
   licenseware.io/env: prod
   licenseware.io/tier: backend
   licenseware.io/owner: licenseware
@@ -111,14 +111,13 @@ securityContext:
   # runAsUser: 1000
 
 dashboardApp:
-  command: celery -A main:broker flower --address=0.0.0.0 --port={{ tpl .Values.dashboardApp.service.containerPort . }}
+  command: "" # e.g. uwsgi -w main:app
 
   healthCheckUri: "/" # e.g. /
 
   replicaCount: 1
 
   labels:
-    {{- tpl (.Values.commonLabels | toYaml) . | indent 4 }}
     licenseware.io/type: dashboard
 
   service:
@@ -158,31 +157,34 @@ dashboardApp:
   probes:
     livenessProbe:
       tcpSocket:
-        port: { { tpl .Values.dashboardApp.service.containerPort . } }
+        port: null
       initialDelaySeconds: 5
       timeoutSeconds: 5
       successThreshold: 1
       failureThreshold: 3
       periodSeconds: 10
 
-    readinessProbe:
-      httpGet:
-        path: { { tpl .Values.dashboardApp.healthCheckUri . } }
-        port: { { tpl .Values.dashboardApp.service.containerPort . } }
-      initialDelaySeconds: 5
-      timeoutSeconds: 5
-      successThreshold: 1
-      failureThreshold: 3
-      periodSeconds: 10
+    # readinessProbe:
+    #   httpGet:
+    #     path: {{ tpl .Values.dashboardApp.healthCheckUri . }}
+    #     port: {{ tpl .Values.dashboardApp.service.containerPort . }}
+    #   initialDelaySeconds: 5
+    #   timeoutSeconds: 5
+    #   successThreshold: 1
+    #   failureThreshold: 3
+    #   periodSeconds: 10
 
   topologySpreadConstraints: {}
 
 webApp:
-  command: uwsgi -M --http-socket=0.0.0.0:{{ tpl .Values.webApp.service.containerPort }} -w main:app --processes=4 --enable-threads --threads=4
+  command: ""
 
   healthCheckUri: "" # e.g. /ifmp/swagger.json
 
   replicaCount: 2
+
+  labels:
+    licenseware.io/type: web
 
   service:
     type: ClusterIP
@@ -229,6 +231,9 @@ workerApp:
   command: celery -A main:broker worker -l info -c 4 --autoscale=4,10
 
   replicaCount: 1
+
+  labels:
+    licenseware.io/type: worker
 
   resources: {}
 

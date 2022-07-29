@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "<CHARTNAME>.dashboardLabels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
+  {{- if not .Values.dashboardApp.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
@@ -32,21 +32,29 @@ spec:
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: {{ required "missing required value: .Values.image.repository" .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
-          imagePullPolicy: {{ include "<CHARTNAME>.imagePullPolicy" . }}
+          imagePullPolicy: {{ default "Always" .Values.image.pullPolicy }}
           args:
             - sh
             - -c
             - {{ include "<CHARTNAME>.dashboardCommand" . }}
           ports:
-            - name: {{ default "http" .Values.dashboardService.containerPort }}
-              containerPort: {{ .Values.dashboardService.containerPort }}
-              protocol: {{ .Values.dashboardService.protocol }}
+            - name: {{ default "http" .Values.dashboardApp.service.containerPort }}
+              containerPort: {{ .Values.dashboardApp.service.containerPort }}
+              protocol: {{ .Values.dashboardApp.service.protocol }}
           livenessProbe:
-            {{- include "<CHARTNAME>.dashboardLivenessProbe" . | nindent 12 }}
-          readinessProbe:
-            {{- include "<CHARTNAME>.dashboardReadinessProbe" . | nindent 12 }}
-          resources:
-            {{- include "<CHARTNAME>.resources" . | nindent 12 }}
+            tcpSocket:
+              {{- with .Values.dashboardApp.probes.livenessProbe -}}
+              {{- if .tcpSocket.port }}
+              port: {{ .tcpSocket.port }}
+              {{- else }}
+              port: {{ $.Values.dashboardApp.service.containerPort }}
+              {{- end }}
+              {{- end }}
+            initialDelaySeconds: 5
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
+            periodSeconds: 10
           envFrom:
             - configMapRef:
                 name: {{ include "<CHARTNAME>.configName" . }}
@@ -67,15 +75,4 @@ spec:
       {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- if .Values.topologySpreadConstraints.enabled }}
-      {{- with .Values.topologySpreadConstraints }}
-      topologySpreadConstraints:
-        - maxSkew: {{ .maxSkew }}
-          topologyKey: {{ .topologyKey }}
-          whenUnsatisfiable: {{ .whenUnsatisfiable }}
-          labelSelector:
-            matchLabels:
-              {{- include "<CHARTNAME>.dashboardSelectorLabels" . | nindent 14 }}
-      {{- end }}
       {{- end }}

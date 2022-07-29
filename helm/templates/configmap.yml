@@ -6,7 +6,6 @@ metadata:
     {{- include "<CHARTNAME>.baseLabels" . | nindent 4 }}
 data:
   AUTH_SERVICE_URL: {{ required "missing required value: .Values.config.authService.url" .Values.config.authService.url }}
-  ENVIRONMENT: {{ .Values.metadata.env }}
   FILE_UPLOAD_PATH: {{ required "missing required value: .Values.config.fileUploadPath" .Values.config.fileUploadPath }}
   REDIS_HOST: {{ required "missing required value: .Values.config.redis.host" .Values.config.redis.host }}
   REDIS_PORT: {{ .Values.config.redis.port | quote }}
