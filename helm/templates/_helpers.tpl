@@ -48,6 +48,7 @@ Selector labels
 {{- define "<CHARTNAME>.baseSelectorLabels" -}}
 app.kubernetes.io/name: {{ include "<CHARTNAME>.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+{{ toYaml .Values.commonLabels }}
 {{- end }}
 
 {{/*
@@ -67,32 +68,32 @@ Create the name of the service account to use
 
 {{- define "<CHARTNAME>.dashboardLabels" -}}
 {{- include "<CHARTNAME>.baseLabels" . }}
-{{- .Values.dashboardApp.labels }}
+{{ toYaml $.Values.dashboardApp.labels }}
 {{- end }}
 
 {{- define "<CHARTNAME>.dashboardSelectorLabels" -}}
 {{- include "<CHARTNAME>.baseSelectorLabels" . }}
-{{- .Values.dashboardApp.labels }}
+{{ toYaml $.Values.dashboardApp.labels }}
 {{- end }}
 
 {{- define "<CHARTNAME>.webLabels" -}}
 {{- include "<CHARTNAME>.baseLabels" . }}
-{{- .Values.webApp.labels | toYaml }}
+{{ toYaml .Values.webApp.labels }}
 {{- end }}
 
 {{- define "<CHARTNAME>.webSelectorLabels" -}}
 {{- include "<CHARTNAME>.baseSelectorLabels" . }}
-{{- .Values.webApp.labels | toYaml }}
+{{ toYaml .Values.webApp.labels }}
 {{- end }}
 
 {{- define "<CHARTNAME>.workerLabels" -}}
 {{- include "<CHARTNAME>.baseLabels" . }}
-{{- .Values.workerApp.labels | toYaml }}
+{{ toYaml .Values.workerApp.labels }}
 {{- end }}
 
-{{- define "<CHARTNAME>.workerSelectorLabels" }}
+{{- define "<CHARTNAME>.workerSelectorLabels" -}}
 {{- include "<CHARTNAME>.baseSelectorLabels" . }}
-{{- .Values.workerApp.labels | toYaml }}
+{{ toYaml .Values.workerApp.labels }}
 {{- end }}
 
 {{- define "<CHARTNAME>.dashboardAppName" -}}

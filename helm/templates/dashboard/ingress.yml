@@ -1,6 +1,6 @@
 {{- if .Values.dashboardApp.ingress.enabled -}}
 {{- $fullName := include "<CHARTNAME>.dashboardAppName" . -}}
-{{- $svcPort := .Values.dashboardService.port -}}
+{{- $svcPort := .Values.dashboardApp.service.port -}}
 {{- if and .Values.dashboardApp.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) -}}
   {{- if not (hasKey .Values.dashboardApp.ingress.annotations "kubernetes.io/ingress.class") }}
   {{- $_ := set .Values.dashboardApp.ingress.annotations "kubernetes.io/ingress.class" .Values.dashboardApp.ingress.className }}
@@ -41,7 +41,7 @@ spec:
     - host: {{ .host | quote }}
       http:
         paths:
-          {{- range .paths }}
+          {{- range .http.paths }}
           - path: {{ .path }}
             {{- if and .pathType (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
             pathType: {{ .pathType }}

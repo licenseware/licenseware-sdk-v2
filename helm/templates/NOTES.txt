@@ -1,1 +1,4 @@
-licenseware.io/app: {{ include "<CHARTNAME>.appName" . }}
+You can access your app at the following address:
+{{- range.Values.webApp.ingress.hosts }}
+https://{{ .host }}{{ $.Values.config.appUriPrefix }}
+{{ end }}

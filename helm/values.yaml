@@ -5,6 +5,8 @@ commonLabels:
   licenseware.io/owner: licenseware
 
 global: # will overwrite all the apps
+  imagePullPolicy: Always
+
   resources:
     requests:
       cpu: 100m
@@ -13,7 +15,18 @@ global: # will overwrite all the apps
       cpu: 2000m
       memory: 8Gi
 
-  autoscaling: {}
+  strategy:
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 1
+    type: RollingUpdate
+
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 70
 
   nodeSelector: {}
 
@@ -22,10 +35,9 @@ global: # will overwrite all the apps
   affinity: {}
 
   topologySpreadConstraints:
-    maxSkew: 1
-    enabled: true
-    topologyKey: node
-    whenUnsatisfiable: DoNotSchedule
+    - maxSkew: 1
+      topologyKey: node
+      whenUnsatisfiable: DoNotSchedule
 
 config:
   appHost: ""
@@ -120,6 +132,8 @@ dashboardApp:
   labels:
     licenseware.io/type: dashboard
 
+  strategy: {}
+
   service:
     enabled: true
     type: ClusterIP
@@ -130,23 +144,24 @@ dashboardApp:
 
   ingress:
     enabled: false
-    className: "nginx"
+    className: nginx
     annotations: {}
     hosts:
-      - host: ""
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
+      - host: api.licenseware.io
+        http:
+          paths:
+            - backend:
+                service:
+                  name: service-name
+                  port:
+                    number: 80
+              path: /
+              pathType: Prefix
     tls: []
 
   resources: {}
 
-  autoscaling:
-    enabled: false
-    minReplicas: 1
-    maxReplicas: 100
-    targetCPUUtilizationPercentage: 80
-    targetMemoryUtilizationPercentage: 70
+  autoscaling: {}
 
   nodeSelector: {}
 
@@ -157,24 +172,23 @@ dashboardApp:
   probes:
     livenessProbe:
       tcpSocket:
-        port: null
+        port: 5000
+      initialDelaySeconds: 5
+      timeoutSeconds: 5
+      successThreshold: 1
+      failureThreshold: 3
+      periodSeconds: 10
+    readinessProbe:
+      httpGet:
+        path: "" # defaults to healthCheckUri
+        port: 5000
       initialDelaySeconds: 5
       timeoutSeconds: 5
       successThreshold: 1
       failureThreshold: 3
       periodSeconds: 10
 
-    # readinessProbe:
-    #   httpGet:
-    #     path: {{ tpl .Values.dashboardApp.healthCheckUri . }}
-    #     port: {{ tpl .Values.dashboardApp.service.containerPort . }}
-    #   initialDelaySeconds: 5
-    #   timeoutSeconds: 5
-    #   successThreshold: 1
-    #   failureThreshold: 3
-    #   periodSeconds: 10
-
-  topologySpreadConstraints: {}
+  topologySpreadConstraints: []
 
 webApp:
   command: ""
@@ -194,21 +208,20 @@ webApp:
     portName: http
 
   ingress:
-    enabled: false
-    className: "nginx"
-    annotations:
-      {}
-      # kubernetes.io/ingress.class: nginx
-      # kubernetes.io/tls-acme: "true"
+    enabled: true
+    className: nginx
+    annotations: {}
     hosts:
-      - host: ""
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
-    tls: []
-    #  - secretName: chart-example-tls
-    #    hosts:
-    #      - chart-example.local
+      - host: api.licenseware.io
+        http:
+          paths:
+            - backend:
+                service:
+                  name: service-name
+                  port:
+                    number: 80
+              path: /
+              pathType: Prefix
 
   resources: {}
 
@@ -225,7 +238,7 @@ webApp:
 
   affinity: {}
 
-  topologySpreadConstraints: {}
+  topologySpreadConstraints: []
 
 workerApp:
   command: celery -A main:broker worker -l info -c 4 --autoscale=4,10
@@ -250,4 +263,4 @@ workerApp:
 
   affinity: {}
 
-  topologySpreadConstraints: {}
+  topologySpreadConstraints: []

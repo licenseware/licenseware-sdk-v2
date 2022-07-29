@@ -5,12 +5,18 @@ metadata:
   labels:
     {{- include "<CHARTNAME>.dashboardLabels" . | nindent 4 }}
 spec:
-  {{- if not .Values.dashboardApp.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
+  {{- if not .Values.global.autoscaling.enabled }}
+  replicas: {{ .Values.dashboardApp.replicaCount }}
+  {{- else if not .Values.dashboardApp.autoscaling.enabled }}
+  replicas: {{ .Values.dashboardApp.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
       {{- include "<CHARTNAME>.dashboardSelectorLabels" . | nindent 6 }}
+  {{- with (default .Values.dashboardApp.strategy .Values.global.strategy) }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -32,47 +38,82 @@ spec:
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: {{ required "missing required value: .Values.image.repository" .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
-          imagePullPolicy: {{ default "Always" .Values.image.pullPolicy }}
+          imagePullPolicy: {{ default .Values.image.pullPolicy .Values.global.imagePullPolicy | default "Always" }}
           args:
             - sh
             - -c
             - {{ include "<CHARTNAME>.dashboardCommand" . }}
           ports:
-            - name: {{ default "http" .Values.dashboardApp.service.containerPort }}
+            - name: {{ default "http" .Values.dashboardApp.service.portName }}
               containerPort: {{ .Values.dashboardApp.service.containerPort }}
               protocol: {{ .Values.dashboardApp.service.protocol }}
+          {{- with .Values.dashboardApp.probes.livenessProbe }}
           livenessProbe:
             tcpSocket:
-              {{- with .Values.dashboardApp.probes.livenessProbe -}}
               {{- if .tcpSocket.port }}
-              port: {{ .tcpSocket.port }}
+              port: {{ .tcpSocket.port | int }}
               {{- else }}
-              port: {{ $.Values.dashboardApp.service.containerPort }}
+              port: {{ $.Values.dashboardApp.service.containerPort | int }}
               {{- end }}
+            initialDelaySeconds: {{ .initialDelaySeconds }}
+            timeoutSeconds: {{ .timeoutSeconds }}
+            successThreshold: {{ .successThreshold }}
+            failureThreshold: {{ .failureThreshold }}
+            periodSeconds: {{ .periodSeconds }}
+          {{- end }}
+          {{- with .Values.dashboardApp.probes.readinessProbe }}
+          readinessProbe:
+            httpGet:
+              {{- if $.Values.dashboardApp.healthCheckUri }}
+              path: {{ $.Values.dashboardApp.healthCheckUri }}
+              {{- else }}
+              path: {{ required "missing required value: " .httpGet.path }}
               {{- end }}
-            initialDelaySeconds: 5
-            timeoutSeconds: 5
-            successThreshold: 1
-            failureThreshold: 3
-            periodSeconds: 10
+              {{- if .httpGet.port }}
+              port: {{ .httpGet.port | int }}
+              {{- else }}
+              port: {{ $.Values.dashboardApp.service.containerPort | int }}
+              {{- end }}
+            initialDelaySeconds: {{ .initialDelaySeconds }}
+            timeoutSeconds: {{ .timeoutSeconds }}
+            successThreshold: {{ .successThreshold }}
+            failureThreshold: {{ .failureThreshold }}
+            periodSeconds: {{ .periodSeconds }}
+          {{- end }}
+          {{- with (default .Values.dashboardApp.resources .Values.global.resources) }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           envFrom:
             - configMapRef:
                 name: {{ include "<CHARTNAME>.configName" . }}
             - secretRef:
                 name: {{ include "<CHARTNAME>.secretName" . }}
+          volumeMounts:
+          - name: upload-files
+            mountPath: {{ required "missing required value: .Values.config.fileUploadPath" .Values.config.fileUploadPath }}
       volumes:
-      - name: {{ include "<CHARTNAME>.appName" . }}
+      - name: upload-files
         persistentVolumeClaim:
           claimName: {{ include "<CHARTNAME>.claimName" . }}
-      {{- with .Values.nodeSelector }}
+      {{- with (default .Values.dashboardApp.nodeSelector .Values.global.nodeSelector) }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.affinity }}
+      {{- with (default .Values.dashboardApp.affinity .Values.global.affinity) }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.tolerations }}
+      {{- with (default .Values.dashboardApp.tolerations .Values.global.tolerations) }}
       tolerations:
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- range (default .Values.dashboardApp.topologySpreadConstraints .Values.global.topologySpreadConstraints) }}
+      topologySpreadConstraints:
+      - maxSkew: {{ .maxSkew }}
+        topologyKey: {{ .topologyKey }}
+        whenUnsatisfiable: {{ .whenUnsatisfiable }}
+        labelSelector:
+          matchLabels:
+            {{- include "<CHARTNAME>.dashboardSelectorLabels" $ | nindent 12 }}
       {{- end }}

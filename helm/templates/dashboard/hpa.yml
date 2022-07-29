@@ -1,28 +1,30 @@
-{{- if .Values.dashboardApp.autoscaling.enabled }}
+{{- with (default .Values.global.autoscaling .Values.dashboardApp.autoscaling) }}
+{{- if .enabled }}
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "<CHARTNAME>.dashboardAppName" . }}
+  name: {{ include "<CHARTNAME>.dashboardAppName" $ }}
   labels:
-    {{- include "<CHARTNAME>.dashboardLabels" . | nindent 4 }}
+    {{- include "<CHARTNAME>.dashboardLabels" $ | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "<CHARTNAME>.dashboardAppName" . }}
-  minReplicas: {{ .Values.dashboardApp.autoscaling.minReplicas }}
-  maxReplicas: {{ .Values.dashboardApp.autoscaling.maxReplicas }}
+    name: {{ include "<CHARTNAME>.dashboardAppName" $ }}
+  minReplicas: {{ .minReplicas }}
+  maxReplicas: {{ .maxReplicas }}
   metrics:
-    {{- with .Values.dashboardApp.autoscaling.targetCPUUtilizationPercentage }}
+    {{- with .targetCPUUtilizationPercentage }}
     - type: Resource
       resource:
         name: cpu
         targetAverageUtilization: {{ . }}
     {{- end }}
-    {{- with .Values.dashboardApp.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- with .targetMemoryUtilizationPercentage }}
     - type: Resource
       resource:
         name: memory
         targetAverageUtilization: {{ . }}
     {{- end }}
+{{- end }}
 {{- end }}
