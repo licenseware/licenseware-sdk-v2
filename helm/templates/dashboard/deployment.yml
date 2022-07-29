@@ -67,7 +67,7 @@ spec:
               {{- if $.Values.dashboardApp.healthCheckUri }}
               path: {{ $.Values.dashboardApp.healthCheckUri }}
               {{- else }}
-              path: {{ required "missing required value: " .httpGet.path }}
+              path: {{ required "missing required value: .Values.dashboardApp.healthCheckUri" .httpGet.path }}
               {{- end }}
               {{- if .httpGet.port }}
               port: {{ .httpGet.port | int }}

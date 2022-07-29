@@ -212,16 +212,16 @@ webApp:
     className: nginx
     annotations: {}
     hosts:
-      - host: api.licenseware.io
+      - host: api.licenseware.io # NOTE: configure this accordingly
         http:
           paths:
             - backend:
                 service:
-                  name: service-name
+                  name: service-name  # this will change inside the chart
                   port:
-                    number: 80
-              path: /
-              pathType: Prefix
+                    number: 80 # this too will change
+              path: / # NOTE: configure this accordingly
+              pathType: Prefix # NOTE: configure this accordingly
 
   resources: {}
 
