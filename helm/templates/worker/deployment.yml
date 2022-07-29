@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "<CHARTNAME>.fullname" . }}-worker
+  labels:
+    {{- include "<CHARTNAME>.workerDeploymentLabels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "<CHARTNAME>.workerSelectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "<CHARTNAME>.workerSelectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "<CHARTNAME>.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ include "<CHARTNAME>.appName" . }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: {{ required "missing required value: .Values.image.repository" .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
+          imagePullPolicy: {{ include "<CHARTNAME>.imagePullPolicy" . }}
+          args:
+            - sh
+            - -c
+            - {{ include "<CHARTNAME>.workerCommand" . }}
+          resources:
+            {{- include "<CHARTNAME>.resources" . | nindent 12 }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "<CHARTNAME>.fullname" . }}-config
+            - secretRef:
+                name: {{ include "<CHARTNAME>.fullname" . }}-secret
+          volumeMounts:
+          - name: {{ include "<CHARTNAME>.appName" . }}
+            mountPath: {{ required "missing required value: .Values.config.fileUploadPath" .Values.config.fileUploadPath }}
+      volumes:
+      - name: {{ include "<CHARTNAME>.appName" . }}
+        persistentVolumeClaim:
+          claimName: {{ include "<CHARTNAME>.claimName" . }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      affinity:
+        {{- include "<CHARTNAME>.workerPodAntiAffinity" . | nindent 8 }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

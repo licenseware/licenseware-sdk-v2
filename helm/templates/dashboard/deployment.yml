@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "<CHARTNAME>.dashboardAppName" . }}
+  labels:
+    {{- include "<CHARTNAME>.dashboardLabels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "<CHARTNAME>.dashboardSelectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "<CHARTNAME>.dashboardSelectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "<CHARTNAME>.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ include "<CHARTNAME>.appName" . }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: {{ required "missing required value: .Values.image.repository" .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
+          imagePullPolicy: {{ include "<CHARTNAME>.imagePullPolicy" . }}
+          args:
+            - sh
+            - -c
+            - {{ include "<CHARTNAME>.dashboardCommand" . }}
+          ports:
+            - name: {{ default "http" .Values.dashboardService.containerPort }}
+              containerPort: {{ .Values.dashboardService.containerPort }}
+              protocol: {{ .Values.dashboardService.protocol }}
+          livenessProbe:
+            {{- include "<CHARTNAME>.dashboardLivenessProbe" . | nindent 12 }}
+          readinessProbe:
+            {{- include "<CHARTNAME>.dashboardReadinessProbe" . | nindent 12 }}
+          resources:
+            {{- include "<CHARTNAME>.resources" . | nindent 12 }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "<CHARTNAME>.configName" . }}
+            - secretRef:
+                name: {{ include "<CHARTNAME>.secretName" . }}
+      volumes:
+      - name: {{ include "<CHARTNAME>.appName" . }}
+        persistentVolumeClaim:
+          claimName: {{ include "<CHARTNAME>.claimName" . }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.topologySpreadConstraints.enabled }}
+      {{- with .Values.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        - maxSkew: {{ .maxSkew }}
+          topologyKey: {{ .topologyKey }}
+          whenUnsatisfiable: {{ .whenUnsatisfiable }}
+          labelSelector:
+            matchLabels:
+              {{- include "<CHARTNAME>.dashboardSelectorLabels" . | nindent 14 }}
+      {{- end }}
+      {{- end }}

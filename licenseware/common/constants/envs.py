@@ -61,8 +61,8 @@ class envs:
 
     APP_HOST: str = os.getenv('APP_HOST', "") if not DESKTOP_ENVIRONMENT else 'http://localhost:5000'
     QUEUE_NAME: str = os.getenv("QUEUE_NAME", APP_ID.replace("-service", ""))
-    APP_PATH: str = "/" + QUEUE_NAME
-    BASE_URL: str = APP_HOST + APP_PATH
+    APP_PATH: str = os.getenv("APP_PATH", "/" + QUEUE_NAME)
+    BASE_URL: str = os.getenv("BASE_URL", APP_HOST + APP_PATH)
     FRONTEND_URL: str = os.getenv('FRONTEND_URL', "")
     SECRET: str = os.getenv('SECRET', LWARE_PASSWORD)
 

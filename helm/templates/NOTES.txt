@@ -1,0 +1,1 @@
+licenseware.io/app: {{ include "<CHARTNAME>.appName" . }}
