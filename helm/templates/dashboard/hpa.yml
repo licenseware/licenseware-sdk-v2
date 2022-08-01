@@ -1,3 +1,4 @@
+{{- if .Values.dashboardApp.enabled -}}
 {{- with (default .Values.global.autoscaling .Values.dashboardApp.autoscaling) }}
 {{- if .enabled }}
 apiVersion: autoscaling/v2beta1
@@ -26,5 +27,6 @@ spec:
         name: memory
         targetAverageUtilization: {{ . }}
     {{- end }}
+{{- end }}
 {{- end }}
 {{- end }}

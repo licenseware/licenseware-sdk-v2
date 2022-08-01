@@ -1,3 +1,4 @@
+{{- if .Values.dashboardApp.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -13,3 +14,4 @@ spec:
       name: {{ .Values.dashboardApp.service.portName }}
   selector:
     {{- include "<CHARTNAME>.dashboardSelectorLabels" . | nindent 4 }}
+{{- end }}

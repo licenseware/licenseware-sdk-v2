@@ -123,6 +123,8 @@ securityContext:
   # runAsUser: 1000
 
 dashboardApp:
+  enabled: false
+
   command: "" # e.g. uwsgi -w main:app
 
   healthCheckUri: "/" # e.g. /
@@ -217,7 +219,7 @@ webApp:
           paths:
             - backend:
                 service:
-                  name: service-name  # this will change inside the chart
+                  name: service-name # this will change inside the chart
                   port:
                     number: 80 # this too will change
               path: / # NOTE: configure this accordingly
