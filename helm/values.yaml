@@ -83,6 +83,7 @@ config:
     celeryTaskCompression: bzip2
     celeryConsumerOffset: latest
 
+# don't base64-encode before providing to helm
 secret:
   identity:
     password: ""
