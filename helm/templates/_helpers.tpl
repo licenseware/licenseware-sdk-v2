@@ -147,3 +147,14 @@ uwsgi -M --http-socket=0.0.0.0:{{ .Values.webApp.service.containerPort }} -w mai
 celery -A main:broker worker -l info --concurrency=4 --autoscale=4,20
 {{- end }}
 {{- end }}
+
+
+{{- define "<CHARTNAME>.env" -}}
+{{- if .Values.env }}
+{{- .Values.env }}
+{{-  else if (hasKey .Values.commonLabels "licenseware.io/env") }}
+{{- get .Values.commonLabels "licenseware.io/env" }}
+{{- else }}
+{{- default "prod" .Values.env }}
+{{- end }}
+{{- end }}

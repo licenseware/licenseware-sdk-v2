@@ -1,6 +1,8 @@
+env: "" # valid values are "dev" or "prod"
+
 commonLabels:
   licenseware.io/app: licenseware # change this to app name e.g. ifmp
-  licenseware.io/env: prod
+  licenseware.io/env: prod # OPTIONAL: change this according to `env` above
   licenseware.io/tier: backend
   licenseware.io/owner: licenseware
 
