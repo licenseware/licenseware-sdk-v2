@@ -1,5 +1,5 @@
 {{- if .Values.dashboardApp.enabled -}}
-{{- with (default .Values.dashboardApp.autoscaling .Values.global.autoscaling) }}
+{{- with (default .Values.global.autoscaling .Values.dashboardApp.autoscaling) }}
 {{- if .enabled }}
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler

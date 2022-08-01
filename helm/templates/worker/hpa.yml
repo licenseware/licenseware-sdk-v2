@@ -1,5 +1,5 @@
 {{- if .Values.workerApp.enabled -}}
-{{- with (default .Values.workerApp.autoscaling .Values.global.autoscaling) }}
+{{- with (default .Values.global.autoscaling .Values.workerApp.autoscaling) }}
 {{- if .enabled }}
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler

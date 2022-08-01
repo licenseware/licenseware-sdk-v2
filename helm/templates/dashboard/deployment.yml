@@ -9,15 +9,13 @@ metadata:
   labels:
     {{- include "<CHARTNAME>.dashboardAppLabels" . | nindent 4 }}
 spec:
-  {{- if not .Values.global.autoscaling.enabled }}
-  replicas: {{ .Values.dashboardApp.replicaCount }}
-  {{- else if not .Values.dashboardApp.autoscaling.enabled }}
+  {{- if not (default .Values.global.autoscaling.enabled .Values.dashboardApp.autoscaling.enabled) }}
   replicas: {{ .Values.dashboardApp.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
       {{- include "<CHARTNAME>.dashboardAppSelectorLabels" . | nindent 6 }}
-  {{- with (default .Values.dashboardApp.strategy .Values.global.strategy) }}
+  {{- with (default .Values.global.strategy .Values.dashboardApp.strategy) }}
   strategy:
     {{- toYaml . | nindent 4 }}
   {{- end }}
@@ -42,7 +40,7 @@ spec:
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: {{ required "missing required value: .Values.image.repository" .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
-          imagePullPolicy: {{ default .Values.image.pullPolicy .Values.global.imagePullPolicy | default "Always" }}
+          imagePullPolicy: {{ default "Always" .Values.image.pullPolicy }}
           args:
             - sh
             - -c
@@ -72,7 +70,7 @@ spec:
             failureThreshold: {{ .failureThreshold }}
             periodSeconds: {{ .periodSeconds }}
           {{- end }}
-          {{- with (default .Values.dashboardApp.resources .Values.global.resources) }}
+          {{- with (default .Values.global.resources .Values.dashboardApp.resources) }}
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
@@ -88,19 +86,19 @@ spec:
       - name: upload-files
         persistentVolumeClaim:
           claimName: {{ include "<CHARTNAME>.claimName" . }}
-      {{- with (default .Values.dashboardApp.nodeSelector .Values.global.nodeSelector) }}
+      {{- with (default .Values.global.nodeSelector .Values.dashboardApp.nodeSelector) }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with (default .Values.dashboardApp.affinity .Values.global.affinity) }}
+      {{- with (default .Values.global.affinity .Values.dashboardApp.affinity) }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with (default .Values.dashboardApp.tolerations .Values.global.tolerations) }}
+      {{- with (default .Values.global.tolerations .Values.dashboardApp.tolerations) }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- range (default .Values.dashboardApp.topologySpreadConstraints .Values.global.topologySpreadConstraints) }}
+      {{- range (default .Values.global.topologySpreadConstraints .Values.dashboardApp.topologySpreadConstraints) }}
       topologySpreadConstraints:
       - maxSkew: {{ .maxSkew }}
         topologyKey: {{ .topologyKey }}

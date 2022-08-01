@@ -2,7 +2,7 @@
 {{- if .Values.dashboardApp.ingress.enabled -}}
 {{- $fullName := include "<CHARTNAME>.dashboardAppName" . -}}
 {{- $svcPort := .Values.dashboardApp.service.port -}}
-{{- $ingressClassName := default .Values.dashboardApp.ingress.className .Values.global.ingress.className -}}
+{{- $ingressClassName := default .Values.global.ingress.className .Values.dashboardApp.ingress.className -}}
 {{- if and .Values.dashboardApp.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) -}}
   {{- if not (hasKey .Values.dashboardApp.ingress.annotations "kubernetes.io/ingress.class") }}
   {{- $_ := set .Values.dashboardApp.ingress.annotations "kubernetes.io/ingress.class" $ingressClassName }}

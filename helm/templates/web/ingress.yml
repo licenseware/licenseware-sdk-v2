@@ -2,7 +2,7 @@
 {{- if .Values.webApp.ingress.enabled -}}
 {{- $fullName := include "<CHARTNAME>.webAppName" . -}}
 {{- $svcPort := .Values.webApp.service.port -}}
-{{- $ingressClassName := default .Values.webApp.ingress.className .Values.global.ingress.className -}}
+{{- $ingressClassName := default .Values.global.ingress.className .Values.webApp.ingress.className -}}
 {{- if and .Values.webApp.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) -}}
   {{- if not (hasKey .Values.webApp.ingress.annotations "kubernetes.io/ingress.class") }}
   {{- $_ := set .Values.webApp.ingress.annotations "kubernetes.io/ingress.class" $ingressClassName }}

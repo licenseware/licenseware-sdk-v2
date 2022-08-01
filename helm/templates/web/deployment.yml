@@ -9,15 +9,13 @@ metadata:
   labels:
     {{- include "<CHARTNAME>.webAppLabels" . | nindent 4 }}
 spec:
-  {{- if not .Values.global.autoscaling.enabled }}
-  replicas: {{ .Values.webApp.replicaCount }}
-  {{- else if not .Values.webApp.autoscaling.enabled }}
+  {{- if not (default .Values.global.autoscaling.enabled .Values.webApp.autoscaling.enabled) }}
   replicas: {{ .Values.webApp.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
       {{- include "<CHARTNAME>.webAppSelectorLabels" . | nindent 6 }}
-  {{- with (default .Values.webApp.strategy .Values.global.strategy) }}
+  {{- with (default .Values.global.strategy .Values.webApp.strategy) }}
   strategy:
     {{- toYaml . | nindent 4 }}
   {{- end }}
@@ -42,7 +40,7 @@ spec:
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: {{ required "missing required value: .Values.image.repository" .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
-          imagePullPolicy: {{ default .Values.image.pullPolicy .Values.global.imagePullPolicy | default "Always" }}
+          imagePullPolicy: {{ default "Always" .Values.image.pullPolicy }}
           args:
             - sh
             - -c
@@ -72,7 +70,7 @@ spec:
             failureThreshold: {{ .failureThreshold }}
             periodSeconds: {{ .periodSeconds }}
           {{- end }}
-          {{- with (default .Values.webApp.resources .Values.global.resources) }}
+          {{- with (default .Values.global.resources .Values.webApp.resources) }}
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
@@ -88,19 +86,19 @@ spec:
       - name: upload-files
         persistentVolumeClaim:
           claimName: {{ include "<CHARTNAME>.claimName" . }}
-      {{- with (default .Values.webApp.nodeSelector .Values.global.nodeSelector) }}
+      {{- with (default .Values.global.nodeSelector .Values.webApp.nodeSelector) }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with (default .Values.webApp.affinity .Values.global.affinity) }}
+      {{- with (default .Values.global.affinity .Values.webApp.affinity) }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with (default .Values.webApp.tolerations .Values.global.tolerations) }}
+      {{- with (default .Values.global.tolerations .Values.webApp.tolerations) }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- range (default .Values.webApp.topologySpreadConstraints .Values.global.topologySpreadConstraints) }}
+      {{- range (default .Values.global.topologySpreadConstraints .Values.webApp.topologySpreadConstraints) }}
       topologySpreadConstraints:
       - maxSkew: {{ .maxSkew }}
         topologyKey: {{ .topologyKey }}

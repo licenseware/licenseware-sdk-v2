@@ -6,29 +6,20 @@ commonLabels:
   licenseware.io/tier: backend
   licenseware.io/owner: licenseware
 
-global: # will overwrite all the apps
-  imagePullPolicy: Always
-
+global: # will be overwritten by the apps
   resources:
     requests:
       cpu: 100m
       memory: 128Mi
     limits:
-      cpu: 2000m
-      memory: 8Gi
+      cpu: 512m
+      memory: 1Gi
 
   strategy:
     rollingUpdate:
       maxSurge: 2
       maxUnavailable: 0
     type: RollingUpdate
-
-  autoscaling:
-    enabled: false
-    minReplicas: 1
-    maxReplicas: 100
-    targetCPUUtilizationPercentage: 80
-    targetMemoryUtilizationPercentage: 70
 
   nodeSelector: {}
 
@@ -40,6 +31,13 @@ global: # will overwrite all the apps
     - maxSkew: 1
       topologyKey: node
       whenUnsatisfiable: DoNotSchedule
+
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 70
 
   ingress:
     className: ""  # defaults to default ingress class
@@ -139,9 +137,19 @@ dashboardApp:
   labels:
     licenseware.io/type: dashboard
 
-  strategy: {}
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
 
-  resources: {}
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 256m
+      memory: 256Gi
 
   nodeSelector: {}
 
@@ -211,9 +219,19 @@ webApp:
   labels:
     licenseware.io/type: web
 
-  strategy: {}
+  strategy:
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 0
+    type: RollingUpdate
 
-  resources: {}
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 2000m
+      memory: 1Gi
 
   nodeSelector: {}
 
@@ -240,9 +258,18 @@ webApp:
       failureThreshold: 3
       periodSeconds: 10
 
-  topologySpreadConstraints: []
+  topologySpreadConstraints:
+    - maxSkew: 2
+      topologyKey: node
+      whenUnsatisfiable: DoNotSchedule
 
-  autoscaling: {}
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 20
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 80
+
 
   service:
     enabled: true
@@ -278,9 +305,19 @@ workerApp:
   labels:
     licenseware.io/type: worker
 
-  strategy: {}
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
 
-  resources: {}
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 1000m
+      memory: 4Gi
 
   nodeSelector: {}
 
@@ -288,7 +325,10 @@ workerApp:
 
   affinity: {}
 
-  topologySpreadConstraints: []
+  topologySpreadConstraints:
+    - maxSkew: 2
+      topologyKey: node
+      whenUnsatisfiable: DoNotSchedule
 
   autoscaling:
     enabled: true
