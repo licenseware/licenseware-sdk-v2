@@ -1,0 +1,17 @@
+{{- if .Values.webApp.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "<CHARTNAME>.webAppName" . }}
+  labels:
+    {{- include "<CHARTNAME>.webAppLabels" . | nindent 4 }}
+spec:
+  type: {{ .Values.webApp.service.type }}
+  ports:
+    - port: {{ .Values.webApp.service.port }}
+      targetPort: {{ .Values.webApp.service.containerPort }}
+      protocol: {{ .Values.webApp.service.protocol }}
+      name: {{ .Values.webApp.service.portName }}
+  selector:
+    {{- include "<CHARTNAME>.webAppSelectorLabels" . | nindent 4 }}
+{{- end }}

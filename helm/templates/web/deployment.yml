@@ -1,23 +1,23 @@
-{{- $livenessPort := default .Values.dashboardApp.service.containerPort .Values.dashboardApp.probes.livenessProbe.tcpSocket.port -}}
-{{- $readinessPort := default .Values.dashboardApp.service.containerPort .Values.dashboardApp.probes.readinessProbe.httpGet.port -}}
-{{- $readinessHttpPath := required "missing required value: .Values.dashboardApp.healthCheckUri" (default .Values.dashboardApp.healthCheckUri .Values.dashboardApp.probes.readinessProbe.httpGet.path) -}}
-{{- if .Values.dashboardApp.enabled -}}
+{{- $livenessPort := default .Values.webApp.service.containerPort .Values.webApp.probes.livenessProbe.tcpSocket.port -}}
+{{- $readinessPort := default .Values.webApp.service.containerPort .Values.webApp.probes.readinessProbe.httpGet.port -}}
+{{- $readinessHttpPath := required "missing required value: .Values.webApp.healthCheckUri" (default .Values.webApp.healthCheckUri .Values.webApp.probes.readinessProbe.httpGet.path) -}}
+{{- if .Values.webApp.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "<CHARTNAME>.dashboardAppName" . }}
+  name: {{ include "<CHARTNAME>.webAppName" . }}
   labels:
-    {{- include "<CHARTNAME>.dashboardAppLabels" . | nindent 4 }}
+    {{- include "<CHARTNAME>.webAppLabels" . | nindent 4 }}
 spec:
   {{- if not .Values.global.autoscaling.enabled }}
-  replicas: {{ .Values.dashboardApp.replicaCount }}
-  {{- else if not .Values.dashboardApp.autoscaling.enabled }}
-  replicas: {{ .Values.dashboardApp.replicaCount }}
+  replicas: {{ .Values.webApp.replicaCount }}
+  {{- else if not .Values.webApp.autoscaling.enabled }}
+  replicas: {{ .Values.webApp.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "<CHARTNAME>.dashboardAppSelectorLabels" . | nindent 6 }}
-  {{- with (default .Values.dashboardApp.strategy .Values.global.strategy) }}
+      {{- include "<CHARTNAME>.webAppSelectorLabels" . | nindent 6 }}
+  {{- with (default .Values.webApp.strategy .Values.global.strategy) }}
   strategy:
     {{- toYaml . | nindent 4 }}
   {{- end }}
@@ -28,7 +28,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "<CHARTNAME>.dashboardAppSelectorLabels" . | nindent 8 }}
+        {{- include "<CHARTNAME>.webAppSelectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -46,12 +46,12 @@ spec:
           args:
             - sh
             - -c
-            - {{ include "<CHARTNAME>.dashboardAppCommand" . }}
+            - {{ include "<CHARTNAME>.webAppCommand" . }}
           ports:
-            - name: {{ default "http" .Values.dashboardApp.service.portName }}
-              containerPort: {{ .Values.dashboardApp.service.containerPort }}
-              protocol: {{ .Values.dashboardApp.service.protocol }}
-          {{- with .Values.dashboardApp.probes.livenessProbe }}
+            - name: {{ default "http" .Values.webApp.service.portName }}
+              containerPort: {{ .Values.webApp.service.containerPort }}
+              protocol: {{ .Values.webApp.service.protocol }}
+          {{- with .Values.webApp.probes.livenessProbe }}
           livenessProbe:
             tcpSocket:
               port: {{ $livenessPort | int }}
@@ -61,7 +61,7 @@ spec:
             failureThreshold: {{ .failureThreshold }}
             periodSeconds: {{ .periodSeconds }}
           {{- end }}
-          {{- with .Values.dashboardApp.probes.readinessProbe }}
+          {{- with .Values.webApp.probes.readinessProbe }}
           readinessProbe:
             httpGet:
               path: {{ $readinessHttpPath }}
@@ -72,7 +72,7 @@ spec:
             failureThreshold: {{ .failureThreshold }}
             periodSeconds: {{ .periodSeconds }}
           {{- end }}
-          {{- with (default .Values.dashboardApp.resources .Values.global.resources) }}
+          {{- with (default .Values.webApp.resources .Values.global.resources) }}
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
@@ -88,25 +88,25 @@ spec:
       - name: upload-files
         persistentVolumeClaim:
           claimName: {{ include "<CHARTNAME>.claimName" . }}
-      {{- with (default .Values.dashboardApp.nodeSelector .Values.global.nodeSelector) }}
+      {{- with (default .Values.webApp.nodeSelector .Values.global.nodeSelector) }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with (default .Values.dashboardApp.affinity .Values.global.affinity) }}
+      {{- with (default .Values.webApp.affinity .Values.global.affinity) }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with (default .Values.dashboardApp.tolerations .Values.global.tolerations) }}
+      {{- with (default .Values.webApp.tolerations .Values.global.tolerations) }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- range (default .Values.dashboardApp.topologySpreadConstraints .Values.global.topologySpreadConstraints) }}
+      {{- range (default .Values.webApp.topologySpreadConstraints .Values.global.topologySpreadConstraints) }}
       topologySpreadConstraints:
       - maxSkew: {{ .maxSkew }}
         topologyKey: {{ .topologyKey }}
         whenUnsatisfiable: {{ .whenUnsatisfiable }}
         labelSelector:
           matchLabels:
-            {{- include "<CHARTNAME>.dashboardAppSelectorLabels" $ | nindent 12 }}
+            {{- include "<CHARTNAME>.webAppSelectorLabels" $ | nindent 12 }}
       {{- end }}
 {{- end }}

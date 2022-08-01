@@ -1,11 +1,11 @@
-{{- if .Values.dashboardApp.enabled -}}
-{{- if .Values.dashboardApp.ingress.enabled -}}
-{{- $fullName := include "<CHARTNAME>.dashboardAppName" . -}}
-{{- $svcPort := .Values.dashboardApp.service.port -}}
-{{- $ingressClassName := default .Values.dashboardApp.ingress.className .Values.global.ingress.className -}}
-{{- if and .Values.dashboardApp.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) -}}
-  {{- if not (hasKey .Values.dashboardApp.ingress.annotations "kubernetes.io/ingress.class") }}
-  {{- $_ := set .Values.dashboardApp.ingress.annotations "kubernetes.io/ingress.class" $ingressClassName }}
+{{- if .Values.webApp.enabled -}}
+{{- if .Values.webApp.ingress.enabled -}}
+{{- $fullName := include "<CHARTNAME>.webAppName" . -}}
+{{- $svcPort := .Values.webApp.service.port -}}
+{{- $ingressClassName := default .Values.webApp.ingress.className .Values.global.ingress.className -}}
+{{- if and .Values.webApp.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) -}}
+  {{- if not (hasKey .Values.webApp.ingress.annotations "kubernetes.io/ingress.class") }}
+  {{- $_ := set .Values.webApp.ingress.annotations "kubernetes.io/ingress.class" $ingressClassName }}
   {{- end }}
 {{- end }}
 {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
@@ -19,8 +19,8 @@ kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    {{- include "<CHARTNAME>.dashboardAppLabels" . | nindent 4 }}
-  {{- with .Values.dashboardApp.ingress.annotations }}
+    {{- include "<CHARTNAME>.webAppLabels" . | nindent 4 }}
+  {{- with .Values.webApp.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
@@ -28,9 +28,9 @@ spec:
   {{- if and $ingressClassName (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
   ingressClassName: {{ $ingressClassName }}
   {{- end }}
-  {{- if .Values.dashboardApp.ingress.tls }}
+  {{- if .Values.webApp.ingress.tls }}
   tls:
-    {{- range .Values.dashboardApp.ingress.tls }}
+    {{- range .Values.webApp.ingress.tls }}
     - hosts:
         {{- range .hosts }}
         - {{ . | quote }}
@@ -39,12 +39,12 @@ spec:
     {{- end }}
   {{- end }}
   rules:
-    {{- range .Values.dashboardApp.ingress.hosts }}
+    {{- range .Values.webApp.ingress.hosts }}
     - host: {{ .host | quote }}
       http:
         paths:
           {{- range .http.paths }}
-          - path: {{ required "missing required value: .Values.dashboardApp.ingress.hosts[*].http.paths.[*].path" .path }}
+          - path: {{ required "missing required value: .Values.webApp.ingress.hosts[*].http.paths.[*].path" (default $.Values.config.appUriPrefix .path) }}
             {{- if and .pathType (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
             pathType: {{ .pathType }}
             {{- end }}

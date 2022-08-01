@@ -66,32 +66,32 @@ Create the name of the service account to use
 {{- trimSuffix "-service" .Chart.Name }}
 {{- end }}
 
-{{- define "<CHARTNAME>.dashboardLabels" -}}
+{{- define "<CHARTNAME>.dashboardAppLabels" -}}
 {{- include "<CHARTNAME>.baseLabels" . }}
 {{ toYaml $.Values.dashboardApp.labels }}
 {{- end }}
 
-{{- define "<CHARTNAME>.dashboardSelectorLabels" -}}
+{{- define "<CHARTNAME>.dashboardAppSelectorLabels" -}}
 {{- include "<CHARTNAME>.baseSelectorLabels" . }}
 {{ toYaml $.Values.dashboardApp.labels }}
 {{- end }}
 
-{{- define "<CHARTNAME>.webLabels" -}}
+{{- define "<CHARTNAME>.webAppLabels" -}}
 {{- include "<CHARTNAME>.baseLabels" . }}
 {{ toYaml .Values.webApp.labels }}
 {{- end }}
 
-{{- define "<CHARTNAME>.webSelectorLabels" -}}
+{{- define "<CHARTNAME>.webAppSelectorLabels" -}}
 {{- include "<CHARTNAME>.baseSelectorLabels" . }}
 {{ toYaml .Values.webApp.labels }}
 {{- end }}
 
-{{- define "<CHARTNAME>.workerLabels" -}}
+{{- define "<CHARTNAME>.workerAppLabels" -}}
 {{- include "<CHARTNAME>.baseLabels" . }}
 {{ toYaml .Values.workerApp.labels }}
 {{- end }}
 
-{{- define "<CHARTNAME>.workerSelectorLabels" -}}
+{{- define "<CHARTNAME>.workerAppSelectorLabels" -}}
 {{- include "<CHARTNAME>.baseSelectorLabels" . }}
 {{ toYaml .Values.workerApp.labels }}
 {{- end }}
@@ -124,9 +124,17 @@ Create the name of the service account to use
 {{- include "<CHARTNAME>.fullname" . }}-secret
 {{- end }}
 
-{{- define "<CHARTNAME>.dashboardCommand" -}}
+{{- define "<CHARTNAME>.dashboardAppCommand" -}}
 {{- if .Values.dashboardApp.command -}}
 {{- .Values.dashboardApp.command }}
+{{- else -}}
+celery -A main:broker flower --address=0.0.0.0 --port={{ .Values.dashboardApp.service.containerPort }}
+{{- end }}
+{{- end }}
+
+{{- define "<CHARTNAME>.webAppCommand" -}}
+{{- if .Values.webApp.command -}}
+{{- .Values.webApp.command }}
 {{- else -}}
 uwsgi -M --http-socket=0.0.0.0:{{ .Values.webApp.service.containerPort }} -w main:app --processes=4 --enable-threads --threads=4
 {{- end }}

@@ -39,13 +39,16 @@ global: # will overwrite all the apps
       topologyKey: node
       whenUnsatisfiable: DoNotSchedule
 
+  ingress:
+    className: ""  # defaults to default ingress class
+
 config:
   appHost: ""
   appId: ""
   appUriPrefix: "" # e.g. /ifmp
 
   persistence:
-    claimName: "" # default: chart name
+    claimName: "" # defaults to chart name
     enabled: true
     size: "5Gi"
     accessMode: ReadWriteMany
@@ -136,34 +139,7 @@ dashboardApp:
 
   strategy: {}
 
-  service:
-    enabled: true
-    type: ClusterIP
-    port: 80
-    containerPort: 5000
-    portName: http
-    protocol: TCP
-
-  ingress:
-    enabled: false
-    className: nginx
-    annotations: {}
-    hosts:
-      - host: api.licenseware.io
-        http:
-          paths:
-            - backend:
-                service:
-                  name: service-name
-                  port:
-                    number: 80
-              path: /
-              pathType: Prefix
-    tls: []
-
   resources: {}
-
-  autoscaling: {}
 
   nodeSelector: {}
 
@@ -174,7 +150,7 @@ dashboardApp:
   probes:
     livenessProbe:
       tcpSocket:
-        port: 5000
+        port: null # defaults to dashboardApp.service.containerPort
       initialDelaySeconds: 5
       timeoutSeconds: 5
       successThreshold: 1
@@ -182,8 +158,8 @@ dashboardApp:
       periodSeconds: 10
     readinessProbe:
       httpGet:
-        path: "" # defaults to healthCheckUri
-        port: 5000
+        path: "" # defaults to dashboardApp.healthCheckUri
+        port: ""  # defaults to dashboardApp.service.containerPort
       initialDelaySeconds: 5
       timeoutSeconds: 5
       successThreshold: 1
@@ -192,7 +168,38 @@ dashboardApp:
 
   topologySpreadConstraints: []
 
+  autoscaling: {}
+
+  service:
+    enabled: true
+    type: ClusterIP
+    port: 80
+    containerPort: 5000
+    portName: http
+    protocol: TCP
+
+  ingress:
+    enabled: false
+    className: ""
+    annotations: {}
+      # haproxy-ingress.github.io/rewrite-target: /
+      # nginx.ingress.kubernetes.io/rewrite-target: /
+    hosts:
+      - host: api.licenseware.io
+        http:
+          paths:
+            - backend:
+                service:
+                  name: service-name
+                  port:
+                    number: 80
+              path: ""
+              pathType: Prefix
+    tls: []
+
 webApp:
+  enabled: true
+
   command: ""
 
   healthCheckUri: "" # e.g. /ifmp/swagger.json
@@ -202,7 +209,41 @@ webApp:
   labels:
     licenseware.io/type: web
 
+  strategy: {}
+
+  resources: {}
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+  probes:
+    livenessProbe:
+      tcpSocket:
+        port: null # defaults to webApp.service.containerPort
+      initialDelaySeconds: 5
+      timeoutSeconds: 5
+      successThreshold: 1
+      failureThreshold: 3
+      periodSeconds: 10
+    readinessProbe:
+      httpGet:
+        path: "" # defaults to webApp.healthCheckUri
+        port: ""  # defaults to webApp.service.containerPort
+      initialDelaySeconds: 5
+      timeoutSeconds: 5
+      successThreshold: 1
+      failureThreshold: 3
+      periodSeconds: 10
+
+  topologySpreadConstraints: []
+
+  autoscaling: {}
+
   service:
+    enabled: true
     type: ClusterIP
     port: 80
     containerPort: 5000
@@ -211,7 +252,7 @@ webApp:
 
   ingress:
     enabled: true
-    className: nginx
+    className: ""
     annotations: {}
     hosts:
       - host: api.licenseware.io # NOTE: configure this accordingly
@@ -222,25 +263,8 @@ webApp:
                   name: service-name # this will change inside the chart
                   port:
                     number: 80 # this too will change
-              path: / # NOTE: configure this accordingly
+              path: "" # defaults to config.appUriPrefix
               pathType: Prefix # NOTE: configure this accordingly
-
-  resources: {}
-
-  autoscaling:
-    enabled: true
-    minReplicas: 1
-    maxReplicas: 100
-    targetCPUUtilizationPercentage: 70
-    targetMemoryUtilizationPercentage: 80
-
-  nodeSelector: {}
-
-  tolerations: []
-
-  affinity: {}
-
-  topologySpreadConstraints: []
 
 workerApp:
   command: celery -A main:broker worker -l info -c 4 --autoscale=4,10

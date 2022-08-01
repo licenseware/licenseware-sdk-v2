@@ -1,17 +1,17 @@
-{{- if .Values.dashboardApp.enabled -}}
-{{- with (default .Values.dashboardApp.autoscaling .Values.global.autoscaling) }}
+{{- if .Values.webApp.enabled -}}
+{{- with (default .Values.webApp.autoscaling .Values.global.autoscaling) }}
 {{- if .enabled }}
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "<CHARTNAME>.dashboardAppName" $ }}
+  name: {{ include "<CHARTNAME>.webAppName" $ }}
   labels:
-    {{- include "<CHARTNAME>.dashboardAppLabels" $ | nindent 4 }}
+    {{- include "<CHARTNAME>.webAppLabels" $ | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "<CHARTNAME>.dashboardAppName" $ }}
+    name: {{ include "<CHARTNAME>.webAppName" $ }}
   minReplicas: {{ .minReplicas }}
   maxReplicas: {{ .maxReplicas }}
   metrics:

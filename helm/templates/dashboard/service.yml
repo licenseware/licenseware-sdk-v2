@@ -4,7 +4,7 @@ kind: Service
 metadata:
   name: {{ include "<CHARTNAME>.dashboardAppName" . }}
   labels:
-    {{- include "<CHARTNAME>.dashboardLabels" . | nindent 4 }}
+    {{- include "<CHARTNAME>.dashboardAppLabels" . | nindent 4 }}
 spec:
   type: {{ .Values.dashboardApp.service.type }}
   ports:
@@ -13,5 +13,5 @@ spec:
       protocol: {{ .Values.dashboardApp.service.protocol }}
       name: {{ .Values.dashboardApp.service.portName }}
   selector:
-    {{- include "<CHARTNAME>.dashboardSelectorLabels" . | nindent 4 }}
+    {{- include "<CHARTNAME>.dashboardAppSelectorLabels" . | nindent 4 }}
 {{- end }}
