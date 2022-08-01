@@ -267,21 +267,18 @@ webApp:
               pathType: Prefix # NOTE: configure this accordingly
 
 workerApp:
-  command: celery -A main:broker worker -l info -c 4 --autoscale=4,10
+  enabled: true
 
-  replicaCount: 1
+  command: celery -A main:broker worker -l info -c 4 --autoscale=4,20
+
+  replicaCount: 2
 
   labels:
     licenseware.io/type: worker
 
-  resources: {}
+  strategy: {}
 
-  autoscaling:
-    enabled: true
-    minReplicas: 1
-    maxReplicas: 100
-    targetCPUUtilizationPercentage: 80
-    targetMemoryUtilizationPercentage: 70
+  resources: {}
 
   nodeSelector: {}
 
@@ -290,3 +287,10 @@ workerApp:
   affinity: {}
 
   topologySpreadConstraints: []
+
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 20
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 70

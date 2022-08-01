@@ -139,3 +139,11 @@ celery -A main:broker flower --address=0.0.0.0 --port={{ .Values.dashboardApp.se
 uwsgi -M --http-socket=0.0.0.0:{{ .Values.webApp.service.containerPort }} -w main:app --processes=4 --enable-threads --threads=4
 {{- end }}
 {{- end }}
+
+{{- define "<CHARTNAME>.workerAppCommand" -}}
+{{- if .Values.workerApp.command -}}
+{{- .Values.workerApp.command }}
+{{- else -}}
+celery -A main:broker worker -l info --concurrency=4 --autoscale=4,20
+{{- end }}
+{{- end }}
