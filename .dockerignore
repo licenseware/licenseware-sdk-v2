@@ -25,3 +25,4 @@ makefile
 mock_server.py
 sdk-docs
 .idea
+helm
