@@ -1,7 +1,7 @@
 env: "" # valid values are "dev" or "prod"
 
 commonLabels:
-  licenseware.io/app: licenseware # change this to app name e.g. ifmp
+  licenseware.io/app: licenseware # TODO: change this to app name e.g. ifmp
   licenseware.io/env: prod # OPTIONAL: change this according to `env` above
   licenseware.io/tier: backend
   licenseware.io/owner: licenseware
@@ -196,15 +196,15 @@ dashboardApp:
       # haproxy-ingress.github.io/rewrite-target: /
       # nginx.ingress.kubernetes.io/rewrite-target: /
     hosts:
-      - host: api.licenseware.io
+      - host: api.licenseware.io # change this accordingly
         http:
           paths:
             - backend:
                 service:
-                  name: service-name
+                  name: service-name # this will change inside the chart
                   port:
                     number: 80
-              path: ""
+              path: "" # change this too accordingly
               pathType: Prefix
     tls: []
 
