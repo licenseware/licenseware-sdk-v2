@@ -5,23 +5,23 @@ metadata:
   labels:
     {{- include "<CHARTNAME>.baseLabels" . | nindent 4 }}
 data:
-  AUTH_SERVICE_URL: {{ required "missing required value: .Values.config.authService.url" .Values.config.authService.url }}
-  ENVIRONMENT: {{ include "<CHARTNAME>.env" . }}
-  FILE_UPLOAD_PATH: {{ required "missing required value: .Values.config.fileUploadPath" .Values.config.fileUploadPath }}
-  REDIS_HOST: {{ required "missing required value: .Values.config.redis.host" .Values.config.redis.host }}
-  REDIS_PORT: {{ .Values.config.redis.port | quote }}
-  REGISTRY_SERVICE_URL: {{ required "missing required value: .Values.config.registryService.url" .Values.config.registryService.url }}
   {{- if .Values.config.appHost }}
   APP_HOST: {{ .Values.config.appHost }}
   {{- end }}
   APP_ID: {{ default .Values.config.identity.user .Values.config.appId }}
-  LWARE_IDENTITY_USER: {{ required "missing required value: .Values.config.identity.user" .Values.config.identity.user }}
-  MONGO_DATABASE_NAME: {{ default .Values.config.identity.user .Values.config.mongo.databaseName }}
   APP_PATH: {{ required "missing required value: .Values.config.appUriPrefix" .Values.config.appUriPrefix }}
-  CELERY_BROKER_URI: {{ required "missing required value: .Values.config.worker.broker.uri" .Values.config.worker.broker.uri }}
-  CELERY_RESULT_BACKEND: {{ .Values.config.worker.backend.uri | quote }}
+  AUTH_SERVICE_URL: {{ required "missing required value: .Values.config.authService.url" .Values.config.authService.url }}
   CELERY_BROKER_CONN_MAX_RETRIES: {{ .Values.config.worker.broker.celeryConnectionMaxRetry | quote }}
-  CELERY_TASK_DEFAULT_RATE_LIMIT: {{ .Values.config.worker.celeryDefaultTaskRateLimit }}
-  CELERY_SERIALIZER: {{ .Values.config.worker.celeryTaskSerializer }}
+  CELERY_BROKER_URI: {{ required "missing required value: .Values.config.worker.broker.uri" .Values.config.worker.broker.uri }}
   CELERY_COMPRESSION: {{ .Values.config.worker.celeryTaskCompression }}
   CELERY_CONSUMER_OFFSET: {{ .Values.config.worker.celeryConsumerOffset }}
+  CELERY_RESULT_BACKEND: {{ .Values.config.worker.backend.uri | quote }}
+  CELERY_SERIALIZER: {{ .Values.config.worker.celeryTaskSerializer }}
+  CELERY_TASK_DEFAULT_RATE_LIMIT: {{ .Values.config.worker.celeryDefaultTaskRateLimit }}
+  ENVIRONMENT: {{ include "<CHARTNAME>.env" . }}
+  FILE_UPLOAD_PATH: {{ required "missing required value: .Values.config.fileUploadPath" .Values.config.fileUploadPath }}
+  LWARE_IDENTITY_USER: {{ required "missing required value: .Values.config.identity.user" .Values.config.identity.user }}
+  MONGO_DATABASE_NAME: {{ default .Values.config.identity.user .Values.config.mongo.databaseName }}
+  REDIS_HOST: {{ required "missing required value: .Values.config.redis.host" .Values.config.redis.host }}
+  REDIS_PORT: {{ .Values.config.redis.port | quote }}
+  REGISTRY_SERVICE_URL: {{ required "missing required value: .Values.config.registryService.url" .Values.config.registryService.url }}
