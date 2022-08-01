@@ -1,6 +1,6 @@
-{{- $livenessPort := default .Values.dashboardApp.service.containerPort .Values.dashboardApp.probes.livenessProbe.tcpSocket.port -}}
-{{- $readinessPort := default .Values.dashboardApp.service.containerPort .Values.dashboardApp.probes.readinessProbe.httpGet.port -}}
-{{- $readinessHttpPath := required "missing required value: .Values.dashboardApp.healthCheckUri" (default .Values.dashboardApp.healthCheckUri .Values.dashboardApp.probes.readinessProbe.httpGet.path) -}}
+{{- $livenessPort := include "<CHARTNAME>.dashboardAppLivenessProbePort" . -}}
+{{- $readinessHttpPath := include "<CHARTNAME>.dashboardAppReadinessHttpPath" . -}}
+{{- $readinessPort := include "<CHARTNAME>.dashboardAppReadinessHttpPort" . -}}
 {{- if .Values.dashboardApp.enabled -}}
 apiVersion: apps/v1
 kind: Deployment

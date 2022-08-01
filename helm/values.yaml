@@ -29,8 +29,8 @@ global: # will be overwritten by the apps
 
   topologySpreadConstraints:
     - maxSkew: 1
-      topologyKey: node
-      whenUnsatisfiable: DoNotSchedule
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: ScheduleAnyway
 
   autoscaling:
     enabled: false
@@ -199,12 +199,7 @@ dashboardApp:
       - host: api.licenseware.io # change this accordingly
         http:
           paths:
-            - backend:
-                service:
-                  name: service-name # this will change inside the chart
-                  port:
-                    number: 80
-              path: "" # change this too accordingly
+            - path: "" # change this too accordingly
               pathType: Prefix
     tls: []
 
@@ -242,17 +237,12 @@ webApp:
 
   probes:
     livenessProbe:
-      tcpSocket:
-        port: null # defaults to webApp.service.containerPort
       initialDelaySeconds: 5
       timeoutSeconds: 5
       successThreshold: 1
       failureThreshold: 3
       periodSeconds: 10
     readinessProbe:
-      httpGet:
-        path: "" # defaults to webApp.healthCheckUri
-        port: ""  # defaults to webApp.service.containerPort
       initialDelaySeconds: 5
       timeoutSeconds: 5
       successThreshold: 1
@@ -261,8 +251,8 @@ webApp:
 
   topologySpreadConstraints:
     - maxSkew: 2
-      topologyKey: node
-      whenUnsatisfiable: DoNotSchedule
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: ScheduleAnyway
 
   autoscaling:
     enabled: true
@@ -288,12 +278,7 @@ webApp:
       - host: api.licenseware.io # NOTE: configure this accordingly
         http:
           paths:
-            - backend:
-                service:
-                  name: service-name # this will change inside the chart
-                  port:
-                    number: 80 # this too will change
-              path: "" # defaults to config.appUriPrefix
+            - path: "" # defaults to config.appUriPrefix
               pathType: Prefix # NOTE: configure this accordingly
 
 workerApp:
@@ -328,8 +313,8 @@ workerApp:
 
   topologySpreadConstraints:
     - maxSkew: 2
-      topologyKey: node
-      whenUnsatisfiable: DoNotSchedule
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: ScheduleAnyway
 
   autoscaling:
     enabled: true

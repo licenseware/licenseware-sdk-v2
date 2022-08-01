@@ -1,6 +1,7 @@
-{{- $livenessPort := default .Values.webApp.service.containerPort .Values.webApp.probes.livenessProbe.tcpSocket.port -}}
-{{- $readinessPort := default .Values.webApp.service.containerPort .Values.webApp.probes.readinessProbe.httpGet.port -}}
-{{- $readinessHttpPath := required "missing required value: .Values.webApp.healthCheckUri" (default .Values.webApp.healthCheckUri .Values.webApp.probes.readinessProbe.httpGet.path) -}}
+{{- $livenessPort := include "<CHARTNAME>.webApplivenessProbePort" . -}}
+{{- $readinessHttpPath := include "<CHARTNAME>.webAppReadinessHttpPath" . -}}
+{{- $readinessPort := include "<CHARTNAME>.webAppReadinessHttpPort" . -}}
+probes.readinessProbe.httpGet.path) -}}
 {{- if .Values.webApp.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
