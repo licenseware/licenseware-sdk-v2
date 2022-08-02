@@ -33,11 +33,6 @@ if os.path.exists("./CHANGELOG.md"):
 
 
 EXTRAS = {
-    "tracing": [
-        "opentelemetry-distro==0.26b1",
-        "opentelemetry-instrumentation==0.26b1",
-        "opentelemetry-exporter-otlp==1.7.1",
-    ],
 }
 # NOTE: remove this when you find how to make the SDK private
 EXTRAS_TMP_HACK = reduce(lambda lst1, lst2: lst1 + lst2, EXTRAS.values(), [])

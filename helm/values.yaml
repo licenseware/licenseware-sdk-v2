@@ -69,8 +69,10 @@ config:
     url: ""
 
   redis:
+    create: true
     host: ""
     port: 6379
+    db: 0
 
   worker:
     broker:
@@ -93,6 +95,18 @@ secret:
 
   redis:
     password: ""
+
+redis:
+  replica:
+    replicaCount: 0
+  autoscaling:
+    enabled: true
+    maxReplicas: 10
+  auth:
+    password: CHANGEME
+  master:
+    persistence:
+      enabled: false
 
 image:
   repository: ""

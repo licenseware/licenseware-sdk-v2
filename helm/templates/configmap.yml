@@ -6,7 +6,7 @@ metadata:
     {{- include "<CHARTNAME>.baseLabels" . | nindent 4 }}
 data:
   {{- if .Values.config.appHost }}
-  APP_HOST: {{ .Values.config.appHost }}
+  APP_HOST: {{ required "missing required value: .Values.config.appHost" .Values.config.appHost }}
   {{- end }}
   APP_ID: {{ default .Values.config.identity.user .Values.config.appId }}
   APP_PATH: {{ required "missing required value: .Values.config.appUriPrefix" .Values.config.appUriPrefix }}
@@ -22,6 +22,11 @@ data:
   FILE_UPLOAD_PATH: {{ required "missing required value: .Values.config.fileUploadPath" .Values.config.fileUploadPath }}
   LWARE_IDENTITY_USER: {{ required "missing required value: .Values.config.identity.user" .Values.config.identity.user }}
   MONGO_DATABASE_NAME: {{ default .Values.config.identity.user .Values.config.mongo.databaseName }}
+  {{- if .Values.config.redis.create }}
+  REDIS_HOST: {{ printf "%s-redis-master" .Release.Name }}
+  {{- else }}
   REDIS_HOST: {{ required "missing required value: .Values.config.redis.host" .Values.config.redis.host }}
+  {{- end }}
   REDIS_PORT: {{ .Values.config.redis.port | quote }}
+  REDIS_DB: {{ default "0" .Values.config.redis.db | quote }}
   REGISTRY_SERVICE_URL: {{ required "missing required value: .Values.config.registryService.url" .Values.config.registryService.url }}
