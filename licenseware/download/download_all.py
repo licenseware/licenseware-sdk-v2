@@ -41,7 +41,7 @@ def download_all(file_type: str, report: ReportBuilder, tenant_id: str, filename
                     send_file=False
                 )
 
-                comp_df.to_excel(xlwriter, sheet_name=comp.title, index=False)
+                comp_df.to_excel(xlwriter, sheet_name=comp.title[0:30], index=False)
 
         xlwriter.save()
         xlwriter.close()
