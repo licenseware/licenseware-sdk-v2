@@ -1,7 +1,7 @@
 {{- if .Values.workerApp.enabled -}}
 {{- with (default .Values.global.autoscaling .Values.workerApp.autoscaling) }}
 {{- if .enabled }}
-apiVersion: autoscaling/v2beta1
+apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ include "<CHARTNAME>.workerAppName" $ }}
@@ -19,13 +19,17 @@ spec:
   - type: Resource
     resource:
       name: cpu
-      targetAverageUtilization: {{ . }}
+      target:
+        type: Utilization
+        averageUtilization: {{ . }}
   {{- end }}
   {{- with .targetMemoryUtilizationPercentage }}
   - type: Resource
     resource:
       name: memory
-      targetAverageUtilization: {{ . }}
+      target:
+        type: Utilization
+        averageUtilization: {{ . }}
   {{- end }}
 {{- end }}
 {{- end }}
