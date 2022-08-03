@@ -19,7 +19,7 @@ It helps you focus on processsing the files needed and creating reports.
 9. [The `main` file](#the-main-file)
 10. [Licenseware CLI](#licenseware-cli) 
 11. [Working on SDK](#working-on-sdk) 
-
+12. [PUBSUB](#pubsub) 
 
 
 <a name="quickstart"></a>
@@ -1546,3 +1546,83 @@ To sparse the logic you can create multiple sub-packages/modules.
 ```bash
 baton -u http://localhost/appid/yourendpoint -c 10 -r 10000
 ```
+
+
+
+
+<a name="pubsub"></a>
+# PUBSUB
+
+Basic usage:
+
+On the kafka broker side define topics(channels)
+
+```py
+
+from licensware.pubsub import Topic
+from confluent_kafka.admin import AdminClient
+
+admin_client = AdminClient({'bootstrap.servers': 'mybroker'})
+
+topic = Topic(admin_client)
+
+topic.new("user_events")
+topic.new("app_events")
+
+
+topic.delete("app_events")
+
+
+```
+
+On the app side define stream producer (publisher)
+
+```py
+from licensware.pubsub import Producer, TopicType, EventType
+from confluent_kafka import Producer as KafkaProducer
+
+
+producer_client = KafkaProducer({'bootstrap.servers': 'mybroker1,mybroker2'})
+
+producer = Producer(producer_client)
+
+
+data_stream = {
+    "event_type": EventType.ACCOUNT_CREATED,
+    "tenant_id": None,
+    "etc": "data"
+}
+
+producer.publish(TopicType.USER_EVENTS, data)
+
+
+```
+
+You can also define a consumer (subscriber)
+
+```py
+from confluent_kafka import Consumer as KafkaConsumer
+from licenseware.pubsub import EventType, TopicType, Consumer
+
+
+consumer_client = KafkaConsumer({'bootstrap.servers': 'mybroker1,mybroker2'})
+
+consumer = Consumer(consumer_client)
+
+
+def account_created_handler(*args, **kwargs):
+    return "some processed data"
+
+
+consumer.dispatch(EventType.ACCOUNT_CREATED, account_created_handler)
+# etc
+
+
+if __name__ == "__main__":
+    
+    consumer.listen()
+
+```
+
+
+
