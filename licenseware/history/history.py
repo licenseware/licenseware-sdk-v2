@@ -291,8 +291,9 @@ def log(*dargs, on_success_save: str = None, on_failure_save: str = None, on_fai
 
             try:
                 response = f(*args, **kwargs)
+
                 save_step(metadata, response, on_success_save, on_failure_save)
-                response = add_event_id_to_payload(metadata, response)
+                response = add_event_id_to_payload(metadata, response)                
                 
                 # Remove event_data from uploaders response
                 if not envs.DESKTOP_ENVIRONMENT:
@@ -305,8 +306,8 @@ def log(*dargs, on_success_save: str = None, on_failure_save: str = None, on_fai
                             logg.exception(err)
 
                 return response
-            except Exception as err:
-
+            except Exception as err:                
+                logg.exception(err)
                 save_step(metadata, {
                     'error': str(err),
                     'traceback': str(traceback.format_exc())
