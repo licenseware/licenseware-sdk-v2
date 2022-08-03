@@ -94,13 +94,13 @@ secret:
     connectionString: ""
 
   redis:
-    password: ""
+    password: "" # will get its value from redis.auth.password
 
 redis:
   replica:
     replicaCount: 0
   autoscaling:
-    enabled: true
+    enabled: false
     maxReplicas: 10
   auth:
     password: CHANGEME
@@ -269,7 +269,7 @@ webApp:
       whenUnsatisfiable: ScheduleAnyway
 
   autoscaling:
-    enabled: true
+    enabled: false
     minReplicas: 1
     maxReplicas: 20
     targetCPUUtilizationPercentage: 70
@@ -331,7 +331,7 @@ workerApp:
       whenUnsatisfiable: ScheduleAnyway
 
   autoscaling:
-    enabled: true
+    enabled: false
     minReplicas: 1
     maxReplicas: 20
     targetCPUUtilizationPercentage: 80
