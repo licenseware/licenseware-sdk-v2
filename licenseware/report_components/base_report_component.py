@@ -45,6 +45,7 @@ class BaseReportComponent:
         style_attributes:dict = None,
         attributes:dict = None,
         registration_payload:dict = None,
+        sheet_title:str = None,
         **options
     ):
         
@@ -70,6 +71,7 @@ class BaseReportComponent:
         self.registration_payload = registration_payload
         self.app_id = envs.APP_ID
         self.options = options
+        self.sheet_title = sheet_title or self.title
         
         
     def build_filter(self, column:str, allowed_filters:list, visible_name:str, column_type:str='string', validate:bool = True):
