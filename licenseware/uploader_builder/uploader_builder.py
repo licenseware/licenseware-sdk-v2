@@ -179,6 +179,7 @@ class UploaderBuilder:
         """Validate file content provided by user and send files for processing if they are valid"""
 
         tenant_id = flask_request.headers.get("TenantId")
+        serialized_flask_request = get_flask_request_dict(flask_request)
 
         if envs.DESKTOP_ENVIRONMENT and tenant_id is None:
             tenant_id = envs.DESKTOP_TENANT_ID
@@ -193,9 +194,25 @@ class UploaderBuilder:
         # Preparing and sending the event to worker for background processing
         fp = self.get_filepaths(event, flask_request)
         if not isinstance(fp, dict):
-            return fp
 
-        serialized_flask_request = get_flask_request_dict(flask_request)
+            events = [
+                {
+                    "tenant_id": tenant_id,
+                    "uploader_id": self.uploader_id,
+                    "event_id": event_id,
+                    "filepaths": [],
+                    "flask_request": serialized_flask_request,
+                    "validation_response": fp[0],
+                }
+            ]
+
+            return {
+                "status": fp[0]["status"],
+                "message": fp[0]["message"],
+                'validation': fp[0]["validation"],
+                "event_data": events,
+            }, fp[1]
+
 
         if self.one_event_per_file:
             events = [
@@ -234,7 +251,7 @@ class UploaderBuilder:
                 return {
                     "status": states.FAILED,
                     "message": "Event not valid",
-                    "event_data": event,
+                    "event_data": [event],
                 }, 400
 
             log.info("Sending event: " + str(event))
