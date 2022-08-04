@@ -105,8 +105,6 @@ class FileContentValidator:
                     'message': self.filename_invalid_message or str(err)                    
                 })
 
-                log.error(traceback.format_exc())
-
         return validation_response
 
     def validate_file_objects(self, file_objects: list, tenant_id: str) -> list:
