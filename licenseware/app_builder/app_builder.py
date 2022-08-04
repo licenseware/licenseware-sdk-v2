@@ -260,7 +260,10 @@ class AppBuilder:
         ]
 
         for func in api_funcs:
-            self.api = func(self.api, self.appvars)
+            if func.__name__ == "add_refresh_registration_route":
+                self.api = func(self.api, self)
+            else:
+                self.api = func(self.api, self.appvars)
 
         # Another way is to group routes in namespaces
         # This way the url prefix is specified only in the namespace
@@ -469,10 +472,7 @@ class AppBuilder:
 
         return report_components
 
-    def register_app(self):
-        """
-        Sending registration payloads to registry-service
-        """
+    def get_register_all_payload(self):
 
         # Converting from objects to dictionaries
         app_dict = self.get_serialized_app_dict()
@@ -489,6 +489,16 @@ class AppBuilder:
             )
         }
 
+        return payload
+
+
+    def register_app(self):
+        """
+        Sending registration payloads to registry-service
+        """
+
+        payload = self.get_register_all_payload()
+    
         register_all.send(payload)
 
         return payload
