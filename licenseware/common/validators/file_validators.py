@@ -97,15 +97,15 @@ def _columns_validator(file_columns, required_columns, raise_error=True):
 
 
 def _get_columns(df, required_sheets):
+    given_columns = []
     if isinstance(df, dict):
-        given_columns = []
         for sheet, table in df.items():
             if sheet not in required_sheets: continue
             given_columns.append(table.columns.tolist())
         given_columns = set(itertools.chain.from_iterable(given_columns))
     elif isinstance(df, pd.DataFrame):
         given_columns = df.columns
-    else:
+    elif isinstance(df, str):
         given_columns = df.split("\n")[0]
     return given_columns
 
@@ -178,9 +178,16 @@ def validate_rows_number(df, min_rows_number, required_sheets=[]):
             if sheet not in required_sheets: continue
             if table.shape[0] < min_rows_number:
                 raise ValueError(f'Expected {sheet} to have at least {min_rows_number} row(s)')
-    else:
+    
+    elif isinstance(df, pd.DataFrame):
+        if df.shape[0] < min_rows_number:
+            raise ValueError(f'Expected {sheet} to have at least {min_rows_number} row(s)')
+    elif isinstance(df, str):
         if df.count("\n") < min_rows_number:
             raise ValueError(f'Expected table to have at least {min_rows_number} row(s)')
+    else:
+        log.error(f"Can't check min_rows_number")
+
 
 
 def validate_filename(filename:str, contains:list, endswith:list = None, regex_escape:bool = True):
