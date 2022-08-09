@@ -12,6 +12,9 @@ spec:
       targetPort: {{ .Values.webApp.service.containerPort }}
       protocol: {{ .Values.webApp.service.protocol }}
       name: {{ .Values.webApp.service.portName }}
+  {{- if .Values.webApp.service.type }}
+  type: {{ .Values.webApp.service.type }}
+  {{- end }}
   selector:
     {{- include "<CHARTNAME>.webAppSelectorLabels" . | nindent 4 }}
 {{- end }}

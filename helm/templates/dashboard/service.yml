@@ -12,6 +12,9 @@ spec:
       targetPort: {{ .Values.dashboardApp.service.containerPort }}
       protocol: {{ .Values.dashboardApp.service.protocol }}
       name: {{ .Values.dashboardApp.service.portName }}
+  {{- if .Values.webApp.service.type }}
+  type: {{ .Values.webApp.service.type }}
+  {{- end }}
   selector:
     {{- include "<CHARTNAME>.dashboardAppSelectorLabels" . | nindent 4 }}
 {{- end }}
