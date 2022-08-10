@@ -1,0 +1,20 @@
+{{- if .Values.dashboardApp.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "<CHARTNAME>.dashboardAppName" . }}
+  labels:
+    {{- include "<CHARTNAME>.dashboardAppLabels" . | nindent 4 }}
+spec:
+  type: {{ .Values.dashboardApp.service.type }}
+  ports:
+    - port: {{ .Values.dashboardApp.service.port }}
+      targetPort: {{ .Values.dashboardApp.service.containerPort }}
+      protocol: {{ .Values.dashboardApp.service.protocol }}
+      name: {{ .Values.dashboardApp.service.portName }}
+  {{- if .Values.dashboardApp.service.type }}
+  type: {{ .Values.dashboardApp.service.type }}
+  {{- end }}
+  selector:
+    {{- include "<CHARTNAME>.dashboardAppSelectorLabels" . | nindent 4 }}
+{{- end }}

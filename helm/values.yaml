@@ -1,0 +1,349 @@
+env: "" # valid values are "dev" or "prod"
+
+commonLabels:
+  licenseware.io/app: licenseware # TODO: change this to app name e.g. ifmp
+  licenseware.io/env: prod # OPTIONAL: change this according to `env` above
+  licenseware.io/tier: backend
+  licenseware.io/owner: licenseware
+
+global: # will be overwritten by the apps
+  terminationGracePeriodSeconds: 20
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 512m
+      memory: 1Gi
+
+  strategy:
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 0
+    type: RollingUpdate
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+  topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: ScheduleAnyway
+
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 20
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 70
+
+  ingress:
+    className: ""  # defaults to default ingress class
+
+config:
+  appHost: ""
+  appId: ""
+  appUriPrefix: "" # e.g. /ifmp
+
+  persistence:
+    claimName: "" # defaults to chart name
+    enabled: true
+    size: "5Gi"
+    accessMode: ReadWriteMany
+    storageClassName: efs
+
+  mongo:
+    databaseName: ""
+
+  identity:
+    user: ""
+
+  fileUploadPath: /tmp/lware
+
+  authService:
+    url: ""
+
+  registryService:
+    url: ""
+
+  redis:
+    create: true
+    host: ""
+    port: 6379
+    db: 0
+
+  worker:
+    broker:
+      celeryConnectionMaxRetry: 3
+    backend:
+      uri: ""
+    celeryDefaultTaskRateLimit: 10/s
+    celeryTaskSerializer: json
+    celeryTaskCompression: bzip2
+    celeryConsumerOffset: latest
+
+# don't base64-encode before providing to helm
+secret:
+  worker:
+    broker:
+      uri: ""
+
+  identity:
+    password: ""
+
+  mongo:
+    connectionString: ""
+
+  redis:
+    password: "" # will get its value from redis.auth.password
+
+redis:
+  replica:
+    replicaCount: 0
+  autoscaling:
+    enabled: false
+    maxReplicas: 10
+  auth:
+    password: CHANGEME
+  master:
+    persistence:
+      enabled: false
+
+image:
+  repository: ""
+  tag: ""
+  pullPolicy: Always
+
+imagePullSecrets: []
+
+nameOverride: ""
+
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext:
+  {}
+  # fsGroup: 2000
+
+securityContext:
+  {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+dashboardApp:
+  enabled: false
+
+  command: "" # e.g. uwsgi -w main:app
+
+  healthCheckUri: "/" # e.g. /
+
+  replicaCount: 1
+
+  labels:
+    licenseware.io/type: dashboard
+
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+
+  terminationGracePeriodSeconds: "" # defaults to global value
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 256m
+      memory: 256Gi
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+  probes:
+    livenessProbe:
+      tcpSocket:
+        port: null # defaults to dashboardApp.service.containerPort
+      initialDelaySeconds: 3
+      timeoutSeconds: 3
+      successThreshold: 1
+      failureThreshold: 3
+      periodSeconds: 10
+    readinessProbe:
+      httpGet:
+        path: "" # defaults to dashboardApp.healthCheckUri
+        port: ""  # defaults to dashboardApp.service.containerPort
+      initialDelaySeconds: 5
+      timeoutSeconds: 5
+      successThreshold: 1
+      failureThreshold: 3
+      periodSeconds: 10
+
+  topologySpreadConstraints: []
+
+  autoscaling: {}
+
+  service:
+    enabled: true
+    type: ClusterIP
+    port: 80
+    containerPort: 5000
+    portName: http
+    protocol: TCP
+
+  ingress:
+    enabled: false
+    className: ""
+    annotations: {}
+      # haproxy-ingress.github.io/rewrite-target: /
+      # nginx.ingress.kubernetes.io/rewrite-target: /
+    hosts:
+      - host: api.licenseware.io # change this accordingly
+        http:
+          paths:
+            - path: "" # change this too accordingly
+              pathType: Prefix
+    tls: []
+
+webApp:
+  enabled: true
+
+  command: ""
+
+  healthCheckUri: "" # e.g. /ifmp/swagger.json
+
+  replicaCount: 2
+
+  labels:
+    licenseware.io/type: web
+
+  strategy:
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 0
+    type: RollingUpdate
+
+  terminationGracePeriodSeconds: "" # defaults to global value
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 2000m
+      memory: 1Gi
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+  probes:
+    livenessProbe:
+      initialDelaySeconds: 5
+      timeoutSeconds: 5
+      successThreshold: 1
+      failureThreshold: 3
+      periodSeconds: 10
+    readinessProbe:
+      initialDelaySeconds: 5
+      timeoutSeconds: 5
+      successThreshold: 1
+      failureThreshold: 3
+      periodSeconds: 10
+
+  topologySpreadConstraints:
+    - maxSkew: 2
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: ScheduleAnyway
+
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 20
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 80
+
+
+  service:
+    enabled: true
+    type: ClusterIP
+    port: 80
+    containerPort: 5000
+    protocol: TCP
+    portName: http
+
+  ingress:
+    enabled: true
+    className: ""
+    annotations: {}
+    hosts:
+      - host: api.licenseware.io # NOTE: configure this accordingly
+        http:
+          paths:
+            - path: "" # defaults to config.appUriPrefix
+              pathType: Prefix # NOTE: configure this accordingly
+
+workerApp:
+  enabled: true
+
+  command: celery -A main:broker worker -l info -c 4 --autoscale=4,20
+
+  replicaCount: 2
+
+  labels:
+    licenseware.io/type: worker
+
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+
+  terminationGracePeriodSeconds: "" # defaults to global value
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 1000m
+      memory: 4Gi
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+  topologySpreadConstraints:
+    - maxSkew: 2
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: ScheduleAnyway
+
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 20
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 70

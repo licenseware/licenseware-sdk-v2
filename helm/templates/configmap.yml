@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "<CHARTNAME>.configName" . }}
+  labels:
+    {{- include "<CHARTNAME>.baseLabels" . | nindent 4 }}
+data:
+  {{- if .Values.config.appHost }}
+  APP_HOST: {{ required "missing required value: .Values.config.appHost" .Values.config.appHost }}
+  {{- end }}
+  APP_ID: {{ default .Values.config.identity.user .Values.config.appId }}
+  APP_PATH: {{ required "missing required value: .Values.config.appUriPrefix" .Values.config.appUriPrefix }}
+  AUTH_SERVICE_URL: {{ required "missing required value: .Values.config.authService.url" .Values.config.authService.url }}
+  CELERY_BROKER_CONN_MAX_RETRIES: {{ .Values.config.worker.broker.celeryConnectionMaxRetry | quote }}
+  CELERY_COMPRESSION: {{ .Values.config.worker.celeryTaskCompression }}
+  CELERY_CONSUMER_OFFSET: {{ .Values.config.worker.celeryConsumerOffset }}
+  CELERY_RESULT_BACKEND: {{ .Values.config.worker.backend.uri | quote }}
+  CELERY_SERIALIZER: {{ .Values.config.worker.celeryTaskSerializer }}
+  CELERY_TASK_DEFAULT_RATE_LIMIT: {{ .Values.config.worker.celeryDefaultTaskRateLimit }}
+  ENVIRONMENT: {{ include "<CHARTNAME>.env" . }}
+  FILE_UPLOAD_PATH: {{ required "missing required value: .Values.config.fileUploadPath" .Values.config.fileUploadPath }}
+  LWARE_IDENTITY_USER: {{ required "missing required value: .Values.config.identity.user" .Values.config.identity.user }}
+  MONGO_DATABASE_NAME: {{ default .Values.config.identity.user .Values.config.mongo.databaseName }}
+  {{- if .Values.config.redis.create }}
+  REDIS_HOST: {{ printf "%s-redis-master" .Release.Name }}
+  {{- else }}
+  REDIS_HOST: {{ required "missing required value: .Values.config.redis.host" .Values.config.redis.host }}
+  {{- end }}
+  REDIS_PORT: {{ .Values.config.redis.port | quote }}
+  REDIS_DB: {{ default "0" .Values.config.redis.db | quote }}
+  REGISTRY_SERVICE_URL: {{ required "missing required value: .Values.config.registryService.url" .Values.config.registryService.url }}

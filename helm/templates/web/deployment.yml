@@ -1,0 +1,111 @@
+{{- $livenessPort := include "<CHARTNAME>.webAppLivenessProbePort" . -}}
+{{- $readinessHttpPath := include "<CHARTNAME>.webAppReadinessHttpPath" . -}}
+{{- $readinessPort := include "<CHARTNAME>.webAppReadinessHttpPort" . -}}
+{{- if .Values.webApp.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "<CHARTNAME>.webAppName" . }}
+  labels:
+    {{- include "<CHARTNAME>.webAppLabels" . | nindent 4 }}
+spec:
+  {{- if not (default .Values.global.autoscaling.enabled .Values.webApp.autoscaling.enabled) }}
+  replicas: {{ .Values.webApp.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "<CHARTNAME>.webAppSelectorLabels" . | nindent 6 }}
+  {{- with (default .Values.global.strategy .Values.webApp.strategy) }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "<CHARTNAME>.webAppSelectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "<CHARTNAME>.serviceAccountName" . }}
+      terminationGracePeriodSeconds: {{ default .Values.global.terminationGracePeriodSeconds .Values.webApp.terminationGracePeriodSeconds | int }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ include "<CHARTNAME>.appName" . }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: {{ required "missing required value: .Values.image.repository" .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
+          imagePullPolicy: {{ default "Always" .Values.image.pullPolicy }}
+          args:
+            - sh
+            - -c
+            - {{ include "<CHARTNAME>.webAppCommand" . }}
+          ports:
+            - name: {{ default "http" .Values.webApp.service.portName }}
+              containerPort: {{ .Values.webApp.service.containerPort }}
+              protocol: {{ .Values.webApp.service.protocol }}
+          {{- with .Values.webApp.probes.livenessProbe }}
+          livenessProbe:
+            tcpSocket:
+              port: {{ $livenessPort | int }}
+            initialDelaySeconds: {{ .initialDelaySeconds }}
+            timeoutSeconds: {{ .timeoutSeconds }}
+            successThreshold: {{ .successThreshold }}
+            failureThreshold: {{ .failureThreshold }}
+            periodSeconds: {{ .periodSeconds }}
+          {{- end }}
+          {{- with .Values.webApp.probes.readinessProbe }}
+          readinessProbe:
+            httpGet:
+              path: {{ $readinessHttpPath }}
+              port: {{ $readinessPort | int }}
+            initialDelaySeconds: {{ .initialDelaySeconds }}
+            timeoutSeconds: {{ .timeoutSeconds }}
+            successThreshold: {{ .successThreshold }}
+            failureThreshold: {{ .failureThreshold }}
+            periodSeconds: {{ .periodSeconds }}
+          {{- end }}
+          {{- with (default .Values.global.resources .Values.webApp.resources) }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "<CHARTNAME>.configName" . }}
+            - secretRef:
+                name: {{ include "<CHARTNAME>.secretName" . }}
+          volumeMounts:
+          - name: upload-files
+            mountPath: {{ required "missing required value: .Values.config.fileUploadPath" .Values.config.fileUploadPath }}
+      volumes:
+      - name: upload-files
+        persistentVolumeClaim:
+          claimName: {{ include "<CHARTNAME>.claimName" . }}
+      {{- with (default .Values.global.nodeSelector .Values.webApp.nodeSelector) }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with (default .Values.global.affinity .Values.webApp.affinity) }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with (default .Values.global.tolerations .Values.webApp.tolerations) }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- range (default .Values.global.topologySpreadConstraints .Values.webApp.topologySpreadConstraints) }}
+      topologySpreadConstraints:
+      - maxSkew: {{ .maxSkew }}
+        topologyKey: {{ .topologyKey }}
+        whenUnsatisfiable: {{ .whenUnsatisfiable }}
+        labelSelector:
+          matchLabels:
+            {{- include "<CHARTNAME>.webAppSelectorLabels" $ | nindent 12 }}
+      {{- end }}
+{{- end }}

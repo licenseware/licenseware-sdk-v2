@@ -1,0 +1,83 @@
+{{- if .Values.workerApp.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "<CHARTNAME>.workerAppName" . }}
+  labels:
+    {{- include "<CHARTNAME>.workerAppLabels" . | nindent 4 }}
+spec:
+  {{- if not (default .Values.global.autoscaling.enabled .Values.workerApp.autoscaling.enabled) }}
+  replicas: {{ .Values.workerApp.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "<CHARTNAME>.workerAppSelectorLabels" . | nindent 6 }}
+  {{- with (default .Values.global.strategy .Values.workerApp.strategy) }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "<CHARTNAME>.workerAppSelectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "<CHARTNAME>.serviceAccountName" . }}
+      terminationGracePeriodSeconds: {{ default .Values.global.terminationGracePeriodSeconds .Values.webApp.terminationGracePeriodSeconds | int }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ include "<CHARTNAME>.appName" . }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: {{ required "missing required value: .Values.image.repository" .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
+          imagePullPolicy: {{ default "Always" .Values.image.pullPolicy }}
+          args:
+            - sh
+            - -c
+            - {{ include "<CHARTNAME>.workerAppCommand" . }}
+          {{- with (default .Values.global.resources .Values.workerApp.resources) }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "<CHARTNAME>.configName" . }}
+            - secretRef:
+                name: {{ include "<CHARTNAME>.secretName" . }}
+          volumeMounts:
+          - name: upload-files
+            mountPath: {{ required "missing required value: .Values.config.fileUploadPath" .Values.config.fileUploadPath }}
+      volumes:
+      - name: upload-files
+        persistentVolumeClaim:
+          claimName: {{ include "<CHARTNAME>.claimName" . }}
+      {{- with (default .Values.global.nodeSelector .Values.workerApp.nodeSelector) }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with (default .Values.global.affinity .Values.workerApp.affinity) }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with (default .Values.global.tolerations .Values.workerApp.tolerations) }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- range (default .Values.global.topologySpreadConstraints .Values.workerApp.topologySpreadConstraints) }}
+      topologySpreadConstraints:
+      - maxSkew: {{ .maxSkew }}
+        topologyKey: {{ .topologyKey }}
+        whenUnsatisfiable: {{ .whenUnsatisfiable }}
+        labelSelector:
+          matchLabels:
+            {{- include "<CHARTNAME>.workerAppSelectorLabels" $ | nindent 12 }}
+      {{- end }}
+{{- end }}
