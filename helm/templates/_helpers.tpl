@@ -200,23 +200,11 @@ celery -A main:broker worker -l info --concurrency=4 --autoscale=4,20
 {{- end }}
 
 {{- define "<CHARTNAME>.webAppReadinessHttpPort" -}}
-{{- if .Values.webApp.probes.readinessProbe.httpGet }}
-{{- if .Values.webApp.probes.readinessProbe.httpGet.port }}
-{{- .Values.webApp.probes.readinessProbe.httpGet.port }}
-{{- end }}
-{{- else }}
 {{- required "missing required value: .Values.webApp.service.containerPort" .Values.webApp.service.containerPort }}
-{{- end }}
 {{- end }}
 
 {{- define "<CHARTNAME>.webAppReadinessHttpPath" -}}
-{{- if .Values.webApp.probes.readinessProbe.httpGet }}
-{{- if .Values.webApp.probes.readinessProbe.httpGet.path }}
-{{- .Values.webApp.probes.readinessProbe.httpGet.path }}
-{{- end }}
-{{- else }}
 {{- required "missing required value: .Values.webApp.healthCheckUri" .Values.webApp.healthCheckUri }}
-{{- end }}
 {{- end }}
 
 {{- define "<CHARTNAME>.redisPassword" -}}

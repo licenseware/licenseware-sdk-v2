@@ -12,7 +12,6 @@ data:
   APP_PATH: {{ required "missing required value: .Values.config.appUriPrefix" .Values.config.appUriPrefix }}
   AUTH_SERVICE_URL: {{ required "missing required value: .Values.config.authService.url" .Values.config.authService.url }}
   CELERY_BROKER_CONN_MAX_RETRIES: {{ .Values.config.worker.broker.celeryConnectionMaxRetry | quote }}
-  CELERY_BROKER_URI: {{ required "missing required value: .Values.config.worker.broker.uri" .Values.config.worker.broker.uri }}
   CELERY_COMPRESSION: {{ .Values.config.worker.celeryTaskCompression }}
   CELERY_CONSUMER_OFFSET: {{ .Values.config.worker.celeryConsumerOffset }}
   CELERY_RESULT_BACKEND: {{ .Values.config.worker.backend.uri | quote }}

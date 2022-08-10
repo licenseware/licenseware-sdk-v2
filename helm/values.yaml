@@ -7,6 +7,8 @@ commonLabels:
   licenseware.io/owner: licenseware
 
 global: # will be overwritten by the apps
+  terminationGracePeriodSeconds: 20
+
   resources:
     requests:
       cpu: 100m
@@ -76,7 +78,6 @@ config:
 
   worker:
     broker:
-      uri: ""
       celeryConnectionMaxRetry: 3
     backend:
       uri: ""
@@ -87,6 +88,10 @@ config:
 
 # don't base64-encode before providing to helm
 secret:
+  worker:
+    broker:
+      uri: ""
+
   identity:
     password: ""
 
@@ -157,6 +162,8 @@ dashboardApp:
       maxSurge: 1
       maxUnavailable: 0
     type: RollingUpdate
+
+  terminationGracePeriodSeconds: "" # defaults to global value
 
   resources:
     requests:
@@ -235,6 +242,8 @@ webApp:
       maxUnavailable: 0
     type: RollingUpdate
 
+  terminationGracePeriodSeconds: "" # defaults to global value
+
   resources:
     requests:
       cpu: 100m
@@ -310,6 +319,8 @@ workerApp:
       maxSurge: 1
       maxUnavailable: 0
     type: RollingUpdate
+
+  terminationGracePeriodSeconds: "" # defaults to global value
 
   resources:
     requests:
