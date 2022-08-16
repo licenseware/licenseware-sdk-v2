@@ -159,51 +159,19 @@ celery -A main:broker worker -l info --concurrency=4 --autoscale=4,20
 {{- end }}
 {{- end }}
 
-{{- define "<CHARTNAME>.dashboardAppLivenessProbePort" -}}
-{{- if .Values.dashboardApp.probes.livenessProbe.tcpSocket }}
-{{- if .Values.dashboardApp.probes.livenessProbe.tcpSocket.port }}
-{{- .Values.dashboardApp.probes.livenessProbe.tcpSocket.port }}
-{{- end }}
-{{- else }}
+{{- define "<CHARTNAME>.dashboardAppProbeHttpPort" -}}
 {{- required "missing required value: .Values.dashboardApp.service.containerPort" .Values.dashboardApp.service.containerPort }}
 {{- end }}
-{{- end }}
 
-{{- define "<CHARTNAME>.dashboardAppReadinessHttpPort" -}}
-{{- if .Values.dashboardApp.probes.readinessProbe.httpGet }}
-{{- if .Values.dashboardApp.probes.readinessProbe.httpGet.port }}
-{{- .Values.dashboardApp.probes.readinessProbe.httpGet.port }}
-{{- end }}
-{{- else }}
-{{- required "missing required value: .Values.dashboardApp.service.containerPort" .Values.dashboardApp.service.containerPort }}
-{{- end }}
-{{- end }}
-
-{{- define "<CHARTNAME>.dashboardAppReadinessHttpPath" -}}
-{{- if .Values.dashboardApp.probes.readinessProbe.httpGet }}
-{{- if .Values.dashboardApp.probes.readinessProbe.httpGet.path }}
-{{- .Values.dashboardApp.probes.readinessProbe.httpGet.path }}
-{{- end }}
-{{- else }}
+{{- define "<CHARTNAME>.dashboardAppProbeHttpPath" -}}
 {{- required "missing required value: .Values.dashboardApp.healthCheckUri" .Values.dashboardApp.healthCheckUri }}
 {{- end }}
-{{- end }}
 
-{{- define "<CHARTNAME>.webAppLivenessProbePort" -}}
-{{- if .Values.webApp.probes.livenessProbe.tcpSocket }}
-{{- if .Values.webApp.probes.livenessProbe.tcpSocket.port }}
-{{- .Values.webApp.probes.livenessProbe.tcpSocket.port }}
-{{- end }}
-{{- else }}
-{{- required "missing required value: .Values.webApp.service.containerPort" .Values.webApp.service.containerPort }}
-{{- end }}
-{{- end }}
-
-{{- define "<CHARTNAME>.webAppReadinessHttpPort" -}}
+{{- define "<CHARTNAME>.webAppProbeHttpPort" -}}
 {{- required "missing required value: .Values.webApp.service.containerPort" .Values.webApp.service.containerPort }}
 {{- end }}
 
-{{- define "<CHARTNAME>.webAppReadinessHttpPath" -}}
+{{- define "<CHARTNAME>.webAppProbeHttpPath" -}}
 {{- required "missing required value: .Values.webApp.healthCheckUri" .Values.webApp.healthCheckUri }}
 {{- end }}
 

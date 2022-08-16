@@ -1,6 +1,5 @@
-{{- $livenessPort := include "<CHARTNAME>.dashboardAppLivenessProbePort" . -}}
-{{- $readinessHttpPath := include "<CHARTNAME>.dashboardAppReadinessHttpPath" . -}}
-{{- $readinessPort := include "<CHARTNAME>.dashboardAppReadinessHttpPort" . -}}
+{{- $probeHttpPath := include "<CHARTNAME>.dashboardAppProbeHttpPath" . -}}
+{{- $probeHttpPort := include "<CHARTNAME>.dashboardAppProbeHttpPort" . -}}
 {{- if .Values.dashboardApp.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
@@ -52,8 +51,9 @@ spec:
               protocol: {{ .Values.dashboardApp.service.protocol }}
           {{- with .Values.dashboardApp.probes.livenessProbe }}
           livenessProbe:
-            tcpSocket:
-              port: {{ $livenessPort | int }}
+            httpGet:
+              path: {{ $probeHttpPath }}
+              port: {{ $probeHttpPort | int }}
             initialDelaySeconds: {{ .initialDelaySeconds }}
             timeoutSeconds: {{ .timeoutSeconds }}
             successThreshold: {{ .successThreshold }}
@@ -63,8 +63,8 @@ spec:
           {{- with .Values.dashboardApp.probes.readinessProbe }}
           readinessProbe:
             httpGet:
-              path: {{ $readinessHttpPath }}
-              port: {{ $readinessPort | int }}
+              path: {{ $probeHttpPath }}
+              port: {{ $probeHttpPort | int }}
             initialDelaySeconds: {{ .initialDelaySeconds }}
             timeoutSeconds: {{ .timeoutSeconds }}
             successThreshold: {{ .successThreshold }}

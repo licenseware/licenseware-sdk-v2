@@ -1,6 +1,5 @@
-{{- $livenessPort := include "<CHARTNAME>.webAppLivenessProbePort" . -}}
-{{- $readinessHttpPath := include "<CHARTNAME>.webAppReadinessHttpPath" . -}}
-{{- $readinessPort := include "<CHARTNAME>.webAppReadinessHttpPort" . -}}
+{{- $probeHttpPath := include "<CHARTNAME>.webAppProbeHttpPath" . -}}
+{{- $probeHttpPort := include "<CHARTNAME>.webAppProbeHttpPort" . -}}
 {{- if .Values.webApp.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
@@ -52,8 +51,9 @@ spec:
               protocol: {{ .Values.webApp.service.protocol }}
           {{- with .Values.webApp.probes.livenessProbe }}
           livenessProbe:
-            tcpSocket:
-              port: {{ $livenessPort | int }}
+            httpGet:
+              path: {{ $probeHttpPath }}
+              port: {{ $probeHttpPort | int }}
             initialDelaySeconds: {{ .initialDelaySeconds }}
             timeoutSeconds: {{ .timeoutSeconds }}
             successThreshold: {{ .successThreshold }}
@@ -63,8 +63,8 @@ spec:
           {{- with .Values.webApp.probes.readinessProbe }}
           readinessProbe:
             httpGet:
-              path: {{ $readinessHttpPath }}
-              port: {{ $readinessPort | int }}
+              path: {{ $probeHttpPath }}
+              port: {{ $probeHttpPort | int }}
             initialDelaySeconds: {{ .initialDelaySeconds }}
             timeoutSeconds: {{ .timeoutSeconds }}
             successThreshold: {{ .successThreshold }}
