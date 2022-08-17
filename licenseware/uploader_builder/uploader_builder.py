@@ -172,7 +172,52 @@ class UploaderBuilder:
         if not valid_filepaths:
             return {"status": states.FAILED, "message": "No valid files provided"}, 400
 
-        return {"response": response, "filepaths": valid_filepaths}
+        return {"status": states.SUCCESS, "response": response, "filepaths": valid_filepaths}, 200
+
+
+    def get_failed_validation_response(self, fp, tenant_id, event_id, serialized_flask_request):
+
+        events = [
+            {
+                "tenant_id": tenant_id,
+                "uploader_id": self.uploader_id,
+                "event_id": event_id,
+                "filepaths": [],
+                "flask_request": serialized_flask_request,
+                "validation_response": fp,
+            }
+        ]
+
+        return {
+            "status": fp["status"],
+            "message": fp["message"],
+            'validation': fp["validation"],
+            "event_data": events,
+        }, 400
+
+
+    def get_quota_exceeded_response(self, fp, tenant_id, event_id, serialized_flask_request):
+
+        events = [
+            {
+                "tenant_id": tenant_id,
+                "uploader_id": self.uploader_id,
+                "event_id": event_id,
+                "filepaths": [],
+                "flask_request": serialized_flask_request,
+                "validation_response": fp,
+            }
+        ]
+
+        return {
+            "status": fp["status"],
+            "message": fp["message"],
+            'validation': fp,
+            "event_data": events,
+            **fp
+        }, 402
+        
+
 
     @history.log
     def upload_files(self, flask_request: Request, event_id: str = None):
@@ -192,27 +237,12 @@ class UploaderBuilder:
         notify_upload_status(event, status=states.RUNNING)
 
         # Preparing and sending the event to worker for background processing
-        fp = self.get_filepaths(event, flask_request)
-        if not isinstance(fp, dict):
+        fp, status = self.get_filepaths(event, flask_request)
 
-            events = [
-                {
-                    "tenant_id": tenant_id,
-                    "uploader_id": self.uploader_id,
-                    "event_id": event_id,
-                    "filepaths": [],
-                    "flask_request": serialized_flask_request,
-                    "validation_response": fp[0],
-                }
-            ]
-
-            return {
-                "status": fp[0]["status"],
-                "message": fp[0]["message"],
-                'validation': fp[0]["validation"],
-                "event_data": events,
-            }, fp[1]
-
+        if status == 400:
+            return self.get_failed_validation_response(fp, tenant_id, event_id, serialized_flask_request)
+        if status == 402:
+            return self.get_quota_exceeded_response(fp, tenant_id, event_id, serialized_flask_request)
 
         if self.one_event_per_file:
             events = [
