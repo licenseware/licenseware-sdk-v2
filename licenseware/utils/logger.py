@@ -52,7 +52,6 @@ environment:
 
 """
 
-from contextlib import suppress
 import os, sys, json
 from loguru import logger as log
 
@@ -92,11 +91,9 @@ CRITICALS = [
 
 
 def _get_payload(json_payload):
-    json_payload_str = str(json_payload)
-    for key in CRITICALS:
-        if key in json_payload_str:
-            return {"sensitive_information_alert": "no passwords allowed in logger"} 
-    return json_payload
+    for key, value in json_payload.items():
+        if key not in CRITICALS:
+            yield key, value
 
 
 
@@ -110,7 +107,7 @@ if not outside_flask:
             content_type=request.headers.get("Content-Type"),
             request_url=request.url,
             request_method=request.method,
-            json_payload=_get_payload(request.get_json()) if request.get_json() else None,
+            json_payload=dict(_get_payload(request.get_json())) if request.get_json() else None,
             multiform_payload=request.files if request.files else None,
         )
         if has_request_context()
@@ -118,12 +115,12 @@ if not outside_flask:
         extra=Placeholder(),
     )
 
-log.add(
-    "app.log",
-    rotation="monthly",
-    level=_log_level,
-    format=_log_format
-)
+# log.add(
+#     "app.log",
+#     rotation="monthly",
+#     level=_log_level,
+#     format=_log_format
+# )
 
 log.add(sys.stderr, format=_log_format)
 
