@@ -91,6 +91,8 @@ CRITICALS = [
 
 
 def _get_payload(json_payload):
+    if not isinstance(json_payload, dict):
+        return {}
     for key, value in json_payload.items():
         if key not in CRITICALS:
             yield key, value
