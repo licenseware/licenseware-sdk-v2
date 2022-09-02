@@ -1,7 +1,8 @@
-from licenseware.utils.logger import log
-from marshmallow import Schema
-from typing import Any
 import traceback
+from typing import Any
+
+from licenseware.utils.logger import log
+
 
 def validate_data(schema: type, data: Any):
     if isinstance(data, dict):
@@ -17,7 +18,7 @@ def validate_data(schema: type, data: Any):
 
 def schema_validator(schema: type, data: dict, raise_error=True):
     """
-        Using Marshmallow schema class to validate data (dict or list of dicts) 
+    Using Marshmallow schema class to validate data (dict or list of dicts)
     """
 
     nok_msg = lambda err: f"Validation failed \n {err}"
@@ -30,6 +31,6 @@ def schema_validator(schema: type, data: dict, raise_error=True):
             validate_data(schema, data)
             # log.success(ok_msg)
             return True
-        except Exception as err:
+        except Exception:
             log.error(traceback.format_exc())
             return False

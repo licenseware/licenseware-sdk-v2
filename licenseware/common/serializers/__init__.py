@@ -7,15 +7,15 @@ To skip validation simply comment out the validation function (see common.valida
 """
 
 from .analysis_status_schema import AnalysisStatusSchema
-from .quota_schema import QuotaSchema
 from .event_schema import EventSchema
-from .register_app_payload_schema import RegisterAppPayloadSchema
-from .register_uploader_payload_schema import RegisterUploaderPayloadSchema
-from .file_upload_validation_schema import FileUploadValidationSchema
-from .register_uploader_status_payload_schema import RegisterUploaderStatusPayloadSchema
-from .register_report_payload_schema import RegisterReportPayloadSchema
-from .register_report_component_payload import RegisterReportComponentPayloadSchema
-from .wild_schema import WildSchema
 from .features_schema import FeaturesSchema
+from .file_upload_validation_schema import FileUploadValidationSchema
 from .integration_details_schema import IntegrationDetailsSchema
 from .public_token_schema import PublicTokenSchema
+from .quota_schema import QuotaSchema
+from .register_app_payload_schema import RegisterAppPayloadSchema
+from .register_report_component_payload import RegisterReportComponentPayloadSchema
+from .register_report_payload_schema import RegisterReportPayloadSchema
+from .register_uploader_payload_schema import RegisterUploaderPayloadSchema
+from .register_uploader_status_payload_schema import RegisterUploaderStatusPayloadSchema
+from .wild_schema import WildSchema

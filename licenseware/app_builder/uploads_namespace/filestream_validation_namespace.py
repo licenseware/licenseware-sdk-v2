@@ -6,20 +6,19 @@ We need to separate the resource from the restx namespace, otherwise the resourc
 """
 
 
-from statistics import mode
+from typing import List
+
 from flask import request
 from flask_restx import Namespace, Resource
-
-from licenseware.decorators.auth_decorators import authorization_check
-from licenseware.decorators import failsafe
-from licenseware.tenants import clear_tenant_data
-from werkzeug.datastructures import FileStorage
 from marshmallow import Schema, fields
-from licenseware.common import marshmallow_to_restx_model
-from licenseware.utils.common import trigger_broker_funcs
+from werkzeug.datastructures import FileStorage
 
+from licenseware.common import marshmallow_to_restx_model
+from licenseware.decorators import failsafe
+from licenseware.decorators.auth_decorators import authorization_check
+from licenseware.tenants import clear_tenant_data
 from licenseware.uploader_builder import UploaderBuilder
-from typing import List
+from licenseware.utils.common import trigger_broker_funcs
 
 
 class FileUploadDetailedValidationSchema(Schema):
@@ -48,7 +47,7 @@ class FileUploadEventDataSchema(Schema):
 class FileUploadRespSchema(Schema):
     status = fields.Str()
     message = fields.Str()
-    #event_data = fields.List(fields.Nested(FileUploadEventDataSchema))
+    # event_data = fields.List(fields.Nested(FileUploadEventDataSchema))
     event_id = fields.Str()
 
 
@@ -66,10 +65,11 @@ def create_uploader_resource(uploader: UploaderBuilder):
 
             upload_response = uploader.upload_files(request)
             if uploader.broker_funcs:
-                trigger_broker_funcs(request, uploader.broker_funcs, upload_response=upload_response[0])
+                trigger_broker_funcs(
+                    request, uploader.broker_funcs, upload_response=upload_response[0]
+                )
 
             return upload_response
-
 
     return FileStreamValidate
 
@@ -90,7 +90,7 @@ def get_filestream_validation_namespace(
         help="Upload files for processing",
     )
 
-    default_params={
+    default_params = {
         "clear_data": "Boolean parameter, warning, will clear existing data",
         "event_id": "The uuid4 string received on filenames validation",
     }
@@ -137,7 +137,9 @@ def get_filestream_validation_namespace(
                 ) in uploader.query_params_on_upload.items():
                     params_dict[param_name] = {"description": param_description}
 
-            TempUploaderResource.__apidoc__.update({"params": {**default_params, **params_dict}})
+            TempUploaderResource.__apidoc__.update(
+                {"params": {**default_params, **params_dict}}
+            )
 
         UploaderResource = type(
             uploader.uploader_id.replace("_", "").capitalize() + "stream",

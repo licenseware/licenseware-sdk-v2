@@ -1,11 +1,8 @@
-from marshmallow import (
-    Schema, 
-    fields, 
-    validate,  #utils validatiors
-)
+from marshmallow import validate  # utils validatiors
+from marshmallow import Schema, fields
 
-from licenseware.common.constants import states, flags
-from licenseware.common.validators import validate_route, validate_icon
+from licenseware.common.constants import flags, states
+from licenseware.common.validators import validate_icon
 
 
 class FileValidatorSchema(Schema):
@@ -26,25 +23,30 @@ class FileValidatorSchema(Schema):
 
 
 class UploaderInfoSchema(Schema):
-    
+
     app_id = fields.Str(required=True, validate=validate.Length(min=3))
     uploader_id = fields.Str(required=True, validate=validate.Length(min=3))
-    name = fields.Str(required=True, validate=validate.Length(min=3))  
+    name = fields.Str(required=True, validate=validate.Length(min=3))
     description = fields.Str(required=True, validate=validate.Length(min=10))
-    flags = fields.List(fields.Str, required=False, validate=validate.OneOf([None, flags.BETA, flags.SOON]), allow_none=True)
+    flags = fields.List(
+        fields.Str,
+        required=False,
+        validate=validate.OneOf([None, flags.BETA, flags.SOON]),
+        allow_none=True,
+    )
     accepted_file_types = fields.List(fields.Str, required=True)
     upload_url = fields.Url(required=True)
     upload_validation_url = fields.Url(required=True)
     quota_validation_url = fields.Url(required=True)
     status_check_url = fields.Url(required=True)
     icon = fields.Str(required=False, validate=validate_icon)
-    status = fields.Str(required=False, validate=validate.OneOf([None, states.IDLE, states.RUNNING]), allow_none=True)
+    status = fields.Str(
+        required=False,
+        validate=validate.OneOf([None, states.IDLE, states.RUNNING]),
+        allow_none=True,
+    )
     validation_parameters = fields.Nested(FileValidatorSchema, required=True)
 
 
 class RegisterUploaderPayloadSchema(Schema):
     data = fields.List(fields.Nested(UploaderInfoSchema), required=True)
-    
-
-
-

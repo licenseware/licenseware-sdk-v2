@@ -1,7 +1,8 @@
 import hashlib
+from base64 import b64decode, b64encode
+
 from Crypto import Random
 from Crypto.Cipher import AES
-from base64 import b64encode, b64decode
 
 
 class AESCipher:
@@ -19,7 +20,7 @@ class AESCipher:
     decrypted_text = aes.decrypt(encrypted_text)
 
     ```
-    
+
     """
 
     def __init__(self, key):
@@ -32,13 +33,13 @@ class AESCipher:
         cipher = AES.new(self.key, AES.MODE_CBC, iv)
         encrypted_text = cipher.encrypt(plain_text.encode())
         iv_encrypted_text = iv + encrypted_text
-        return b64encode(iv_encrypted_text, altchars=b'-:').decode("utf-8")
+        return b64encode(iv_encrypted_text, altchars=b"-:").decode("utf-8")
 
     def decrypt(self, encrypted_text):
-        encrypted_text = b64decode(encrypted_text, altchars=b'-:')
-        iv = encrypted_text[:self.block_size]
+        encrypted_text = b64decode(encrypted_text, altchars=b"-:")
+        iv = encrypted_text[: self.block_size]
         cipher = AES.new(self.key, AES.MODE_CBC, iv)
-        plain_text = cipher.decrypt(encrypted_text[self.block_size:]).decode("utf-8")
+        plain_text = cipher.decrypt(encrypted_text[self.block_size :]).decode("utf-8")
         return self.__unpad(plain_text)
 
     def __pad(self, plain_text):
@@ -50,5 +51,5 @@ class AESCipher:
 
     @staticmethod
     def __unpad(plain_text):
-        last_character = plain_text[len(plain_text) - 1:]
-        return plain_text[:-ord(last_character)]
+        last_character = plain_text[len(plain_text) - 1 :]
+        return plain_text[: -ord(last_character)]

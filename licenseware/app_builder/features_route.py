@@ -7,19 +7,15 @@ See `editable_table` package for more information.
 """
 
 from flask import request
-from flask_restx import Api, Resource, fields
+from flask_restx import Api, Resource
+
 from licenseware.decorators import failsafe
 from licenseware.decorators.auth_decorators import authorization_check
 from licenseware.feature_builder.utils import get_all_features
 
 
-
-
-
-
-def add_features_route(api:Api, appvars:dict):
-    
-    @api.route(appvars['features_path'])
+def add_features_route(api: Api, appvars: dict):
+    @api.route(appvars["features_path"])
     class AllFeatures(Resource):
         @failsafe(fail_code=500)
         @authorization_check
@@ -62,16 +58,14 @@ Example response:
     }
 
 """,
-                403 : "Missing `Tenant` or `Authorization` information",
-                500 : 'Something went wrong while handling the request' 
-            }
+                403: "Missing `Tenant` or `Authorization` information",
+                500: "Something went wrong while handling the request",
+            },
         )
         def get(self):
             return {
-                "available_features": [f.get_details() for f in appvars['features']], 
-                "initialized_features": get_all_features(request)
+                "available_features": [f.get_details() for f in appvars["features"]],
+                "initialized_features": get_all_features(request),
             }
-    
+
     return api
-
-

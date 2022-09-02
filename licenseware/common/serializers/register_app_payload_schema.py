@@ -1,12 +1,9 @@
-from marshmallow import (
-    Schema,
-    fields,
-    validate,  # utils validators
-    validates,  # decorator
-)
+from marshmallow import validate  # utils validators
+from marshmallow import validates  # decorator
+from marshmallow import Schema, fields
 
-from licenseware.common.constants import flags
 from licenseware.common.validators import validate_icon, validate_uuid4
+
 from .features_schema import FeaturesSchema
 
 
@@ -29,9 +26,15 @@ class AppInfoSchema(Schema):
     terms_and_conditions_url = fields.Url(required=True)
     features_url = fields.Url(required=True)
     app_meta = fields.Dict(required=False, allow_none=True)
-    tenants_with_app_activated = fields.List(fields.Str, validate=validate_uuid4, required=True)
-    tenants_with_data_available = fields.List(fields.Nested(DataAvailableTenantsSchema), required=True)
-    features = fields.List(fields.Nested(FeaturesSchema), required=False, allow_none=True)
+    tenants_with_app_activated = fields.List(
+        fields.Str, validate=validate_uuid4, required=True
+    )
+    tenants_with_data_available = fields.List(
+        fields.Nested(DataAvailableTenantsSchema), required=True
+    )
+    features = fields.List(
+        fields.Nested(FeaturesSchema), required=False, allow_none=True
+    )
 
 
 class RegisterAppPayloadSchema(Schema):

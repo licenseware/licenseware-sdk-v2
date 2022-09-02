@@ -1,6 +1,8 @@
-import requests
 from typing import List, Union
+
+import requests
 from flask import Request
+
 from licenseware.common.constants import envs
 from licenseware.utils.logger import log
 

@@ -1,36 +1,33 @@
-import requests
-import traceback
 import os
+import traceback
+
+import requests
 
 from licenseware.auth import Authenticator
 from licenseware.utils.logger import log
-from licenseware.decorators.auth_decorators import authenticated_machine
 from licenseware.utils.tokens import get_public_token_data
-
-
 
 REGISTRY_SERVICE_URL = os.getenv("REGISTRY_SERVICE_URL")
 
+
 class ExternalDataService:
-
-
     @staticmethod
     def _get_headers(_request):
 
         public_token = _request.args.get("public_token")
-            
-        if public_token is not None:   
+
+        if public_token is not None:
             # Saving some `trips` to auth
             Authenticator.connect()
 
             data = get_public_token_data(public_token)
-            
+
             headers = {
                 "TenantId": data["tenant_id"],
                 "Authorization": os.getenv("AUTH_TOKEN"),
             }
 
-        else:  
+        else:
             headers = {
                 "TenantId": _request.headers.get("TenantId"),
                 "Authorization": _request.headers.get("Authorization"),
@@ -38,42 +35,44 @@ class ExternalDataService:
 
         return headers
 
-
     @staticmethod
     def _get_registry_service_data(headers: dict, endpoint: str) -> list:
         try:
             reg_data = requests.get(
-                url=f"{REGISTRY_SERVICE_URL}/{endpoint}",
-                headers=headers
+                url=f"{REGISTRY_SERVICE_URL}/{endpoint}", headers=headers
             )
             return reg_data.json()
         except Exception:
             log.error(traceback.format_exc())
-            return [{
-                'data': []
-            }]   
-
+            return [{"data": []}]
 
     @staticmethod
     def _get_component_url(components: dict, app_id: str, component_id: str) -> str:
         try:
-            return [d['url'] for d in components['data'] if d['app_id'] == app_id and d['component_id'] == component_id][0]
+            return [
+                d["url"]
+                for d in components["data"]
+                if d["app_id"] == app_id and d["component_id"] == component_id
+            ][0]
         except IndexError:
             log.error(traceback.format_exc())
             return False
 
-
     @staticmethod
-    def get_data(_request, app_id: str, component_id: str, filter_payload: dict=None) -> list:
+    def get_data(
+        _request, app_id: str, component_id: str, filter_payload: dict = None
+    ) -> list:
         try:
 
             headers = ExternalDataService._get_headers(_request)
-            
-            registry_service_components = ExternalDataService._get_registry_service_data(headers, "components")
+
+            registry_service_components = (
+                ExternalDataService._get_registry_service_data(headers, "components")
+            )
             service_url = ExternalDataService._get_component_url(
                 components=registry_service_components,
                 app_id=app_id,
-                component_id=component_id
+                component_id=component_id,
             )
             if not service_url:
                 return []
@@ -84,7 +83,7 @@ class ExternalDataService:
                 )
             else:
                 data = requests.get(url=service_url, headers=headers)
-                
+
             if data.status_code == 200:
                 return data.json()
             else:
@@ -95,15 +94,17 @@ class ExternalDataService:
             log.error(traceback.format_exc())
             return False
 
-
     @staticmethod
     def _get_uploader_url(uploaders: dict, app_id: str, uploader_id: str) -> str:
         try:
-            return [d['upload_url'] for d in uploaders['data'] if d['app_id'] == app_id and d['uploader_id'] == uploader_id][0]
+            return [
+                d["upload_url"]
+                for d in uploaders["data"]
+                if d["app_id"] == app_id and d["uploader_id"] == uploader_id
+            ][0]
         except IndexError:
             log.error(traceback.format_exc())
             return False
-    
 
     @staticmethod
     def get_upload_url(_request: dict, app_id: str, uploader_id: str) -> str:
@@ -111,16 +112,15 @@ class ExternalDataService:
             "TenantId": _request.get("Tenantid"),
             "Authorization": _request.get("Authorization"),
         }
-        registry_service_uploaders = ExternalDataService._get_registry_service_data(headers, "uploaders")
+        registry_service_uploaders = ExternalDataService._get_registry_service_data(
+            headers, "uploaders"
+        )
 
         upload_url = ExternalDataService._get_uploader_url(
-            uploaders=registry_service_uploaders, 
-            app_id=app_id, 
-            uploader_id=uploader_id
-            )
-        
+            uploaders=registry_service_uploaders, app_id=app_id, uploader_id=uploader_id
+        )
+
         if not upload_url:
             return None
-        
-        return upload_url
 
+        return upload_url

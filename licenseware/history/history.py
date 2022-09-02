@@ -1,22 +1,22 @@
-from copy import deepcopy
 import inspect
 import traceback
-from typing import Any
+from copy import deepcopy
 from functools import wraps
+from typing import Any
+
 from pymongo.collection import Collection
+
 from licenseware import mongodata
-from licenseware.mongodata import collection
 from licenseware.common.constants import envs
+from licenseware.mongodata import collection
 from licenseware.utils.logger import log as logg
+
 from .history_schemas import EntitiesSchema
-from .metadata import get_metadata, create_metadata, add_event_id_to_payload
+from .metadata import add_event_id_to_payload, create_metadata, get_metadata
 from .step import save_step
 
 
-def add_entities(
-        event_id: str,
-        entities: list = None
-):
+def add_entities(event_id: str, entities: list = None):
     """
     Add reference ids to entities like databases, devices etc
     Usage:
@@ -30,17 +30,14 @@ def add_entities(
     """
     return mongodata.update(
         schema=EntitiesSchema,
-        match={'event_id': event_id},
+        match={"event_id": event_id},
         new_data={"entities": entities},
         append=True,
-        collection=envs.MONGO_COLLECTION_HISTORY_NAME
+        collection=envs.MONGO_COLLECTION_HISTORY_NAME,
     )
 
 
-def remove_entities(
-        event_id: str,
-        entities: list = None
-):
+def remove_entities(event_id: str, entities: list = None):
     """
     Remove reference ids to entities like databases, devices etc from history
     Usage:
@@ -55,21 +52,21 @@ def remove_entities(
     with collection(envs.MONGO_COLLECTION_HISTORY_NAME) as col:
         col: Collection
         updated = col.update_one(
-            filter={'event_id': event_id},
-            update={'$pull': {'entities': {"$in": entities}}}
+            filter={"event_id": event_id},
+            update={"$pull": {"entities": {"$in": entities}}},
         ).modified_count
 
     return updated
 
 
 def log_success(
-        func: callable,
-        tenant_id: str,
-        event_id: str,
-        uploader_id: str,
-        filepath: str,
-        on_success_save: str = None,
-        **overflow
+    func: callable,
+    tenant_id: str,
+    event_id: str,
+    uploader_id: str,
+    filepath: str,
+    on_success_save: str = None,
+    **overflow
 ):
     """
     Log in history a processing success event.
@@ -90,23 +87,31 @@ def log_success(
     """
     func_name = func.__name__
     step = func.__doc__.strip() if func.__doc__ else func.__name__
-    func_source = str(inspect.getmodule(func)).split("from")[1].strip().replace("'", "").replace(">", "")
+    func_source = (
+        str(inspect.getmodule(func))
+        .split("from")[1]
+        .strip()
+        .replace("'", "")
+        .replace(">", "")
+    )
 
-    metadata = create_metadata(step, tenant_id, event_id, uploader_id, filepath, func_name, func_source)
+    metadata = create_metadata(
+        step, tenant_id, event_id, uploader_id, filepath, func_name, func_source
+    )
     save_step(metadata, None, on_success_save, None)
     return metadata
 
 
 def log_failure(
-        func: callable,
-        tenant_id: str,
-        event_id: str,
-        uploader_id: str,
-        filepath: str,
-        error_string: str,
-        traceback_string: str,
-        on_failure_save: str = None,
-        **overflow
+    func: callable,
+    tenant_id: str,
+    event_id: str,
+    uploader_id: str,
+    filepath: str,
+    error_string: str,
+    traceback_string: str,
+    on_failure_save: str = None,
+    **overflow
 ):
     """
     Log in history a processing failure event.
@@ -133,17 +138,33 @@ def log_failure(
 
     func_name = func.__name__
     step = func.__doc__.strip() if func.__doc__ else func.__name__
-    func_source = str(inspect.getmodule(func)).split("from")[1].strip().replace("'", "").replace(">", "")
+    func_source = (
+        str(inspect.getmodule(func))
+        .split("from")[1]
+        .strip()
+        .replace("'", "")
+        .replace(">", "")
+    )
 
-    metadata = create_metadata(step, tenant_id, event_id, uploader_id, filepath, func_name, func_source)
-    save_step(metadata, {
-        'error': error_string,
-        'traceback': traceback_string
-    }, None, on_failure_save, True)
+    metadata = create_metadata(
+        step, tenant_id, event_id, uploader_id, filepath, func_name, func_source
+    )
+    save_step(
+        metadata,
+        {"error": error_string, "traceback": traceback_string},
+        None,
+        on_failure_save,
+        True,
+    )
     return metadata
 
 
-def log(*dargs, on_success_save: str = None, on_failure_save: str = None, on_failure_return: Any = None):
+def log(
+    *dargs,
+    on_success_save: str = None,
+    on_failure_save: str = None,
+    on_failure_return: Any = None
+):
     """
         Log processing events by decorating processing function/methods.
 
@@ -280,24 +301,25 @@ def log(*dargs, on_success_save: str = None, on_failure_save: str = None, on_fai
     ```
 
     """
+
     def _decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
-            
+
             metadata = get_metadata(f, args, kwargs)
 
             if f.__name__ == "upload_files":
-                kwargs.update({'event_id': metadata['event_id']})
+                kwargs.update({"event_id": metadata["event_id"]})
 
             try:
                 response = f(*args, **kwargs)
 
                 save_step(metadata, response, on_success_save, on_failure_save)
-                response = add_event_id_to_payload(metadata, response)                
-                
+                response = add_event_id_to_payload(metadata, response)
+
                 # Remove event_data from uploaders response
                 if not envs.DESKTOP_ENVIRONMENT:
-                    if f.__name__ == "upload_files": 
+                    if f.__name__ == "upload_files":
                         try:
                             safe_response = deepcopy(response[0])
                             safe_response.pop("event_data")
@@ -306,12 +328,15 @@ def log(*dargs, on_success_save: str = None, on_failure_save: str = None, on_fai
                             logg.exception(err)
 
                 return response
-            except Exception as err:                
+            except Exception as err:
                 logg.exception(err)
-                save_step(metadata, {
-                    'error': str(err),
-                    'traceback': str(traceback.format_exc())
-                }, on_success_save, on_failure_save, True)
+                save_step(
+                    metadata,
+                    {"error": str(err), "traceback": str(traceback.format_exc())},
+                    on_success_save,
+                    on_failure_save,
+                    True,
+                )
 
                 if on_failure_return is not None:
                     return on_failure_return
@@ -322,4 +347,5 @@ def log(*dargs, on_success_save: str = None, on_failure_save: str = None, on_fai
                     raise err
 
         return wrapper
+
     return _decorator(dargs[0]) if dargs and callable(dargs[0]) else _decorator

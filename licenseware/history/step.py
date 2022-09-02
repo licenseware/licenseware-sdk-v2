@@ -1,10 +1,12 @@
+import datetime
 import os
 import shutil
-import datetime
+
 from licenseware import mongodata
 from licenseware.common.constants import envs, states
-from .history_schemas import HistorySchema
 from licenseware.utils.logger import log as logg
+
+from .history_schemas import HistorySchema
 
 
 def save_filename_validation(metadata, response):
@@ -16,29 +18,30 @@ def save_filename_validation(metadata, response):
         "uploader_id": metadata["uploader_id"],
         "filename_validation": response["validation"],
         "filename_validation_updated_at": datetime.datetime.utcnow().isoformat(),
-        "updated_at": datetime.datetime.utcnow().isoformat()
+        "updated_at": datetime.datetime.utcnow().isoformat(),
     }
 
     return mongodata.insert(
-        schema=HistorySchema,
-        data=data,
-        collection=envs.MONGO_COLLECTION_HISTORY_NAME
+        schema=HistorySchema, data=data, collection=envs.MONGO_COLLECTION_HISTORY_NAME
     )
 
 
 def copy_files_uploaded_on_event_folder(data):
     """
-        Files uploaded are saved in another folder for the purpose of replicating the errors
-        Files will be deleted after 1 month (iso date specifies when files will be deleted)
+    Files uploaded are saved in another folder for the purpose of replicating the errors
+    Files will be deleted after 1 month (iso date specifies when files will be deleted)
     """
     if envs.DESKTOP_ENVIRONMENT:
         return []
-        
-    expiration_iso_date = (datetime.datetime.utcnow() + datetime.timedelta(days=30)).date().isoformat()
+
+    expiration_iso_date = (
+        (datetime.datetime.utcnow() + datetime.timedelta(days=30)).date().isoformat()
+    )
     folder_name = f"{data['tenant_id']}_{data['event_id']}_{expiration_iso_date}"
     folder_path = os.path.join(envs.FILE_UPLOAD_PATH, folder_name)
 
-    if not os.path.exists(folder_path): os.makedirs(folder_path)
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
 
     files_uploaded_on_event = []
     for fp in data["files_uploaded"]:
@@ -57,7 +60,7 @@ def save_file_content_validation(metadata, response):
 
     file_content_validation = []
     for cv in response["event_data"]:
-        file_content_validation.extend(cv["validation_response"]['validation'])
+        file_content_validation.extend(cv["validation_response"]["validation"])
 
     filepaths = []
     for cv in response["event_data"]:
@@ -70,7 +73,7 @@ def save_file_content_validation(metadata, response):
         "uploader_id": metadata["uploader_id"],
         "file_content_validation": file_content_validation,
         "files_uploaded": filepaths,
-        "updated_at": datetime.datetime.utcnow().isoformat()
+        "updated_at": datetime.datetime.utcnow().isoformat(),
     }
 
     data["files_uploaded"] = copy_files_uploaded_on_event_folder(data)
@@ -78,12 +81,9 @@ def save_file_content_validation(metadata, response):
 
     return mongodata.update(
         schema=HistorySchema,
-        match={
-            "tenant_id": metadata["tenant_id"],
-            "event_id": metadata["event_id"]
-        },
+        match={"tenant_id": metadata["tenant_id"], "event_id": metadata["event_id"]},
         new_data=data,
-        collection=envs.MONGO_COLLECTION_HISTORY_NAME
+        collection=envs.MONGO_COLLECTION_HISTORY_NAME,
     )
 
 
@@ -95,87 +95,92 @@ def save_processing_details(metadata, response):
         "app_id": metadata["app_id"],
         "uploader_id": metadata["uploader_id"],
         "updated_at": datetime.datetime.utcnow().isoformat(),
-        "processing_details": [{
-            "step": metadata['step'],
-            "filepath": metadata["filepath"],
-            "status": response["status"],
-            "success": response["success"],
-            "error": response["error"],
-            "traceback": response["traceback"],
-            "callable": metadata['callable'],
-            "source": metadata['source'],
-            "file_name": metadata['file_name'],
-            "updated_at": datetime.datetime.utcnow().isoformat()
-        }]
+        "processing_details": [
+            {
+                "step": metadata["step"],
+                "filepath": metadata["filepath"],
+                "status": response["status"],
+                "success": response["success"],
+                "error": response["error"],
+                "traceback": response["traceback"],
+                "callable": metadata["callable"],
+                "source": metadata["source"],
+                "file_name": metadata["file_name"],
+                "updated_at": datetime.datetime.utcnow().isoformat(),
+            }
+        ],
     }
 
     return mongodata.update(
         schema=HistorySchema,
-        match={
-            "tenant_id": metadata["tenant_id"],
-            "event_id": metadata["event_id"]
-        },
+        match={"tenant_id": metadata["tenant_id"], "event_id": metadata["event_id"]},
         new_data=data,
         append=True,
-        collection=envs.MONGO_COLLECTION_HISTORY_NAME
+        collection=envs.MONGO_COLLECTION_HISTORY_NAME,
     )
 
 
 def save_step(
-        metadata,
-        response,
-        on_success_save: any = None,
-        on_failure_save: any = None,
-        raised_error: bool = False
+    metadata,
+    response,
+    on_success_save: any = None,
+    on_failure_save: any = None,
+    raised_error: bool = False,
 ):
     # We can't track files without an event_id
-    if metadata['event_id'] is None: return
+    if metadata["event_id"] is None:
+        return
 
-    if metadata['callable'] == 'validate_filenames':
+    if metadata["callable"] == "validate_filenames":
         return save_filename_validation(metadata, response[0])
 
-    if metadata['callable'] == 'upload_files':
+    if metadata["callable"] == "upload_files":
         return save_file_content_validation(metadata, response[0])
 
     # Success cases
     if not raised_error and on_success_save:
-        return save_processing_details(metadata, {
-            "status": states.SUCCESS,
-            "success": on_success_save,
-            "error": None,
-            "traceback": None
-        })
+        return save_processing_details(
+            metadata,
+            {
+                "status": states.SUCCESS,
+                "success": on_success_save,
+                "error": None,
+                "traceback": None,
+            },
+        )
     if not raised_error and not on_success_save:
-        return save_processing_details(metadata, {
-            "status": states.SUCCESS,
-            "success": None,
-            "error": None,
-            "traceback": None
-        })
+        return save_processing_details(
+            metadata,
+            {
+                "status": states.SUCCESS,
+                "success": None,
+                "error": None,
+                "traceback": None,
+            },
+        )
 
     # Failed cases
     if raised_error and on_failure_save:
-        return save_processing_details(metadata, {
-            "status": states.FAILED,
-            "success": None,
-            "error": on_failure_save,
-            "traceback": response['traceback']
-        })
+        return save_processing_details(
+            metadata,
+            {
+                "status": states.FAILED,
+                "success": None,
+                "error": on_failure_save,
+                "traceback": response["traceback"],
+            },
+        )
 
     if raised_error and not on_failure_save:
-        return save_processing_details(metadata, {
-            "status": states.FAILED,
-            "success": None,
-            "error": response['error'],
-            "traceback": response['traceback']
-        })
-
-
-
-
-
-
-
+        return save_processing_details(
+            metadata,
+            {
+                "status": states.FAILED,
+                "success": None,
+                "error": response["error"],
+                "traceback": response["traceback"],
+            },
+        )
 
 
 # File validation response
@@ -250,8 +255,6 @@ def save_step(
 # }
 
 
-
-
 # {
 #     'callable': 'validate_filenames_no_flask_request',
 #     'docs': 'Validate filenames received', 'source':
@@ -261,7 +264,6 @@ def save_step(
 #     'app_id': 'app',
 #     'uploader_id': 'rv_tools'
 # }
-
 
 
 # {

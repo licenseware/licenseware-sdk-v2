@@ -1,8 +1,11 @@
-import flask
 from contextlib import suppress
-from typing import List, Callable, Dict
-from .miscellaneous import get_flask_request_dict
+from typing import Callable, Dict, List
+
+import flask
+
 from licenseware.common.constants import envs
+
+from .miscellaneous import get_flask_request_dict
 
 
 def get_flask_request():
@@ -24,8 +27,6 @@ def get_http_request_tenant_id(flask_request=None):
         return flask_request.headers.get("TenantId")
 
 
-
-
 def add_app_path_to_broker_funcs(broker_funcs):
     """Add /app-path prefix to given paths"""
 
@@ -41,19 +42,21 @@ def add_app_path_to_broker_funcs(broker_funcs):
 
 
 def trigger_broker_funcs(
-    flask_request: flask.Request, broker_funcs: Dict[str, List[Callable]], **extra_params
+    flask_request: flask.Request,
+    broker_funcs: Dict[str, List[Callable]],
+    **extra_params
 ):
     """
-    
+
     Parameter `broker_funcs` is available on AppBuilder and UploaderBuilder
-    
+
     Usage:
     ```py
 
     App = AppBuilder(
         broker_funcs={"/some-path": [dramatiq_broker_func1, etc]}
     )
-    
+
     # or
 
     some_uploader = UploaderBuilder(
@@ -78,7 +81,7 @@ def trigger_broker_funcs(
     When the path is called the broker functions will be triggered
 
     """
-    
+
     broker_funcs = add_app_path_to_broker_funcs(broker_funcs)
 
     if flask_request.path in broker_funcs:

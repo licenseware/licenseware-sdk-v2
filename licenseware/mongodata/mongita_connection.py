@@ -18,26 +18,26 @@ with collection("CollectionName", MarshmallowSchema, data) as col:
 
 """
 
-from mongita import MongitaClientDisk
-from marshmallow import Schema
 from contextlib import contextmanager
+
+from marshmallow import Schema
+from mongita import MongitaClientDisk
+
 from licenseware.common.constants import envs
 
 
-
 @contextmanager
-def collection(collection_name:str, schema: Schema = None, data:any = None):
-    
+def collection(collection_name: str, schema: Schema = None, data: any = None):
+
     if schema and data:
-        
+
         if isinstance(data, dict):
             data = schema().load(data)
 
         if isinstance(data, list):
             data = schema(many=True).load(data)
-        
-        
-    with MongitaClientDisk(host="./database") as conn: 
+
+    with MongitaClientDisk(host="./database") as conn:
         col = conn[envs.MONGO_DATABASE_NAME][collection_name]
         try:
             yield col

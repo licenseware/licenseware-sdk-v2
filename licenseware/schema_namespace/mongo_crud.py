@@ -1,9 +1,11 @@
 import datetime
+
 from flask import Request
 from marshmallow.schema import Schema
+
 from licenseware import mongodata as m
-from licenseware.utils.logger import log
 from licenseware.common.validators import validate__id
+from licenseware.utils.logger import log
 
 
 class MongoCrud:

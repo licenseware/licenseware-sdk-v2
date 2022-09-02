@@ -67,22 +67,20 @@ repo.delete()
 """
 
 from marshmallow import Schema
+
 from licenseware.repository.mongo.mongo_repository import MongoRepository
-from licenseware.repository.postgres.postgres_repository import PostgresRepository
 from licenseware.repository.postgres.postgres_migrations import PostgresMigrations
+from licenseware.repository.postgres.postgres_repository import PostgresRepository
 
 
 class RepoDb:
-    
-    def __init__(self, db_url:str, schema: Schema):
-        
+    def __init__(self, db_url: str, schema: Schema):
+
         if db_url.startswith("mongodb"):
             self.db = MongoRepository(db_url, schema)
         elif db_url.startswith("postgresql"):
             self.db = PostgresRepository(db_url, schema)
         else:
             raise NotImplementedError("Database url not supported")
-        
-    
-    
+
     # TODO - methods that we can add based on schema

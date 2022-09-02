@@ -59,115 +59,110 @@ App.register_enpoint(get_detected_uploaders_endpoint)
 
 import inspect
 from typing import Any
+
 from flask_restx import Namespace, Resource
-from licenseware.utils.miscellaneous import http_methods
-from licenseware.utils.logger import log
+
 from licenseware.schema_namespace import SchemaNamespace
-
-
+from licenseware.utils.miscellaneous import http_methods
 
 
 class EndpointBuilder:
-    
+
     """
-    Usage: 
-    
+    Usage:
+
     from licenseware.endpoint_builder import EndpointBuilder
-    
+
     index_endpoint = EndpointBuilder(
         handler = get_some_data,
         **options
     )
-    
+
     Params:
-    
+
     - handler: function or schema
     - options: provided as a quick had for extending functionality, once one options param is stable it can be added to params
-    
+
     """
-    
+
     def __init__(
-        self, 
-        handler: Any, 
-        swagger:dict = None,
-        http_method:str = None,
-        http_path:str = None,
+        self,
+        handler: Any,
+        swagger: dict = None,
+        http_method: str = None,
+        http_path: str = None,
         **options
     ):
-        
+
         self.handler = handler
         self.options = options
-        self.apidoc  = swagger
-    
+        self.apidoc = swagger
+
         self.http_method = http_method
         self.http_path = http_path
-        self.doc_id = handler.__name__.replace('_', ' ')
+        self.doc_id = handler.__name__.replace("_", " ")
         self.doc_description = handler.__doc__
-        
-        
+
         self.initialize()
-        
-    
-    
+
     def build_namespace(self, ns: Namespace):
-        
+
         if inspect.isfunction(self.handler):
             ns = self.add_method_to_namespace(ns)
             return ns
-        
-        if '_Schema__apply_nested_option' in dir(self.handler):
-            
+
+        if "_Schema__apply_nested_option" in dir(self.handler):
+
             schema_ns = SchemaNamespace(
-                schema = self.handler,
-                collection = self.handler.Meta.collection_name,
-                namespace = ns
+                schema=self.handler,
+                collection=self.handler.Meta.collection_name,
+                namespace=ns,
             ).initialize()
-            
+
             return schema_ns
-        
-        raise Exception("Parameter `handler` can be only a function or a marshmellow schema")
-        
-    
+
+        raise Exception(
+            "Parameter `handler` can be only a function or a marshmellow schema"
+        )
+
     def initialize(self):
         self.set_http_method()
         self.set_http_path()
-    
-    
+
     def add_method_to_namespace(self, ns):
-        
+
         if self.apidoc:
-            class BaseResource(Resource): ...
+
+            class BaseResource(Resource):
+                ...
+
             BaseResource.__apidoc__ = self.apidoc
         else:
-            @ns.doc(
-                id=self.doc_id,
-                description=self.doc_description
-            )
-            class BaseResource(Resource): ...
-            
-  
+
+            @ns.doc(id=self.doc_id, description=self.doc_description)
+            class BaseResource(Resource):
+                ...
+
         CResource = type(
-            self.handler.__name__ + self.http_method.capitalize(), 
-            (BaseResource,), 
-            {self.http_method.lower(): lambda _ : self.handler()}
+            self.handler.__name__ + self.http_method.capitalize(),
+            (BaseResource,),
+            {self.http_method.lower(): lambda _: self.handler()},
         )
-        
-        ns.add_resource(CResource, self.http_path) 
-        
+
+        ns.add_resource(CResource, self.http_path)
+
         return ns
-        
-        
+
     def set_http_path(self):
-        if self.http_path: return 
-        self.http_path = '/' + "_".join(self.handler.__name__.lower().split('_')[1:])  
-    
-    
+        if self.http_path:
+            return
+        self.http_path = "/" + "_".join(self.handler.__name__.lower().split("_")[1:])
+
     def set_http_method(self):
-        if self.http_method: return
+        if self.http_method:
+            return
         handler_name = self.handler.__name__.upper()
         for httpmethod in http_methods:
             if handler_name.startswith(httpmethod):
                 self.http_method = httpmethod
                 break
-        
-            

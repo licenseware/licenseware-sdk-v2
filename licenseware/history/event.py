@@ -1,4 +1,5 @@
 import uuid
+
 from .func import get_value_from_func
 
 

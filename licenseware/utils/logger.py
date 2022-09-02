@@ -52,26 +52,30 @@ environment:
 
 """
 
-import os, sys, json
+import json
+import os
+import sys
+
 from loguru import logger as log
 
 try:
-    from flask import request, has_request_context
+    from flask import has_request_context, request
+
     outside_flask = False
-except Exception as err:
+except Exception:
     print("Outside flask context")
     outside_flask = True
 
 _debug = os.getenv("DEBUG", "").lower() == "true"
 _log_level = "DEBUG" if _debug else "WARNING"
 
-if 'local' in os.getenv('ENVIRONMENT', 'local').lower():
+if "local" in os.getenv("ENVIRONMENT", "local").lower():
     _log_format = """<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green>[ <level>{level}</level> ]
     <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan>
     <level>{message}</level>
     """
 else:
-    _log_format = '[{level}] [----- {name}:{function}:{line} -----]    [+++++ METADATA: {extra} +++++]    [***** MESSAGE: {message}\n'
+    _log_format = "[{level}] [----- {name}:{function}:{line} -----]    [+++++ METADATA: {extra} +++++]    [***** MESSAGE: {message}\n"
 
 try:
     log.remove(0)
@@ -82,6 +86,7 @@ except:
 class Placeholder(dict):  # HACK: to avoid `str.format_map` error on missing keys
     def __missing__(self, key):
         return str(key)
+
 
 CRITICALS = [
     "password",
@@ -98,7 +103,6 @@ def _get_payload(json_payload):
             yield key, value
 
 
-
 if not outside_flask:
     log.configure(
         patcher=lambda record: record["extra"].update(
@@ -109,7 +113,9 @@ if not outside_flask:
             content_type=request.headers.get("Content-Type"),
             request_url=request.url,
             request_method=request.method,
-            json_payload=dict(_get_payload(request.get_json())) if request.get_json() else None,
+            json_payload=dict(_get_payload(request.get_json()))
+            if request.get_json()
+            else None,
             multiform_payload=request.files if request.files else None,
         )
         if has_request_context()

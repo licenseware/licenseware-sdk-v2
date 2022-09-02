@@ -12,7 +12,7 @@ from licenseware.report_builder import ReportBuilder
 
 def create_report_resource(report: ReportBuilder):
     dirpath = os.path.join(sys.path[0], "app/resources/")
-    filename = report.preview_image_dark or report.report_id + '_dark.png'
+    filename = report.preview_image_dark or report.report_id + "_dark.png"
 
     resources_path = os.path.join(dirpath, filename)
 
@@ -24,35 +24,36 @@ def create_report_resource(report: ReportBuilder):
         @authorization_check
         def get(self):
             return send_from_directory(
-                directory=dirpath,
-                path=filename,
-                as_attachment=False
+                directory=dirpath, path=filename, as_attachment=False
             )
 
     return ReportRegister
 
 
-def get_report_image_preview_dark_namespace(ns: Namespace, reports: List[ReportBuilder]):
+def get_report_image_preview_dark_namespace(
+    ns: Namespace, reports: List[ReportBuilder]
+):
     for report in reports:
 
         RR = create_report_resource(report)
-        if RR is None: continue
+        if RR is None:
+            continue
 
         @ns.doc(
             description="Get report image preview dark image",
             responses={
                 200: "Returned image",
                 403: "Missing `Authorization` information",
-                500: "Could not return the image"
+                500: "Could not return the image",
             },
         )
         class TempReportResource(RR):
             ...
 
         ReportResource = type(
-            report.report_id.replace("_", "").capitalize() + 'previewImageDark',
+            report.report_id.replace("_", "").capitalize() + "previewImageDark",
             (TempReportResource,),
-            {}
+            {},
         )
 
         ns.add_resource(ReportResource, report.preview_image_dark_path)

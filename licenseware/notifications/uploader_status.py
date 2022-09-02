@@ -1,5 +1,7 @@
 import datetime
+
 import dateutil.parser as dateparser
+
 from licenseware import mongodata
 from licenseware.common.constants import envs, states
 from licenseware.common.serializers import WildSchema
@@ -40,7 +42,6 @@ def save_uploader_status(tenant_id: str, uploader_id: str, status: str, **overfl
 
 
 def get_uploader_status(tenant_id: str, uploader_id: str):
-
 
     if envs.DESKTOP_ENVIRONMENT and tenant_id is None:
         tenant_id = envs.DESKTOP_TENANT_ID

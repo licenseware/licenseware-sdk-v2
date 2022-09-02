@@ -1,4 +1,5 @@
 from marshmallow import Schema, fields, validate
+
 from licenseware.common.validators import validate_uuid4
 
 
@@ -9,4 +10,3 @@ class EventSchema(Schema):
     filepaths = fields.List(fields.Str, required=True)
     flask_request = fields.Dict(required=False, allow_none=True)
     validation_response = fields.Dict(required=False, allow_none=True)
-    

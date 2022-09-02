@@ -1,6 +1,6 @@
+from licenseware.common.constants import envs
 from licenseware.registry_service import register_upload_status
 from licenseware.utils.logger import log
-from licenseware.common.constants import envs
 
 from .uploader_status import save_uploader_status
 

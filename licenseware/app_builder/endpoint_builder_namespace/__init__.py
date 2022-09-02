@@ -7,12 +7,12 @@ No other modules need to be here, routes are created dynamically with `EndpointB
 """
 
 from flask_restx import Namespace
-from licenseware.decorators.auth_decorators import authorization_check
 
+from licenseware.decorators.auth_decorators import authorization_check
 
 endpoint_builder_namespace = Namespace(
     name="Endpoint Builder",
     description="Routes created with EndpointBuilder",
-    path='/custom_endpoint',
-    decorators=[authorization_check]
+    path="/custom_endpoint",
+    decorators=[authorization_check],
 )

@@ -216,17 +216,16 @@ All migrations will be handled automatically
 
 """
 
-from typing import List, Union
 from collections.abc import Iterable
+from typing import List, Union
 
 import sqlalchemy as sa
-from sqlalchemy.orm import mapper
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import scoped_session, sessionmaker
-from sqlalchemy.engine.cursor import CursorResult
-
 from marshmallow import Schema, fields
 from marshmallow.exceptions import ValidationError
+from sqlalchemy.engine.cursor import CursorResult
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import mapper, scoped_session, sessionmaker
+
 from licenseware.repository.interface import RepositoryInterface
 
 from .postgres_migrations import PostgresMigrations
@@ -240,12 +239,11 @@ MATOSA_MAPPER = {
     fields.Int: sa.Integer,
     fields.Float: sa.Float,
     fields.Boolean: sa.Boolean,
-    fields.Bool: sa.Boolean
+    fields.Bool: sa.Boolean,
 }
 
 
 class PostgresRepository(RepositoryInterface):
-
     def __init__(self, db_url: str):
         self.db_url = db_url
         self.engine = sa.create_engine(db_url)
@@ -255,14 +253,14 @@ class PostgresRepository(RepositoryInterface):
         self.registered_schemas = {}
 
     def create_all(self):
-        """ Create connection to db, create all tables and generate migration files """
+        """Create connection to db, create all tables and generate migration files"""
 
         self.Base.metadata.create_all()
         migrations = PostgresMigrations(self.db_url, target_metadata=self.Base.metadata)
         migrations.make_migrations()
 
     def register_schema(self, schema: Schema) -> str:
-        """ Register schema """
+        """Register schema"""
 
         table = self._get_table_from_schema(schema)
         self.registered_tables[schema.__name__] = table
@@ -290,7 +288,8 @@ class PostgresRepository(RepositoryInterface):
 
     def deserialize(self, schema_name: str, cursor_data: any):
 
-        if cursor_data is None: return [{}]
+        if cursor_data is None:
+            return [{}]
 
         schema = self.registered_schemas[schema_name]
 
@@ -300,7 +299,7 @@ class PostgresRepository(RepositoryInterface):
             data_dict = {}
 
             # Getting the id
-            data_dict['id'] = self._deserialize_value(d, field_name='id', idx=0)
+            data_dict["id"] = self._deserialize_value(d, field_name="id", idx=0)
 
             for idx, field_name in enumerate(schema().declared_fields.keys()):
                 data_dict[field_name] = self._deserialize_value(d, field_name, idx + 1)
@@ -309,17 +308,30 @@ class PostgresRepository(RepositoryInterface):
 
         return datali
 
-    def fetch(self, schema_name: str, id: str = None, first: bool = False, limit: int = None, skip: int = None,
-              **filters) -> List[dict]:
-        """ 
+    def fetch(
+        self,
+        schema_name: str,
+        id: str = None,
+        first: bool = False,
+        limit: int = None,
+        skip: int = None,
+        **filters,
+    ) -> List[dict]:
+        """
         TODO limit and skip
         """
 
-        first = first or ('id' in filters and len(filters) == 1)
+        first = first or ("id" in filters and len(filters) == 1)
 
         table = self.registered_tables[schema_name]
-        filters_string = ", ".join([f"table.{field} == filters['{field}']" for field in filters])
-        sql_query = sa.select(table).where(eval(filters_string)) if filters_string else sa.select(table)
+        filters_string = ", ".join(
+            [f"table.{field} == filters['{field}']" for field in filters]
+        )
+        sql_query = (
+            sa.select(table).where(eval(filters_string))
+            if filters_string
+            else sa.select(table)
+        )
 
         cursor = self.execute(sql_query)
 
@@ -329,15 +341,15 @@ class PostgresRepository(RepositoryInterface):
         return deserialized_data[0] if first else deserialized_data
 
     def fetch_one(self, schema_name: str, **filters) -> dict:
-        """ Get first item match """
+        """Get first item match"""
         return self.fetch(schema_name, first=True, **filters)
 
     def fetch_by_id(self, schema_name: str, id: str) -> dict:
-        """ Get first item match by id """
+        """Get first item match by id"""
         return self.fetch(schema_name, first=True, id=id)
 
     def fetch_many(self, schema_name: str, **filters) -> List[dict]:
-        """ Get all items that matched  """
+        """Get all items that matched"""
         return self.fetch(schema_name, **filters)
 
         # Inserting new data
@@ -346,7 +358,9 @@ class PostgresRepository(RepositoryInterface):
         try:
             return MATOSA_MAPPER[type(ma_field)]
         except:
-            raise ValueError("Only strings, integers, floats and booleans are suported for the moment")
+            raise ValueError(
+                "Only strings, integers, floats and booleans are suported for the moment"
+            )
 
     def _get_table_name_from_schema(self, schema: Schema):
 
@@ -354,8 +368,8 @@ class PostgresRepository(RepositoryInterface):
             raise Exception(f"Schema '{schema.__name__}' already registered")
 
         table_name = None
-        if hasattr(schema, 'Meta'):
-            if hasattr(schema.Meta, '__tablename__'):
+        if hasattr(schema, "Meta"):
+            if hasattr(schema.Meta, "__tablename__"):
                 table_name = schema.Meta.__tablename__
 
         if not table_name:
@@ -372,7 +386,7 @@ class PostgresRepository(RepositoryInterface):
         return sa_cols
 
     def _get_table_from_schema(self, schema: Schema):
-        """ Convert a marshmallow schema to a sqlalchemy model """
+        """Convert a marshmallow schema to a sqlalchemy model"""
 
         table_name = self._get_table_name_from_schema(schema)
         columns = self._get_columns(schema)
@@ -380,12 +394,12 @@ class PostgresRepository(RepositoryInterface):
         Table = sa.Table(
             table_name,
             self.Base.metadata,
-            sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
+            sa.Column("id", sa.Integer, primary_key=True, autoincrement=True),
             *columns,
             extend_existing=True,
         )
 
-        Model = type(table_name, (object,), {'__tablename__': table_name})
+        Model = type(table_name, (object,), {"__tablename__": table_name})
 
         mapper(Model, Table)
 
@@ -393,60 +407,68 @@ class PostgresRepository(RepositoryInterface):
 
     def has_table(self, table_name: str):
 
-        has_table = (
-            sa.inspect(self.engine).dialect
-                .has_table(self.engine.connect(), table_name)
+        has_table = sa.inspect(self.engine).dialect.has_table(
+            self.engine.connect(), table_name
         )
 
         return has_table
 
     def execute(self, sql_query: str, commit: bool = False) -> CursorResult:
         """
-            Execute SQLAlchemy on db queries like:
-            sql_query = select(UsersTable).where(UsersTable.name == 'John')
-            
-            Returns a cursor from which you can get results.
-            
+        Execute SQLAlchemy on db queries like:
+        sql_query = select(UsersTable).where(UsersTable.name == 'John')
+
+        Returns a cursor from which you can get results.
+
         """
 
-        cursor: CursorResult = self.session \
-            .execute(sa.text(sql_query) if isinstance(sql_query, str) else sql_query)
+        cursor: CursorResult = self.session.execute(
+            sa.text(sql_query) if isinstance(sql_query, str) else sql_query
+        )
 
-        if commit: self.session.commit()
+        if commit:
+            self.session.commit()
 
         return cursor
 
     def insert(self, schema: Schema, data: Union[dict, List[dict]]) -> CursorResult:
-        """ Insert dict or list of dict to db """
+        """Insert dict or list of dict to db"""
 
         assert isinstance(data, dict) or isinstance(data, list)
-        if isinstance(data, dict): data = [data]
+        if isinstance(data, dict):
+            data = [data]
 
         if isinstance(schema, tuple):
             table = schema[0]
             schema[1](many=True).load(data)  # marshmallow validate
-        elif hasattr(schema, '__tablename__'):
+        elif hasattr(schema, "__tablename__"):
             table = schema  # it's an SQLAlchemy Model
         else:
             schema(many=True).load(data)  # marshmallow validate
             table = self.registered_tables[schema.__name__]
 
-        sql_query = sa.insert(table).values(data).returning(sa.text('id'))
+        sql_query = sa.insert(table).values(data).returning(sa.text("id"))
         cursor = self.execute(sql_query, commit=True)
 
         return cursor.all()
 
-    def insert_one(self, schema: Schema, data: dict = None, **data_kwargs) -> CursorResult:
-        """ Insert dict to db """
+    def insert_one(
+        self, schema: Schema, data: dict = None, **data_kwargs
+    ) -> CursorResult:
+        """Insert dict to db"""
         return self.insert(schema, data or data_kwargs)
 
-    def insert_with_id(self, schema: Schema, id: Union[str, int], data: dict = None, **data_kwargs) -> CursorResult:
-        """ Insert dict with a specific 'id' """
+    def insert_with_id(
+        self, schema: Schema, id: Union[str, int], data: dict = None, **data_kwargs
+    ) -> CursorResult:
+        """Insert dict with a specific 'id'"""
         raise NotImplementedError
 
-    def insert_many(self, schema: Schema, data: List[dict], validate_percentage: float = 1.0) -> CursorResult:
+    def insert_many(
+        self, schema: Schema, data: List[dict], validate_percentage: float = 1.0
+    ) -> CursorResult:
         """
-            TODO `validate_percentage`: what percentage of the list of data provided should be validated (0.5 is 50%)
+        TODO `validate_percentage`: what percentage of the list of data provided should be validated (0.5 is 50%)
         """
         return self.insert(schema, data)
 
@@ -457,8 +479,14 @@ class PostgresRepository(RepositoryInterface):
         table = self.registered_tables[schema_name]
 
         if not sql_query:
-            filters_string = ", ".join([f"table.{field} == filters['{field}']" for field in filters])
-            sql_query = sa.select(table).where(eval(filters_string)) if filters_string else sa.select(table)
+            filters_string = ", ".join(
+                [f"table.{field} == filters['{field}']" for field in filters]
+            )
+            sql_query = (
+                sa.select(table).where(eval(filters_string))
+                if filters_string
+                else sa.select(table)
+            )
 
         cursor = self.execute(sql_query)
         counted_items = len(cursor.all())
@@ -474,7 +502,9 @@ class PostgresRepository(RepositoryInterface):
             # marshmallow validate
             schema = self.registered_schemas[schema_name]
 
-            schema(many=True).load(data) if isinstance(data, list) else schema().load(data)
+            schema(many=True).load(data) if isinstance(data, list) else schema().load(
+                data
+            )
 
         except ValidationError as Errors:
 
@@ -484,14 +514,25 @@ class PostgresRepository(RepositoryInterface):
 
             if isinstance(data, list):
                 for d in data:
-                    field_found = set.intersection(set(errors_dict.keys()), set(d.keys()))
-                    if field_found: raise Errors
+                    field_found = set.intersection(
+                        set(errors_dict.keys()), set(d.keys())
+                    )
+                    if field_found:
+                        raise Errors
             else:
-                field_found = set.intersection(set(errors_dict.keys()), set(data.keys()))
-                if field_found: raise Errors
+                field_found = set.intersection(
+                    set(errors_dict.keys()), set(data.keys())
+                )
+                if field_found:
+                    raise Errors
 
-    def update(self, schema_name: str, filters: dict, data: Union[dict, List[dict]],
-               first: bool = False) -> CursorResult:
+    def update(
+        self,
+        schema_name: str,
+        filters: dict,
+        data: Union[dict, List[dict]],
+        first: bool = False,
+    ) -> CursorResult:
         """ """
 
         self._validate_on_update(schema_name, data)
@@ -503,7 +544,9 @@ class PostgresRepository(RepositoryInterface):
             if counted_items != 1:
                 raise ValueError("Can't update one item with given filters")
 
-        filters_string = ", ".join([f"table.{field} == filters['{field}']" for field in filters])
+        filters_string = ", ".join(
+            [f"table.{field} == filters['{field}']" for field in filters]
+        )
         sql_query = sa.update(table).where(eval(filters_string)).values(**data)
 
         cursor = self.execute(sql_query, commit=True)
@@ -511,25 +554,34 @@ class PostgresRepository(RepositoryInterface):
         return cursor
 
     def update_one(self, schema_name: str, filters: dict, data: dict) -> CursorResult:
-        """ Update one item """
+        """Update one item"""
         return self.update(schema_name, filters=filters, data=data, first=True)
 
-    def update_on_id(self, schema_name: str, id: Union[str, int], data: dict) -> CursorResult:
-        """ Update one item using the id """
-        return self.update(schema_name, filters={'id': id}, data=data, first=True)
+    def update_on_id(
+        self, schema_name: str, id: Union[str, int], data: dict
+    ) -> CursorResult:
+        """Update one item using the id"""
+        return self.update(schema_name, filters={"id": id}, data=data, first=True)
 
-    def update_many(self, schema_name: str, filters: dict, data: List[dict],
-                    validate_percentage: float = 1.0) -> CursorResult:
+    def update_many(
+        self,
+        schema_name: str,
+        filters: dict,
+        data: List[dict],
+        validate_percentage: float = 1.0,
+    ) -> CursorResult:
         """
-            Update many
-            TODO `validate_percentage`: what percentage of the list of data provided should be validated (0.5 is 50% of items in list)
+        Update many
+        TODO `validate_percentage`: what percentage of the list of data provided should be validated (0.5 is 50% of items in list)
         """
         return self.update(schema_name, filters=filters, data=data)
 
     # Deleting existing data
 
-    def delete(self, schema_name: str, filters: dict, first: bool = False) -> CursorResult:
-        """ Delete items """
+    def delete(
+        self, schema_name: str, filters: dict, first: bool = False
+    ) -> CursorResult:
+        """Delete items"""
 
         table = self.registered_tables[schema_name]
 
@@ -538,21 +590,27 @@ class PostgresRepository(RepositoryInterface):
             if counted_items != 1:
                 raise ValueError("Can't delete one item with given filters")
 
-        filters_string = ", ".join([f"table.{field} == filters['{field}']" for field in filters])
-        sql_query = sa.delete(table).where(eval(filters_string)) if filters_string else sa.delete(table)
+        filters_string = ", ".join(
+            [f"table.{field} == filters['{field}']" for field in filters]
+        )
+        sql_query = (
+            sa.delete(table).where(eval(filters_string))
+            if filters_string
+            else sa.delete(table)
+        )
 
         cursor = self.execute(sql_query, commit=True)
 
         return cursor
 
     def delete_one(self, schema_name: str, **filters) -> CursorResult:
-        """ Delete one item """
+        """Delete one item"""
         return self.delete(schema_name, filters, first=True)
 
     def delete_by_id(self, schema_name: str, id: str) -> CursorResult:
-        """ Delete one item using the id provided """
-        return self.delete(schema_name, filters={'id': id}, first=True)
+        """Delete one item using the id provided"""
+        return self.delete(schema_name, filters={"id": id}, first=True)
 
     def delete_many(self, schema_name: str, **filters) -> CursorResult:
-        """ Delete items that match filters """
+        """Delete items that match filters"""
         return self.delete(schema_name, filters)

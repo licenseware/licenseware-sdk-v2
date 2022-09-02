@@ -1,12 +1,10 @@
 from marshmallow import Schema, fields
 
 
-
 class ShowDataSchema(Schema):
     name = fields.String()
     key = fields.String()
     data = fields.List(fields.String)
-
 
 
 class IntegrationDetailsSchema(Schema):

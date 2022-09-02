@@ -1,14 +1,14 @@
+from typing import List
+
 from flask import request
 from flask_restx import Namespace, Resource
-from licenseware.decorators.auth_decorators import authorization_check
+
 from licenseware.decorators import failsafe
+from licenseware.decorators.auth_decorators import authorization_check
 
 # from licenseware.tenants.processing_status import get_uploader_status #! OUTDATED
 from licenseware.notifications.uploader_status import get_uploader_status
-
-
 from licenseware.uploader_builder import UploaderBuilder
-from typing import List
 
 
 def create_uploader_resource(uploader: UploaderBuilder):
