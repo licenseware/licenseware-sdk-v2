@@ -191,7 +191,8 @@ class Dramatiq:
             port=self.port,
             db=self.db,
             password=self.password,
-            middleware=middleware
+            middleware=middleware,
+            dead_message_ttl=envs.DEAD_MESSAGE_TTL,
         )
             
         for actor in self.actors:

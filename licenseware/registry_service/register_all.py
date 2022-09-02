@@ -19,7 +19,8 @@ def register_all(payload:dict):
 
     if envs.DESKTOP_ENVIRONMENT: return
 
-    log.info("Sending payload to registry-service") 
+    log.info("Sending payload to registry-service")
+    log.debug(payload)
     
     
     registration = requests.post(

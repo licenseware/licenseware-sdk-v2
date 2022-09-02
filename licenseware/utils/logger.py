@@ -124,7 +124,7 @@ if not outside_flask:
 #     format=_log_format
 # )
 
-log.add(sys.stderr, format=_log_format)
+log.add(sys.stderr, format=_log_format, level=_log_level)
 
 # Pretty logs for dict data
 log_dict = lambda dict_: log.info(json.dumps(dict_, indent=4, sort_keys=True))

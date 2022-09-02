@@ -111,6 +111,8 @@ class envs:
 
     REDIS_RESULT_CACHE_DB: int = int(os.getenv("REDIS_RESULT_CACHE_DB", "15"))
 
+    DEAD_MESSAGE_TTL: int = int(os.getenv("DEAD_MESSAGE_TTL", "3600"))
+
     # Environment variables added later by the app
     # envs.method_name() - calls the variable dynamically
     # you can access class vars with cls.attr_name ex: cls.MONGO_COLLECTION_DATA_NAME
