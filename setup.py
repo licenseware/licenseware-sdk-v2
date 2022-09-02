@@ -1,6 +1,8 @@
-import os, re
-from setuptools import setup, find_packages
+import os
+import re
 from functools import reduce
+
+from setuptools import find_packages, setup
 
 # https://packaging.python.org/guides/distributing-packages-using-setuptools/?highlight=setup.py#setup-py
 # Distribute py wheels
@@ -15,19 +17,20 @@ with open("README.md", "r") as f:
 
 with open("requirements.txt", "r") as f:
     REQUIREMENTS = f.readlines()
-    
-    
-    
-VERSION = '2.0.3'
+
+
+VERSION = "2.0.3"
 
 
 if os.path.exists("./CHANGELOG.md"):
-    
+
     with open("CHANGELOG.md", "r") as f:
         changelog = f.read()
 
-    if '# Changelog' in changelog:    
-        version_match = re.match(f'#\s+Changelog\n+#+\s*\[((\d+\.\d+\.\d+))\]\(', changelog)
+    if "# Changelog" in changelog:
+        version_match = re.match(
+            f"#\s+Changelog\n+#+\s*\[((\d+\.\d+\.\d+))\]\(", changelog
+        )
         if version_match:
             VERSION = version_match.group(1)
 
@@ -50,19 +53,16 @@ setup(
     url="https://licenseware.io/",
     author="Licenseware",
     author_email="contact@licenseware.io",
-    license='',
+    license="",
     long_description=long_description,
     long_description_content_type="text/markdown",
     install_requires=REQUIREMENTS + EXTRAS_TMP_HACK,
-    packages=find_packages(
-        where=".",
-        exclude=["tests"]
-    ),
+    packages=find_packages(where=".", exclude=["tests"]),
     include_package_data=True,
     package_data={"": ["*"]},
     entry_points={
-        'console_scripts': [
-            'licenseware=licenseware.cli:cli_entrypoint',
+        "console_scripts": [
+            "licenseware=licenseware.cli:cli_entrypoint",
         ],
     },
     # extras_require=EXTRAS,

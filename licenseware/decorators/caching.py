@@ -5,7 +5,6 @@ from typing import Callable
 from licenseware.dependencies.redis_cache import RedisCache
 from licenseware.utils.common import get_http_request_tenant_id
 
-
 caching_database = RedisCache()
 TEN_MINUTES = 600
 

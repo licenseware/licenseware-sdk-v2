@@ -7,11 +7,15 @@ When this endpoint is called info about Tenant `App` activation and utilization 
 
 from flask import request
 from flask_restx import Api, Resource
+
+from licenseware.decorators import failsafe
 from licenseware.decorators.auth_decorators import machine_check
 from licenseware.decorators.caching import clear_caches_for_tenant_id
-from licenseware.decorators import failsafe
-from licenseware.tenants import get_activated_tenants, get_tenants_with_data, get_tenants_with_public_reports
-from licenseware.utils.logger import log
+from licenseware.tenants import (
+    get_activated_tenants,
+    get_tenants_with_data,
+    get_tenants_with_public_reports,
+)
 from licenseware.utils.common import trigger_broker_funcs
 
 
@@ -42,7 +46,9 @@ def add_tenant_registration_route(api: Api, appvars: dict):
 
             tenants_with_data = get_tenants_with_data(tenant_id)
             activated_tenants = get_activated_tenants(tenant_id)
-            tenants_with_public_reports = get_tenants_with_public_reports(tenant_id=tenant_id)
+            tenants_with_public_reports = get_tenants_with_public_reports(
+                tenant_id=tenant_id
+            )
             clear_caches_for_tenant_id(tenant_id)
 
             app_activated = bool(activated_tenants)

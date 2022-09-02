@@ -10,12 +10,12 @@ etc
 
 from licenseware.utils.logger import log
 
-from .flags import flags
-from .states import states
-from .icons import icons
 from .filters import filters
+from .flags import flags
+from .icons import icons
+from .states import states
 
 try:
     from .envs import envs
-except Exception as err: 
+except Exception as err:
     log.warning(err)

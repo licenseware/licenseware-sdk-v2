@@ -1,7 +1,8 @@
 import datetime
+
 from licenseware import mongodata as m
-from licenseware.utils.logger import log
 from licenseware.common.constants import envs, states
+from licenseware.utils.logger import log
 
 #! OUTDATED
 

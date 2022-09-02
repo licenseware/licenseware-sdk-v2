@@ -1,4 +1,5 @@
 from marshmallow import Schema, fields
+
 from licenseware.common.validators import validate_uuid4
 
 
@@ -37,7 +38,9 @@ class HistorySchema(Schema):
     filename_validation = fields.List(fields.Nested(FileNameValidationSchema))
     file_content_validation = fields.List(fields.Nested(FileContentValidationSchema))
     files_uploaded = fields.List(fields.String)
-    processing_details = fields.List(fields.Nested(ProcessingDetailsSchema), allow_none=True)
+    processing_details = fields.List(
+        fields.Nested(ProcessingDetailsSchema), allow_none=True
+    )
     updated_at = fields.String()
     filename_validation_updated_at = fields.String()
     file_content_validation_updated_at = fields.String()

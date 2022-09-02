@@ -1,9 +1,11 @@
+import importlib.resources as pkg_resources
+import json
 import os
 import re
-import json
+
 import requests
 from jinja2 import Template
-import importlib.resources as pkg_resources
+
 from . import templates, utils
 
 allowed_requests = ["GET", "PUT", "POST", "DELETE", "OPTIONS"]
@@ -39,10 +41,14 @@ class TestCreator:
             return requests.get(self.swagger_url, timeout=5).json()
         except:
             try:
-                return requests.get(self.swagger_url.replace('localhost', 'localhost:5000'), timeout=5).json()
+                return requests.get(
+                    self.swagger_url.replace("localhost", "localhost:5000"), timeout=5
+                ).json()
             except:
                 try:
-                    return requests.get(self.swagger_url.replace('-service', ''), timeout=5).json()
+                    return requests.get(
+                        self.swagger_url.replace("-service", ""), timeout=5
+                    ).json()
                 except:
                     raise Exception(f"URL: {self.swagger_url} not responding")
 
@@ -76,9 +82,11 @@ class TestCreator:
         payload = {}
 
         match = re.search(r"#/definitions/(.*?)Schema", tag)
-        if match: tag_no_schema = match.group(1)
-        else: tag_no_schema = None
-        
+        if match:
+            tag_no_schema = match.group(1)
+        else:
+            tag_no_schema = None
+
         tag_raw = tag.replace("#/definitions/", "")
 
         if "definitions" not in self.swagger_docs:
@@ -215,9 +223,7 @@ class TestCreator:
             request_data = self.get_request_data(route)
 
             # fpath = os.path.join(self.test_path, file)
-            raw_contents = pkg_resources.read_text(
-                templates, "test_template.jinja"
-            )
+            raw_contents = pkg_resources.read_text(templates, "test_template.jinja")
             tmp = Template(raw_contents, trim_blocks=True, lstrip_blocks=True)
             file_contents = tmp.render(
                 test_file_name=file,
@@ -244,12 +250,14 @@ class TestCreator:
             utils.create_init_file(init_file_path, self.email, self.password)
 
         for filename, contents in file_contents_dict.items():
-            filename = "_" + filename 
+            filename = "_" + filename
             if self.ignore_files is not None:
                 if filename in self.ignore_files:
                     continue
             test_path = os.path.join(self.test_path, filename)
-            test_exists = os.path.isfile(os.path.join(self.test_path, filename[1:])) or os.path.isfile(test_path)
+            test_exists = os.path.isfile(
+                os.path.join(self.test_path, filename[1:])
+            ) or os.path.isfile(test_path)
 
             if self.overwrite_files:
                 utils.create_test_file(test_path, contents)

@@ -32,14 +32,16 @@ This way the `default_tenant` will be used for the request
 """
 
 import requests
-from licenseware.utils.logger import log
+
 from licenseware.common.constants import envs
 from licenseware.decorators.auth_decorators import authenticated_machine
+from licenseware.utils.logger import log
 
 
 class AuthHelper:
-
-    def __init__(self, email: str, password: str = "secret", default_tenant: str = None):
+    def __init__(
+        self, email: str, password: str = "secret", default_tenant: str = None
+    ):
         self.email = email
         self.password = password
         self.default_tenant = default_tenant
@@ -48,17 +50,17 @@ class AuthHelper:
     @authenticated_machine
     def get_auth_headers(self):
         """
-            Get required auth headers needed to make a request as a user
+        Get required auth headers needed to make a request as a user
         """
 
         login_response = self.login_user(self.email, self.password)
 
-        if login_response['status'] == 'success':
-            login_response.pop('status')
-            login_response.pop('message')
+        if login_response["status"] == "success":
+            login_response.pop("status")
+            login_response.pop("message")
             log.success(login_response)
             if self.default_tenant is not None:
-                login_response['TenantId'] = self.default_tenant
+                login_response["TenantId"] = self.default_tenant
             return login_response
         else:
             self.create_user(self.email, self.password)
@@ -76,9 +78,9 @@ class AuthHelper:
         log.debug(f"Logging '{self.email}' with invite token: '{invite_token}'")
 
         response = requests.post(
-            envs.AUTH_SERVICE_URL + '/login',
+            envs.AUTH_SERVICE_URL + "/login",
             json={"email": self.email, "password": self.password},
-            params={'invite_token': invite_token}
+            params={"invite_token": invite_token},
         )
 
         log.warning(f"Response from logging with invite token: {response.content}")
@@ -87,21 +89,20 @@ class AuthHelper:
 
     def get_invite_token(self, tenant_id: str):
 
-        shared_tenants = self.get_auth_tables('shared_tenants')
+        shared_tenants = self.get_auth_tables("shared_tenants")
 
         for st in shared_tenants:
-            if st['invited_email'] == self.email and st['tenant_id'] == tenant_id:
+            if st["invited_email"] == self.email and st["tenant_id"] == tenant_id:
                 log.success(f"Found invite token '{st['invite_token']}'")
-                return st['invite_token']
+                return st["invite_token"]
 
     def get_auth_tables(self, table: str = None):
         """
-            Tables: users, tenants, shared_tenants
+        Tables: users, tenants, shared_tenants
         """
 
         response = requests.get(
-            envs.AUTH_SERVICE_URL + '/users/tables',
-            headers=self.auth_headers
+            envs.AUTH_SERVICE_URL + "/users/tables", headers=self.auth_headers
         )
 
         log.debug(f"User's tables: {response.json()}")
@@ -115,8 +116,8 @@ class AuthHelper:
     def login_user(email: str, password: str):
 
         response = requests.post(
-            envs.AUTH_SERVICE_URL + '/login',
-            json={"email": email, "password": password}
+            envs.AUTH_SERVICE_URL + "/login",
+            json={"email": email, "password": password},
         )
 
         # log.debug(response.content)
@@ -125,12 +126,12 @@ class AuthHelper:
 
     @staticmethod
     def create_user(
-            email: str,
-            password: str,
-            first_name: str = None,
-            last_name: str = None,
-            company_name: str = None,
-            job_title: str = None
+        email: str,
+        password: str,
+        first_name: str = None,
+        last_name: str = None,
+        company_name: str = None,
+        job_title: str = None,
     ):
 
         payload = {
@@ -138,13 +139,12 @@ class AuthHelper:
             "password": password,
             "first_name": first_name or email.split("@")[0],
             "last_name": last_name or "",
-            "company_name": company_name or email.split("@")[1].split('.')[0],
-            "job_title": job_title or ""
+            "company_name": company_name or email.split("@")[1].split(".")[0],
+            "job_title": job_title or "",
         }
 
         response = requests.post(
-            envs.AUTH_SERVICE_URL + '/users/register',
-            json=payload
+            envs.AUTH_SERVICE_URL + "/users/register", json=payload
         )
 
         # log.debug(response)

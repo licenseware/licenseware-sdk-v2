@@ -1,170 +1,113 @@
 import unittest
 
-from licenseware.utils.logger import log
 from marshmallow import Schema, fields
 
+from licenseware import mongodata as m
 from licenseware.common.constants import envs
 from licenseware.mongodata.mongo_connection import db
-from licenseware import mongodata as m
-
 
 # python3 -m unittest tests/test_mongodata.py
 
-collection_name = 'TEST' + envs.MONGO_COLLECTION_DATA_NAME
+collection_name = "TEST" + envs.MONGO_COLLECTION_DATA_NAME
 
 
 class TestMongoData(unittest.TestCase):
-    
     def test_simple_insert_one(self):
-        
-        doc = {
-            'name': 'John',
-            'occupation': 'dev'
-        }
-        
+
+        doc = {"name": "John", "occupation": "dev"}
+
         data_collection = db[envs.MONGO_COLLECTION_DATA_NAME]
-        
+
         response = data_collection.insert_one(doc)
-        
-        query = {'_id': response.inserted_id}
-        
+
+        query = {"_id": response.inserted_id}
+
         response = data_collection.find_one(query)
         data = dict(response)
-        
-        self.assertEqual(data['name'], 'John')
-        self.assertEqual(data['occupation'], 'dev')
-        
+
+        self.assertEqual(data["name"], "John")
+        self.assertEqual(data["occupation"], "dev")
+
         response = data_collection.delete_one(query)
-        
+
         self.assertEqual(response.deleted_count, 1)
-        
-        
-        
+
     def test_mongodata_insert(self):
-        
         class MySchema(Schema):
             name = fields.Str(required=True)
             occupation = fields.Str(required=True)
-            
-        doc = {
-            'name': 'John',
-            'occupation': 'dev'
-        }
-        
-        response = m.insert(
-            schema=MySchema, 
-            data=doc,
-            collection=collection_name
-        )
-        
+
+        doc = {"name": "John", "occupation": "dev"}
+
+        response = m.insert(schema=MySchema, data=doc, collection=collection_name)
+
         self.assertEqual(len(response), 1)
-        
-        query = {'_id': response[0]}
-        
-        response = m.fetch(
-            match=query,
-            collection=collection_name
-        )
-        
+
+        query = {"_id": response[0]}
+
+        response = m.fetch(match=query, collection=collection_name)
+
         # log.debug(response)
-        
+
         self.assertEqual(len(response), 1)
-        
+
         data = response[0]
-        
-        self.assertEqual(data['name'], 'John')
-        self.assertEqual(data['occupation'], 'dev')
-        
-        
+
+        self.assertEqual(data["name"], "John")
+        self.assertEqual(data["occupation"], "dev")
+
     def test_insert_many(self):
-        
         class MySchema(Schema):
             name = fields.Str(required=True)
             occupation = fields.Str(required=True)
-            
+
         doclist = [
-            {
-                'name': 'John',
-                'occupation': 'dev'
-            },
-            {
-                'name': 'Steve',
-                'occupation': 'dev'
-            },
-            {
-                'name': 'Bob',
-                'occupation': 'dev'
-            },
-            {
-                'name': 'Jim',
-                'occupation': 'dev'
-            },
+            {"name": "John", "occupation": "dev"},
+            {"name": "Steve", "occupation": "dev"},
+            {"name": "Bob", "occupation": "dev"},
+            {"name": "Jim", "occupation": "dev"},
         ]
-        
+
         inserted_id_list = m.insert(
-            schema=MySchema, 
-            data=doclist,
-            collection=collection_name
+            schema=MySchema, data=doclist, collection=collection_name
         )
-        
+
         self.assertEqual(len(inserted_id_list), len(doclist))
-        
+
         for inserted_id in inserted_id_list:
-            
-            response = m.fetch(
-                match={'_id': inserted_id},
-                collection=collection_name
-            )
-            
+
+            response = m.fetch(match={"_id": inserted_id}, collection=collection_name)
+
             name_added = False
             for doc in doclist:
-                if response[0]['name'] == doc['name']:
+                if response[0]["name"] == doc["name"]:
                     name_added = True
-                    
+
             self.assertTrue(name_added)
-                
-            
+
     def test_update(self):
-    
         class MySchema(Schema):
             name = fields.Str(required=False)
             occupation = fields.Str(required=True)
-        
-        doc = {
-            'name': 'John',
-            'occupation': 'copywriter'
-        }
-        
-        response = m.insert(
-            schema=MySchema, 
-            data=doc,
-            collection=collection_name
-        )
-        
+
+        doc = {"name": "John", "occupation": "copywriter"}
+
+        response = m.insert(schema=MySchema, data=doc, collection=collection_name)
+
         self.assertEqual(len(response), 1)
-        
+
         updated_docs = m.update(
             schema=MySchema,
-            match={'occupation': 'copywriter'},
-            new_data={'occupation': 'developer'},
-            collection=collection_name
+            match={"occupation": "copywriter"},
+            new_data={"occupation": "developer"},
+            collection=collection_name,
         )
-        
+
         self.assertEqual(updated_docs, 1)
-        
-        
-        response = m.fetch(
-            match={},
-            collection=collection_name
-        )
-        
+
+        response = m.fetch(match={}, collection=collection_name)
+
         self.assertTrue(len(response) > 1)
-
-
-
-
-
-
 
 
 """

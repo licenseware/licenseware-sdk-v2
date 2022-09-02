@@ -47,16 +47,13 @@ No more duplicate schemas! :)
 """
 
 
-import marshmallow as ma
-import flask_restx as restx
-from flask_restx import Api
 from typing import Callable, Union
 
+import flask_restx as restx
+import marshmallow as ma
+from flask_restx import Api
 
-__all__ = [
-    "restx_fields",
-    "marshmallow_to_restx_model"
-]
+__all__ = ["restx_fields", "marshmallow_to_restx_model"]
 
 
 # Flask-RestX replacements for marshmallow fields
@@ -84,24 +81,24 @@ restx_fields_mapper = {
     "IPInterface": "String",
     "IPv4Interface": "String",
     "IPv6Interface": "String",
-    "Constant": "String"
+    "Constant": "String",
 }
 
 
 def restx_fields(
-        description: str = None,
-        enum: str = None,
-        discriminator: str = None,
-        min_length: int = None,
-        max_length: int = None,
-        pattern: str = None,
-        attribute: str = None,
-        default: Union[int, float, str, bool, dict, list] = None,
-        title: str = None,
-        required: bool = True,
-        readonly: bool = False,
-        example: str = None,
-        mask: dict = None
+    description: str = None,
+    enum: str = None,
+    discriminator: str = None,
+    min_length: int = None,
+    max_length: int = None,
+    pattern: str = None,
+    attribute: str = None,
+    default: Union[int, float, str, bool, dict, list] = None,
+    title: str = None,
+    required: bool = True,
+    readonly: bool = False,
+    example: str = None,
+    mask: dict = None,
 ):
     """
     To be used in marshmallow field `metadata` if there are conflicting keys.
@@ -127,21 +124,23 @@ def restx_fields(
     ```
 
     """
-    return {'restx_params': {
-        'description': description,
-        'enum': enum,
-        'discriminator': discriminator,
-        'min_length': min_length,
-        'max_length': max_length,
-        'pattern': pattern,
-        'attribute': attribute,
-        'default': default,
-        'title': title,
-        'required': required,
-        'readonly': readonly,
-        'example': example,
-        'mask': mask
-    }}
+    return {
+        "restx_params": {
+            "description": description,
+            "enum": enum,
+            "discriminator": discriminator,
+            "min_length": min_length,
+            "max_length": max_length,
+            "pattern": pattern,
+            "attribute": attribute,
+            "default": default,
+            "title": title,
+            "required": required,
+            "readonly": readonly,
+            "example": example,
+            "mask": mask,
+        }
+    }
 
 
 def get_marshmallow_field_type(ma_field: Callable) -> Union[str, None]:
@@ -164,9 +163,9 @@ def get_restx_params(ma_params: dict):
     :param ma_params: vars from marshmallow field
     :return: flask restx field kwargs
     """
-    restx_params = ma_params['metadata'].get('restx_params') or ma_params['metadata']
+    restx_params = ma_params["metadata"].get("restx_params") or ma_params["metadata"]
     return {
-        'required': ma_params['required'],
+        "required": ma_params["required"],
         **restx_params,
     }
 
@@ -181,7 +180,7 @@ def get_field_data(ma_field):
         "params": get_restx_params(vars(ma_field)),
         "type": get_marshmallow_field_type(ma_field),
         "nested": None,
-        "raw": ma_field
+        "raw": ma_field,
     }
 
 
@@ -230,38 +229,41 @@ def get_marshmallow_metadata(schema: Callable):
     # Added recursion for nested fields
     for field_name, field_data in marshmallow_metadata[schema.__name__].items():
 
-        if field_data['nested'] is None:
+        if field_data["nested"] is None:
 
-            if isinstance(field_data['raw'], ma.fields.Nested):
-                marshmallow_metadata[schema.__name__][field_name]['nested'] = get_marshmallow_metadata(
-                    field_data['raw'].nested)
+            if isinstance(field_data["raw"], ma.fields.Nested):
+                marshmallow_metadata[schema.__name__][field_name][
+                    "nested"
+                ] = get_marshmallow_metadata(field_data["raw"].nested)
 
-            if isinstance(field_data['raw'], ma.fields.List):
-                if hasattr(field_data['raw'].inner, 'nested'):
-                    marshmallow_metadata[schema.__name__][field_name]['nested'] = get_marshmallow_metadata(
-                        field_data['raw'].inner.nested)
+            if isinstance(field_data["raw"], ma.fields.List):
+                if hasattr(field_data["raw"].inner, "nested"):
+                    marshmallow_metadata[schema.__name__][field_name][
+                        "nested"
+                    ] = get_marshmallow_metadata(field_data["raw"].inner.nested)
                 else:
                     # ex: ma.fields.List(ma.fields.String)
-                    marshmallow_metadata[schema.__name__][field_name]['inner'] = get_field_data(field_data['raw'].inner)
+                    marshmallow_metadata[schema.__name__][field_name][
+                        "inner"
+                    ] = get_field_data(field_data["raw"].inner)
 
     return marshmallow_metadata
 
 
 def get_restx_field(api: Api, ma_field_meta: dict, *, nested: bool = False):
     if nested:
-        return restx.fields.Nested(
-            api.model,
-            **ma_field_meta['params']
-        )
+        return restx.fields.Nested(api.model, **ma_field_meta["params"])
 
-    if ma_field_meta['type'] == "List" and "inner" in ma_field_meta:
+    if ma_field_meta["type"] == "List" and "inner" in ma_field_meta:
         return restx.fields.List(
-            getattr(restx.fields, ma_field_meta['inner']['type'])(**ma_field_meta['inner']['params']),
-            **ma_field_meta['params']
+            getattr(restx.fields, ma_field_meta["inner"]["type"])(
+                **ma_field_meta["inner"]["params"]
+            ),
+            **ma_field_meta["params"]
         )
 
-    restx_field = getattr(restx.fields, ma_field_meta['type'])
-    restx_field_instance = restx_field(api.model, **ma_field_meta['params'])
+    restx_field = getattr(restx.fields, ma_field_meta["type"])
+    restx_field_instance = restx_field(api.model, **ma_field_meta["params"])
     restx_field_instance.default = None
     return restx_field_instance
 
@@ -273,7 +275,7 @@ def ma_metadata_to_restx_model(api: Api, ma_metadata: dict):
 
         for field_name, ma_field_meta in mameta.items():
 
-            if ma_field_meta['nested'] is None:
+            if ma_field_meta["nested"] is None:
                 restx_model[field_name] = get_restx_field(api, ma_field_meta)
             else:
                 restx_model[field_name] = ma_metadata[schema_name][field_name]
@@ -283,23 +285,34 @@ def ma_metadata_to_restx_model(api: Api, ma_metadata: dict):
 
         if isinstance(field_instance, dict):
 
-            if 'inner' in field_instance:
+            if "inner" in field_instance:
                 restx_model[field_name] = get_restx_field(api, ma_field_meta)
 
-            if field_instance['type'] == 'Nested':
-                restx_model[field_name] = get_restx_field(api, field_instance, nested=True)
-                restx_model[field_name].model = ma_metadata_to_restx_model(api, field_instance['nested'])
+            if field_instance["type"] == "Nested":
+                restx_model[field_name] = get_restx_field(
+                    api, field_instance, nested=True
+                )
+                restx_model[field_name].model = ma_metadata_to_restx_model(
+                    api, field_instance["nested"]
+                )
 
-            if field_instance['type'] == 'List' and field_instance['nested'] is not None:
+            if (
+                field_instance["type"] == "List"
+                and field_instance["nested"] is not None
+            ):
                 restx_model[field_name] = restx.fields.List(
-                    restx.fields.Nested(ma_metadata_to_restx_model(api, field_instance['nested'])),
-                    **ma_field_meta['params']
+                    restx.fields.Nested(
+                        ma_metadata_to_restx_model(api, field_instance["nested"])
+                    ),
+                    **ma_field_meta["params"]
                 )
 
     return api.model(schema_name, restx_model)
 
 
-def marshmallow_to_restx_model(api: Union[restx.Api, restx.Namespace], schema: Callable):
+def marshmallow_to_restx_model(
+    api: Union[restx.Api, restx.Namespace], schema: Callable
+):
     """
     Convert a marshmallow schema to a Flask-Restx model
     :param api: Restx Api instance or Namespace instance

@@ -1,4 +1,5 @@
 from marshmallow import Schema, fields
+
 from .report_component_schema import ComponentSchema
 
 

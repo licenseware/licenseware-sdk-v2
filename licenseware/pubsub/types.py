@@ -1,17 +1,16 @@
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 
 
 @dataclass
 class TopicType:
-    
+
     USER_EVENTS: str = "user_events"
     APP_EVENTS: str = "app_events"
     LOG_EVENTS: str = "log_events"
     DATA_STREAM: str = "data_stream"
-    
+
     def dict(self):
         return asdict(self)
-
 
 
 @dataclass
@@ -19,7 +18,7 @@ class EventType:
 
     ACCOUNT_CREATED: str = "account_created"
     EMAIL_VERIFIED: str = "email_verified"
-    LOGIN : str = "login"
+    LOGIN: str = "login"
     LOGOUT: str = "logout"
     PROFILE_UPDATED: str = "profile_updated"
     USER_PLAN_UPDATED: str = "user_plan_updated"
@@ -30,7 +29,7 @@ class EventType:
     TENANT_DELETED: str = "tenant_deleted"
     APP_ACTIVATED: str = "app_activated"
     APP_ACCESS_GRANTED: str = "app_access_granted"
-    APP_PERMISSIONS_UPDATED: str = "app_permissions_updated" 
+    APP_PERMISSIONS_UPDATED: str = "app_permissions_updated"
     APP_QUOTA_UPDATED: str = "app_quota_updated"
     UPLOADER_STATUS_UPDATED: str = "uploader_status_updated"
     APP_DATA_UPDATED: str = "app_data_updated"

@@ -1,5 +1,6 @@
-from marshmallow import ValidationError
 from bson.objectid import ObjectId
+from marshmallow import ValidationError
+
 from licenseware.common.validators import validate_uuid4
 
 

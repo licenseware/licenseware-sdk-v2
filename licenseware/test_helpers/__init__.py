@@ -138,4 +138,3 @@ get add the seed data to db in a fixture function (recomended)
 """
 
 from .auth import AuthHelper
-

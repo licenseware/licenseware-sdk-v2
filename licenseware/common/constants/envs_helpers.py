@@ -1,16 +1,18 @@
-import re
 import os
+import re
+
 from pymongo import MongoClient
 
 
-def mongo_connection_ok(mongo_uri:str):
+def mongo_connection_ok(mongo_uri: str):
     try:
-        client = MongoClient(mongo_uri, serverSelectionTimeoutMS=2000, connectTimeoutMS=2000)
+        client = MongoClient(
+            mongo_uri, serverSelectionTimeoutMS=2000, connectTimeoutMS=2000
+        )
         client.list_databases()
         return True
     except:
         return False
-
 
 
 def get_mongo_connection_string():
@@ -25,24 +27,23 @@ def get_mongo_connection_string():
     if os.path.exists("./deploy/.env.debug"):
         with open("./deploy/.env.debug", "r") as f:
             debug_data = f.read()
-        m = re.search(r'.*' + "MONGO_CONNECTION_STRING" + r'=(.+).*', debug_data)
+        m = re.search(r".*" + "MONGO_CONNECTION_STRING" + r"=(.+).*", debug_data)
         if m:
             uri["debug_uri"] = m.group(1)
-
 
     if debug_data is not None:
 
         SERVICE_NAME = None
-        m = re.search(r'.*' + "SERVICE_NAME" + r'=(.+).*', debug_data)
+        m = re.search(r".*" + "SERVICE_NAME" + r"=(.+).*", debug_data)
         if m:
             SERVICE_NAME = m.group(1)
 
             if os.path.exists("./deploy/.env." + SERVICE_NAME):
-                
+
                 with open("./deploy/.env." + SERVICE_NAME, "r") as f:
                     data = f.read()
 
-                m = re.search(r'.*' + "MONGO_CONNECTION_STRING" + r'=(.+).*', data)
+                m = re.search(r".*" + "MONGO_CONNECTION_STRING" + r"=(.+).*", data)
                 if m:
                     uri["stack_uri"] = m.group(1)
 
@@ -52,13 +53,10 @@ def get_mongo_connection_string():
             print("Connection ok for: ", uri[mongo_uri])
             return uri[mongo_uri]
 
-    
-
-
 
 def get_upload_path_on_desktop():
 
-    default_upload_path = os.path.join(os.getcwd(), 'uploaded_files')
+    default_upload_path = os.path.join(os.getcwd(), "uploaded_files")
     upload_path_file = os.path.join(os.getcwd(), "upload_path.txt")
     if os.path.exists(upload_path_file):
         with open(upload_path_file, "r") as f:

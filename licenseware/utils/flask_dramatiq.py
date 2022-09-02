@@ -60,18 +60,21 @@ licenseware start-background-worker
 
 """
 
-from flask import Flask
 from threading import local
-from dramatiq import set_broker
+
 from dramatiq import Middleware
 from dramatiq import actor as register_actor
-from dramatiq.middleware import default_middleware
+from dramatiq import set_broker
 from dramatiq.brokers.redis import RedisBroker
+from dramatiq.middleware import default_middleware
+from flask import Flask
+
 from licenseware.common.constants import envs
 
 from .logger import log
 
 # PREPS
+
 
 class AppContextMiddleware(Middleware):
     # Setup Flask app for actor. Borrowed from
@@ -88,8 +91,7 @@ class AppContextMiddleware(Middleware):
 
         self.state.context = context
 
-    def after_process_message(
-            self, broker, message, *, result=None, exception=None):
+    def after_process_message(self, broker, message, *, result=None, exception=None):
         try:
             context = self.state.context
             context.pop(exception)
@@ -98,7 +100,6 @@ class AppContextMiddleware(Middleware):
             pass
 
     after_skip_message = after_process_message
-
 
 
 class LazyActor(object):
@@ -114,9 +115,10 @@ class LazyActor(object):
         return self.fn(*a, **kw)
 
     def __repr__(self):
-        return '<%s %s.%s>' % (
+        return "<%s %s.%s>" % (
             self.__class__.__name__,
-            self.fn.__module__, self.fn.__name__,
+            self.fn.__module__,
+            self.fn.__name__,
         )
 
     def __getattr__(self, name):
@@ -134,58 +136,58 @@ class LazyActor(object):
             return self.actor.send(*a, **kw)
         return self.actor(*a, **kw)
 
-
     def send_with_options(self, *a, **kw):
         if envs.USE_BACKGROUND_WORKER:
             return self.actor.send_with_options(*a, **kw)
         return self.actor(*a, **kw)
 
 
-# BROKER    
+# BROKER
+
 
 class Dramatiq:
-    
     def __init__(
-        self, 
-        *,  
-        app:Flask = None, 
-        host:str = None, 
-        port:int = None, 
-        db:int = 0,
-        password:str = None,
-        middleware: list = None
+        self,
+        *,
+        app: Flask = None,
+        host: str = None,
+        port: int = None,
+        db: int = 0,
+        password: str = None,
+        middleware: list = None,
     ):
-        
+
         self.app = None
         self.host = host
         self.port = port
         self.db = db
         self.password = password
         self.actors = []
-        
-        #Removing prometheus middleware
+
+        # Removing prometheus middleware
         default_middleware.pop(0)
-        if middleware is None: middleware = [m() for m in default_middleware]
+        if middleware is None:
+            middleware = [m() for m in default_middleware]
         self.middleware = middleware
 
-        if app: self.init_app(app)
-        
-        
+        if app:
+            self.init_app(app)
+
     def add_middleware(self, mdw):
         self.middleware.append(mdw)
-        
-        
+
     def add_app_to_self(self, app: Flask):
-        if self.app is not None: 
-            raise Exception("Flask 'app' can be provided only on 'init_app' or 'Dramatiq' class instantiation")
+        if self.app is not None:
+            raise Exception(
+                "Flask 'app' can be provided only on 'init_app' or 'Dramatiq' class instantiation"
+            )
         self.app = app
-        
-        
-    def init_app(self, app:Flask):
+
+    def init_app(self, app: Flask):
         self.add_app_to_self(app)
-        
+
         middleware = [AppContextMiddleware(self.app)] + self.middleware
-        
+
         self.broker = RedisBroker(
             host=self.host,
             port=self.port,
@@ -194,28 +196,27 @@ class Dramatiq:
             middleware=middleware,
             dead_message_ttl=envs.DEAD_MESSAGE_TTL,
         )
-            
+
         for actor in self.actors:
             actor.register(broker=self.broker)
-            
+
         set_broker(self.broker)
-        
+
         self.show_registered_actors()
-        
+
         return self.broker
- 
- 
+
     def show_registered_actors(self):
-        
-        registered_actors = []    
+
+        registered_actors = []
         for uploader_id, actor_obj in self.broker.actors.items():
             registered_actors.append(f"{uploader_id}/{actor_obj.queue_name}")
-            
-        log.info("-------- Dramatiq Actors: " + " : ".join(registered_actors) + "---------")
-        
-    
-    def actor(self, fn=None, **kw):
 
+        log.info(
+            "-------- Dramatiq Actors: " + " : ".join(registered_actors) + "---------"
+        )
+
+    def actor(self, fn=None, **kw):
         def decorator(fn):
             lazy_actor = LazyActor(self, fn, kw)
             self.actors.append(lazy_actor)
@@ -223,5 +224,6 @@ class Dramatiq:
                 lazy_actor.register(self.broker)
             return lazy_actor
 
-        if fn: return decorator(fn)
+        if fn:
+            return decorator(fn)
         return decorator

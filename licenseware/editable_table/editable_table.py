@@ -238,42 +238,43 @@ App.register_editable_table(devices_table)
 
 """
 
-import re, itertools
-from flask_restx import Namespace
-import marshmallow
-from marshmallow import Schema
-from licenseware.common.constants import envs
-from urllib.parse import urlencode
+import itertools
+import re
 from typing import List
+from urllib.parse import urlencode
 
-from licenseware.utils.logger import log
+import marshmallow
+from flask_restx import Namespace
+from marshmallow import Schema
+
+from licenseware.common.constants import envs
 
 
 class EditableTable:
-
     def __init__(
-            self,
-            schema: type,
-            title: str = None,
-            namespace: Namespace = None,
-            component_id: str = None,
-            url: str = None,
-            table_type: str = "editable_table",
-            order: int = 1,
-            style_attributes: dict = {'width': 'full'}
+        self,
+        schema: type,
+        title: str = None,
+        namespace: Namespace = None,
+        component_id: str = None,
+        url: str = None,
+        table_type: str = "editable_table",
+        order: int = 1,
+        style_attributes: dict = {"width": "full"},
     ):
         self.schema = schema
         self.namespace = namespace
 
         if "Table" not in self.schema.__name__:
             raise ValueError(
-                "Schema provided to editable tables must contain in it's name 'Table' keyword (ex: DeviceTableSchema)")
+                "Schema provided to editable tables must contain in it's name 'Table' keyword (ex: DeviceTableSchema)"
+            )
 
-        self.schema_name = self.schema.__name__.replace('Schema', '').lower()
+        self.schema_name = self.schema.__name__.replace("Schema", "").lower()
         self.names = self.schema_name
         self.component_id = component_id or self.component_id_from_schema()
         self.title = title or self.title_from_schema()
-        self.path = (url or self.url_from_schema())
+        self.path = url or self.url_from_schema()
         self.url = envs.BASE_URL + self.path
         self.table_type = table_type
         self.order = order
@@ -282,24 +283,25 @@ class EditableTable:
         self.add_title_on_schema_meta()
 
     def add_title_on_schema_meta(self):
-        """ Adding title on Meta if not present or getting title if exists """
-        if hasattr(self.schema, 'Meta'):
-            if hasattr(self.schema.Meta, 'title'):
+        """Adding title on Meta if not present or getting title if exists"""
+        if hasattr(self.schema, "Meta"):
+            if hasattr(self.schema.Meta, "title"):
                 self.title = self.schema.Meta.title
             else:
                 self.schema = type(
-                    self.schema.__name__, (self.schema,),
-                    {'Meta': type('Meta', (self.schema.Meta,), {'title': self.title})}
+                    self.schema.__name__,
+                    (self.schema,),
+                    {"Meta": type("Meta", (self.schema.Meta,), {"title": self.title})},
                 )
         else:
             self.schema = type(
                 self.schema.__name__,
                 (self.schema,),
-                {'Meta': type('Meta', (), {'title': self.title})}
+                {"Meta": type("Meta", (), {"title": self.title})},
             )
 
     def url_from_schema(self):
-        return f'/{self.schema_name}'
+        return f"/{self.schema_name}"
 
     def title_from_schema(self):
         return self.names
@@ -310,13 +312,13 @@ class EditableTable:
     def make_schema_dict(self):
 
         field_dict = lambda data: {
-            k: v for k, v in data.__dict__.items()
-            if k not in ['default', '_creation_index', 'missing', 'inner']
+            k: v
+            for k, v in data.__dict__.items()
+            if k not in ["default", "_creation_index", "missing", "inner"]
         }
 
         schema_dict = lambda declared_fields: {
-            field: field_dict(data)
-            for field, data in declared_fields.items()
+            field: field_dict(data) for field, data in declared_fields.items()
         }
 
         return schema_dict(self.schema._declared_fields)
@@ -334,41 +336,42 @@ class EditableTable:
             "style_attributes": self.style_attributes,
             "title": self.title,
             "type": self.table_type,
-            "columns": self.columns_spec_list()
+            "columns": self.columns_spec_list(),
         }
 
     def columns_spec_list(self):
 
         columns_list = []
         for field_name, field_data in self.schema_dict.items():
-            columns_list.append({
-                "name": self.col_name(field_name),
-                "prop": self.col_prop(field_name),
-                "editable": self.col_editable(field_data),
-                "type": self.col_type(field_data),
-                "values": self.col_enum_values(field_data),
-                "required": self.col_required(field_data),
-                "visible": self.col_visible(field_name, field_data),
-                "hashable": self.col_hashable(field_name, field_data),
-                "entities_url": self.col_entities_url(field_data)
-            })
+            columns_list.append(
+                {
+                    "name": self.col_name(field_name),
+                    "prop": self.col_prop(field_name),
+                    "editable": self.col_editable(field_data),
+                    "type": self.col_type(field_data),
+                    "values": self.col_enum_values(field_data),
+                    "required": self.col_required(field_data),
+                    "visible": self.col_visible(field_name, field_data),
+                    "hashable": self.col_hashable(field_name, field_data),
+                    "entities_url": self.col_entities_url(field_data),
+                }
+            )
 
         return columns_list
 
     def col_entities_url(self, field_data, _get_only_path=False):
         """
-            _id - device(doc) id which contains foreign_keys to get the distinct_keys
-            foreign_key  - field name that contains ids to distinct_key
-            metadata={'editable': False, 'distinct_key': 'name', 'foreign_key': 'is_parent_to'}
+        _id - device(doc) id which contains foreign_keys to get the distinct_keys
+        foreign_key  - field name that contains ids to distinct_key
+        metadata={'editable': False, 'distinct_key': 'name', 'foreign_key': 'is_parent_to'}
         """
 
         metadata = self.field_metadata(field_data)
 
-        if 'foreign_key' in metadata and metadata['foreign_key'] != None:
-            params = urlencode({
-                'foreign_key': metadata['foreign_key'],
-                '_id': '{entity_id}'
-            })
+        if "foreign_key" in metadata and metadata["foreign_key"] != None:
+            params = urlencode(
+                {"foreign_key": metadata["foreign_key"], "_id": "{entity_id}"}
+            )
 
             return f"{self.path}?{params}" if _get_only_path else f"{self.url}?{params}"
         return None
@@ -377,79 +380,97 @@ class EditableTable:
         return self.col_entities_url(field_data, _get_only_path=True)
 
     def col_required(self, field_data):
-        return field_data['required']
+        return field_data["required"]
 
     def col_visible(self, field_name, field_data):
         metadata = self.field_metadata(field_data)
-        if 'visible' in metadata: return metadata['visible']
-        if field_name.startswith('_'): return False
-        if field_name in ['tenant_id']: return False
+        if "visible" in metadata:
+            return metadata["visible"]
+        if field_name.startswith("_"):
+            return False
+        if field_name in ["tenant_id"]:
+            return False
         return False
 
     def col_hashable(self, field_name, field_data):
         metadata = self.field_metadata(field_data)
-        if 'hashable' in metadata: return metadata['hashable']
-        if field_name.startswith('_'): return False
-        if field_name in ['tenant_id']: return False
+        if "hashable" in metadata:
+            return metadata["hashable"]
+        if field_name.startswith("_"):
+            return False
+        if field_name in ["tenant_id"]:
+            return False
         return False
 
     def col_enum_values(self, field_data):
 
         try:
 
-            if field_data['validate'] is None: return
+            if field_data["validate"] is None:
+                return
 
-            if isinstance(field_data['validate'], marshmallow.validate.OneOf):
-                return field_data['validate'].choices
+            if isinstance(field_data["validate"], marshmallow.validate.OneOf):
+                return field_data["validate"].choices
 
-            if isinstance(field_data['validate'], list):
-                return sorted(list(set(itertools.chain(*[data.choices for data in field_data['validate']]))))
+            if isinstance(field_data["validate"], list):
+                return sorted(
+                    list(
+                        set(
+                            itertools.chain(
+                                *[data.choices for data in field_data["validate"]]
+                            )
+                        )
+                    )
+                )
 
-        except Exception as err:
-            # log.error(err) 
+        except Exception:
+            # log.error(err)
             return None
 
     def col_name(self, field_name):
-        return " ".join([f.capitalize() for f in field_name.split('_') if f != ""])
+        return " ".join([f.capitalize() for f in field_name.split("_") if f != ""])
 
     def col_prop(self, field_name):
         return field_name
 
     def col_editable(self, field_data):
         metadata = self.field_metadata(field_data)
-        if 'editable' in metadata: return metadata['editable']
+        if "editable" in metadata:
+            return metadata["editable"]
         return False
 
     def col_type(self, field_data):
 
         metadata = self.field_metadata(field_data)
 
-        if 'type' in metadata: return metadata['type']
-        if 'distinct_key' in metadata: return 'entity'
+        if "type" in metadata:
+            return metadata["type"]
+        if "distinct_key" in metadata:
+            return "entity"
 
         try:
 
-            if isinstance(field_data['validate'], marshmallow.validate.OneOf):
-                if len(field_data['validate'].choices) > 0:
-                    return 'enum'
+            if isinstance(field_data["validate"], marshmallow.validate.OneOf):
+                if len(field_data["validate"].choices) > 0:
+                    return "enum"
 
-            if isinstance(field_data['validate'], list):
-                for data in field_data['validate']:
-                    if len(data['validate'].choices) > 0:
-                        return 'enum'
+            if isinstance(field_data["validate"], list):
+                for data in field_data["validate"]:
+                    if len(data["validate"].choices) > 0:
+                        return "enum"
 
         except:
             ...
 
         try:
-            invalid_message = field_data['error_messages']['invalid']
-            return re.search(r'Not a valid (.*?)\.', invalid_message).group(1).lower()
+            invalid_message = field_data["error_messages"]["invalid"]
+            return re.search(r"Not a valid (.*?)\.", invalid_message).group(1).lower()
         except:
             ...
 
     def field_metadata(self, field_data):
-        if 'metadata' in field_data:
-            return field_data['metadata']
+        if "metadata" in field_data:
+            return field_data["metadata"]
         return ""
 
 

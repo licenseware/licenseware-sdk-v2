@@ -191,26 +191,27 @@ Once the quota is being used another GET request to `/features/feature_path` wil
 
 
 from typing import List
+
 from flask import Request
+
 from licenseware import mongodata
-from licenseware.quota import Quota
 from licenseware.common.constants import envs
 from licenseware.common.serializers import FeaturesSchema
+from licenseware.quota import Quota
 from licenseware.tenants.user_utils import current_user_has_access_level
-from licenseware.utils.logger import log
 
 
 class FeatureBuilder:
-
-    def __init__(self,
-                 name: str,
-                 description: str = None,
-                 access_levels: List[str] = None,
-                 monthly_quota: int = 1,
-                 activated: bool = False,
-                 feature_id: str = None,
-                 feature_path: str = None
-                 ):
+    def __init__(
+        self,
+        name: str,
+        description: str = None,
+        access_levels: List[str] = None,
+        monthly_quota: int = 1,
+        activated: bool = False,
+        feature_id: str = None,
+        feature_path: str = None,
+    ):
         self.app_id = envs.APP_ID
         self.name = name
         self.description = description
@@ -233,21 +234,22 @@ class FeatureBuilder:
         #  or if user is the tenant owner
 
         if self.feature_id is None:
-            self.feature_id = self.name.lower().replace(" ", "_") + '_feature'
+            self.feature_id = self.name.lower().replace(" ", "_") + "_feature"
 
         if self.feature_path is None:
-            self.feature_path = '/' + \
-                self.feature_id.replace("_", "-").replace('-feature', "")
+            self.feature_path = "/" + self.feature_id.replace("_", "-").replace(
+                "-feature", ""
+            )
 
         return {
-            'app_id': self.app_id,
-            'name': self.name,
-            'description': self.description,
-            'access_levels': self.access_levels,
-            'monthly_quota': self.monthly_quota,
-            'activated': self.activated,
-            'feature_id': self.feature_id,
-            'feature_path': self.feature_path
+            "app_id": self.app_id,
+            "name": self.name,
+            "description": self.description,
+            "access_levels": self.access_levels,
+            "monthly_quota": self.monthly_quota,
+            "activated": self.activated,
+            "feature_id": self.feature_id,
+            "feature_path": self.feature_path,
         }
 
     def feature_is_activated(self, tenant_id: str):
@@ -256,9 +258,9 @@ class FeatureBuilder:
             match={
                 "tenant_id": tenant_id,
                 "feature_id": self.feature_id,
-                "activated": True
+                "activated": True,
             },
-            collection=envs.MONGO_COLLECTION_FEATURES_NAME
+            collection=envs.MONGO_COLLECTION_FEATURES_NAME,
         )
 
         return True if feature_activated else False
@@ -274,7 +276,7 @@ class FeatureBuilder:
             tenant_id=tenant_id,
             auth_token=flask_request.headers.get("Authorization"),
             units=self.monthly_quota,
-            uploader_id=self.feature_id
+            uploader_id=self.feature_id,
         )
 
         res, status_code = q.check_quota(units)
@@ -288,23 +290,27 @@ class FeatureBuilder:
         tenant_id = flask_request.headers.get("TenantId")
 
         results = mongodata.fetch(
-            match=({'tenant_id': tenant_id, "name": self.name},
-                   {"_id": 0, "feature_path": 0}),
-            collection=envs.MONGO_COLLECTION_FEATURES_NAME
+            match=(
+                {"tenant_id": tenant_id, "name": self.name},
+                {"_id": 0, "feature_path": 0},
+            ),
+            collection=envs.MONGO_COLLECTION_FEATURES_NAME,
         )
 
         if not results:
             return {}, 200
 
         quotas = mongodata.fetch(
-            match=({'tenant_id': tenant_id, "uploader_id": self.feature_id}, {
-                   "_id": 0, "feature_path": 0}),
-            collection=envs.MONGO_COLLECTION_UTILIZATION_NAME
+            match=(
+                {"tenant_id": tenant_id, "uploader_id": self.feature_id},
+                {"_id": 0, "feature_path": 0},
+            ),
+            collection=envs.MONGO_COLLECTION_UTILIZATION_NAME,
         )
 
         if quotas:
-            results[0]['monthly_quota_consumed'] = quotas[0]['monthly_quota_consumed']
-            results[0]['quota_reset_date'] = quotas[0]['quota_reset_date']
+            results[0]["monthly_quota_consumed"] = quotas[0]["monthly_quota_consumed"]
+            results[0]["quota_reset_date"] = quotas[0]["quota_reset_date"]
 
         return results[0], 200
 
@@ -312,20 +318,20 @@ class FeatureBuilder:
 
         self.activated = status
         feature_details = self.get_details()
-        feature_details['tenant_id'] = tenant_id
+        feature_details["tenant_id"] = tenant_id
 
         updated = mongodata.update(
             schema=FeaturesSchema,
-            match={'tenant_id': tenant_id, 'name': self.name},
+            match={"tenant_id": tenant_id, "name": self.name},
             new_data=feature_details,
-            collection=envs.MONGO_COLLECTION_FEATURES_NAME
+            collection=envs.MONGO_COLLECTION_FEATURES_NAME,
         )
 
         return updated
 
     def update_status(self, flask_request: Request):
 
-        status = flask_request.json['activated']
+        status = flask_request.json["activated"]
         tenant_id = flask_request.headers.get("TenantId")
 
         resp = f"Feature {'activated' if status else 'deactivated'}", 200

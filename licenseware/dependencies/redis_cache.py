@@ -1,8 +1,9 @@
 from datetime import timedelta
 from typing import List
 
-from licenseware.common.constants import envs
 from redis import Redis
+
+from licenseware.common.constants import envs
 
 
 class RedisCache:

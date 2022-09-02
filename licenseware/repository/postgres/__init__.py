@@ -1,2 +1,2 @@
-from .postgres_repository import PostgresRepository
 from .postgres_migrations import PostgresMigrations
+from .postgres_repository import PostgresRepository

@@ -1,16 +1,18 @@
 from typing import Callable, Dict, List
+
 from flask import Request
+
+from licenseware import history
 from licenseware.common.constants import envs, states
+from licenseware.common.validators import validate_event
+from licenseware.notifications import notify_upload_status
+from licenseware.quota import Quota
 from licenseware.registry_service.register_uploader import register_uploader
+from licenseware.uploader_encryptor import UploaderEncryptor
+from licenseware.uploader_validator.uploader_validator import UploaderValidator
 from licenseware.utils.dramatiq_redis_broker import broker
 from licenseware.utils.logger import log
-from licenseware.common.validators import validate_event
-from licenseware.quota import Quota
-from licenseware.notifications import notify_upload_status
-from licenseware.uploader_validator.uploader_validator import UploaderValidator
-from licenseware import history
 from licenseware.utils.miscellaneous import get_flask_request_dict
-from licenseware.uploader_encryptor import UploaderEncryptor
 
 
 class UploaderBuilder:
@@ -57,7 +59,7 @@ class UploaderBuilder:
         quota_validation_path: str = None,
         status_check_path: str = None,
         max_retries: int = 0,
-        broker_funcs: Dict[str, List[Callable]] = None, 
+        broker_funcs: Dict[str, List[Callable]] = None,
         query_params_on_validation: dict = None,
         query_params_on_upload: list = [],
         one_event_per_file: bool = False,
@@ -74,7 +76,9 @@ class UploaderBuilder:
         validator_class.quota_units = quota_units
         self.validation_parameters = validator_class.validation_parameters
         # self.encryptor_class = encryptor_class
-        self.encryption_parameters = encryptor_class.encryption_parameters if encryptor_class else {}
+        self.encryption_parameters = (
+            encryptor_class.encryption_parameters if encryptor_class else {}
+        )
 
         self.broker_funcs = broker_funcs
         self.uploader_id = uploader_id
@@ -172,10 +176,15 @@ class UploaderBuilder:
         if not valid_filepaths:
             return {"status": states.FAILED, "message": "No valid files provided"}, 400
 
-        return {"status": states.SUCCESS, "response": response, "filepaths": valid_filepaths}, 200
+        return {
+            "status": states.SUCCESS,
+            "response": response,
+            "filepaths": valid_filepaths,
+        }, 200
 
-
-    def get_failed_validation_response(self, fp, tenant_id, event_id, serialized_flask_request):
+    def get_failed_validation_response(
+        self, fp, tenant_id, event_id, serialized_flask_request
+    ):
 
         events = [
             {
@@ -191,12 +200,13 @@ class UploaderBuilder:
         return {
             "status": fp["status"],
             "message": fp["message"],
-            'validation': fp["validation"],
+            "validation": fp["validation"],
             "event_data": events,
         }, 400
 
-
-    def get_quota_exceeded_response(self, fp, tenant_id, event_id, serialized_flask_request):
+    def get_quota_exceeded_response(
+        self, fp, tenant_id, event_id, serialized_flask_request
+    ):
 
         events = [
             {
@@ -212,12 +222,10 @@ class UploaderBuilder:
         return {
             "status": fp["status"],
             "message": fp["message"],
-            'validation': fp,
+            "validation": fp,
             "event_data": events,
-            **fp
+            **fp,
         }, 402
-        
-
 
     @history.log
     def upload_files(self, flask_request: Request, event_id: str = None):
@@ -240,9 +248,13 @@ class UploaderBuilder:
         fp, status = self.get_filepaths(event, flask_request)
 
         if status == 400:
-            return self.get_failed_validation_response(fp, tenant_id, event_id, serialized_flask_request)
+            return self.get_failed_validation_response(
+                fp, tenant_id, event_id, serialized_flask_request
+            )
         if status == 402:
-            return self.get_quota_exceeded_response(fp, tenant_id, event_id, serialized_flask_request)
+            return self.get_quota_exceeded_response(
+                fp, tenant_id, event_id, serialized_flask_request
+            )
 
         if self.one_event_per_file:
             events = [

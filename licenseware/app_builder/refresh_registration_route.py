@@ -5,12 +5,12 @@ When this endpoint is called the registration information from all `App` entitie
 """
 
 from flask_restx import Api, Resource
-from licenseware.decorators.auth_decorators import machine_check
+
 from licenseware.decorators import failsafe
+from licenseware.decorators.auth_decorators import machine_check
 
 
-def add_refresh_registration_route(api:Api, app: type):
-    
+def add_refresh_registration_route(api: Api, app: type):
     @api.route(app.refresh_registration_path)
     class RefreshRegistration(Resource):
         @failsafe(fail_code=500)
@@ -18,18 +18,16 @@ def add_refresh_registration_route(api:Api, app: type):
         @api.doc(
             description="Register all reports and uploaders",
             responses={
-                200 : 'Registering process was successful',
-                403 : "Missing `Authorization` information",
-                500 : 'Registering process was unsuccessful' 
+                200: "Registering process was successful",
+                403: "Missing `Authorization` information",
+                500: "Registering process was unsuccessful",
             },
         )
         def get(self):
 
             status_code = 200
             response = app.register_app()
-            
+
             return response, status_code
-            
-            
+
     return api
-                

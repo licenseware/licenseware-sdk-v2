@@ -1,2 +1,1 @@
 from .marshmallow_restx_converter import marshmallow_to_restx_model, restx_fields
-

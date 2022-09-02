@@ -6,19 +6,17 @@ Notice also the separation of creating the resource and the given namespace.
 """
 
 from typing import List
+
 from flask import request
 from flask_restx import Namespace, Resource, fields
 
 from licenseware.decorators import failsafe
 from licenseware.decorators.auth_decorators import authorization_check
-from licenseware.utils.logger import log
-
 from licenseware.feature_builder import FeatureBuilder
 
 
 def create_feature_resource(feature: FeatureBuilder):
     class Feature(Resource):
-
         @failsafe(fail_code=500)
         @authorization_check
         def get(self):
@@ -34,14 +32,14 @@ def create_feature_resource(feature: FeatureBuilder):
 
 def get_features_namespace(ns: Namespace, features: List[FeatureBuilder]):
 
-    update_feature_status_model = ns.model('update_feature_status', dict(
-        activated=fields.Boolean(required=True)
-    ))
+    update_feature_status_model = ns.model(
+        "update_feature_status", dict(activated=fields.Boolean(required=True))
+    )
 
     docs = {
-        'get': {
-            'description': 'Get feature details',
-            'responses': {
+        "get": {
+            "description": "Get feature details",
+            "responses": {
                 200: """\
 Example response: 
 
@@ -61,20 +59,20 @@ Example response:
     }
 
 """,
-                403: 'Missing `Tenantid` or `Authorization` information',
-                500: 'Something went wrong while handling the request'
-            }
+                403: "Missing `Tenantid` or `Authorization` information",
+                500: "Something went wrong while handling the request",
+            },
         },
-        'post': {
-            'description': 'Set feature status',
-            'validate': True,
-            'expect': [update_feature_status_model],
-            'responses': {
-                200: 'Feature activated/deactivated',
-                403: 'Missing `Tenantid` or `Authorization` information',
-                500: 'Something went wrong while handling the request'
-            }
-        }
+        "post": {
+            "description": "Set feature status",
+            "validate": True,
+            "expect": [update_feature_status_model],
+            "responses": {
+                200: "Feature activated/deactivated",
+                403: "Missing `Tenantid` or `Authorization` information",
+                500: "Something went wrong while handling the request",
+            },
+        },
     }
 
     for feature in features:
@@ -83,9 +81,9 @@ Example response:
         FeatureRes.__apidoc__ = docs
 
         FeatureResource = type(
-            feature.feature_id.replace("_", "").capitalize() + 'Feature',
+            feature.feature_id.replace("_", "").capitalize() + "Feature",
             (FeatureRes,),
-            {}
+            {},
         )
 
         ns.add_resource(FeatureResource, feature.feature_path)

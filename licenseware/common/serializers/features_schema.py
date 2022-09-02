@@ -1,4 +1,5 @@
 from marshmallow import Schema, fields
+
 from licenseware.common.validators import validate_uuid4
 
 

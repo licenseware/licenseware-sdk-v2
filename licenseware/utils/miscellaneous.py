@@ -7,13 +7,13 @@ Small 1 liners utilities that are to small to pe placed in a module
 import os
 import random
 import string
+from typing import List
+
+from flask import Request
 from marshmallow import Schema
 from marshmallow_jsonschema import JSONSchema
-from typing import List
-from flask import Request
 
 from licenseware.utils.logger import log
-
 
 
 def get_flask_request_dict(flask_request: Request):
@@ -25,16 +25,16 @@ def get_flask_request_dict(flask_request: Request):
     flask_json = {}
     if flask_request.json is not None:
         flask_json = {"flask_request_json": flask_request.json}
-      
+
     flask_args = dict(flask_request.args) if flask_request.args else {}
 
     data = {**flask_json, **flask_headers, **flask_args}
 
-    if envs.DESKTOP_ENVIRONMENT and data.get('tenant_id', None) is None:
-        for tid in ['tenant_id', 'TenantId', 'Tenantid']:
+    if envs.DESKTOP_ENVIRONMENT and data.get("tenant_id", None) is None:
+        for tid in ["tenant_id", "TenantId", "Tenantid"]:
             data[tid] = envs.DESKTOP_TENANT_ID
         data["Authorization"] = "Authorization not needed on desktop"
-        
+
     return data
 
 

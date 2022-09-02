@@ -133,20 +133,20 @@ ifmp_app.add_namespace(UserNs)
 
 """
 
-from marshmallow import Schema, fields
+from flask import request
+
 # from marshmallow_jsonschema import JSONSchema
 from flask_restx import Namespace, Resource
+from marshmallow import Schema, fields
 
-from licenseware.common.validators import validate_uuid4
+from licenseware import mongodata
 from licenseware.common.constants import envs
+from licenseware.common.marshmallow_restx_converter import marshmallow_to_restx_model
+from licenseware.common.validators import validate_uuid4
 from licenseware.decorators.auth_decorators import authorization_check
 from licenseware.decorators.failsafe_decorator import failsafe
-from licenseware.utils.miscellaneous import swagger_authorization_header, http_methods
-from licenseware.utils.logger import log
-from licenseware import mongodata
-from licenseware.common.marshmallow_restx_converter import marshmallow_to_restx_model
+from licenseware.utils.miscellaneous import http_methods, swagger_authorization_header
 
-from flask import request
 from .mongo_crud import MongoCrud
 
 
@@ -157,25 +157,28 @@ class BaseSchema(Schema):
 
 
 class SchemaNamespace:
-
-    def __init__(self,
-                 schema: type = None,
-                 collection: str = None,
-                 methods: list = http_methods,
-                 decorators: list = [authorization_check],
-                 disable_model: bool = False,
-                 authorizations: dict = swagger_authorization_header,
-                 mongo_crud_class: type = MongoCrud,
-                 namespace: Namespace = None
-                 ):
+    def __init__(
+        self,
+        schema: type = None,
+        collection: str = None,
+        methods: list = http_methods,
+        decorators: list = [authorization_check],
+        disable_model: bool = False,
+        authorizations: dict = swagger_authorization_header,
+        mongo_crud_class: type = MongoCrud,
+        namespace: Namespace = None,
+    ):
         self.schema = schema
         self.doc = schema.__doc__
 
         # Adding `tenant_id` and `updated_at` fields to received schema
         self.schema = type(
             self.schema.__name__,
-            (self.schema, BaseSchema,),
-            {}
+            (
+                self.schema,
+                BaseSchema,
+            ),
+            {},
         )
 
         try:
@@ -199,7 +202,7 @@ class SchemaNamespace:
         self.path = "/" + self.name.lower()
 
     def initialize(self) -> Namespace:
-        """ Create restx api namespace from schema """
+        """Create restx api namespace from schema"""
 
         self.create_indexes()
         ns = self.create_resources()
@@ -213,7 +216,7 @@ class SchemaNamespace:
             description=self.doc or f"API is generated from {self.schema_name}",
             decorators=self.decorators,
             authorizations=self.authorizations,
-            security=list(self.authorizations.keys())
+            security=list(self.authorizations.keys()),
         )
         return ns
 
@@ -227,18 +230,19 @@ class SchemaNamespace:
             resource_fields = marshmallow_to_restx_model(ns, self.schema)
 
         allowed_methods = self.methods
-        data_service = self.mongo_crud_class(schema=self.schema, collection=self.collection)
+        data_service = self.mongo_crud_class(
+            schema=self.schema, collection=self.collection
+        )
 
         class SchemaResource(Resource):
-
             @failsafe(fail_code=500)
             @ns.doc(id="Make a GET request to FETCH some data")
-            @ns.param('_id', 'get data by id')
+            @ns.param("_id", "get data by id")
             @ns.response(code=200, description="A list of:", model=[resource_fields])
             @ns.response(code=404, description="Requested data not found")
             @ns.response(code=405, description="METHOD NOT ALLOWED")
             def get(self):
-                if 'GET' in allowed_methods:
+                if "GET" in allowed_methods:
                     return data_service.get_data(request)
                 return "METHOD NOT ALLOWED", 405
 
@@ -248,7 +252,7 @@ class SchemaNamespace:
             @ns.response(code=400, description="Could not insert data")
             @ns.response(code=405, description="METHOD NOT ALLOWED")
             def post(self):
-                if 'POST' in allowed_methods:
+                if "POST" in allowed_methods:
                     return data_service.post_data(request)
                 return "METHOD NOT ALLOWED", 405
 
@@ -258,7 +262,7 @@ class SchemaNamespace:
             @ns.response(code=404, description="Query had no match")
             @ns.response(code=405, description="METHOD NOT ALLOWED")
             def put(self):
-                if 'PUT' in allowed_methods:
+                if "PUT" in allowed_methods:
                     return data_service.put_data(request)
                 return "METHOD NOT ALLOWED", 405
 
@@ -268,7 +272,7 @@ class SchemaNamespace:
             @ns.response(code=404, description="Query had no match")
             @ns.response(code=405, description="METHOD NOT ALLOWED")
             def delete(self, _id=None):
-                if 'DELETE' in allowed_methods:
+                if "DELETE" in allowed_methods:
                     return data_service.delete_data(request)
                 return "METHOD NOT ALLOWED", 405
 

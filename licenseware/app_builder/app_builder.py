@@ -6,77 +6,66 @@ Notice that history report route/path is provided but is not implemented that's 
 
 """
 
-from typing import List, Callable, Dict
 from dataclasses import dataclass
+from typing import Callable, Dict, List
 
 from flask import Flask
 from flask_restx import Api, Namespace, Resource
 from marshmallow.schema import Schema
 
-from licenseware.uploader_builder.uploader_builder import UploaderBuilder
+from licenseware.auth import Authenticator
+from licenseware.common.constants.envs import envs
+from licenseware.common.validators import validate_integration_details
+from licenseware.decorators.xss_decorator import xss_before_request
+from licenseware.editable_table import EditableTable
+from licenseware.feature_builder import FeatureBuilder
+from licenseware.mongodata import create_collection
+from licenseware.registry_service import register_all
 from licenseware.report_builder.report_builder import ReportBuilder
 from licenseware.report_components.base_report_component import BaseReportComponent
-from licenseware.feature_builder import FeatureBuilder
-from licenseware.common.constants.envs import envs
-from licenseware.registry_service import register_all
-from licenseware.tenants import get_activated_tenants, get_tenants_with_data
-from licenseware.utils.logger import log
-from licenseware.auth import Authenticator
-from licenseware.utils.dramatiq_redis_broker import broker
-from licenseware.utils.miscellaneous import swagger_authorization_header
-from licenseware.editable_table import EditableTable
 from licenseware.schema_namespace import SchemaNamespace
-from licenseware.decorators.xss_decorator import xss_before_request
-from licenseware.mongodata import create_collection
+from licenseware.tenants import get_activated_tenants, get_tenants_with_data
+from licenseware.uploader_builder.uploader_builder import UploaderBuilder
+from licenseware.utils.dramatiq_redis_broker import broker
+from licenseware.utils.logger import log
+from licenseware.utils.miscellaneous import swagger_authorization_header
 
-from .refresh_registration_route import add_refresh_registration_route
-from .editable_tables_route import add_editable_tables_route
-from .tenant_registration_route import add_tenant_registration_route
 from .app_activation_route import add_app_activation_route
 from .app_registration_route import add_app_registration_route
-from .terms_and_conditions_route import add_terms_and_conditions_route
-from .features_route import add_features_route
-
-
+from .data_sync_namespace import data_sync_namespace, get_data_sync_namespace
+from .download_as_route import add_download_as_route
+from .editable_tables_route import add_editable_tables_route
 from .endpoint_builder_namespace import endpoint_builder_namespace
-
-from .uploads_namespace import uploads_namespace
+from .features_namespace import features_namespace, get_features_namespace
+from .features_route import add_features_route
+from .refresh_registration_route import add_refresh_registration_route
+from .report_components_namespace import (
+    get_report_individual_components_namespace,
+    report_components_namespace,
+)
+from .reports_namespace import (
+    get_public_report_components_namespace,
+    get_public_report_metadata_namespace,
+    get_report_components_namespace,
+    get_report_image_preview_dark_namespace,
+    get_report_image_preview_namespace,
+    get_report_metadata_namespace,
+    get_report_register_namespace,
+    get_report_snapshot_namespace,
+    reports_namespace,
+)
+from .tenant_registration_route import add_tenant_registration_route
+from .terms_and_conditions_route import add_terms_and_conditions_route
 from .uploads_namespace import (
     get_filenames_validation_namespace,
     get_filestream_validation_namespace,
-    get_status_namespace,
     get_quota_namespace,
+    get_status_namespace,
+    uploads_namespace,
 )
-
-from .reports_namespace import reports_namespace
-from .reports_namespace import (
-    get_report_register_namespace,
-    get_report_metadata_namespace,
-    get_report_components_namespace,
-    get_report_image_preview_namespace,
-    get_report_image_preview_dark_namespace,
-    get_report_snapshot_namespace,
-    get_public_report_metadata_namespace,
-    get_public_report_components_namespace,
-)
-
-from .report_components_namespace import report_components_namespace
-from .report_components_namespace import get_report_individual_components_namespace
-
-from .features_namespace import features_namespace
-from .features_namespace import get_features_namespace
-
-from .data_sync_namespace import data_sync_namespace
-from .data_sync_namespace import get_data_sync_namespace
 
 # from .decrypt_namespace import decrypt_namespace
 # from .decrypt_namespace import get_decrypt_namespace
-
-
-from .download_as_route import add_download_as_route
-
-
-from licenseware.common.validators import validate_integration_details
 
 
 # TODO there are some paths in both envs and base paths identify them and remove redundant data
@@ -131,7 +120,7 @@ class AppBuilder:
 
         if integration_details is not None:
             validate_integration_details(integration_details)
-        
+
         self.integration_details = integration_details
 
         self.app_activation_path = base_paths.app_activation_path
@@ -189,10 +178,10 @@ class AppBuilder:
                 "Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS"
             )
             response.headers.set("Access-Control-Allow-Credentials", "true")
-            
+
             # https://flask.palletsprojects.com/en/2.1.x/security/#security-csp
             # XSS
-            response.headers['X-Content-Type-Options'] = 'nosniff'
+            response.headers["X-Content-Type-Options"] = "nosniff"
 
             return response
 
@@ -219,7 +208,8 @@ class AppBuilder:
 
     def authenticate_app(self):
 
-        if envs.DESKTOP_ENVIRONMENT: return 
+        if envs.DESKTOP_ENVIRONMENT:
+            return
 
         response, status_code = Authenticator.connect(
             max_retries="infinite", wait_seconds=2
@@ -256,7 +246,7 @@ class AppBuilder:
             add_app_registration_route,
             add_terms_and_conditions_route,
             add_download_as_route,
-            add_features_route
+            add_features_route,
         ]
 
         for func in api_funcs:
@@ -273,8 +263,7 @@ class AppBuilder:
         self.add_editables_routes()
         self.add_features_routes()
         self.add_data_sync_routes()
-        #self.add_decrypt_routes()
-
+        # self.add_decrypt_routes()
 
     def add_uploads_routes(self):
 
@@ -334,7 +323,6 @@ class AppBuilder:
         for func in ns_funcs:
             self.register_namespace(func(ns=features_namespace, features=self.features))
 
-
     def add_data_sync_routes(self):
 
         if self.data_sync_schema is None:
@@ -376,7 +364,7 @@ class AppBuilder:
                 "terms_and_conditions_url",
                 "features_url",
                 "app_meta",
-                "integration_details"
+                "integration_details",
             ]
         }
 
@@ -408,7 +396,7 @@ class AppBuilder:
                     "connected_apps",
                     "filters",
                     "registrable",
-                    "public_for_tenants"
+                    "public_for_tenants",
                 ]
             }
             for r in self.reports
@@ -491,14 +479,13 @@ class AppBuilder:
 
         return payload
 
-
     def register_app(self):
         """
         Sending registration payloads to registry-service
         """
 
         payload = self.get_register_all_payload()
-    
+
         register_all.send(payload)
 
         return payload
@@ -583,9 +570,11 @@ class AppBuilder:
     def add_resource(self, resource: Resource, path: str):
         self.api.add_resource(resource, path)
 
-    def add_collection(self, collection_name: str, db_name: str=None, timeseries_config: dict=None):
+    def add_collection(
+        self, collection_name: str, db_name: str = None, timeseries_config: dict = None
+    ):
         create_collection(
             collection_name=collection_name,
             db_name=db_name,
-            timeseries_config=timeseries_config
+            timeseries_config=timeseries_config,
         )

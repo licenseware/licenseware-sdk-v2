@@ -1,10 +1,10 @@
-from flask import request
-from flask_restx import Namespace, Resource
-from licenseware.decorators.auth_decorators import machine_check
-from licenseware.decorators import failsafe
-
-from licenseware.report_builder import ReportBuilder
 from typing import List
+
+from flask_restx import Namespace, Resource
+
+from licenseware.decorators import failsafe
+from licenseware.decorators.auth_decorators import machine_check
+from licenseware.report_builder import ReportBuilder
 
 
 def create_report_resource(report: ReportBuilder):
@@ -26,15 +26,16 @@ def get_report_register_namespace(ns: Namespace, reports: List[ReportBuilder]):
             responses={
                 200: "Report registered successfully",
                 403: "Missing `Authorization` information",
-                500: "Could not register report"
+                500: "Could not register report",
             },
         )
-        class TempReportResource(RR): ...
+        class TempReportResource(RR):
+            ...
 
         ReportResource = type(
-            report.report_id.replace("_", "").capitalize() + 'register',
+            report.report_id.replace("_", "").capitalize() + "register",
             (TempReportResource,),
-            {}
+            {},
         )
 
         ns.add_resource(ReportResource, report.register_report_path)
