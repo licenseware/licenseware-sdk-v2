@@ -1,6 +1,6 @@
 from licenseware.cli.base_creator import BaseCreator
 
-from . import templates
+from licenseware.cli.app_root_files_creator import templates
 
 root_files = [
     "gitignore",

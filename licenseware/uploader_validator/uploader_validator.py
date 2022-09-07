@@ -7,8 +7,8 @@ from licenseware.common.constants import states
 from licenseware.quota import Quota
 from licenseware.utils.logger import log
 
-from .file_content_validator import FileContentValidator
-from .filename_validator import FileNameValidator
+from licenseware.uploader_validator.file_content_validator import FileContentValidator
+from licenseware.uploader_validator.filename_validator import FileNameValidator
 
 
 class UploaderValidator(FileNameValidator, FileContentValidator):

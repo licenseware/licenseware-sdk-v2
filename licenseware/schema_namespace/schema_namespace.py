@@ -142,12 +142,12 @@ from marshmallow import Schema, fields
 from licenseware import mongodata
 from licenseware.common.constants import envs
 from licenseware.common.marshmallow_restx_converter import marshmallow_to_restx_model
-from licenseware.common.validators import validate_uuid4
+from licenseware.common.validators.validate_uuid4 import validate_uuid4
 from licenseware.decorators.auth_decorators import authorization_check
 from licenseware.decorators.failsafe_decorator import failsafe
 from licenseware.utils.miscellaneous import http_methods, swagger_authorization_header
 
-from .mongo_crud import MongoCrud
+from licenseware.schema_namespace.mongo_crud import MongoCrud
 
 
 # Every api namespace generated with SchemaNamespace must have `tenant_id` and `updated_at` fields

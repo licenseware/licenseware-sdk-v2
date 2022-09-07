@@ -12,16 +12,16 @@ from urllib.parse import urljoin
 import requests
 import typer
 
-from .app_pkg_creator import AppPackageCreator
-from .app_root_files_creator import AppRootFilesCreator
-from .devops_creator import DevOpsCreator
-from .report_component_creator import ReportComponentCreator
-from .report_creator import ReportCreator
-from .restx_controller_creator import RestxControllerCreator
-from .test_creator import TestCreator
-from .unittest_file_creator import UnittestFileCreator
-from .uploader_creator import UploaderCreator
-from .utils import get_env_value, get_random_int
+from licenseware.cli.app_pkg_creator import AppPackageCreator
+from licenseware.cli.app_root_files_creator import AppRootFilesCreator
+from licenseware.cli.devops_creator import DevOpsCreator
+from licenseware.cli.report_component_creator import ReportComponentCreator
+from licenseware.cli.report_creator import ReportCreator
+from licenseware.cli.restx_controller_creator import RestxControllerCreator
+from licenseware.cli.test_creator import TestCreator
+from licenseware.cli.unittest_file_creator import UnittestFileCreator
+from licenseware.cli.uploader_creator import UploaderCreator
+from licenseware.cli.utils import get_env_value, get_random_int
 
 app = typer.Typer(
     name="Licenseware CLI",

@@ -1,6 +1,6 @@
 from marshmallow import Schema, fields
 
-from licenseware.common.validators import validate_uuid4
+from licenseware.common.validators.validate_uuid4 import validate_uuid4
 
 
 class QuotaSchema(Schema):

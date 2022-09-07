@@ -2,7 +2,7 @@ import inspect
 
 from licenseware.common.constants import envs
 
-from . import event, file, tenant, uploader
+from licenseware.history import event, file, tenant, uploader
 
 
 def create_metadata(

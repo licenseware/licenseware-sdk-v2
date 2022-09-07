@@ -4,7 +4,7 @@ from typing import List
 
 from jinja2 import Template
 
-from . import templates
+from licenseware.cli.app_pkg_creator import templates
 
 pkg_path = "./app"
 

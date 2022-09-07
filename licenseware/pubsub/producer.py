@@ -3,7 +3,7 @@ from typing import Callable
 
 from confluent_kafka import Producer as KafkaProducer
 
-from .types import EventType, TopicType
+from licenseware.pubsub.types import EventType, TopicType
 
 
 class Producer:

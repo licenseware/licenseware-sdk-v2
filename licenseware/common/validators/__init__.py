@@ -1,10 +1,3 @@
-"""
-
-Here are various data validators that can be used for validatin marshmallow schemas or data.
-
-"""
-
-
 from .validate__id import validate__id
 from .validate_base64 import validate_base64
 from .validate_event import validate_event

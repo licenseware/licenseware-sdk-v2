@@ -4,7 +4,7 @@ from dataclasses import asdict, dataclass
 from licenseware.cli.base_creator import BaseCreator
 from licenseware.cli.utils import get_random_int
 
-from .templates import (
+from licenseware.cli.devops_creator.templates import (
     aws_cloud_formation_templates,
     deploy_templates,
     github_workflows_templates,

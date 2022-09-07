@@ -1,6 +1,6 @@
 from licenseware.common.serializers.event_schema import EventSchema
 
-from .schema_validator import schema_validator
+from licenseware.common.validators.schema_validator import schema_validator
 
 
 def validate_event(payload: dict, raise_error=True):

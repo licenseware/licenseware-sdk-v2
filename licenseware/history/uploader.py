@@ -1,4 +1,4 @@
-from .func import get_value_from_func
+from licenseware.history.func import get_value_from_func
 
 
 def get_uploader_id(func, func_args, func_kwargs):

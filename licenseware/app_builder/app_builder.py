@@ -15,7 +15,7 @@ from marshmallow.schema import Schema
 
 from licenseware.auth import Authenticator
 from licenseware.common.constants.envs import envs
-from licenseware.common.validators import validate_integration_details
+from licenseware.common.validators.validate_integration_details import validate_integration_details
 from licenseware.decorators.xss_decorator import xss_before_request
 from licenseware.editable_table import EditableTable
 from licenseware.feature_builder import FeatureBuilder
@@ -30,20 +30,20 @@ from licenseware.utils.dramatiq_redis_broker import broker
 from licenseware.utils.logger import log
 from licenseware.utils.miscellaneous import swagger_authorization_header
 
-from .app_activation_route import add_app_activation_route
-from .app_registration_route import add_app_registration_route
-from .data_sync_namespace import data_sync_namespace, get_data_sync_namespace
-from .download_as_route import add_download_as_route
-from .editable_tables_route import add_editable_tables_route
-from .endpoint_builder_namespace import endpoint_builder_namespace
-from .features_namespace import features_namespace, get_features_namespace
-from .features_route import add_features_route
-from .refresh_registration_route import add_refresh_registration_route
-from .report_components_namespace import (
+from licenseware.app_builder.app_activation_route import add_app_activation_route
+from licenseware.app_builder.app_registration_route import add_app_registration_route
+from licenseware.app_builder.data_sync_namespace import data_sync_namespace, get_data_sync_namespace
+from licenseware.app_builder.download_as_route import add_download_as_route
+from licenseware.app_builder.editable_tables_route import add_editable_tables_route
+from licenseware.app_builder.endpoint_builder_namespace import endpoint_builder_namespace
+from licenseware.app_builder.features_namespace import features_namespace, get_features_namespace
+from licenseware.app_builder.features_route import add_features_route
+from licenseware.app_builder.refresh_registration_route import add_refresh_registration_route
+from licenseware.app_builder.report_components_namespace import (
     get_report_individual_components_namespace,
     report_components_namespace,
 )
-from .reports_namespace import (
+from licenseware.app_builder.reports_namespace import (
     get_public_report_components_namespace,
     get_public_report_metadata_namespace,
     get_report_components_namespace,
@@ -54,9 +54,9 @@ from .reports_namespace import (
     get_report_snapshot_namespace,
     reports_namespace,
 )
-from .tenant_registration_route import add_tenant_registration_route
-from .terms_and_conditions_route import add_terms_and_conditions_route
-from .uploads_namespace import (
+from licenseware.app_builder.tenant_registration_route import add_tenant_registration_route
+from licenseware.app_builder.terms_and_conditions_route import add_terms_and_conditions_route
+from licenseware.app_builder.uploads_namespace import (
     get_filenames_validation_namespace,
     get_filestream_validation_namespace,
     get_quota_namespace,

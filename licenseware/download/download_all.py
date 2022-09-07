@@ -6,7 +6,7 @@ from flask import Request, send_from_directory
 from licenseware.common.constants import envs, states
 from licenseware.report_builder import ReportBuilder
 
-from .download_xlsx import download_as_xlsx
+from licenseware.download.download_xlsx import download_as_xlsx
 
 file_type_mapper = {
     "xlsx": download_as_xlsx,

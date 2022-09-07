@@ -8,6 +8,9 @@ def get_tenants_with_public_reports(
     *, report_id: str = None, tenant_id: str = None
 ) -> list:
 
+    if envs.DESKTOP_ENVIRONMENT:
+        return []
+
     query = {
         "tenant_id": tenant_id or {"$exists": True},
         "report_id": report_id or {"$exists": True},

@@ -1,4 +1,4 @@
-from .feature_builder import FeatureBuilder
+from licenseware.feature_builder.feature_builder import FeatureBuilder
 
 PRODUCT_REQUESTS = FeatureBuilder(
     name="Product Requests",

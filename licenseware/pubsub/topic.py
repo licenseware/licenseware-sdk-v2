@@ -2,7 +2,7 @@ from typing import List, Union
 
 from confluent_kafka.admin import AdminClient, NewTopic
 
-from .types import TopicType
+from licenseware.pubsub.types import TopicType
 
 
 class Topic:

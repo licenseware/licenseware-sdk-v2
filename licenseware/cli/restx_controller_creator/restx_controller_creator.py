@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 from licenseware.cli.base_creator import BaseCreator
 
-from . import templates
+from licenseware.cli.restx_controller_creator import templates
 
 
 @dataclass

@@ -2,9 +2,9 @@ from typing import List
 
 from licenseware.common.constants import states
 
-from .download_csv import download_as_csv
-from .download_json import download_as_json
-from .download_xlsx import download_as_xlsx
+from licenseware.download.download_csv import download_as_csv
+from licenseware.download.download_json import download_as_json
+from licenseware.download.download_xlsx import download_as_xlsx
 
 file_type_mapper = {
     "json": download_as_json,

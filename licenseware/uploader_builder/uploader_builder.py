@@ -4,7 +4,7 @@ from flask import Request
 
 from licenseware import history
 from licenseware.common.constants import envs, states
-from licenseware.common.validators import validate_event
+from licenseware.common.validators.validate_event import validate_event
 from licenseware.notifications import notify_upload_status
 from licenseware.quota import Quota
 from licenseware.registry_service.register_uploader import register_uploader

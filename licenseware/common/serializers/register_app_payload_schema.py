@@ -2,9 +2,11 @@ from marshmallow import validate  # utils validators
 from marshmallow import validates  # decorator
 from marshmallow import Schema, fields
 
-from licenseware.common.validators import validate_icon, validate_uuid4
+from licenseware.common.validators.validate_icon import validate_icon
+from licenseware.common.validators.validate_uuid4 import validate_uuid4
 
-from .features_schema import FeaturesSchema
+
+from licenseware.common.serializers.features_schema import FeaturesSchema
 
 
 class DataAvailableTenantsSchema(Schema):

@@ -3,7 +3,7 @@ from typing import Callable
 
 from confluent_kafka import Consumer as KafkaConsumer
 
-from .types import EventType
+from licenseware.pubsub.types import EventType
 
 
 class Consumer:

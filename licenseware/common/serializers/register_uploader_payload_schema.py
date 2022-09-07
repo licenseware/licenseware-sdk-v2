@@ -2,7 +2,7 @@ from marshmallow import validate  # utils validatiors
 from marshmallow import Schema, fields
 
 from licenseware.common.constants import flags, states
-from licenseware.common.validators import validate_icon
+from licenseware.common.validators.validate_icon import validate_icon
 
 
 class FileValidatorSchema(Schema):

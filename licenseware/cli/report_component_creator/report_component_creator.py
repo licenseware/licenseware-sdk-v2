@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 from licenseware.cli.base_creator import BaseCreator
 
-from . import templates
+from licenseware.cli.report_component_creator import templates
 
 
 @dataclass
