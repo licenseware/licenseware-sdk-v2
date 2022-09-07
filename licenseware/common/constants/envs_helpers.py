@@ -51,6 +51,7 @@ def get_mongo_connection_string():
         # print("Trying: ", uri[mongo_uri])
         if mongo_connection_ok(uri[mongo_uri]):
             print("Connection ok for: ", uri[mongo_uri])
+            os.environ["MONGO_CONNECTION_STRING"] = uri[mongo_uri]
             return uri[mongo_uri]
 
 
