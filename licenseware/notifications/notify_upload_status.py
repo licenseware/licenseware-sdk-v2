@@ -2,7 +2,7 @@ from licenseware.common.constants import envs
 from licenseware.registry_service import register_upload_status
 from licenseware.utils.logger import log
 
-from .uploader_status import save_uploader_status
+from licenseware.notifications.uploader_status import save_uploader_status
 
 
 def notify_upload_status(event: dict, status: str):

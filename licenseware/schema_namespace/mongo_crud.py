@@ -4,7 +4,7 @@ from flask import Request
 from marshmallow.schema import Schema
 
 from licenseware import mongodata as m
-from licenseware.common.validators import validate__id
+from licenseware.common.validators.validate__id import validate__id
 from licenseware.utils.logger import log
 
 

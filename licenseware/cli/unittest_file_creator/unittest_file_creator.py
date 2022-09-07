@@ -2,7 +2,7 @@ import os
 
 from licenseware.cli.base_creator import BaseCreator
 
-from . import templates
+from licenseware.cli.unittest_file_creator import templates
 
 
 class UnittestFileCreator(BaseCreator):

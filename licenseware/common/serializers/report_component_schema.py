@@ -1,6 +1,6 @@
 from marshmallow import Schema, fields
 
-from .report_component_filter_schema import FilterSchema
+from licenseware.common.serializers.report_component_filter_schema import FilterSchema
 
 
 class ComponentSchema(Schema):

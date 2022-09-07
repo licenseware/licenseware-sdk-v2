@@ -1,6 +1,6 @@
 import os
 
-from .flask_dramatiq import Dramatiq
+from licenseware.utils.flask_dramatiq import Dramatiq
 
 broker = Dramatiq(
     host=os.getenv("REDIS_HOST", "localhost"),

@@ -1,6 +1,6 @@
 from marshmallow import Schema, fields
 
-from .report_component_schema import ComponentSchema
+from licenseware.common.serializers.report_component_schema import ComponentSchema
 
 
 class RegisterReportComponentPayloadSchema(Schema):

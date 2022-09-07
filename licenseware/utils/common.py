@@ -5,7 +5,7 @@ import flask
 
 from licenseware.common.constants import envs
 
-from .miscellaneous import get_flask_request_dict
+from licenseware.utils.miscellaneous import get_flask_request_dict
 
 
 def get_flask_request():

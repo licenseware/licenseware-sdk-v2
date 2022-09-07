@@ -21,7 +21,7 @@ import os
 import uuid
 from dataclasses import dataclass
 
-from .envs_helpers import get_mongo_connection_string, get_upload_path_on_desktop
+from licenseware.common.constants.envs_helpers import get_mongo_connection_string, get_upload_path_on_desktop
 
 # Atention!
 # > To keep this file short please add only variables used on most/all apps

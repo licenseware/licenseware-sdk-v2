@@ -11,9 +11,9 @@ from licenseware.common.constants import envs
 from licenseware.mongodata import collection
 from licenseware.utils.logger import log as logg
 
-from .history_schemas import EntitiesSchema
-from .metadata import add_event_id_to_payload, create_metadata, get_metadata
-from .step import save_step
+from licenseware.history.history_schemas import EntitiesSchema
+from licenseware.history.metadata import add_event_id_to_payload, create_metadata, get_metadata
+from licenseware.history.step import save_step
 
 
 def add_entities(event_id: str, entities: list = None):

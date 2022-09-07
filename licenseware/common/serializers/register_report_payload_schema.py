@@ -1,7 +1,7 @@
 from marshmallow import Schema, fields, validate
 
-from .report_component_filter_schema import FilterSchema
-from .report_component_schema import ComponentSchema
+from licenseware.common.serializers.report_component_filter_schema import FilterSchema
+from licenseware.common.serializers.report_component_schema import ComponentSchema
 
 
 class ReportSchema(Schema):

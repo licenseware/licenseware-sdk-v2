@@ -6,7 +6,7 @@ import re
 import requests
 from jinja2 import Template
 
-from . import templates, utils
+from licenseware.cli.test_creator import templates, utils
 
 allowed_requests = ["GET", "PUT", "POST", "DELETE", "OPTIONS"]
 

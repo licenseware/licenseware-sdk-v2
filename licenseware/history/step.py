@@ -6,7 +6,7 @@ from licenseware import mongodata
 from licenseware.common.constants import envs, states
 from licenseware.utils.logger import log as logg
 
-from .history_schemas import HistorySchema
+from licenseware.history.history_schemas import HistorySchema
 
 
 def save_filename_validation(metadata, response):

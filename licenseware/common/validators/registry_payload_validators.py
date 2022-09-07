@@ -6,7 +6,7 @@ from licenseware.common.serializers import (
     RegisterUploaderStatusPayloadSchema,
 )
 
-from .schema_validator import schema_validator
+from licenseware.common.validators.schema_validator import schema_validator
 
 
 def validate_register_app_payload(payload: dict, raise_error=True):

@@ -71,7 +71,7 @@ from flask import Flask
 
 from licenseware.common.constants import envs
 
-from .logger import log
+from licenseware.utils.logger import log
 
 # PREPS
 

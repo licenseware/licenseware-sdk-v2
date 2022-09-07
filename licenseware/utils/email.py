@@ -7,8 +7,8 @@ from sendgrid.helpers.mail import Mail
 
 from licenseware.common.constants import envs
 
-from .dramatiq_redis_broker import broker
-from .logger import log
+from licenseware.utils.dramatiq_redis_broker import broker
+from licenseware.utils.logger import log
 
 
 def _load_template(html_template: str, html_template_vars: dict):

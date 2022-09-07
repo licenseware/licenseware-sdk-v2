@@ -228,7 +228,7 @@ from sqlalchemy.orm import mapper, scoped_session, sessionmaker
 
 from licenseware.repository.interface import RepositoryInterface
 
-from .postgres_migrations import PostgresMigrations
+from licenseware.repository.postgres.postgres_migrations import PostgresMigrations
 
 # Marshmallow to Sqlalchemy fields mapper
 # Only strings, integers, floats and booleans are suported for now
