@@ -1,5 +1,4 @@
 from licenseware.common.serializers.event_schema import EventSchema
-
 from licenseware.common.validators.schema_validator import schema_validator
 
 

@@ -2,7 +2,6 @@ import os
 from dataclasses import dataclass
 
 from licenseware.cli.base_creator import BaseCreator
-
 from licenseware.cli.restx_controller_creator import templates
 
 

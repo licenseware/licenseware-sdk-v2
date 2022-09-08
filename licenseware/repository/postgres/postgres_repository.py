@@ -227,7 +227,6 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import mapper, scoped_session, sessionmaker
 
 from licenseware.repository.interface import RepositoryInterface
-
 from licenseware.repository.postgres.postgres_migrations import PostgresMigrations
 
 # Marshmallow to Sqlalchemy fields mapper

@@ -8,12 +8,15 @@ from pymongo.collection import Collection
 
 from licenseware import mongodata
 from licenseware.common.constants import envs
+from licenseware.history.history_schemas import EntitiesSchema
+from licenseware.history.metadata import (
+    add_event_id_to_payload,
+    create_metadata,
+    get_metadata,
+)
+from licenseware.history.step import save_step
 from licenseware.mongodata import collection
 from licenseware.utils.logger import log as logg
-
-from licenseware.history.history_schemas import EntitiesSchema
-from licenseware.history.metadata import add_event_id_to_payload, create_metadata, get_metadata
-from licenseware.history.step import save_step
 
 
 def add_entities(event_id: str, entities: list = None):

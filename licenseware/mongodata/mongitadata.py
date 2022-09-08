@@ -323,129 +323,15 @@ def fetch(
 
     """
 
-    # TODO - needs refatoring (to much going on)
-
-    pagination = None
-    if isinstance(match, dict):
-        pagination = match.pop("__pagination__", None)
-
-    match = parse_match(match)
-    sortbylist = get_sortli(sortby)
-
     db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
 
-    log.info(f"MONGO_QUERY [{db_name}.{collection_name}]: {match}")
+    print(f"MONGO_QUERY [{db_name}.{collection_name}]: {match}")
 
-    with Connect.get_connection() as mongo_connection:
-        collection: MongitaClientDisk = mongo_connection[db_name][collection_name]
-        # log.debug(collection)
-        if not isinstance(collection, Collection):
-            return collection
-
-        if match["_id"]:
-            found_docs = (
-                collection.find(match["_id"])
-                if sortbylist is None
-                else collection.find(match["_id"]).sort(sortbylist)
-            )
-            doc = []
-            if found_docs:
-                doc = list(found_docs)[0]
-            if match["oid"]:
-                doc = parse_doc(doc)
-            return doc
-
-        if match["distinct_key"]:
-            found_docs = collection.distinct(match["distinct_key"])
-
-        elif match["query_tuple"]:
-
-            if pagination:
-
-                if sortbylist is None:
-
-                    found_docs = (
-                        collection.find(*match["query_tuple"])
-                        .skip(pagination["skip"])
-                        .limit(pagination["limit"])
-                    )
-
-                else:
-                    found_docs = (
-                        collection.find(*match["query_tuple"])
-                        .sort(sortbylist)
-                        .skip(pagination["skip"])
-                        .limit(pagination["limit"])
-                    )
-
-            elif limit is not None and skip is not None:
-
-                if sortbylist is None:
-                    found_docs = (
-                        collection.find(*match["query_tuple"]).skip(skip).limit(limit)
-                    )
-                else:
-                    found_docs = (
-                        collection.find(*match["query_tuple"])
-                        .sort(sortbylist)
-                        .skip(skip)
-                        .limit(limit)
-                    )
-
-            else:
-                if sortbylist is None:
-                    found_docs = collection.find(*match["query_tuple"])
-                else:
-                    found_docs = collection.find(*match["query_tuple"]).sort(sortbylist)
-
-        else:
-
-            if pagination:
-
-                if sortbylist is None:
-
-                    found_docs = (
-                        collection.find(match["query"])
-                        .skip(pagination["skip"])
-                        .limit(pagination["limit"])
-                    )
-
-                else:
-
-                    found_docs = (
-                        collection.find(match["query"])
-                        .sort(sortbylist)
-                        .skip(pagination["skip"])
-                        .limit(pagination["limit"])
-                    )
-
-            elif limit is not None and skip is not None:
-
-                if sortbylist is None:
-
-                    found_docs = collection.find(match["query"]).skip(skip).limit(limit)
-
-                else:
-
-                    found_docs = (
-                        collection.find(match["query"])
-                        .sort(sortbylist)
-                        .skip(skip)
-                        .limit(limit)
-                    )
-
-            else:
-
-                if sortbylist is None:
-                    found_docs = collection.find(match["query"])
-                else:
-                    found_docs = collection.find(match["query"]).sort(sortbylist)
-
-        if as_list:
-            return [parse_doc(doc) for doc in found_docs]
-
-        return (parse_doc(doc) for doc in found_docs)
+    client = MongitaClientDisk(host="./database")
+    col = client[db_name][collection_name]
+    found_docs = col.find(match)
+    return [parse_doc(doc) for doc in found_docs]
 
 
 def aggregate(pipeline, collection, as_list=True, db_name=None):
@@ -517,33 +403,28 @@ def update(schema, match, new_data, collection, append=False, db_name=None):
     # log.debug("Incoming data:")
     # log.debug(new_data)
 
+    new_data = validate_data(schema, new_data)
+
     db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
-    with Connect.get_connection() as mongo_connection:
-        collection = mongo_connection[db_name][collection_name]
-        match = parse_match(match)
-        match = match["query"] or match["_id"]
-        if not match:
-            match = match["_id"] = match["distinct_key"]
 
-        new_data = validate_data(schema, new_data)
-        # log.debug("Data saved to DB")
-        # log.debug(new_data)
+    print(f"MONGO_QUERY [{db_name}.{collection_name}]: {match}")
 
-        _filter = {"_id": match["_id"]} if "_id" in match else match
+    client = MongitaClientDisk(host="./database")
+    col = client[db_name][collection_name]
 
-        log.info(f"MONGO_QUERY [{db_name}.{collection_name}]: {_filter}")
+    matched_data = col.find_one(filter=match)
+    if matched_data is None:
+        col.insert_one(new_data)
+        return 1
 
-        # Mongita doesn't have update
+    new_full_data = {**matched_data, **new_data} if matched_data else new_data
 
-        matched_data = collection.find_one(filter=_filter)
-        new_full_data = {**matched_data, **new_data} if matched_data else new_data
+    updated_docs_nbr = col.replace_one(
+        filter=match, replacement=new_full_data
+    ).modified_count
 
-        updated_docs_nbr = collection.replace_one(
-            filter=_filter, replacement=new_full_data
-        ).modified_count
-
-        return updated_docs_nbr
+    return updated_docs_nbr
 
 
 def delete(match, collection, db_name=None):
@@ -560,23 +441,16 @@ def delete(match, collection, db_name=None):
 
 
     """
+
     db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
 
-    log.info(f"MONGO_QUERY [{db_name}.{collection_name}]: {match}")
+    print(f"MONGO_QUERY [{db_name}.{collection_name}]: {match}")
 
-    with Connect.get_connection() as mongo_connection:
-        collection = mongo_connection[db_name][collection_name]
-        match = parse_match(match)
+    client = MongitaClientDisk(host="./database")
+    col = client[db_name][collection_name]
 
-        if not isinstance(collection, Collection):
-            return collection
-
-        deleted_docs_nbr = collection.delete_many(
-            filter=match["query"] or match["_id"],
-        ).deleted_count
-
-        return deleted_docs_nbr
+    col.delete_many(match)
 
 
 def delete_collection(collection, db_name=None):

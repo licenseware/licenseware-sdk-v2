@@ -4,9 +4,8 @@ import pandas as pd
 from flask import Request, send_from_directory
 
 from licenseware.common.constants import envs, states
-from licenseware.report_builder import ReportBuilder
-
 from licenseware.download.download_xlsx import download_as_xlsx
+from licenseware.report_builder import ReportBuilder
 
 file_type_mapper = {
     "xlsx": download_as_xlsx,

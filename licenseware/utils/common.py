@@ -4,7 +4,6 @@ from typing import Callable, Dict, List
 import flask
 
 from licenseware.common.constants import envs
-
 from licenseware.utils.miscellaneous import get_flask_request_dict
 
 
