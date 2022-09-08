@@ -37,9 +37,9 @@ def collection(collection_name: str, schema: Schema = None, data: any = None):
         if isinstance(data, list):
             data = schema(many=True).load(data)
 
-    with MongitaClientDisk(host="./database") as conn:
-        col = conn[envs.MONGO_DATABASE_NAME][collection_name]
-        try:
-            yield col
-        finally:
-            conn.close()
+    conn = MongitaClientDisk(host="./database")
+    col = conn[envs.MONGO_DATABASE_NAME][collection_name]
+    try:
+        yield col
+    finally:
+        conn.close()

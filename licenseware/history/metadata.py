@@ -1,7 +1,6 @@
 import inspect
 
 from licenseware.common.constants import envs
-
 from licenseware.history import event, file, tenant, uploader
 
 

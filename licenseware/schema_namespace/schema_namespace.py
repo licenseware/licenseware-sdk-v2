@@ -145,9 +145,8 @@ from licenseware.common.marshmallow_restx_converter import marshmallow_to_restx_
 from licenseware.common.validators.validate_uuid4 import validate_uuid4
 from licenseware.decorators.auth_decorators import authorization_check
 from licenseware.decorators.failsafe_decorator import failsafe
-from licenseware.utils.miscellaneous import http_methods, swagger_authorization_header
-
 from licenseware.schema_namespace.mongo_crud import MongoCrud
+from licenseware.utils.miscellaneous import http_methods, swagger_authorization_header
 
 
 # Every api namespace generated with SchemaNamespace must have `tenant_id` and `updated_at` fields

@@ -13,32 +13,25 @@ from flask import Flask
 from flask_restx import Api, Namespace, Resource
 from marshmallow.schema import Schema
 
-from licenseware.auth import Authenticator
-from licenseware.common.constants.envs import envs
-from licenseware.common.validators.validate_integration_details import validate_integration_details
-from licenseware.decorators.xss_decorator import xss_before_request
-from licenseware.editable_table import EditableTable
-from licenseware.feature_builder import FeatureBuilder
-from licenseware.mongodata import create_collection
-from licenseware.registry_service import register_all
-from licenseware.report_builder.report_builder import ReportBuilder
-from licenseware.report_components.base_report_component import BaseReportComponent
-from licenseware.schema_namespace import SchemaNamespace
-from licenseware.tenants import get_activated_tenants, get_tenants_with_data
-from licenseware.uploader_builder.uploader_builder import UploaderBuilder
-from licenseware.utils.dramatiq_redis_broker import broker
-from licenseware.utils.logger import log
-from licenseware.utils.miscellaneous import swagger_authorization_header
-
 from licenseware.app_builder.app_activation_route import add_app_activation_route
 from licenseware.app_builder.app_registration_route import add_app_registration_route
-from licenseware.app_builder.data_sync_namespace import data_sync_namespace, get_data_sync_namespace
+from licenseware.app_builder.data_sync_namespace import (
+    data_sync_namespace,
+    get_data_sync_namespace,
+)
 from licenseware.app_builder.download_as_route import add_download_as_route
 from licenseware.app_builder.editable_tables_route import add_editable_tables_route
-from licenseware.app_builder.endpoint_builder_namespace import endpoint_builder_namespace
-from licenseware.app_builder.features_namespace import features_namespace, get_features_namespace
+from licenseware.app_builder.endpoint_builder_namespace import (
+    endpoint_builder_namespace,
+)
+from licenseware.app_builder.features_namespace import (
+    features_namespace,
+    get_features_namespace,
+)
 from licenseware.app_builder.features_route import add_features_route
-from licenseware.app_builder.refresh_registration_route import add_refresh_registration_route
+from licenseware.app_builder.refresh_registration_route import (
+    add_refresh_registration_route,
+)
 from licenseware.app_builder.report_components_namespace import (
     get_report_individual_components_namespace,
     report_components_namespace,
@@ -54,8 +47,13 @@ from licenseware.app_builder.reports_namespace import (
     get_report_snapshot_namespace,
     reports_namespace,
 )
-from licenseware.app_builder.tenant_registration_route import add_tenant_registration_route
-from licenseware.app_builder.terms_and_conditions_route import add_terms_and_conditions_route
+from licenseware.app_builder.reprocess_data_route import add_reprocess_data_route
+from licenseware.app_builder.tenant_registration_route import (
+    add_tenant_registration_route,
+)
+from licenseware.app_builder.terms_and_conditions_route import (
+    add_terms_and_conditions_route,
+)
 from licenseware.app_builder.uploads_namespace import (
     get_filenames_validation_namespace,
     get_filestream_validation_namespace,
@@ -63,12 +61,29 @@ from licenseware.app_builder.uploads_namespace import (
     get_status_namespace,
     uploads_namespace,
 )
+from licenseware.auth import Authenticator
+from licenseware.common.constants.envs import envs
+from licenseware.common.validators.validate_integration_details import (
+    validate_integration_details,
+)
+from licenseware.decorators.xss_decorator import xss_before_request
+from licenseware.editable_table import EditableTable
+from licenseware.feature_builder import FeatureBuilder
+from licenseware.mongodata import create_collection
+from licenseware.registry_service import register_all
+from licenseware.report_builder.report_builder import ReportBuilder
+from licenseware.report_components.base_report_component import BaseReportComponent
+from licenseware.schema_namespace import SchemaNamespace
+from licenseware.tenants import get_activated_tenants, get_tenants_with_data
+from licenseware.uploader_builder.uploader_builder import UploaderBuilder
+from licenseware.utils.dramatiq_redis_broker import broker
+from licenseware.utils.logger import log
+from licenseware.utils.miscellaneous import swagger_authorization_header
 
 # from .decrypt_namespace import decrypt_namespace
 # from .decrypt_namespace import get_decrypt_namespace
 
 
-# TODO there are some paths in both envs and base paths identify them and remove redundant data
 @dataclass
 class base_paths:
     app_activation_path: str = "/activate_app"
@@ -80,6 +95,7 @@ class base_paths:
     terms_and_conditions_path: str = "/terms_and_conditions"
     features_path: str = "/features"
     data_sync_path: str = "/data-sync"
+    reprocess_data_path: str = "/reprocess-data"
 
 
 class AppBuilder:
@@ -132,6 +148,7 @@ class AppBuilder:
         self.terms_and_conditions_path = base_paths.terms_and_conditions_path
         self.features_path = base_paths.features_path
         self.data_sync_path = base_paths.data_sync_path
+        self.reprocess_data_path = base_paths.reprocess_data_path
 
         self.app_activation_url = envs.BASE_URL + self.app_activation_path
         self.refresh_registration_url = envs.BASE_URL + self.refresh_registration_path
@@ -141,6 +158,7 @@ class AppBuilder:
         self.terms_and_conditions_url = envs.BASE_URL + self.terms_and_conditions_path
         self.features_url = envs.BASE_URL + self.features_path
         self.data_sync_url = envs.BASE_URL + self.data_sync_path
+        self.reproces_data_url = envs.BASE_URL + self.reprocess_data_path
 
         self.authorizations = doc_authorizations
         self.decorators = [] if api_decorators is None else api_decorators
@@ -247,6 +265,7 @@ class AppBuilder:
             add_terms_and_conditions_route,
             add_download_as_route,
             add_features_route,
+            add_reprocess_data_route,
         ]
 
         for func in api_funcs:

@@ -1,7 +1,6 @@
 from licenseware.common.serializers.integration_details_schema import (
     IntegrationDetailsSchema,
 )
-
 from licenseware.common.validators.schema_validator import schema_validator
 
 

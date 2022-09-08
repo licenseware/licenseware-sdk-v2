@@ -6,7 +6,6 @@ from jinja2 import Template
 from sendgrid.helpers.mail import Mail
 
 from licenseware.common.constants import envs
-
 from licenseware.utils.dramatiq_redis_broker import broker
 from licenseware.utils.logger import log
 

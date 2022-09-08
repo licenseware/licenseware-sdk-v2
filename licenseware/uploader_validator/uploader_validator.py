@@ -5,10 +5,9 @@ from flask import Request
 
 from licenseware.common.constants import states
 from licenseware.quota import Quota
-from licenseware.utils.logger import log
-
 from licenseware.uploader_validator.file_content_validator import FileContentValidator
 from licenseware.uploader_validator.filename_validator import FileNameValidator
+from licenseware.utils.logger import log
 
 
 class UploaderValidator(FileNameValidator, FileContentValidator):

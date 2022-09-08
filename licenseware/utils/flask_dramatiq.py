@@ -70,7 +70,6 @@ from dramatiq.middleware import default_middleware
 from flask import Flask
 
 from licenseware.common.constants import envs
-
 from licenseware.utils.logger import log
 
 # PREPS

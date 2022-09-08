@@ -1,8 +1,7 @@
 from licenseware import mongodata as m
 from licenseware.common.constants import envs, states
-from licenseware.utils.logger import log
-
 from licenseware.tenants.close_timeout_files import close_timed_out_files
+from licenseware.utils.logger import log
 
 #! OUTDATED
 

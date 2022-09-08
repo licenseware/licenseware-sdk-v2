@@ -2,7 +2,6 @@ import os
 from dataclasses import dataclass
 
 from licenseware.cli.base_creator import BaseCreator
-
 from licenseware.cli.uploader_creator import templates
 
 

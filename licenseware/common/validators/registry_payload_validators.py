@@ -5,7 +5,6 @@ from licenseware.common.serializers import (
     RegisterUploaderPayloadSchema,
     RegisterUploaderStatusPayloadSchema,
 )
-
 from licenseware.common.validators.schema_validator import schema_validator
 
 
