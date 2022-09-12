@@ -38,8 +38,13 @@ class ExternalDataService:
     @staticmethod
     def _get_registry_service_data(headers: dict, endpoint: str) -> list:
         try:
+            auth_headers = (
+                headers
+                if headers["TenantId"] is not None
+                else {"Authorization": headers["Authorization"]}
+            )
             reg_data = requests.get(
-                url=f"{REGISTRY_SERVICE_URL}/{endpoint}", headers=headers
+                url=f"{REGISTRY_SERVICE_URL}/{endpoint}", headers=auth_headers
             )
             return reg_data.json()
         except Exception:
