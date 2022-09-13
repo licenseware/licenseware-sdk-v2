@@ -133,7 +133,7 @@ def validate_columns(df, required_columns, required_sheets=[]):
 
     file_columns = _get_columns(df, required_sheets)
 
-    if isinstance(required_columns[0], tuple) and len(required_columns) > 1:
+    if isinstance(required_columns[0], (list, tuple,)) and len(required_columns) > 1:
         for rc in required_columns:
             if _columns_validator(file_columns, rc, raise_error=False):
                 return
