@@ -29,16 +29,36 @@ class ReprocessSchema(Schema):
 def get_uploads(tenant_id):
 
     pipeline = [
-        {"$sort": {"updated_at": 1}},
         {
-            "$group": {
-                "_id": ["$tenant_id", "$uploader_id"],
-                "date": {"$last": "$updated_at"},
-                "uploader_id": {"$last": "$uploader_id"},
-                "files_uploaded": {"$last": "$files_uploaded"},
-                "tenant_id": {"$last": "$tenant_id"},
+            '$sort': {
+                'updated_at': 1
             }
-        },
+        }, {
+            # TODO: Add only files processed sucesfully too
+            # Not possible as of 13.09.2022, don't have processing details on all uploaders.
+            '$match': {
+                'filename_validation.status': 'success', 
+                'file_content_validation.status': 'success'
+            }
+        }, {
+            '$group': {
+                '_id': [
+                    '$tenant_id', '$uploader_id'
+                ], 
+                'date': {
+                    '$last': '$updated_at'
+                }, 
+                'uploader_id': {
+                    '$last': '$uploader_id'
+                }, 
+                'files_uploaded': {
+                    '$last': '$files_uploaded'
+                }, 
+                'tenant_id': {
+                    '$last': '$tenant_id'
+                }
+            }
+        }
     ]
 
     if tenant_id is not None:
