@@ -37,12 +37,18 @@ class ExternalDataService:
 
     @staticmethod
     def _get_registry_service_data(headers: dict, endpoint: str) -> list:
+        """
+            If the tenant check fails, it tries the machine check.
+            
+            Machine check is handled by the caller, passing env token.
+        """
         try:
             # Try both tenant check and if that fails try machine check 
             reg_data = requests.get(
                 url=f"{REGISTRY_SERVICE_URL}/{endpoint}", headers=headers
             )
             if reg_data.status_code != 200:
+                log.info("Couldn't get registry service data with tenant auth, fallback to machine auth")
                 reg_data = requests.get(
                     url=f"{REGISTRY_SERVICE_URL}/v1/{endpoint}", headers={"Authorization": headers["Authorization"]}
                 )

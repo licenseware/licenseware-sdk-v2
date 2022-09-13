@@ -58,17 +58,21 @@ def get_files(files_uploaded):
 
 @broker.actor(max_retries=0, queue_name=envs.QUEUE_NAME)
 def send_files(dataset):
+    """
+        External Data Service handles the machine token.
 
+        Tenant + machine token doesn't work.
+    """
     auth_headers = {
-        "Tenantid": None,
+        "Tenantid": dataset["tenant_id"],
         "Authorization": envs.get_auth_token(),
     }
 
     upload_url = ExternalDataService.get_upload_url(
         _request=auth_headers, app_id=envs.APP_ID, uploader_id=dataset["uploader_id"]
     )
-
-    auth_headers.update({"Tenantid": dataset["tenant_id"]})
+    if "backend.localhost" in upload_url:
+        upload_url = upload_url.replace("backend.localhost", "kong")
 
     res = requests.post(
         upload_url, files=get_files(dataset["files_uploaded"]), headers=auth_headers
@@ -119,7 +123,9 @@ def add_reprocess_data_route(api: Api, appvars: dict):
                 log.warning("Password on `reprocess_files` didn't match")
                 return "Password doesn't match!", 403
 
-            reprocess_files.send(request.json.get("tenants"))
+            reprocess_for_tenants = request.json.get("tenants")
+
+            reprocess_files.send(tenants=reprocess_for_tenants)
 
             return "Reprocessing started", 200
 
