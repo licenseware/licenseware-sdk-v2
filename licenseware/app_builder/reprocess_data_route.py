@@ -60,13 +60,15 @@ def get_files(files_uploaded):
 def send_files(dataset):
 
     auth_headers = {
-        "Tenantid": dataset["tenant_id"],
+        "Tenantid": None,
         "Authorization": envs.get_auth_token(),
     }
 
     upload_url = ExternalDataService.get_upload_url(
         _request=auth_headers, app_id=envs.APP_ID, uploader_id=dataset["uploader_id"]
     )
+
+    auth_headers.update({"Tenantid": dataset["tenant_id"]})
 
     res = requests.post(
         upload_url, files=get_files(dataset["files_uploaded"]), headers=auth_headers
