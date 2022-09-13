@@ -99,5 +99,8 @@ image_tag=latest
 build-image:
 	docker build -t ghcr.io/licenseware/licenseware-sdk-v2:$(image_tag) .
 
+build-odbc-image:
+	docker build --target odbc -t ghcr.io/licenseware/licenseware-sdk-v2:$(image_tag)-odbc .
+
 build-image-no-cache:
 	docker build -t ghcr.io/licenseware/licenseware-sdk-v2:$(image_tag) . --no-cache
