@@ -1,9 +1,11 @@
 import os
 from typing import Tuple
 
+import requests
 from flask import Request
 
-from licenseware.common.constants import states
+from licenseware.common.constants.envs import envs
+from licenseware.common.constants.states import states
 from licenseware.quota import Quota
 from licenseware.uploader_validator.file_content_validator import FileContentValidator
 from licenseware.uploader_validator.filename_validator import FileNameValidator
@@ -93,12 +95,25 @@ class UploaderValidator(FileNameValidator, FileContentValidator):
     ) -> Tuple[dict, int]:
 
         if self.quota_units is None:
-            return {"status": states.SUCCESS, "message": "Quota is skipped"}, 200
-
-        log.warning("Calculating quota based on length of files")
+            return {
+                "status": states.SUCCESS,
+                "message": "Quota is skipped quota units is null",
+            }, 200
 
         tenant_id = flask_request.headers.get("Tenantid")
         auth_token = flask_request.headers.get("Authorization")
+
+        response = requests.get(
+            url=envs.AUTH_MACHINE_CHECK_URL, headers={"Authorization": auth_token}
+        )
+        if response.status_code == 200:
+            return {
+                "status": states.SUCCESS,
+                "message": "Quota is skipped request from a machine",
+            }, 200
+
+        log.warning("Calculating quota based on length of files")
+
         file_objects = flask_request.files.getlist("files[]")
 
         current_units_to_process = len(file_objects)
