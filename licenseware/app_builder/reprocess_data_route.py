@@ -29,36 +29,24 @@ class ReprocessSchema(Schema):
 def get_uploads(tenant_id):
 
     pipeline = [
+        {"$sort": {"updated_at": 1}},
         {
-            '$sort': {
-                'updated_at': 1
-            }
-        }, {
             # TODO: Add only files processed sucesfully too
             # Not possible as of 13.09.2022, don't have processing details on all uploaders.
-            '$match': {
-                'filename_validation.status': 'success', 
-                'file_content_validation.status': 'success'
+            "$match": {
+                "filename_validation.status": "success",
+                "file_content_validation.status": "success",
             }
-        }, {
-            '$group': {
-                '_id': [
-                    '$tenant_id', '$uploader_id'
-                ], 
-                'date': {
-                    '$last': '$updated_at'
-                }, 
-                'uploader_id': {
-                    '$last': '$uploader_id'
-                }, 
-                'files_uploaded': {
-                    '$last': '$files_uploaded'
-                }, 
-                'tenant_id': {
-                    '$last': '$tenant_id'
-                }
+        },
+        {
+            "$group": {
+                "_id": ["$tenant_id", "$uploader_id"],
+                "date": {"$last": "$updated_at"},
+                "uploader_id": {"$last": "$uploader_id"},
+                "files_uploaded": {"$last": "$files_uploaded"},
+                "tenant_id": {"$last": "$tenant_id"},
             }
-        }
+        },
     ]
 
     if tenant_id is not None:
@@ -79,9 +67,9 @@ def get_files(files_uploaded):
 @broker.actor(max_retries=0, queue_name=envs.QUEUE_NAME)
 def send_files(dataset):
     """
-        External Data Service handles the machine token.
+    External Data Service handles the machine token.
 
-        Tenant + machine token doesn't work.
+    Tenant + machine token doesn't work.
     """
     auth_headers = {
         "Tenantid": dataset["tenant_id"],
