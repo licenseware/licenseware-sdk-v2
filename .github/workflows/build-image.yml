@@ -9,9 +9,7 @@ on:
       - published
   schedule:
     # build the images daily (to keep everything up-to-date)
-    - cron:  '0 0 * * *'
-  pull_request:
-
+    - cron: "0 0 * * *"
 
 env:
   REGISTRY: ghcr.io
@@ -49,6 +47,7 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ env.IMAGE_TAG }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ github.head_ref || github.ref_name }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:latest
           labels: |
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
 
@@ -60,6 +59,7 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ env.IMAGE_TAG }}-odbc
             ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ github.head_ref || github.ref_name }}-odbc
+            ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:latest-odbc
           target: odbc
           labels: |
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
