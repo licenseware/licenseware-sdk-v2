@@ -52,6 +52,7 @@ environment:
 
 """
 
+import contextlib
 import json
 import os
 import sys
@@ -77,10 +78,9 @@ if "local" in os.getenv("ENVIRONMENT", "local").lower():
 else:
     _log_format = "[{level}] [----- {name}:{function}:{line} -----]    [+++++ METADATA: {extra} +++++]    [***** MESSAGE: {message}\n"
 
-try:
+with contextlib.suppress(ValueError):
     log.remove(0)
-except:
-    pass  # No default logger
+log.add(sys.stderr, format=_log_format, level=_log_level)
 
 
 class Placeholder(dict):  # HACK: to avoid `str.format_map` error on missing keys
@@ -122,15 +122,6 @@ if not outside_flask:
         else None,
         extra=Placeholder(),
     )
-
-# log.add(
-#     "app.log",
-#     rotation="monthly",
-#     level=_log_level,
-#     format=_log_format
-# )
-
-log.add(sys.stderr, format=_log_format, level=_log_level)
 
 # Pretty logs for dict data
 log_dict = lambda dict_: log.info(json.dumps(dict_, indent=4, sort_keys=True))
