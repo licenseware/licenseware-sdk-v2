@@ -15,7 +15,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_REPOSITORY: ${{ github.repository }}
   IMAGE_TAG: ${{ github.sha }}
 
 jobs:
@@ -25,16 +25,6 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
-
-      - name: Set image tag
-        run: |
-          echo IMAGE_NAME=${{ env.REGISTRY }}/${{ github.repository }} >> $GITHUB_ENV
-
-          if [[ "${{ github.ref_name }}" == "main" ]]; then
-            echo IMAGE_TAG=latest >> $GITHUB_ENV
-          else
-            echo IMAGE_TAG=${{ github.ref_name }} >> $GITHUB_ENV
-          fi
 
       - name: Set up QEMU needed for Docker
         uses: docker/setup-qemu-action@v1
@@ -58,7 +48,7 @@ jobs:
           target: run
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ env.IMAGE_TAG }}
-            ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ github.ref_name }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ github.head_ref || github.ref_name }}
           labels: |
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
 
@@ -69,7 +59,7 @@ jobs:
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ env.IMAGE_TAG }}-odbc
-            ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ github.ref_name }}-odbc
+            ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ github.head_ref || github.ref_name }}-odbc
           target: odbc
           labels: |
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
