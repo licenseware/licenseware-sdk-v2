@@ -5,7 +5,7 @@ from licenseware import mongodata
 from licenseware.common.constants import envs
 
 
-def log_time(func):
+def log_worker_processing_time(func):
     """
     Decorator for adding processing time for an uploader worker to History collection.
 
