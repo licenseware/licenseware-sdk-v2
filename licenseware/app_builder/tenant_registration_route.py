@@ -36,6 +36,12 @@ def add_tenant_registration_route(api: Api, appvars: dict):
         )
         def get(self):
 
+            if not appvars["registrable"]:
+                return {
+                    "status": "success",
+                    "message": "This app doesn't need registration",
+                }, 200
+
             tenant_id = request.args.get("tenant_id")
 
             if not tenant_id:

@@ -30,6 +30,12 @@ def add_app_activation_route(api: Api, appvars: dict):
         )
         def get(self):
 
+            if not appvars["registrable"]:
+                return {
+                    "status": "success",
+                    "message": "This app doesn't need registration",
+                }, 200
+
             tenant_id = request.headers.get("Tenantid")
 
             if not tenant_id:

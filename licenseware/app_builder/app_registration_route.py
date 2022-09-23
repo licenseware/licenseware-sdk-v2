@@ -25,6 +25,11 @@ def add_app_registration_route(api: Api, appvars: dict):
             },
         )
         def get(self):
+            if not appvars["registrable"]:
+                return {
+                    "status": "success",
+                    "message": "This app doesn't need registration",
+                }, 200
             return register_app(**appvars)
 
     return api
