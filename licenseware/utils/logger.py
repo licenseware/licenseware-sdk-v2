@@ -67,8 +67,8 @@ except Exception:
     print("Outside flask context")
     outside_flask = True
 
-_debug = os.getenv("DEBUG", "").lower() == "true"
-_log_level = "DEBUG" if _debug else "WARNING"
+_debug = bool(os.getenv("DEBUG", ""))
+_log_level = os.getenv("LOG_LEVEL", "INFO").upper() if not _debug else "DEBUG"
 
 if "local" in os.getenv("ENVIRONMENT", "local").lower():
     _log_format = """<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green>[ <level>{level}</level> ]
