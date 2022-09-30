@@ -16,6 +16,8 @@ jobs:
           python-version: "3.8.5"
       - name: Prepare
         run: pip install wheel && python setup.py sdist bdist_wheel
+        env:
+          PACKAGE_VERSION: ${{ github.head_ref || github.ref_name }}
       - name: Publish PyPi
         uses: pypa/gh-action-pypi-publish@v1.5.1
         with:

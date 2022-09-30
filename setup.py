@@ -19,7 +19,7 @@ with open("requirements.txt", "r") as f:
     REQUIREMENTS = f.readlines()
 
 
-VERSION = "2.0.3"
+VERSION = os.getenv("PACKAGE_VERSION", "2.0.3")
 
 
 if os.path.exists("./CHANGELOG.md"):
