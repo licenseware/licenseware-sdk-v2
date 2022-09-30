@@ -1,0 +1,16 @@
+name: publish-pypi
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  publish-pypi:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Publish PyPi
+        uses: pypa/gh-action-pypi-publish@v1.5.1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
