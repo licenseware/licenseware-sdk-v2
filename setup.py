@@ -1,16 +1,6 @@
 import os
-import re
-from functools import reduce
 
 from setuptools import find_packages, setup
-
-# https://packaging.python.org/guides/distributing-packages-using-setuptools/?highlight=setup.py#setup-py
-# Distribute py wheels
-# python3 setup.py bdist_wheel sdist
-# twine check dist/*
-# cd dist
-# twine upload *
-
 
 with open("README.md", "r") as f:
     long_description = f.read()
@@ -22,29 +12,25 @@ with open("requirements.txt", "r") as f:
 VERSION = os.getenv("PACKAGE_VERSION", "2.0.3")
 
 
-if os.path.exists("./CHANGELOG.md"):
-
-    with open("CHANGELOG.md", "r") as f:
-        changelog = f.read()
-
-    if "# Changelog" in changelog:
-        version_match = re.match(
-            f"#\s+Changelog\n+#+\s*\[((\d+\.\d+\.\d+))\]\(", changelog
-        )
-        if version_match:
-            VERSION = version_match.group(1)
-
-
 EXTRAS = {
-    "tracing": [
+    "honcho": [
+        "honcho==1.0.1",
+    ],
+    "mongita": [
+        "mongita==1.1.1",
+    ],
+    "opentelemetry": [
         "opentelemetry-distro==0.26b1",
         "opentelemetry-instrumentation==0.26b1",
         "opentelemetry-exporter-otlp==1.7.1",
     ],
+    "kafka": [
+        "confluent-kafka==1.9.0",
+    ],
+    "trend-app": [
+        "trend-app-protect==4.6.2",
+    ],
 }
-# NOTE: remove this when you find how to make the SDK private
-EXTRAS_TMP_HACK = reduce(lambda lst1, lst2: lst1 + lst2, EXTRAS.values(), [])
-
 
 setup(
     name="licenseware",
@@ -56,7 +42,7 @@ setup(
     license="",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    install_requires=REQUIREMENTS + EXTRAS_TMP_HACK,
+    install_requires=REQUIREMENTS,
     packages=find_packages(where=".", exclude=["tests"]),
     include_package_data=True,
     package_data={"": ["*"]},
@@ -65,5 +51,5 @@ setup(
             "licenseware=licenseware.cli:cli_entrypoint",
         ],
     },
-    # extras_require=EXTRAS,
+    extras_require=EXTRAS,
 )
