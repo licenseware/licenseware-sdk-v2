@@ -30,6 +30,9 @@ EXTRAS = {
     "trend-app": [
         "trend-app-protect==4.6.2",
     ],
+    "watchdog": [
+        "dramatiq[watch]",
+    ],
 }
 
 setup(
