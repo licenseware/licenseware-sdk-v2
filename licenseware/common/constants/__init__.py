@@ -14,6 +14,7 @@ from .filters import filters
 from .flags import flags
 from .icons import icons
 from .states import states
+from .base_enum import BaseEnum
 
 try:
     from .envs import envs
