@@ -39,6 +39,7 @@ class envs:
         uuid.uuid5(uuid.NAMESPACE_OID, "desktop-user")
     )  # '2655d513-9883-5b7e-8a14-c030bc1ca3b8'
     APP_ID: str = os.getenv("APP_ID", "") if not DESKTOP_ENVIRONMENT else "api"
+    APP_NAME: str = os.getenv("APP_NAME")
     LWARE_USER: str = (
         os.getenv("LWARE_IDENTITY_USER", "") if not DESKTOP_ENVIRONMENT else "user"
     )

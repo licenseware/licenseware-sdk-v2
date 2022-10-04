@@ -485,9 +485,10 @@ def aggregate(pipeline, collection, as_list=True, db_name=None):
         if not isinstance(collection, Collection):
             return collection
 
-        found_docs = collection.with_options(
-            read_concern=ReadConcern("majority")
-        ).aggregate(pipeline, allowDiskUse=True)
+        # found_docs = collection.with_options(
+        #     read_concern=ReadConcern("majority")
+        # ).aggregate(pipeline, allowDiskUse=True)
+        found_docs = collection.aggregate(pipeline, allowDiskUse=True)
 
         if as_list:
             return [parse_doc(doc) for doc in found_docs]
