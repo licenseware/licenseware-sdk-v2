@@ -1,5 +1,4 @@
-from licenseware.report_components import TableAttrs, SummaryAttrs, StyleAttrs
-
+from licenseware.report_components import StyleAttrs, SummaryAttrs, TableAttrs
 
 # pytest -s -v tests/test_report_attrs_styles.py
 
