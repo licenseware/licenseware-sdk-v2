@@ -114,11 +114,13 @@ class AppBuilder:
         api_decorators: list = None,
         integration_details: List[dict] = None,
         icon: str = "default.png",
+        registrable: bool = True,
         **options,
     ):
 
         self.name = name
         self.app_id = envs.APP_ID
+        self.registrable = registrable
 
         if envs.DEPLOYMENT_SUFFIX is not None:
             self.name = self.name + envs.DEPLOYMENT_SUFFIX

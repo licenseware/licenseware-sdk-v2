@@ -25,6 +25,12 @@ def add_refresh_registration_route(api: Api, app: type):
         )
         def get(self):
 
+            if not app.registrable:
+                return {
+                    "status": "success",
+                    "message": "This app doesn't need registration",
+                }, 200
+
             status_code = 200
             response = app.register_app()
 
