@@ -123,7 +123,3 @@ class Config(BaseSettings):  # pragma no cover
     @property
     def celery_result_backend_uri(self):
         return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}/{self.CELERY_BACKEND_REDIS_DB}"
-
-    class Config:
-        env_file = ".env"
-        case_sensitive = True

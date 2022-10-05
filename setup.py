@@ -33,6 +33,9 @@ EXTRAS = {
     "watchdog": [
         "dramatiq[watch]",
     ],
+    "pydantic": [
+        "pydantic[dotenv]"
+    ],
 }
 
 setup(
