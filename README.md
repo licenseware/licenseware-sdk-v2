@@ -1058,6 +1058,9 @@ A `NotImplmentedError` exception will raise if methods mentioned up are not over
 from licenseware.report_components import BaseReportComponent
 from licenseware.report_components.style_attributes import style_attributes as styles
 from licenseware.common.constants import icons
+# These are v3 implementations of report attributes
+from licenseware.report_components import TableAttrs, SummaryAttrs, StyleAttrs
+
 
 
 class VirtualOverview(BaseReportComponent):
@@ -1111,7 +1114,23 @@ class VirtualOverview(BaseReportComponent):
                 'icon': 'DatabaseIconRounded'
             }
         ]}
-        
+
+        # Or use the v3 implementation of this
+        # Checkout licenseware/report_components/attributesv3 for more info
+
+        summary = (
+            SummaryAttrs()
+            .attr(
+                value_key="number_of_devices",
+                icon="ServersIcon",
+            )
+            .attr(
+                value_key="number_of_databases",
+                icon="DatabaseIconRounded"
+            )
+        )
+        attributes = summary.metadata
+
         # You can also return attributes
         return attributes
         
@@ -1129,6 +1148,10 @@ class VirtualOverview(BaseReportComponent):
             styles.WIDTH_ONE_THIRD
             #etc
         ])
+
+        # Or v3 implementation of style attributes
+        
+        style_attributes = StyleAttrs().width_one_third.metadata
         
         return style_attributes
 
