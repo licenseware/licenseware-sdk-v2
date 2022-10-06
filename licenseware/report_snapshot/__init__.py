@@ -1,1 +1,2 @@
 from .report_snapshot import ReportSnapshot
+from .generate_report_snapshots import generate_report_snaphosts
