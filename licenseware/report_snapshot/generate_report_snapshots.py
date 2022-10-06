@@ -1,6 +1,6 @@
-from licenseware.utils.logger import log
 from licenseware.report_snapshot import ReportSnapshot
 from licenseware.utils.flask_request import get_flask_request
+from licenseware.utils.logger import log
 
 
 def generate_report_snaphosts(tenant_id: str, created_reports):
