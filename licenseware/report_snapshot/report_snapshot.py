@@ -2,6 +2,7 @@ import random
 import string
 import uuid
 from datetime import datetime
+from typing import List
 
 from bson.objectid import ObjectId
 from flask import Request
@@ -11,9 +12,8 @@ from licenseware import mongodata
 from licenseware.common.constants import envs
 from licenseware.mongodata import collection
 from licenseware.report_components.build_match_expression import build_match_expression
-from licenseware.utils.logger import log
 from licenseware.utils.flask_request import get_flask_request
-from typing import List
+from licenseware.utils.logger import log
 
 
 def insert_mongo_limit_skip_filters(skip: int, limit: int, pipeline: List[dict]):
