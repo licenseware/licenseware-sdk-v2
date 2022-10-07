@@ -67,6 +67,12 @@ def build_match_expression(filter_payload: List[dict]) -> dict:
 
     parsed_filter = {}
     for filter_section in filter_payload:
+        if not isinstance(filter_section, dict):
+            continue
+        if sorted(["column", "filter_type", "filter_value"]) != sorted(
+            filter_section.keys()
+        ):
+            continue
         parsed_filter.update(
             condition_switcher[filter_section["filter_type"]](
                 filter_section["column"], filter_section["filter_value"]

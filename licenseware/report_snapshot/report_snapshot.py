@@ -11,6 +11,7 @@ from licenseware import mongodata
 from licenseware.common.constants import envs
 from licenseware.mongodata import collection
 from licenseware.report_components.build_match_expression import build_match_expression
+from licenseware.utils.flask_request import get_flask_request
 
 
 def shortid(length=6):
@@ -33,7 +34,7 @@ class ReportSnapshot:
         self.tenant_id = flask_request.headers.get("Tenantid")
         self.report_id = self.report.report_id
         self.report_uuid = str(uuid.uuid4())
-        self.version = self.request.args.get("version", shortid())
+        self.version = self.request.args.get("version") or shortid()
         self.snapshot_date = datetime.utcnow().isoformat()
 
     def get_snapshot_version(self):
@@ -52,7 +53,8 @@ class ReportSnapshot:
             pipeline, collection=envs.MONGO_COLLECTION_REPORT_SNAPSHOTS_NAME
         )
 
-        return results[0] if len(results) == 1 else results
+        # [{'versions': ['DS4PZM']}]
+        return results[0]["versions"] if results else []
 
     def get_snapshot_metadata(self):
 
@@ -73,17 +75,19 @@ class ReportSnapshot:
         Create a mongo `$match` filter with tenant_id and filters sent from frontend
         """
 
-        if self.request.json is None:
-            received_filters = []
-        elif isinstance(self.request.json, dict):
+        received_filters = []
+        if isinstance(self.request.json, dict):
             received_filters = [self.request.json]
-        elif isinstance(self.request.json, list):
-            received_filters = self.request.json
-        else:
-            raise Exception("Only list or objects are accepted")
+
+        parsed_filters = []
+        for filter in received_filters:
+            if isinstance(filter, dict) and sorted(
+                ["column", "filter_type", "filter_value"]
+            ) == sorted(filter.keys()):
+                parsed_filters.append(filter)
 
         # Inserting filter by tenant_id
-        received_filters.insert(
+        parsed_filters.insert(
             0,
             {
                 "column": "tenant_id",
@@ -92,9 +96,9 @@ class ReportSnapshot:
             },
         )
 
-        filters = build_match_expression(received_filters)
+        filters = build_match_expression(parsed_filters)
 
-        return filters
+        return [filters]
 
     def get_snapshot_component(self):
 
@@ -296,7 +300,16 @@ class ReportSnapshot:
 
     def insert_component_data(self, comp, report_metadata):
 
-        component_data = comp.get_data(self.request)
+        flask_request = get_flask_request(
+            headers={
+                "Tenantid": self.request.headers.get("Tenantid"),
+                "TenantId": self.request.headers.get("Tenantid"),
+                "Authorization": self.request.headers.get("Authorization"),
+            },
+            json=self.get_mongo_match_filters(),
+        )
+
+        component_data = comp.get_data(flask_request)
         component_pinned = {
             "for_report_uuid": self.report_uuid,
             "component_uuid": str(uuid.uuid4()),
