@@ -59,7 +59,11 @@ def save_file_content_validation(metadata, response):
 
     file_content_validation = []
     for cv in response["event_data"]:
-        file_content_validation.extend(cv["validation_response"]["validation"])
+        if "message" in cv["validation_response"]:
+            if cv["validation_response"]["message"] == "Monthly quota exceeded":
+                return
+        else:
+            file_content_validation.extend(cv["validation_response"]["validation"])
 
     filepaths = []
     for cv in response["event_data"]:
