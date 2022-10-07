@@ -11,7 +11,41 @@ from licenseware import mongodata
 from licenseware.common.constants import envs
 from licenseware.mongodata import collection
 from licenseware.report_components.build_match_expression import build_match_expression
+from licenseware.utils.logger import log
 from licenseware.utils.flask_request import get_flask_request
+from typing import List
+
+
+def insert_mongo_limit_skip_filters(skip: int, limit: int, pipeline: List[dict]):
+
+    if isinstance(skip, str):
+        try:
+            skip = int(skip)
+        except:
+            skip = None
+
+    if isinstance(limit, str):
+        try:
+            limit = int(limit)
+        except:
+            limit = None
+
+    if not isinstance(skip, int):
+        return pipeline
+
+    if not isinstance(limit, int):
+        return pipeline
+
+    if skip < 0:  # pragma no cover
+        return pipeline
+
+    if limit <= 0:
+        return pipeline
+
+    pipeline = pipeline + [{"$skip": skip}]
+    pipeline = pipeline + [{"$limit": limit}]
+
+    return pipeline
 
 
 def shortid(length=6):
@@ -70,7 +104,7 @@ class ReportSnapshot:
 
         return results[0] if len(results) == 1 else results
 
-    def get_mongo_match_filters(self):
+    def get_mongo_match_filters(self, getlist=True):
         """
         Create a mongo `$match` filter with tenant_id and filters sent from frontend
         """
@@ -98,17 +132,14 @@ class ReportSnapshot:
 
         filters = build_match_expression(parsed_filters)
 
-        return [filters]
+        return [filters] if getlist else filters
 
     def get_snapshot_component(self):
 
         limit = self.request.args.get("limit")
         skip = self.request.args.get("skip")
 
-        if skip and not limit or limit and not skip:
-            return "Limit and skip must be set together", 400
-
-        match_filters = self.get_mongo_match_filters()
+        match_filters = self.get_mongo_match_filters(False)
 
         pipeline = [
             {
@@ -125,9 +156,9 @@ class ReportSnapshot:
             },
         ]
 
-        if skip and limit:
-            pipeline.insert(-1, {"$limit": int(limit)})
-            pipeline.insert(-1, {"$skip": int(skip)})
+        pipeline = insert_mongo_limit_skip_filters(skip, limit, pipeline)
+
+        log.warning(f"Helooo: {pipeline}")
 
         results = mongodata.aggregate(
             pipeline, collection=envs.MONGO_COLLECTION_REPORT_SNAPSHOTS_NAME
