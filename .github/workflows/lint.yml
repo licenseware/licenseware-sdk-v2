@@ -1,4 +1,4 @@
-name: Run linters
+name: linter
 
 on:
   push:
@@ -10,7 +10,7 @@ jobs:
   linter:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         name: Checkout
 
       - uses: actions/setup-python@v2
@@ -28,4 +28,4 @@ jobs:
         uses: EndBug/add-and-commit@v9.1.0
         with:
           message: "chore: lint 🚨"
-          new_branch: ${{ github.head_ref || github.ref_name }} 
+          new_branch: ${{ github.head_ref || github.ref_name }}
