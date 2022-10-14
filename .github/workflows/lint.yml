@@ -1,4 +1,4 @@
-name: Run linters
+name: linter
 
 on:
   push:
@@ -28,4 +28,4 @@ jobs:
         uses: EndBug/add-and-commit@v9.1.0
         with:
           message: "chore: lint 🚨"
-          new_branch: ${{ github.head_ref || github.ref_name }} 
+          new_branch: ${{ github.head_ref || github.ref_name }}
