@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - meysam/upgrade-deprecated-action
   schedule:
     - cron: 0 0 * * *
 
@@ -36,5 +37,5 @@ jobs:
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ github.sha }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:latest
+            ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ github.sha }}
