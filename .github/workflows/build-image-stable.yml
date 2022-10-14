@@ -1,4 +1,4 @@
-name: build-image-prod
+name: build-image-stable
 
 on:
   release:
