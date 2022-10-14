@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - meysam/optimize-dockerfile-and-pipelines
   schedule:
     - cron: 0 0 * * *
 
