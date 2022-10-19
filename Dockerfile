@@ -9,6 +9,7 @@ ARG REQUIREMENTS=requirements.txt
 ARG USER=licenseware
 ARG UID=1000
 ARG GID=1000
+ARG HOMEDIR=/home/${USER}
 
 ENV BUILDDIR=${BUILDDIR} \
     WHEELDIR=${WHEELDIR} \
@@ -16,6 +17,8 @@ ENV BUILDDIR=${BUILDDIR} \
     USER=${USER} \
     UID=${UID} \
     GID=${GID} \
+    PATH=${HOMEDIR}/.local/bin:${PATH} \
+    DEBIAN_FRONTEND=noninteractive \
     PYTHONUNBUFFERED=1
 
 RUN pip install -U pip && \
@@ -42,7 +45,7 @@ RUN pip wheel -r ${BUILDDIR}/${REQUIREMENTS} -w ${WHEELDIR}
 # final image
 FROM base AS run
 
-ARG HOMEDIR=/home/${USER}
+ARG HOMEDIR
 ARG SDKDIR=${HOMEDIR}/sdk
 ARG SERVICEDIR=${HOMEDIR}/service
 ARG FILE_UPLOAD_PATH=/tmp/lware
