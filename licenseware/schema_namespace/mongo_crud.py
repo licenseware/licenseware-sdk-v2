@@ -28,6 +28,8 @@ class MongoCrud:
         """Add query params that equal _id or id to the params dict"""
         params = {}
         for key, value in flask_request.args.items():
+            if key == "component_id":
+                params["component_id"] = value
             if key == "_id":
                 validate__id(value)
                 params["_id"] = value
