@@ -1,5 +1,16 @@
 # Licenseware SDK
 
+![Package Verions](https://img.shields.io/pypi/v/licenseware)
+![Python Verions](https://img.shields.io/pypi/pyversions/licenseware)
+![Package Downloads](https://img.shields.io/pypi/dw/licenseware)
+![PyPi Wheel](https://img.shields.io/pypi/wheel/licenseware)
+![Package Status](https://img.shields.io/pypi/status/licenseware)
+![License](https://img.shields.io/pypi/l/licenseware)
+![Commit Activity](https://img.shields.io/github/commit-activity/m/licenseware/licenseware-sdk-v2)
+![Release Date](https://img.shields.io/github/release-date/licenseware/licenseware-sdk-v2)
+![Code Size](https://img.shields.io/github/languages/code-size/licenseware/licenseware-sdk-v2)
+![Repo Size](https://img.shields.io/github/repo-size/licenseware/licenseware-sdk-v2)
+
 This is the licenseware **Python3** sdk useful for quickly create apps. 
 The SDK handles the repetetive actions needed for creating an app (file uploads/validation, background events, api routes and more). 
 It helps you focus on processsing the files needed and creating reports.  
@@ -8,18 +19,32 @@ It helps you focus on processsing the files needed and creating reports.
 
 # Contents
 
-1. [Quickstart](#quickstart)
-2. [What is an `App`?](#what-is-an-app)
-3. [Set environment variables](#set-environment-variables)
-4. [`App` declaration](#app-declaration)
-5. [`Uploader` declaration](#uploader-declaration)
-6. [`Report` declaration](#report-declaration)
-7. [Custom namespaces](#custom-namespaces)
-8. [Endpoints from simple functions](#endpoints-from-simple-functions)
-9. [The `main` file](#the-main-file)
-10. [Licenseware CLI](#licenseware-cli) 
-11. [Working on SDK](#working-on-sdk) 
-12. [PUBSUB](#pubsub) 
+- [Licenseware SDK](#licenseware-sdk)
+- [Contents](#contents)
+- [Quickstart](#quickstart)
+  - [Installation](#installation)
+  - [SDK new version release](#sdk-new-version-release)
+  - [A minimal app](#a-minimal-app)
+- [What is an `App`?](#what-is-an-app)
+- [Set environment variables](#set-environment-variables)
+- [`App` declaration](#app-declaration)
+- [`Uploader` declaration](#uploader-declaration)
+  - [Creating the `worker_function`](#creating-the-worker_function)
+  - [Creating the `validator_class`](#creating-the-validator_class)
+- [`Report` declaration](#report-declaration)
+  - [Creating the `Report component`](#creating-the-report-component)
+  - [Creating the `Report`](#creating-the-report)
+- [Custom namespaces](#custom-namespaces)
+- [Endpoints from simple functions](#endpoints-from-simple-functions)
+- [The `main` file](#the-main-file)
+- [Licenseware CLI](#licenseware-cli)
+  - [Create the app from CLI](#create-the-app-from-cli)
+  - [Create a new uploader from CLI](#create-a-new-uploader-from-cli)
+  - [Create a new report from CLI](#create-a-new-report-from-cli)
+  - [Create a new report component from CLI](#create-a-new-report-component-from-cli)
+- [Working on SDK](#working-on-sdk)
+- [Load testing](#load-testing)
+- [PUBSUB](#pubsub)
 
 
 <a name="quickstart"></a>
