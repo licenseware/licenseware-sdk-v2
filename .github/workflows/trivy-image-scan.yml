@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - main
-      - meysam/feat/gha-trivy-scan
 
 env:
   IMAGE_REPOSITORY: ${{ github.repository }}
