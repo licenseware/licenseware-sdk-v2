@@ -5,7 +5,7 @@
 [![Package Downloads](https://img.shields.io/pypi/dw/licenseware)](https://pypi.org/project/licenseware)
 [![PyPi Wheel](https://img.shields.io/pypi/wheel/licenseware)](https://pypi.org/project/licenseware)
 [![Package Status](https://img.shields.io/pypi/status/licenseware)](https://pypi.org/project/licenseware)
-[![License](https://img.shields.io/github/license/licenseware/licenseware-sdk-v2)](https://pypi.org/project/licenseware)
+[![License](https://img.shields.io/pypi/l/licenseware)](https://github.com/licenseware/licenseware-sdk-v2/blob/main/LICENSE)
 [![Commit Activity](https://img.shields.io/github/commit-activity/m/licenseware/licenseware-sdk-v2)](https://github.com/licenseware/licenseware-sdk-v2)
 [![Release Date](https://img.shields.io/github/release-date/licenseware/licenseware-sdk-v2)](https://github.com/licenseware/licenseware-sdk-v2/releases)
 [![Code Size](https://img.shields.io/github/languages/code-size/licenseware/licenseware-sdk-v2)](https://github.com/licenseware/licenseware-sdk-v2)
