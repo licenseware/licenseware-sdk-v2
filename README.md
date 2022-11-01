@@ -1,15 +1,15 @@
 # Licenseware SDK
 
-![Package Verions](https://img.shields.io/pypi/v/licenseware)
-![Python Verions](https://img.shields.io/pypi/pyversions/licenseware)
-![Package Downloads](https://img.shields.io/pypi/dw/licenseware)
-![PyPi Wheel](https://img.shields.io/pypi/wheel/licenseware)
-![Package Status](https://img.shields.io/pypi/status/licenseware)
-![License](https://img.shields.io/pypi/l/licenseware)
-![Commit Activity](https://img.shields.io/github/commit-activity/m/licenseware/licenseware-sdk-v2)
-![Release Date](https://img.shields.io/github/release-date/licenseware/licenseware-sdk-v2)
-![Code Size](https://img.shields.io/github/languages/code-size/licenseware/licenseware-sdk-v2)
-![Repo Size](https://img.shields.io/github/repo-size/licenseware/licenseware-sdk-v2)
+[![Package Verions](https://img.shields.io/pypi/v/licenseware)](https://pypi.org/project/licenseware)
+[![Python Verions](https://img.shields.io/pypi/pyversions/licenseware)](https://pypi.org/project/licenseware)
+[![Package Downloads](https://img.shields.io/pypi/dw/licenseware)](https://pypi.org/project/licenseware)
+[![PyPi Wheel](https://img.shields.io/pypi/wheel/licenseware)](https://pypi.org/project/licenseware)
+[![Package Status](https://img.shields.io/pypi/status/licenseware)](https://pypi.org/project/licenseware)
+[![License](https://img.shields.io/github/license/licenseware/licenseware-sdk-v2)](https://pypi.org/project/licenseware)
+[![Commit Activity](https://img.shields.io/github/commit-activity/m/licenseware/licenseware-sdk-v2)](https://github.com/licenseware/licenseware-sdk-v2)
+[![Release Date](https://img.shields.io/github/release-date/licenseware/licenseware-sdk-v2)](https://github.com/licenseware/licenseware-sdk-v2/releases)
+[![Code Size](https://img.shields.io/github/languages/code-size/licenseware/licenseware-sdk-v2)](https://github.com/licenseware/licenseware-sdk-v2)
+[![Repo Size](https://img.shields.io/github/repo-size/licenseware/licenseware-sdk-v2)](https://github.com/licenseware/licenseware-sdk-v2)
 
 This is the licenseware **Python3** sdk useful for quickly create apps. 
 The SDK handles the repetetive actions needed for creating an app (file uploads/validation, background events, api routes and more). 
