@@ -1,8 +1,10 @@
 import traceback
 from datetime import datetime
+
 from licenseware.utils.logger import log as logg
-from .schemas import HistoryFilesSchema, HistorySchema
+
 from . import utils
+from .schemas import HistoryFilesSchema, HistorySchema
 
 
 def get_metadata(func, func_args, func_kwargs):

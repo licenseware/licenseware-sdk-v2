@@ -2,8 +2,9 @@ import inspect
 import json
 import os
 
-from .func import get_value_from_func
 from licenseware.utils.alter_string import get_altered_strings
+
+from .func import get_value_from_func
 
 
 def get_entities(func, func_args, func_kwargs):

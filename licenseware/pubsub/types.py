@@ -45,7 +45,6 @@ class EventType:
     PROCESSING_DETAILS = "ProcessingDetails"
     ENTITIES_EXTRACTED = "EntitiesExtracted"
 
-
     NEW_NOTIFICATION: str = "NewNotification"
     UPLOADER_STATUS_UPDATED: str = "UploaderStatusUpdated"
     REPORT_DATA_AVAILABLE: str = "ReportDataAvailable"

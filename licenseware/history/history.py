@@ -4,7 +4,7 @@ from functools import wraps
 from typing import Callable
 
 from licenseware.pubsub.producer import Producer
-from licenseware.pubsub.types import TopicType, EventType
+from licenseware.pubsub.types import EventType, TopicType
 
 from .metadata import get_metadata
 from .schemas import HistorySchema, Status
