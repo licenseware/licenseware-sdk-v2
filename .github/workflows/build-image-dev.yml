@@ -35,7 +35,6 @@ jobs:
         with:
           images: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ github.sha }}
-            ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:latest
       - name: Build and push Docker image
         uses: docker/build-push-action@v3
         with:
