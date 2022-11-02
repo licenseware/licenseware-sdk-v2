@@ -42,5 +42,4 @@ jobs:
           context: .
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ github.sha }}
-          platforms: linux/amd64,linux/arm64
           labels: ${{ steps.meta.outputs.labels }}
