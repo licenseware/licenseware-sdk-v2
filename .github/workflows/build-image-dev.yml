@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - meysam/feat/docker-meta-action
   schedule:
     - cron: 0 0 * * *
 
@@ -28,13 +29,18 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-      - name: Build and push base image
-        uses: docker/build-push-action@v3
+      - name: Docker metadata
+        id: meta
+        uses: docker/metadata-action@v4
         with:
-          context: .
-          labels: |
-            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
-          push: true
-          tags: |
+          images: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ github.sha }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:latest
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          context: .
+          tags: ${{ steps.meta.outputs.tags }}
+          platforms: linux/amd64,linux/arm64
+          labels: ${{ steps.meta.outputs.labels }}
