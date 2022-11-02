@@ -12,7 +12,7 @@ from licenseware.uploader_encryptor import UploaderEncryptor
 from licenseware.uploader_validator.uploader_validator import UploaderValidator
 from licenseware.utils.dramatiq_redis_broker import broker
 from licenseware.utils.logger import log
-from licenseware.utils.miscellaneous import get_flask_request_dict
+from licenseware.history.schemas import EventTypes
 
 
 class UploaderBuilder:
@@ -84,10 +84,13 @@ class UploaderBuilder:
         self.uploader_id = uploader_id
         self.quota_units = quota_units
         self.name = name
+        self.uploader_name = name
         self.description = description
         self.validator_class = validator_class
         self.app_id = envs.APP_ID
+        self.app_name = envs.APP_NAME
         self.one_event_per_file = one_event_per_file
+        self.event_type = EventTypes.FILE_VALIDATION
 
         if worker_function is None:
             self.worker = None
@@ -135,7 +138,7 @@ class UploaderBuilder:
             raise Exception("Uploader can't register to registry service")
         return response, status_code
 
-    @history.log
+    # @history.log
     def validate_filenames(self, flask_request: Request):
         """Validate file names provided by user"""
 
@@ -228,17 +231,17 @@ class UploaderBuilder:
         }, 402
 
     @history.log
-    def upload_files(self, flask_request: Request, event_id: str = None):
+    def upload_files(self, flask_request, event_id, **serialized_flask_request):
         """Validate file content provided by user and send files for processing if they are valid"""
 
-        tenant_id = flask_request.headers.get("TenantId")
-        serialized_flask_request = get_flask_request_dict(flask_request)
-
-        if envs.DESKTOP_ENVIRONMENT and tenant_id is None:
-            tenant_id = envs.DESKTOP_TENANT_ID
+        tenant_id = serialized_flask_request.get("TenantId")
+        assert tenant_id, "Field `TenantId` not found in `serialized_flask_request`"
 
         event = {
             "tenant_id": tenant_id,
+            "app_id": self.app_id,
+            "app_name": self.app_name,
+            "uploader_name": self.uploader_name,
             "uploader_id": self.uploader_id,
             "event_id": event_id,
         }
@@ -260,6 +263,9 @@ class UploaderBuilder:
             events = [
                 {
                     "tenant_id": tenant_id,
+                    "app_id": self.app_id,
+                    "app_name": self.app_name,
+                    "uploader_name": self.uploader_name,
                     "uploader_id": self.uploader_id,
                     "event_id": event_id,
                     "filepaths": [filepath],
