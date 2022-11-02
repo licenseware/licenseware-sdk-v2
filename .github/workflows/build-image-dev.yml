@@ -34,12 +34,13 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}
       - name: Build and push Docker image
         uses: docker/build-push-action@v3
         with:
           push: true
           context: .
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ github.sha }}
           platforms: linux/amd64,linux/arm64
           labels: ${{ steps.meta.outputs.labels }}
