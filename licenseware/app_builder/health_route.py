@@ -7,6 +7,7 @@ See `editable_table` package for more information.
 """
 
 from flask_restx import Api, Resource
+
 from licenseware.decorators import failsafe
 
 

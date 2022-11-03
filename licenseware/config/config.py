@@ -1,5 +1,6 @@
-from licenseware.constants.base_enum import BaseEnum
 from pydantic import BaseSettings
+
+from licenseware.constants.base_enum import BaseEnum
 
 
 class Collections(BaseEnum):

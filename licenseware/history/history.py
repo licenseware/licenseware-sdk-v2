@@ -1,15 +1,16 @@
 import time
 import traceback
-from functools import wraps
-from typing import Callable, Union, List
 from datetime import datetime
+from functools import wraps
+from typing import Callable, List, Union
 
 from licenseware.constants.worker_event_type import WorkerEvent
 from licenseware.pubsub.producer import Producer
-from licenseware.pubsub.types import TopicType, EventType
+from licenseware.pubsub.types import EventType, TopicType
 from licenseware.utils.logger import log as logg
+
 from .metadata import get_metadata
-from .schemas import HistorySchema, Status, EventTypes
+from .schemas import EventTypes, HistorySchema, Status
 from .utils import get_kafka_producer
 
 

@@ -5,6 +5,7 @@ from flask import Request
 from licenseware import history
 from licenseware.common.constants import envs, states
 from licenseware.common.validators.validate_event import validate_event
+from licenseware.history.schemas import EventTypes
 from licenseware.notifications import notify_upload_status
 from licenseware.quota import Quota
 from licenseware.registry_service.register_uploader import register_uploader
@@ -12,7 +13,6 @@ from licenseware.uploader_encryptor import UploaderEncryptor
 from licenseware.uploader_validator.uploader_validator import UploaderValidator
 from licenseware.utils.dramatiq_redis_broker import broker
 from licenseware.utils.logger import log
-from licenseware.history.schemas import EventTypes
 
 
 class UploaderBuilder:

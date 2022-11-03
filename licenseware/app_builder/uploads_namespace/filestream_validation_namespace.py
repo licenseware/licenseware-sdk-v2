@@ -8,6 +8,7 @@ We need to separate the resource from the restx namespace, otherwise the resourc
 
 import uuid
 from typing import List
+
 from flask import request
 from flask_restx import Namespace, Resource
 from marshmallow import Schema, fields
