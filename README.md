@@ -1293,32 +1293,49 @@ Let's see how to apply history on `ProcessRVToolsEvent`:
 ```python
 from licenseware import history
 from licenseware.constants.worker_event_type import WorkerEvent
-from licenseware.dependencies import get_kafka_producer
-from settings import config
 from licenseware.pubsub.types import EventType
+from licenseware.repository import MongoRepository
+from app.dependencies import producer, mongodb_connection
+
 
 class ProcessRVToolsEvent:
     def __init__(self, event: dict) -> None:
         self.event = WorkerEvent(**event)
-        self.filepath = self.event.filepaths[0]
-        self.filename = os.path.basename(self.event.filepaths[0])
-        self.producer = get_kafka_producer(config)
+        self.filepath = None
+        self.filename = None
+        self.producer = producer
         self.event_type = EventType.PROCESSING_DETAILS
+        self.repo = MongoRepository(
+            mongodb_connection, 
+            collection="SomeCollection", 
+            data_validator="ignore"
+        )
     
     @history.log # decorate the function you need to save in history
-    def some_func(self):
-        return "ok"
-
-    def publishing_some_entities(self):
-
+    def get_data(self, fp: str):
         # here we are pushing some entities to stream
         history.publish_entities(
             self.producer,
             self.event,
             entities=["some-entiry-here"],
         )
-
         return "ok"
+
+    @history.log
+    def save_data(self, data: dict):
+        return self.repo.insert_one(data)
+        
+    # this one is the main function which triggers the processing pipe
+    def run_pipeline(self):
+
+        for fp in self.event.filepaths:
+            # Update the filepath/filename to self so th l
+            self.filepath = fp
+            self.filename = os.path.basename(fp)
+            # Data processing pipeline:
+            data = self.get_data(fp)
+            save_data(data)
+
 
 event = {
     "tenant_id": str(uuid.uuid4()),
@@ -1333,6 +1350,7 @@ event = {
 
 ```
 
+If you can't use the `history.log` decorator for some reason you can directly call `history.publish` and provide the required information need to publish to kafka.
 
 
 <a name="custom-namespaces"></a>
