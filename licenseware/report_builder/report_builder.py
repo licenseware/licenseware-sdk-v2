@@ -55,7 +55,7 @@ class ReportBuilder:
         self.public_report_path = self.report_path + "/public"
         self.register_report_path = self.report_path + "/register"
         self.registrable = registrable
-        self.connected_apps = connected_apps
+        self.connected_apps = [envs.APP_ID].append(connected_apps)
         self.app_id = envs.APP_ID
         self.flags = flags
 
