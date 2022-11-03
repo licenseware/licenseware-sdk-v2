@@ -35,6 +35,7 @@ It helps you focus on processsing the files needed and creating reports.
 - [`Report` declaration](#report-declaration)
   - [Creating the `Report component`](#creating-the-report-component)
   - [Creating the `Report`](#creating-the-report)
+- [History](#history)
 - [Custom namespaces](#custom-namespaces)
 - [Endpoints from simple functions](#endpoints-from-simple-functions)
 - [The `main` file](#the-main-file)
@@ -1258,6 +1259,79 @@ Reports api will be handled by the `ifmp_app` instance.
 
 
 
+
+<a name="history"></a>
+# History
+
+History is useful for provinding a live log of the processing step
+
+Recap in the worker function:
+
+```python
+from settings import config
+from licenseware import States, log
+
+from .rv_tools_data_worker import ProcessRVToolsEvent
+
+
+def rv_tools_worker(event: dict):
+
+    log.info("Starting working")
+    log.debug(event)
+
+    notify_upload_status(event, status=states.RUNNING)
+    try:
+        ProcessRVToolsEvent(event).run_processing_pipeline()
+    finally:
+        log.info("Finished working")
+        notify_upload_status(event, status=states.IDLE)
+
+```
+
+Let's see how to apply history on `ProcessRVToolsEvent`:
+
+```python
+from licenseware import history
+from licenseware.constants.worker_event_type import WorkerEvent
+from licenseware.dependencies import get_kafka_producer
+from settings import config
+from licenseware.pubsub.types import EventType
+
+class ProcessRVToolsEvent:
+    def __init__(self, event: dict) -> None:
+        self.event = WorkerEvent(**event)
+        self.filepath = self.event.filepaths[0]
+        self.filename = os.path.basename(self.event.filepaths[0])
+        self.producer = get_kafka_producer(config)
+        self.event_type = EventType.PROCESSING_DETAILS
+    
+    @history.log # decorate the function you need to save in history
+    def some_func(self):
+        return "ok"
+
+    def publishing_some_entities(self):
+
+        # here we are pushing some entities to stream
+        history.publish_entities(
+            self.producer,
+            self.event,
+            entities=["some-entiry-here"],
+        )
+
+        return "ok"
+
+event = {
+    "tenant_id": str(uuid.uuid4()),
+    "authorization": str(uuid.uuid4()),
+    "uploader_id": "rv_tools",
+    "uploader_name": "RvTOOLS",
+    "event_id": str(uuid.uuid4()),
+    "app_id": "ifmp-service",
+    "app_name": "Infra App",
+    "filepaths": ["tests/test_data/comma.csv"],
+}
+
+```
 
 
 

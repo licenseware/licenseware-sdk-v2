@@ -1,6 +1,1 @@
-from .history import (
-    log,
-    log_file_validation,
-    log_processing_failure,
-    log_processing_success,
-)
+from .history import log, publish, publish_entities

@@ -27,11 +27,11 @@ class HistorySchema(BaseModel):
     tenant_id: str
     event_id: str
     event_type: EventTypes
-    step: str = None  # "1 of 12"
     description: str  # "docstring" or "funcname" parsed extracting_devices > Extracting Devices
-    status: Status = None
     updated_at: str
-    files: List[HistoryFilesSchema]
+    step: str = None  # "1 of 12"
+    status: Status = Status.SUCCESS
+    files: List[HistoryFilesSchema] = None
     entities: List[Union[str, dict]] = None
     processing_time: str = None
     source: str = None

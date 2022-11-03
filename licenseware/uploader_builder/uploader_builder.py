@@ -50,6 +50,7 @@ class UploaderBuilder:
         validator_class: UploaderValidator,
         worker_function: Callable,
         quota_units: int,
+        app_name: str = None,
         flags: list = None,
         encryptor_class: UploaderEncryptor = None,
         status: str = states.IDLE,
@@ -88,7 +89,7 @@ class UploaderBuilder:
         self.description = description
         self.validator_class = validator_class
         self.app_id = envs.APP_ID
-        self.app_name = envs.APP_NAME
+        self.app_name = app_name or envs.APP_NAME
         self.one_event_per_file = one_event_per_file
         self.event_type = EventTypes.FILE_VALIDATION
 

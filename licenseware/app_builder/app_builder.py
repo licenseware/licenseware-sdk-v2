@@ -28,10 +28,12 @@ from licenseware.app_builder.features_namespace import (
     features_namespace,
     get_features_namespace,
 )
+
 from licenseware.app_builder.features_route import add_features_route
 from licenseware.app_builder.refresh_registration_route import (
     add_refresh_registration_route,
 )
+from licenseware.app_builder.health_route import add_health_route
 from licenseware.app_builder.report_components_namespace import (
     get_report_individual_components_namespace,
     report_components_namespace,
@@ -96,6 +98,7 @@ class base_paths:
     features_path: str = "/features"
     data_sync_path: str = "/data-sync"
     reprocess_data_path: str = "/reprocess-data"
+    health_path: str = "/healthz"
 
 
 class AppBuilder:
@@ -151,6 +154,7 @@ class AppBuilder:
         self.features_path = base_paths.features_path
         self.data_sync_path = base_paths.data_sync_path
         self.reprocess_data_path = base_paths.reprocess_data_path
+        self.health_path = base_paths.health_path
 
         self.app_activation_url = envs.BASE_URL + self.app_activation_path
         self.refresh_registration_url = envs.BASE_URL + self.refresh_registration_path
@@ -161,6 +165,7 @@ class AppBuilder:
         self.features_url = envs.BASE_URL + self.features_path
         self.data_sync_url = envs.BASE_URL + self.data_sync_path
         self.reproces_data_url = envs.BASE_URL + self.reprocess_data_path
+        self.health_url = envs.BASE_URL + self.health_path
 
         self.authorizations = doc_authorizations
         self.decorators = [] if api_decorators is None else api_decorators
@@ -259,6 +264,7 @@ class AppBuilder:
         # Here we are adding the routes available for each app
         # Api must be passed from route function back to this context
         api_funcs = [
+            add_health_route,
             add_refresh_registration_route,
             add_editable_tables_route,
             add_tenant_registration_route,
@@ -338,6 +344,13 @@ class AppBuilder:
                 self.register_namespace(ns)
 
     def add_features_routes(self):
+
+        ns_funcs = [get_features_namespace]
+
+        for func in ns_funcs:
+            self.register_namespace(func(ns=features_namespace, features=self.features))
+
+    def add_health_routes(self):
 
         ns_funcs = [get_features_namespace]
 

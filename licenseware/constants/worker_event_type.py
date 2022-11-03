@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 from typing import List
 
 
@@ -14,3 +14,6 @@ class WorkerEvent:
     filepaths: List[str]
     clear_data: bool = False
     event_type: str = "ProcessingDetails"
+
+    def dict(self):
+        return asdict(self)

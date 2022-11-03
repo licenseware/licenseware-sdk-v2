@@ -74,15 +74,15 @@ class Config(BaseSettings):  # pragma no cover
     REGISTRY_SERVICE_REPORTS_URL: str = None
     REGISTRY_SERVICE_COMPONENTS_URL: str = None
 
-    MONGO_HOST: str = None
-    MONGO_DBNAME: str = None
+    # mongodb://lware:lware-secret@localhost:27017
+    MONGO_HOST: str = "mongodb"
+    MONGO_DBNAME: str = "db"
     MONGO_PORT: int = 27017
-
-    MONGO_USER: str = None
-    MONGO_PASSWORD: str = None
+    MONGO_USER: str = "lware"
+    MONGO_PASSWORD: str = "lwaredev"
     MONGO_COLLECTION: Collections = Collections
 
-    REDIS_HOST: str = None
+    REDIS_HOST: str = "redis"
     REDIS_PORT: int = 6379
     REDIS_DB: int = 0
     REDIS_RESULT_CACHE_DB: int = 1
@@ -93,7 +93,7 @@ class Config(BaseSettings):  # pragma no cover
     EXPIRE_MACHINE_CHECK: int = 60  # 1 minute
     EXPIRE_NOTIFICATION: int = 259_200  # 3 days
 
-    KAFKA_BROKER_URL: str = None
+    KAFKA_BROKER_URL: str = "PLAINTEXT://kafka:9092"
     KAFKA_CONSUMER_POLL: float = 1.0
     KAFKA_SECURITY_PROTOCOL: str = "PLAINTEXT"
 

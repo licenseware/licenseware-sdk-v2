@@ -1,13 +1,15 @@
 import time
 import traceback
 from functools import wraps
-from typing import Callable
+from typing import Callable, Union, List
+from datetime import datetime
 
+from licenseware.constants.worker_event_type import WorkerEvent
 from licenseware.pubsub.producer import Producer
 from licenseware.pubsub.types import TopicType, EventType
 from licenseware.utils.logger import log as logg
 from .metadata import get_metadata
-from .schemas import HistorySchema, Status
+from .schemas import HistorySchema, Status, EventTypes
 from .utils import get_kafka_producer
 
 
@@ -31,33 +33,36 @@ def get_processing_time(start_time: float):
     return processing_time
 
 
-def log_processing_success(
-    producer: Producer,
-    metadata: HistorySchema,
-    start_time: float = None,
-):
-    metadata.processing_time = get_processing_time(start_time)
-    metadata.status = Status.SUCCESS
-    metadata.event_type = EventType.PROCESSING_DETAILS
+def publish(producer: Producer, metadata: Union[dict, HistorySchema], **kwargs):
+    if isinstance(metadata, dict):
+        metadata = HistorySchema(**metadata)
+    metadata.processing_time = get_processing_time(kwargs.get("start_time"))
+    metadata.status = metadata.status or kwargs.get("status")
+    metadata.event_type = metadata.event_type or kwargs.get("event_type")
+    metadata.error = metadata.error or kwargs.get("error")
+    metadata.traceback = metadata.traceback or kwargs.get("traceback")
     producer.publish(TopicType.LOG_EVENTS, metadata.dict())
     return metadata
 
 
-def log_processing_failure(
+def publish_entities(
     producer: Producer,
-    metadata: HistorySchema,
-    start_time: float = None,
-    error: str = None,
-    traceback: str = None,
+    metadata: Union[dict, HistorySchema, WorkerEvent],
+    entities: Union[List[str], List[dict]],
 ):
-    metadata.processing_time = get_processing_time(start_time)
-    metadata.error = error
-    metadata.traceback = traceback
-    metadata.status = Status.FAILED
-    metadata.event_type = EventType.PROCESSING_DETAILS
-    logg.debug(metadata.dict())
-    producer.publish(TopicType.LOG_EVENTS, metadata.dict())
-    return metadata
+    if not isinstance(metadata, dict):
+        metadata = metadata.dict()
+    metadata.pop("event_type", None)
+    return publish(
+        producer,
+        HistorySchema(
+            **metadata,
+            event_type=EventTypes.ENTITIES_EXTRACTED,
+            entities=entities,
+            description="Published entities",
+            updated_at=datetime.utcnow().isoformat(),
+        ),
+    )
 
 
 def log(f: Callable):
@@ -72,7 +77,13 @@ def log(f: Callable):
             if producer is None:
                 return response
 
-            log_processing_success(producer, meta, start_time)
+            publish(
+                producer,
+                meta,
+                status=Status.SUCCESS,
+                event_type=EventType.PROCESSING_DETAILS,
+                start_time=start_time,
+            )
 
             return response
         except Exception as err:
@@ -80,10 +91,12 @@ def log(f: Callable):
             if producer is None:
                 raise err
 
-            log_processing_failure(
+            publish(
                 producer,
                 meta,
-                start_time,
+                status=Status.FAILED,
+                event_type=EventType.PROCESSING_DETAILS,
+                tart_time=start_time,
                 error=str(err),
                 traceback=str(traceback.format_exc()),
             )
