@@ -53,21 +53,12 @@ def copy_files_uploaded_on_event_folder(data):
 
 def save_file_content_validation(metadata, response):
 
-    if "event_data" not in response:
-        logg.info("Parameter `event_data` not found on response from `upload_files`")
+    if "validation" not in response:
+        logg.info("Parameter `validation` not found on response from `upload_files`")
         return
 
-    file_content_validation = []
-    for cv in response["event_data"]:
-        if "message" in cv["validation_response"]:
-            if cv["validation_response"]["message"] == "Monthly quota exceeded":
-                return
-        else:
-            file_content_validation.extend(cv["validation_response"]["validation"])
-
-    filepaths = []
-    for cv in response["event_data"]:
-        filepaths.extend(cv["filepaths"])
+    file_content_validation = response["validation"]
+    filepaths = [cv["filepath"] for cv in response["validation"]]
 
     data = {
         "tenant_id": metadata["tenant_id"],
@@ -79,7 +70,8 @@ def save_file_content_validation(metadata, response):
         "updated_at": datetime.datetime.utcnow().isoformat(),
     }
 
-    data["files_uploaded"] = copy_files_uploaded_on_event_folder(data)
+    # copy_files_uploaded_on_event_folder(data)
+    data["files_uploaded"] = ["disabled for now"]
     data["file_content_validation_updated_at"] = datetime.datetime.utcnow().isoformat()
 
     return mongodata.update(
