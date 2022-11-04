@@ -52,19 +52,6 @@ def copy_files_uploaded_on_event_folder(data):
 
 
 def save_file_content_validation(metadata, response):
-    # {
-    #     "status": "failed",
-    #     "message": "Not all files are valid",
-    #     "validation": [
-    #         {
-    #             "status": "failed",
-    #             "filename": "rv_tools_bad_format.xlsx",
-    #             "filepath": "File not saved",
-    #             "message": "File is not a recognized excel file"
-    #         }
-    #     ],
-    #     "event_id": "ca5041b9-3ba0-4a19-91c3-1fc28b59a728"
-    # }
 
     if "validation" not in response:
         logg.info("Parameter `validation` not found on response from `upload_files`")
