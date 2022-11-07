@@ -35,7 +35,6 @@ jobs:
           logout: false
           password: ${{ secrets.DOCKERHUB_USERNAME }}
           username: ${{ secrets.DOCKERHUB_PASSWORD }}
-      - name: Build and push base image
       - name: Docker metadata
         id: meta
         uses: docker/metadata-action@v4
