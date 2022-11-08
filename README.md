@@ -6,17 +6,18 @@
 [![PyPi Wheel](https://img.shields.io/pypi/wheel/licenseware)](https://pypi.org/project/licenseware)
 [![Package Status](https://img.shields.io/pypi/status/licenseware)](https://pypi.org/project/licenseware)
 [![License](https://img.shields.io/pypi/l/licenseware)](https://github.com/licenseware/licenseware-sdk-v2/blob/main/LICENSE)
+[![CodeClimate Maintainability](https://img.shields.io/codeclimate/maintainability/licenseware/licenseware-sdk-v2)](https://codeclimate.com/github/licenseware/licenseware-sdk-v2)
+[![CodeClimate Issues](https://img.shields.io/codeclimate/issues/licenseware/licenseware-sdk-v2?label=codeclimate%20issues)](https://codeclimate.com/github/licenseware/licenseware-sdk-v2/issues)
+[![CodeClimate Tech Debt](https://img.shields.io/codeclimate/tech-debt/licenseware/licenseware-sdk-v2)](https://codeclimate.com/github/licenseware/licenseware-sdk-v2/trends/technical_debt)
 [![Commit Activity](https://img.shields.io/github/commit-activity/m/licenseware/licenseware-sdk-v2)](https://github.com/licenseware/licenseware-sdk-v2/graphs/commit-activity)
 [![Release Date](https://img.shields.io/github/release-date/licenseware/licenseware-sdk-v2)](https://github.com/licenseware/licenseware-sdk-v2/releases)
 [![Code Size](https://img.shields.io/github/languages/code-size/licenseware/licenseware-sdk-v2)](https://github.com/licenseware/licenseware-sdk-v2)
 [![Repo Size](https://img.shields.io/github/repo-size/licenseware/licenseware-sdk-v2)](https://github.com/licenseware/licenseware-sdk-v2)
-[![GitHub CR](https://ghcr-badge.deta.dev/licenseware/licenseware-sdk-v2/size?tag=latest&label=docker%20image&color=%235F9EA0)](https://github.com/orgs/licenseware/packages/container/package/licenseware-sdk-v2)
+[![GitHub CR](https://img.shields.io/docker/image-size/licenseware/licenseware-sdk-v2/latest?color=%235F9EA0&label=docker%20image)](https://github.com/orgs/licenseware/packages/container/package/licenseware-sdk-v2)
 
-This is the licenseware **Python3** sdk useful for quickly create apps. 
-The SDK handles the repetetive actions needed for creating an app (file uploads/validation, background events, api routes and more). 
+This is the licenseware **Python3** sdk useful for quickly create apps.
+The SDK handles the repetetive actions needed for creating an app (file uploads/validation, background events, api routes and more).
 It helps you focus on processsing the files needed and creating reports.  
-
-
 
 # Contents
 
