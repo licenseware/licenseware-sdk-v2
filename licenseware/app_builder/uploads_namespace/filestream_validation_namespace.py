@@ -6,6 +6,7 @@ We need to separate the resource from the restx namespace, otherwise the resourc
 """
 
 
+import uuid
 from typing import List
 
 from flask import request
@@ -19,6 +20,7 @@ from licenseware.decorators.auth_decorators import authorization_check
 from licenseware.tenants import clear_tenant_data
 from licenseware.uploader_builder import UploaderBuilder
 from licenseware.utils.common import trigger_broker_funcs
+from licenseware.utils.miscellaneous import get_flask_request_dict
 
 
 class FileUploadDetailedValidationSchema(Schema):
@@ -57,13 +59,21 @@ def create_uploader_resource(uploader: UploaderBuilder):
         @authorization_check
         def post(self):
 
+            tenant_id = request.headers.get("Tenantid")
+
             clear_data = request.args.get("clear_data", "false")
             if "true" in clear_data.lower():
-                clear_tenant_data(
-                    request.headers.get("Tenantid"), uploader.collections_list
-                )
+                clear_tenant_data(tenant_id, uploader.collections_list)
 
-            upload_response = uploader.upload_files(request)
+            event_id = request.args.get("event_id") or str(uuid.uuid4())
+
+            upload_response = uploader.upload_files(
+                request,
+                tenant_id,
+                event_id,
+                **get_flask_request_dict(request),
+            )
+
             if uploader.broker_funcs:
                 trigger_broker_funcs(
                     request, uploader.broker_funcs, upload_response=upload_response[0]

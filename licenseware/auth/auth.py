@@ -102,5 +102,6 @@ class Authenticator:
         if response.status_code == 200:
             return response.json(), 200
 
+        log.warning(response.content)
         log.error(f"Could not login with {self.machine_name}")
         exit(1)

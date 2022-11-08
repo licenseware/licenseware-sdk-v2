@@ -36,6 +36,7 @@ It helps you focus on processsing the files needed and creating reports.
 - [`Report` declaration](#report-declaration)
   - [Creating the `Report component`](#creating-the-report-component)
   - [Creating the `Report`](#creating-the-report)
+- [History](#history)
 - [Custom namespaces](#custom-namespaces)
 - [Endpoints from simple functions](#endpoints-from-simple-functions)
 - [The `main` file](#the-main-file)
@@ -1260,6 +1261,97 @@ Reports api will be handled by the `ifmp_app` instance.
 
 
 
+<a name="history"></a>
+# History
+
+History is useful for provinding a live log of the processing step
+
+Recap in the worker function:
+
+```python
+from settings import config
+from licenseware import States, log
+
+from .rv_tools_data_worker import ProcessRVToolsEvent
+
+
+def rv_tools_worker(event: dict):
+
+    log.info("Starting working")
+    log.debug(event)
+
+    notify_upload_status(event, status=states.RUNNING)
+    try:
+        ProcessRVToolsEvent(event).run_processing_pipeline()
+    finally:
+        log.info("Finished working")
+        notify_upload_status(event, status=states.IDLE)
+
+```
+
+Let's see how to apply history on `ProcessRVToolsEvent`:
+
+```python
+from licenseware import history
+from licenseware.constants.worker_event_type import WorkerEvent
+from licenseware.pubsub.types import EventType
+from licenseware.repository import MongoRepository
+from app.dependencies import producer, mongodb_connection
+
+
+class ProcessRVToolsEvent:
+    def __init__(self, event: dict) -> None:
+        self.event = WorkerEvent(**event)
+        self.filepath = None
+        self.filename = None
+        self.producer = producer
+        self.event_type = EventType.PROCESSING_DETAILS
+        self.repo = MongoRepository(
+            mongodb_connection, 
+            collection="SomeCollection", 
+            data_validator="ignore"
+        )
+    
+    @history.log # decorate the function you need to save in history
+    def get_data(self, fp: str):
+        # here we are pushing some entities to stream
+        history.publish_entities(
+            self.producer,
+            self.event,
+            entities=["some-entiry-here"],
+        )
+        return "ok"
+
+    @history.log
+    def save_data(self, data: dict):
+        return self.repo.insert_one(data)
+        
+    # this one is the main function which triggers the processing pipe
+    def run_pipeline(self):
+
+        for fp in self.event.filepaths:
+            # Update the filepath/filename to self so th l
+            self.filepath = fp
+            self.filename = os.path.basename(fp)
+            # Data processing pipeline:
+            data = self.get_data(fp)
+            save_data(data)
+
+
+event = {
+    "tenant_id": str(uuid.uuid4()),
+    "authorization": str(uuid.uuid4()),
+    "uploader_id": "rv_tools",
+    "uploader_name": "RvTOOLS",
+    "event_id": str(uuid.uuid4()),
+    "app_id": "ifmp-service",
+    "app_name": "Infra App",
+    "filepaths": ["tests/test_data/comma.csv"],
+}
+
+```
+
+If you can't use the `history.log` decorator for some reason you can directly call `history.publish` and provide the required information need to publish to kafka.
 
 
 <a name="custom-namespaces"></a>

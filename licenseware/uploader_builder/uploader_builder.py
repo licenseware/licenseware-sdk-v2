@@ -1,3 +1,5 @@
+import os
+from datetime import datetime
 from typing import Callable, Dict, List
 
 from flask import Request
@@ -5,6 +7,7 @@ from flask import Request
 from licenseware import history
 from licenseware.common.constants import envs, states
 from licenseware.common.validators.validate_event import validate_event
+from licenseware.history.schemas import EventTypes, HistoryFilesSchema, HistorySchema
 from licenseware.notifications import notify_upload_status
 from licenseware.quota import Quota
 from licenseware.registry_service.register_uploader import register_uploader
@@ -12,7 +15,6 @@ from licenseware.uploader_encryptor import UploaderEncryptor
 from licenseware.uploader_validator.uploader_validator import UploaderValidator
 from licenseware.utils.dramatiq_redis_broker import broker
 from licenseware.utils.logger import log
-from licenseware.utils.miscellaneous import get_flask_request_dict
 
 
 class UploaderBuilder:
@@ -50,6 +52,8 @@ class UploaderBuilder:
         validator_class: UploaderValidator,
         worker_function: Callable,
         quota_units: int,
+        producer=None,
+        app_name: str = None,
         flags: list = None,
         encryptor_class: UploaderEncryptor = None,
         status: str = states.IDLE,
@@ -79,15 +83,18 @@ class UploaderBuilder:
         self.encryption_parameters = (
             encryptor_class.encryption_parameters if encryptor_class else {}
         )
-
+        self.producer = producer
         self.broker_funcs = broker_funcs
         self.uploader_id = uploader_id
         self.quota_units = quota_units
         self.name = name
+        self.uploader_name = name
         self.description = description
         self.validator_class = validator_class
         self.app_id = envs.APP_ID
+        self.app_name = app_name or envs.APP_NAME
         self.one_event_per_file = one_event_per_file
+        self.event_type = EventTypes.FILE_VALIDATION
 
         if worker_function is None:
             self.worker = None
@@ -135,7 +142,7 @@ class UploaderBuilder:
             raise Exception("Uploader can't register to registry service")
         return response, status_code
 
-    @history.log
+    # @history.log
     def validate_filenames(self, flask_request: Request):
         """Validate file names provided by user"""
 
@@ -197,6 +204,29 @@ class UploaderBuilder:
             }
         ]
 
+        for f in fp["validation"]:
+            history.publish(
+                self.producer,
+                HistorySchema(
+                    app_id=self.app_id,
+                    uploader_id=self.uploader_id,
+                    app_name=self.app_name,
+                    uploader_name=self.uploader_name,
+                    tenant_id=tenant_id,
+                    event_id=event_id,
+                    event_type=self.event_type,
+                    description="Validating files",
+                    updated_at=datetime.utcnow().isoformat(),
+                    status=states.FAILED,
+                    files=[
+                        HistoryFilesSchema(
+                            filename=f["filename"],
+                            filepath=f["filepath"],
+                        )
+                    ],
+                ),
+            )
+
         return {
             "status": fp["status"],
             "message": fp["message"],
@@ -227,26 +257,25 @@ class UploaderBuilder:
             **fp,
         }, 402
 
-    @history.log
-    def upload_files(self, flask_request: Request, event_id: str = None):
+    def upload_files(
+        self, flask_request, tenant_id, event_id, **serialized_flask_request
+    ):
         """Validate file content provided by user and send files for processing if they are valid"""
-
-        tenant_id = flask_request.headers.get("TenantId")
-        serialized_flask_request = get_flask_request_dict(flask_request)
-
-        if envs.DESKTOP_ENVIRONMENT and tenant_id is None:
-            tenant_id = envs.DESKTOP_TENANT_ID
 
         event = {
             "tenant_id": tenant_id,
+            "app_id": self.app_id,
+            "app_name": self.app_name,
+            "uploader_name": self.uploader_name,
             "uploader_id": self.uploader_id,
             "event_id": event_id,
         }
+
         notify_upload_status(event, status=states.RUNNING)
 
-        # Preparing and sending the event to worker for background processing
         fp, status = self.get_filepaths(event, flask_request)
 
+        # Preparing and sending the event to worker for background processing
         if status == 400:
             return self.get_failed_validation_response(
                 fp, tenant_id, event_id, serialized_flask_request
@@ -260,6 +289,9 @@ class UploaderBuilder:
             events = [
                 {
                     "tenant_id": tenant_id,
+                    "app_id": self.app_id,
+                    "app_name": self.app_name,
+                    "uploader_name": self.uploader_name,
                     "uploader_id": self.uploader_id,
                     "event_id": event_id,
                     "filepaths": [filepath],
@@ -273,6 +305,30 @@ class UploaderBuilder:
                 for event in events
                 if validate_event(event, raise_error=False)
             ]
+
+            for filepath in fp["filepaths"]:
+                history.publish(
+                    self.producer,
+                    HistorySchema(
+                        app_id=self.app_id,
+                        uploader_id=self.uploader_id,
+                        app_name=self.app_name,
+                        uploader_name=self.uploader_name,
+                        tenant_id=tenant_id,
+                        event_id=event_id,
+                        event_type=self.event_type,
+                        description="Validating files",
+                        updated_at=datetime.utcnow().isoformat(),
+                        status=states.SUCCESS,
+                        files=[
+                            HistoryFilesSchema(
+                                filename=os.path.basename(filepath),
+                                filepath=filepath,
+                            )
+                        ],
+                    ),
+                )
+
             return {
                 "status": states.SUCCESS,
                 "message": "Event sent",
@@ -298,6 +354,29 @@ class UploaderBuilder:
 
             log.info("Sending event: " + str(event))
             self.worker.send(event)
+
+            for filepath in fp["filepaths"]:
+                history.publish(
+                    self.producer,
+                    HistorySchema(
+                        app_id=self.app_id,
+                        uploader_id=self.uploader_id,
+                        app_name=self.app_name,
+                        uploader_name=self.uploader_name,
+                        tenant_id=tenant_id,
+                        event_id=event_id,
+                        event_type=self.event_type,
+                        description="Validating files",
+                        updated_at=datetime.utcnow().isoformat(),
+                        status=states.SUCCESS,
+                        files=[
+                            HistoryFilesSchema(
+                                filename=os.path.basename(filepath),
+                                filepath=filepath,
+                            )
+                        ],
+                    ),
+                )
 
             return {
                 "status": states.SUCCESS,

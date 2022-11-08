@@ -323,7 +323,7 @@ def fetch(
     db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
 
-    log.info(f"MONGO_QUERY [{db_name}.{collection_name}]: {match}")
+    # log.info(f"MONGO_QUERY [{db_name}.{collection_name}]: {match}")
 
     with Connect.get_connection() as mongo_connection:
         collection: MongoClient = mongo_connection[db_name][collection_name]
@@ -478,7 +478,7 @@ def aggregate(pipeline, collection, as_list=True, db_name=None):
     db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
 
-    log.info(f"MONGO_QUERY [{db_name}.{collection_name}]: {pipeline}")
+    # log.info(f"MONGO_QUERY [{db_name}.{collection_name}]: {pipeline}")
 
     with Connect.get_connection() as mongo_connection:
         collection = mongo_connection[db_name][collection_name]
@@ -565,7 +565,7 @@ def update(schema, match, new_data, collection, append=False, db_name=None):
 
         _filter = {"_id": match["_id"]} if "_id" in match else match
 
-        log.info(f"MONGO_QUERY [{db_name}.{collection_name}]: {_filter}")
+        # log.info(f"MONGO_QUERY [{db_name}.{collection_name}]: {_filter}")
 
         updated_docs_nbr = (
             collection.with_options(write_concern=WriteConcern("majority"))
@@ -597,7 +597,7 @@ def delete(match, collection, db_name=None):
     db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
 
-    log.info(f"MONGO_QUERY [{db_name}.{collection_name}]: {match}")
+    # log.info(f"MONGO_QUERY [{db_name}.{collection_name}]: {match}")
 
     with Connect.get_connection() as mongo_connection:
         collection = mongo_connection[db_name][collection_name]
@@ -626,7 +626,7 @@ def delete_collection(collection, db_name=None):
     db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
 
-    log.info(f"MONGO_QUERY [{db_name}.{collection_name}]")
+    # log.info(f"MONGO_QUERY [{db_name}.{collection_name}]")
 
     with Connect.get_connection() as mongo_connection:
         collection = mongo_connection[db_name][collection_name]
@@ -673,7 +673,7 @@ def insert_many(
     """
     db_name = get_db_name(db_name)
     collection_name = return_collection_name(collection)
-    log.info(f"MONGO_QUERY [{db_name}.{collection_name}]")
+    # log.info(f"MONGO_QUERY [{db_name}.{collection_name}]")
     with Connect.get_connection() as mongo_connection:
         collection = mongo_connection[db_name][collection_name]
         new_data = validate_data(schema, data)
