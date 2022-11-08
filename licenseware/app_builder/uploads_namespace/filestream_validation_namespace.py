@@ -58,17 +58,21 @@ def create_uploader_resource(uploader: UploaderBuilder):
         @authorization_check
         def post(self):
 
+            tenant_id = request.headers.get("Tenantid")
+
             clear_data = request.args.get("clear_data", "false")
             if "true" in clear_data.lower():
-                clear_tenant_data(
-                    request.headers.get("Tenantid"), uploader.collections_list
-                )
+                clear_tenant_data(tenant_id, uploader.collections_list)
+
+            event_id = request.args.get("event_id") or str(uuid.uuid4())
 
             upload_response = uploader.upload_files(
-                flask_request=request,
-                event_id=str(uuid.uuid4()),
-                **get_flask_request_dict(request)
+                request,
+                tenant_id,
+                event_id,
+                **get_flask_request_dict(request),
             )
+
             if uploader.broker_funcs:
                 trigger_broker_funcs(
                     request, uploader.broker_funcs, upload_response=upload_response[0]

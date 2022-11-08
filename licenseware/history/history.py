@@ -70,6 +70,13 @@ def log(f: Callable):
     def wrapper(*args, **kwargs):
         meta = get_metadata(f, args, kwargs)
         producer = get_kafka_producer(f, args, kwargs)
+        if meta is None:
+            logg.error(
+                "can't make history - not all metadata needed could not be loaded"
+            )
+        if producer is None:
+            logg.error("can't make history - kafka producer not provided")
+
         start_time = time.perf_counter()
 
         try:

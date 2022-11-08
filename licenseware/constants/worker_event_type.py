@@ -1,4 +1,4 @@
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass, asdict, fields
 from typing import List
 
 
@@ -11,7 +11,7 @@ class WorkerEvent:
     event_id: str
     app_id: str
     app_name: str
-    filepaths: List[str]
+    filepaths: List[str] = None
     clear_data: bool = False
     event_type: str = "ProcessingDetails"
 
