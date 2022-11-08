@@ -5,7 +5,9 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:  # pragma no cover
     from licenseware.config.config import Config
+
 from pymongo import MongoClient
+
 from licenseware.common.constants.envs import envs
 
 

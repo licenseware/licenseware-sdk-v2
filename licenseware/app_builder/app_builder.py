@@ -28,12 +28,11 @@ from licenseware.app_builder.features_namespace import (
     features_namespace,
     get_features_namespace,
 )
-
 from licenseware.app_builder.features_route import add_features_route
+from licenseware.app_builder.health_route import add_health_route
 from licenseware.app_builder.refresh_registration_route import (
     add_refresh_registration_route,
 )
-from licenseware.app_builder.health_route import add_health_route
 from licenseware.app_builder.report_components_namespace import (
     get_report_individual_components_namespace,
     report_components_namespace,
