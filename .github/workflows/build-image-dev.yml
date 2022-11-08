@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-  schedule:
-    - cron: 0 0 * * *
 
 env:
   IMAGE_REPOSITORY: ${{ github.repository }}
@@ -28,13 +26,26 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-      - name: Build and push base image
+      - name: Login to Dockerhub
+        uses: docker/login-action@v2
+        with:
+          logout: false
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Docker metadata
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}
+      - name: Build and push Docker image
         uses: docker/build-push-action@v3
         with:
-          context: .
-          labels: |
-            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
           push: true
+          context: .
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ github.sha }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:latest
+            ${{ env.IMAGE_REPOSITORY }}:${{ github.sha }}
+            ${{ env.IMAGE_REPOSITORY }}:latest
+          labels: ${{ steps.meta.outputs.labels }}
