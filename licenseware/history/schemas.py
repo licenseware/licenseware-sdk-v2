@@ -1,6 +1,7 @@
 from enum import Enum
-from pydantic import BaseModel
 from typing import List, Union
+
+from pydantic import BaseModel
 
 
 class EventTypes(str, Enum):

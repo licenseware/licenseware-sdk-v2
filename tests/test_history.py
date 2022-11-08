@@ -1,12 +1,11 @@
 import os
-import traceback
 import unittest
 import uuid
 
 from licenseware import history
-from licenseware.history.schemas import EventTypes
 from licenseware.constants.worker_event_type import WorkerEvent
 from licenseware.dependencies import get_kafka_producer
+from licenseware.history.schemas import EventTypes
 from settings import config
 
 # python3 -m unittest tests/test_history.py
