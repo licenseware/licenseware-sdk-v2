@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-      - meysam/feat/docker-meta-action
-  schedule:
-    - cron: 0 0 * * *
 
 env:
   IMAGE_REPOSITORY: ${{ github.repository }}
@@ -48,5 +45,7 @@ jobs:
           context: .
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:latest
             ${{ env.IMAGE_REPOSITORY }}:${{ github.sha }}
+            ${{ env.IMAGE_REPOSITORY }}:latest
           labels: ${{ steps.meta.outputs.labels }}
