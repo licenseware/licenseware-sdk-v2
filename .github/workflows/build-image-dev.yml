@@ -33,8 +33,8 @@ jobs:
         uses: docker/login-action@v2
         with:
           logout: false
-          password: ${{ secrets.DOCKERHUB_USERNAME }}
-          username: ${{ secrets.DOCKERHUB_PASSWORD }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Docker metadata
         id: meta
         uses: docker/metadata-action@v4
