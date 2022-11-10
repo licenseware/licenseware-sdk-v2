@@ -3,9 +3,11 @@ import traceback
 
 import requests
 
+from flask import Request
 from licenseware.auth import Authenticator
 from licenseware.utils.logger import log
 from licenseware.utils.tokens import get_public_token_data
+from licenseware.utils.miscellaneous import get_flask_request_dict
 
 REGISTRY_SERVICE_URL = os.getenv("REGISTRY_SERVICE_URL")
 
@@ -14,7 +16,12 @@ class ExternalDataService:
     @staticmethod
     def _get_headers(_request):
 
-        public_token = _request.args.get("public_token")
+        if isinstance(_request, Request):
+            public_token = _request.args.get("public_token", None)
+        elif isinstance(_request, dict):
+            public_token = _request.get("public_token", None)
+        else:
+            public_token = None
 
         if public_token is not None:
             # Saving some `trips` to auth
