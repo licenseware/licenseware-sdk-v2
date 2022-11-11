@@ -15,11 +15,14 @@ from licenseware.utils.tokens import get_public_token_data
 
 class ExternalDataService:
     def __init__(self, envs=envs):
+        self.envs = self.validate_envs(envs)
+        self.service_urls = self.map_service_urls()
+
+    def validate_envs(self, envs):
         assert (
             is_dataclass(envs) == True
         ), "Please init with env vars in a dataclass, see licenseware.common.constants.envs"
-        self.envs = envs
-        self.service_urls = self.map_service_urls()
+        return envs
 
     def map_service_urls(self) -> dict:
         """
@@ -36,8 +39,13 @@ class ExternalDataService:
             if any(excluded in env_var for excluded in ["auth", "registry"]):
                 continue
             if "service_url" in env_var:
-                app_id = env_var.replace("_service_url", "-service")
-                url_map[app_id] = getattr(self.envs, field.name)
+                url_map.update(
+                    {
+                        env_var.replace("_service_url", "-service"): getattr(
+                            self.envs, field.name
+                        )
+                    }
+                )
         return url_map
 
     def deserialize_request(self, flask_request: Union[Request, dict]) -> dict:
@@ -70,8 +78,13 @@ class ExternalDataService:
         return headers
 
     def get_component_url(self, app_id: str, component_id: str) -> str:
-        url = f"{self.service_urls[app_id]}/report-components/{component_id}"
-        return url
+        try:
+            return f"{self.service_urls[app_id]}/report-components/{component_id}"
+        except KeyError:
+            log.error(
+                f"Couldn't create external component url from: {self.service_urls}"
+            )
+            return None
 
     def get_data(
         self, _request, app_id: str, component_id: str, filter_payload: dict = None
@@ -97,7 +110,7 @@ class ExternalDataService:
                 return data.json()
             else:
                 log.warning(f"Could not retrieve data for {component_id} from {app_id}")
-                log.warning(f"GET {service_url} {data.status_code}")
+                log.warning(f"GET [{data.status_code}] {service_url} ")
                 return []
         except Exception:
             log.error(traceback.format_exc())
@@ -107,6 +120,5 @@ class ExternalDataService:
         try:
             return f"{self.service_urls[app_id]}/uploads/{uploader_id}/files"
         except KeyError:
-            log.info(f"Couldn't create external upload url from: {self.service_urls}")
-
+            log.error(f"Couldn't create external upload url from: {self.service_urls}")
             return None
