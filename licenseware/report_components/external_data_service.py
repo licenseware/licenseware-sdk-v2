@@ -1,94 +1,88 @@
 import os
 import traceback
+from dataclasses import fields, is_dataclass
+from typing import Union
 
 import requests
+from flask import Request
 
 from licenseware.auth import Authenticator
+from licenseware.common.constants import envs
 from licenseware.utils.logger import log
+from licenseware.utils.miscellaneous import get_flask_request_dict
 from licenseware.utils.tokens import get_public_token_data
-
-REGISTRY_SERVICE_URL = os.getenv("REGISTRY_SERVICE_URL")
 
 
 class ExternalDataService:
-    @staticmethod
-    def _get_headers(_request):
+    def __init__(self, envs=envs):
+        assert (
+            is_dataclass(envs) == True
+        ), "Please init with env vars in a dataclass, see licenseware.common.constants.envs"
+        self.envs = envs
+        self.service_urls = self.map_service_urls()
 
-        public_token = _request.args.get("public_token")
+    def map_service_urls(self) -> dict:
+        """
+        Find service urls in env vars and create a map by app_id, ignores auth and registry service.
+        Output looks like:
+        {
+            "ifmp-service": "http://host/ifmp-service"
+        }
 
-        if public_token is not None:
+        """
+        url_map = {}
+        for field in fields(self.envs):
+            env_var = field.name.lower()
+            if any(excluded in env_var for excluded in ["auth", "registry"]):
+                continue
+            if "service_url" in env_var:
+                app_id = env_var.replace("_service_url", "-service")
+                url_map[app_id] = getattr(self.envs, field.name)
+        return url_map
+
+    def deserialize_request(self, flask_request: Union[Request, dict]) -> dict:
+        if isinstance(flask_request, dict):
+            return flask_request
+        if isinstance(flask_request, Request):
+            return get_flask_request_dict(flask_request)
+        return dict()
+
+    def _get_headers(self, _request: Union[Request, dict]) -> dict:
+
+        deserialized_request = self.deserialize_request(_request)
+        public_token = deserialized_request.get("public_token", None)
+        if public_token:
             # Saving some `trips` to auth
             Authenticator.connect()
 
             data = get_public_token_data(public_token)
-
             headers = {
                 "TenantId": data["tenant_id"],
                 "Authorization": os.getenv("AUTH_TOKEN"),
             }
-
-        else:
-            headers = {
-                "TenantId": _request.headers.get("TenantId"),
-                "Authorization": _request.headers.get("Authorization"),
-            }
-
+            return headers
+        headers = {
+            "TenantId": deserialized_request.get(
+                "TenantId", deserialized_request.get("Tenantid")
+            ),
+            "Authorization": deserialized_request.get("Authorization"),
+        }
         return headers
 
-    @staticmethod
-    def _get_registry_service_data(headers: dict, endpoint: str) -> list:
-        """
-        If the tenant check fails, it tries the machine check.
+    def get_component_url(self, app_id: str, component_id: str) -> str:
+        url = f"{self.service_urls[app_id]}/report-components/{component_id}"
+        return url
 
-        Machine check is handled by the caller, passing env token.
-        """
-        try:
-            # Try both tenant check and if that fails try machine check
-            reg_data = requests.get(
-                url=f"{REGISTRY_SERVICE_URL}/{endpoint}", headers=headers
-            )
-            if reg_data.status_code != 200:
-                log.info(
-                    "Couldn't get registry service data with tenant auth, fallback to machine auth"
-                )
-                reg_data = requests.get(
-                    url=f"{REGISTRY_SERVICE_URL}/v1/{endpoint}",
-                    headers={"Authorization": headers["Authorization"]},
-                )
-                return reg_data.json()
-            return reg_data.json()
-        except Exception:
-            log.error(traceback.format_exc())
-            return [{"data": []}]
-
-    @staticmethod
-    def _get_component_url(components: dict, app_id: str, component_id: str) -> str:
-        try:
-            return [
-                d["url"]
-                for d in components["data"]
-                if d["app_id"] == app_id and d["component_id"] == component_id
-            ][0]
-        except IndexError:
-            log.error(traceback.format_exc())
-            return False
-
-    @staticmethod
     def get_data(
-        _request, app_id: str, component_id: str, filter_payload: dict = None
+        self, _request, app_id: str, component_id: str, filter_payload: dict = None
     ) -> list:
         try:
 
-            headers = ExternalDataService._get_headers(_request)
+            headers = self._get_headers(_request)
+            service_url = self.get_component_url(
+                app_id=app_id, component_id=component_id
+            )
 
-            registry_service_components = (
-                ExternalDataService._get_registry_service_data(headers, "components")
-            )
-            service_url = ExternalDataService._get_component_url(
-                components=registry_service_components,
-                app_id=app_id,
-                component_id=component_id,
-            )
             if not service_url:
                 return []
 
@@ -109,33 +103,10 @@ class ExternalDataService:
             log.error(traceback.format_exc())
             return False
 
-    @staticmethod
-    def _get_uploader_url(uploaders: dict, app_id: str, uploader_id: str) -> str:
+    def get_upload_url(self, app_id: str, uploader_id: str) -> str:
         try:
-            return [
-                d["upload_url"]
-                for d in uploaders["data"]
-                if d["app_id"] == app_id and d["uploader_id"] == uploader_id
-            ][0]
-        except IndexError:
-            log.error(traceback.format_exc())
-            return False
+            return f"{self.service_urls[app_id]}/uploads/{uploader_id}/files"
+        except KeyError:
+            log.info(f"Couldn't create external upload url from: {self.service_urls}")
 
-    @staticmethod
-    def get_upload_url(_request: dict, app_id: str, uploader_id: str) -> str:
-        headers = {
-            "TenantId": _request.get("Tenantid"),
-            "Authorization": _request.get("Authorization"),
-        }
-        registry_service_uploaders = ExternalDataService._get_registry_service_data(
-            headers, "uploaders"
-        )
-
-        upload_url = ExternalDataService._get_uploader_url(
-            uploaders=registry_service_uploaders, app_id=app_id, uploader_id=uploader_id
-        )
-
-        if not upload_url:
             return None
-
-        return upload_url
