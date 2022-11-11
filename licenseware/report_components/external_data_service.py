@@ -14,6 +14,32 @@ from licenseware.utils.tokens import get_public_token_data
 
 
 class ExternalDataService:
+    """
+    Dependencies:
+      - service urls defined in the env vars
+      - app service urls loaded from env vars, naming convention APP_SERVICE_URL -> i.e IFMP_SERVICE_URL, MDM_SERVICE_URL
+      - local application envs created in app/config.py, see mdm-service/app/config.py
+    Usage:
+      - Pulling data from external components
+       ```py
+        from app.config import envs
+        external_data = ExternalDataService(envs=envs).get_data(
+            _request=flask_request,
+            app_id="ifmp-service",
+            component_id="devices_by_type",
+            filter_payload=[filter_payload]
+        )
+       ```
+      - Creating the upload url for external uploader
+       ```py
+        from app.config import envs
+        upload_url = ExternalDataService(envs=envs).get_upload_url(
+            app_id="ifmp-service",
+            uploader_id="cpuq"
+        )
+       ```
+    """
+
     def __init__(self, envs=envs):
         self.envs = self.validate_envs(envs)
         self.service_urls = self.map_service_urls()
