@@ -74,7 +74,11 @@ from licenseware.registry_service import register_all
 from licenseware.report_builder.report_builder import ReportBuilder
 from licenseware.report_components.base_report_component import BaseReportComponent
 from licenseware.schema_namespace import SchemaNamespace
-from licenseware.tenants import get_activated_tenants, get_tenants_with_data
+from licenseware.tenants import (
+    get_activated_tenants,
+    get_tenants_with_data,
+    get_tenants_with_public_reports,
+)
 from licenseware.uploader_builder.uploader_builder import UploaderBuilder
 from licenseware.utils.dramatiq_redis_broker import broker
 from licenseware.utils.logger import log
@@ -392,6 +396,7 @@ class AppBuilder:
         app_dict["features"] = [f.get_details() for f in self.features]
         app_dict["tenants_with_app_activated"] = get_activated_tenants()
         app_dict["tenants_with_data_available"] = get_tenants_with_data()
+        app_dict["tenants_with_public_reports"] = get_tenants_with_public_reports()
 
         return app_dict
 
