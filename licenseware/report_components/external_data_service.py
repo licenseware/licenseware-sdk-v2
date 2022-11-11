@@ -1,13 +1,12 @@
 import os
 import traceback
-from dataclasses import fields, is_dataclass
+from dataclasses import dataclass, fields, is_dataclass
 from typing import Union
 
 import requests
 from flask import Request
 
 from licenseware.auth import Authenticator
-from licenseware.common.constants import envs
 from licenseware.utils.logger import log
 from licenseware.utils.miscellaneous import get_flask_request_dict
 from licenseware.utils.tokens import get_public_token_data
@@ -22,8 +21,8 @@ class ExternalDataService:
     Usage:
       - Pulling data from external components
        ```py
-        from app.config import envs
-        external_data = ExternalDataService(envs=envs).get_data(
+        from app.config import envs as app_envs
+        external_data = ExternalDataService(app_envs=app_envs).get_data(
             _request=flask_request,
             app_id="ifmp-service",
             component_id="devices_by_type",
@@ -32,19 +31,19 @@ class ExternalDataService:
        ```
       - Creating the upload url for external uploader
        ```py
-        from app.config import envs
-        upload_url = ExternalDataService(envs=envs).get_upload_url(
+        from app.config import envs as app_envs
+        upload_url = ExternalDataService(app_envs=app_envs).get_upload_url(
             app_id="ifmp-service",
             uploader_id="cpuq"
         )
        ```
     """
 
-    def __init__(self, envs=envs):
-        self.envs = self.validate_envs(envs)
+    def __init__(self, app_envs: dataclass):
+        self.envs = self.validate_envs(app_envs)
         self.service_urls = self.map_service_urls()
 
-    def validate_envs(self, envs):
+    def validate_envs(self, envs: dataclass):
         assert (
             is_dataclass(envs) == True
         ), "Please init with env vars in a dataclass, see licenseware.common.constants.envs"
