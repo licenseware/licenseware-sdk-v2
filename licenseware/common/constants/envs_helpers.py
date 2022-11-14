@@ -68,3 +68,10 @@ def get_upload_path_on_desktop():
             return upload_path
 
     return default_upload_path
+
+
+def get_env_var(var: str):
+    try:
+        return os.environ[var]
+    except KeyError:
+        raise Exception(f"Could not load environment variable: {var}")
