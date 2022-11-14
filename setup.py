@@ -33,6 +33,9 @@ EXTRAS = {
     "watchdog": [
         "dramatiq[watch]",
     ],
+    "prometheus": [
+        "prometheus-flask-exporter~=0.20.3",
+    ],
 }
 
 setup(
