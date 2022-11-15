@@ -1,5 +1,5 @@
-from licenseware.dependencies import BaseSettings
 from licenseware.common.constants.base_enum import BaseEnum
+from licenseware.dependencies import BaseSettings
 
 
 class Collections(BaseEnum):
