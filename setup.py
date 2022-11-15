@@ -16,9 +16,6 @@ EXTRAS = {
     "honcho": [
         "honcho==1.0.1",
     ],
-    "mongita": [
-        "mongita==1.1.1",
-    ],
     "opentelemetry": [
         "opentelemetry-distro==0.26b1",
         "opentelemetry-instrumentation==0.26b1",
