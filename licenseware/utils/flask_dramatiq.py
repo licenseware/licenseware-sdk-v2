@@ -164,7 +164,9 @@ class Dramatiq:
         self.actors = []
 
         # Removing prometheus middleware
-        default_middleware.pop(0)
+        if not envs.PROMETHEUS_ENABLED:
+            default_middleware.pop(0)
+
         if middleware is None:
             middleware = [m() for m in default_middleware]
         self.middleware = middleware

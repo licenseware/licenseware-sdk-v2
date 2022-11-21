@@ -187,6 +187,15 @@ class AppBuilder:
 
     def init_app(self, app: Flask, register: bool = False):
 
+        if envs.PROMETHEUS_ENABLED:
+            from prometheus_flask_exporter import PrometheusMetrics
+
+            metrics = PrometheusMetrics(app)
+
+            @app.route(envs.METRICS_URI)
+            def metrics():
+                return metrics()
+
         # This hides flask_restx `X-fields` from swagger headers
         app.config["RESTX_MASK_SWAGGER"] = False
         app.before_request(xss_before_request)
