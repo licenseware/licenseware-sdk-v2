@@ -188,7 +188,7 @@ class AppBuilder:
 
             metrics = PrometheusMetrics(app)
 
-            @app.route("/metrics")
+            @app.route(envs.METRICS_URI)
             def metrics():
                 return metrics()
 

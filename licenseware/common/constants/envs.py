@@ -146,6 +146,7 @@ class envs:
     DEAD_MESSAGE_TTL: int = int(os.getenv("DEAD_MESSAGE_TTL", "3600"))
 
     PROMETHEUS_ENABLED: bool = os.getenv("PROMETHEUS_ENABLED", "").lower() == "true"
+    METRICS_URI: str = os.getenv("METRICS_URI", "/metrics")
 
     # Environment variables added later by the app
     # envs.method_name() - calls the variable dynamically
