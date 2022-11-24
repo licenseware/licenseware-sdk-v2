@@ -6,12 +6,12 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:  # pragma no cover
     from licenseware.config.config import Config
 
-from confluent_kafka import Producer as KafkaProducer
-
 from licenseware.pubsub.producer import Producer
 
 
 def get_kafka_producer(config: Config):
+    from confluent_kafka import Producer as KafkaProducer
+
     producer_client_factory = lambda cfg: KafkaProducer(
         {
             "bootstrap.servers": cfg.KAFKA_BROKER_URL,
