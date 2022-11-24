@@ -148,6 +148,8 @@ class envs:
     PROMETHEUS_ENABLED: bool = os.getenv("PROMETHEUS_ENABLED", "").lower() == "true"
     METRICS_URI: str = os.getenv("METRICS_URI", "/metrics")
 
+    TESTING: bool = os.getenv("TESTING", "").lower() == "true"
+
     # Environment variables added later by the app
     # envs.method_name() - calls the variable dynamically
     # you can access class vars with cls.attr_name ex: cls.MONGO_COLLECTION_DATA_NAME

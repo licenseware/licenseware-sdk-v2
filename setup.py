@@ -35,6 +35,8 @@ EXTRAS = {
     ],
 }
 
+EXTRAS["all"] = list(set(sum(EXTRAS.values(), [])))
+
 setup(
     name="licenseware",
     version=VERSION,

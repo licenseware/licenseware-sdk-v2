@@ -225,11 +225,13 @@ class AppBuilder:
         if not self.reports:
             log.warning("No reports provided")
 
-        self.authenticate_app()
+        if not envs.TESTING:
+            self.authenticate_app()
         self.init_api()
         self.init_routes()
         self.init_namespaces()
-        self.init_broker()
+        if not envs.TESTING:
+            self.init_broker()
         if register:
             self.register_app()
 
