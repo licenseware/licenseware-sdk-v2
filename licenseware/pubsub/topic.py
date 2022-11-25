@@ -1,6 +1,15 @@
 from typing import List, Union
 
-from confluent_kafka.admin import AdminClient, NewTopic
+try:
+    from confluent_kafka.admin import AdminClient, NewTopic
+except:
+
+    class AdminClient:
+        pass
+
+    class NewTopic:
+        pass
+
 
 from .types import TopicType
 
