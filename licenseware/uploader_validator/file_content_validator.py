@@ -41,7 +41,15 @@ class FileContentValidator:
 
         bad_request = {
             "status": states.FAILED,
-            "message": "File list is empty or files are not on 'files[]' key",
+            "message": "Files list is empty or files are not on 'files[]' key",
+            "validation": [
+                {
+                    "status": states.FAILED,
+                    "filename": "No valid files",
+                    "filepath": "Files not saved",
+                    "message": "Files list is empty or files are not on 'files[]' key",
+                }
+            ],
         }, 400
 
         if not isinstance(file_objects, list):
