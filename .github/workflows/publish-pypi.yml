@@ -13,7 +13,7 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           cache: pip
-          python-version: "3.8.5"
+          python-version: "3.8"
       - name: Prepare
         run: pip install wheel && python setup.py sdist bdist_wheel
         env:
