@@ -211,10 +211,14 @@ class AppBuilder:
                 "Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS"
             )
             response.headers.set("Access-Control-Allow-Credentials", "true")
-
-            # https://flask.palletsprojects.com/en/2.1.x/security/#security-csp
+            # FORCE HTTPS
+            response.headers[
+                "Strict-Transport-Security"
+            ] = "max-age=31536000; includeSubDomains"
             # XSS
+            response.headers["X-XSS-Protection"] = "1; mode=block"
             response.headers["X-Content-Type-Options"] = "nosniff"
+            response.headers["X-Frame-Options"] = "SAMEORIGIN"
 
             return response
 
