@@ -21,3 +21,4 @@ sendgrid==6.9.1
 typer==0.4.1
 uWSGI==2.0.19.1
 werkzeug==2.0.3
+numpy>=1.22.2 # not directly required, pinned by Snyk to avoid a vulnerability
