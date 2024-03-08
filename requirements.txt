@@ -2,7 +2,7 @@ Babel==2.9.1
 cachetools==5.0.0
 dnspython==2.2.1
 dramatiq==1.11.0
-Flask==2.0.3
+Flask==2.2.5
 Flask-Cors==3.0.10
 flask-restx==0.5.1
 loguru==0.6.0
@@ -11,13 +11,13 @@ marshmallow-jsonschema==0.11.1
 openpyxl==3.0.7
 pandas==1.2.4
 pdoc3==0.10.0
-pycryptodome==3.14.1
+pycryptodome==3.19.1
 PyJWT==2.4.0
 pymongo==3.12.0
 python-dotenv==0.19.0
 redis==3.5.3
-requests==2.28.1
+requests==2.31.0
 sendgrid==6.9.1
 typer==0.4.1
 uWSGI==2.0.19.1
-werkzeug==2.0.3
+werkzeug==2.3.8
