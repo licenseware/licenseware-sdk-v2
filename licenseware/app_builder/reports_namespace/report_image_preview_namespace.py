@@ -45,8 +45,7 @@ def get_report_image_preview_namespace(ns: Namespace, reports: List[ReportBuilde
                 500: "Could not return the image",
             },
         )
-        class TempReportResource(RR):
-            ...
+        class TempReportResource(RR): ...
 
         ReportResource = type(
             report.report_id.replace("_", "").capitalize() + "previewImage",

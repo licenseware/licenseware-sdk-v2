@@ -6,7 +6,6 @@ from Crypto.Cipher import AES
 
 
 class AESCipher:
-
     """
     Usage:
     ```py

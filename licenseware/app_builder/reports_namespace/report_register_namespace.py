@@ -29,8 +29,7 @@ def get_report_register_namespace(ns: Namespace, reports: List[ReportBuilder]):
                 500: "Could not register report",
             },
         )
-        class TempReportResource(RR):
-            ...
+        class TempReportResource(RR): ...
 
         ReportResource = type(
             report.report_id.replace("_", "").capitalize() + "register",

@@ -10,7 +10,6 @@ from licenseware.utils.aes import AESCipher
 
 
 class UploaderEncryptor:
-
     """
 
     This class will use AES encryption algorithm to encrypt files given.
@@ -186,8 +185,8 @@ class UploaderEncryptor:
 
         self.store = {}
 
-        encdecfunc = (
-            lambda fp: self.encrypt_filepath(fp)
+        encdecfunc = lambda fp: (
+            self.encrypt_filepath(fp)
             if enctype == "encrypt"
             else self.decrypt_filepath(fp)
         )
@@ -280,9 +279,9 @@ class UploaderEncryptor:
                     decryption_dict[val] = self.decrypt(val)
 
                 df[col] = df[col].apply(
-                    lambda cell: decryption_dict[cell]
-                    if cell in decryption_dict
-                    else cell
+                    lambda cell: (
+                        decryption_dict[cell] if cell in decryption_dict else cell
+                    )
                 )
 
             decrypted_dfs[sheet_name] = df
@@ -333,9 +332,9 @@ class UploaderEncryptor:
                     encryption_dict[val] = self.encrypt(val)
 
                 df[col] = df[col].apply(
-                    lambda cell: encryption_dict[cell]
-                    if cell in encryption_dict
-                    else cell
+                    lambda cell: (
+                        encryption_dict[cell] if cell in encryption_dict else cell
+                    )
                 )
 
             encrypted_dfs[sheet_name] = df

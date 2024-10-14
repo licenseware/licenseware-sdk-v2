@@ -46,7 +46,6 @@ No more duplicate schemas! :)
 
 """
 
-
 from typing import Callable, Union
 
 import flask_restx as restx
@@ -232,20 +231,20 @@ def get_marshmallow_metadata(schema: Callable):
         if field_data["nested"] is None:
 
             if isinstance(field_data["raw"], ma.fields.Nested):
-                marshmallow_metadata[schema.__name__][field_name][
-                    "nested"
-                ] = get_marshmallow_metadata(field_data["raw"].nested)
+                marshmallow_metadata[schema.__name__][field_name]["nested"] = (
+                    get_marshmallow_metadata(field_data["raw"].nested)
+                )
 
             if isinstance(field_data["raw"], ma.fields.List):
                 if hasattr(field_data["raw"].inner, "nested"):
-                    marshmallow_metadata[schema.__name__][field_name][
-                        "nested"
-                    ] = get_marshmallow_metadata(field_data["raw"].inner.nested)
+                    marshmallow_metadata[schema.__name__][field_name]["nested"] = (
+                        get_marshmallow_metadata(field_data["raw"].inner.nested)
+                    )
                 else:
                     # ex: ma.fields.List(ma.fields.String)
-                    marshmallow_metadata[schema.__name__][field_name][
-                        "inner"
-                    ] = get_field_data(field_data["raw"].inner)
+                    marshmallow_metadata[schema.__name__][field_name]["inner"] = (
+                        get_field_data(field_data["raw"].inner)
+                    )
 
     return marshmallow_metadata
 

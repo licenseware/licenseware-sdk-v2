@@ -17,5 +17,4 @@ All default routes should be created in this package
 
 """
 
-
 from .app_builder import AppBuilder

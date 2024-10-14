@@ -5,7 +5,6 @@ We need to separate the resource from the restx namespace, otherwise the resourc
 
 """
 
-
 from typing import List
 
 from flask import request
@@ -116,8 +115,7 @@ def get_filestream_validation_namespace(
         @ns.response(
             code=200, description="Upload response", model=file_validation_resp_model
         )
-        class TempUploaderResource(UR):
-            ...
+        class TempUploaderResource(UR): ...
 
         # Adding extra swagger query parameters if provided
         if uploader.query_params_on_upload:

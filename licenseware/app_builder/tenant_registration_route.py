@@ -4,7 +4,6 @@ When this endpoint is called info about Tenant `App` activation and utilization 
 
 """
 
-
 from flask import request
 from flask_restx import Api, Resource
 

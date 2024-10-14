@@ -7,18 +7,17 @@ class RepositoryInterface(metaclass=ABCMeta):  # pragma no cover
     # RAW
 
     @abstractmethod
-    def execute_query(self, query: List[dict], collection: str = None) -> List[dict]:
-        ...
+    def execute_query(
+        self, query: List[dict], collection: str = None
+    ) -> List[dict]: ...
 
     # finding data
 
     @abstractmethod
-    def find_one(self, filters: dict, collection: str = None) -> dict:
-        ...
+    def find_one(self, filters: dict, collection: str = None) -> dict: ...
 
     @abstractmethod
-    def find_by_id(self, id: str, collection: str = None) -> dict:
-        ...
+    def find_by_id(self, id: str, collection: str = None) -> dict: ...
 
     @abstractmethod
     def find_many(
@@ -28,8 +27,7 @@ class RepositoryInterface(metaclass=ABCMeta):  # pragma no cover
         skip: int = 0,
         sort: List[Tuple[str, int]] = None,
         collection: str = None,
-    ) -> List[dict]:
-        ...
+    ) -> List[dict]: ...
 
     @abstractmethod
     def distinct(
@@ -37,16 +35,14 @@ class RepositoryInterface(metaclass=ABCMeta):  # pragma no cover
         field: str,
         filters: dict = None,
         collection: str = None,
-    ) -> List[str]:
-        ...
+    ) -> List[str]: ...
 
     @abstractmethod
     def count(
         self,
         filters: dict = None,
         collection: str = None,
-    ) -> int:
-        ...
+    ) -> int: ...
 
     # Inserting new data
 
@@ -56,8 +52,7 @@ class RepositoryInterface(metaclass=ABCMeta):  # pragma no cover
         data: dict,
         data_validator: Callable = None,
         collection: str = None,
-    ) -> dict:
-        ...
+    ) -> dict: ...
 
     @abstractmethod
     def insert_with_id(
@@ -67,8 +62,7 @@ class RepositoryInterface(metaclass=ABCMeta):  # pragma no cover
         overwrite: bool = False,
         data_validator: Callable = None,
         collection: str = None,
-    ) -> dict:
-        ...
+    ) -> dict: ...
 
     @abstractmethod
     def insert_many(
@@ -77,8 +71,7 @@ class RepositoryInterface(metaclass=ABCMeta):  # pragma no cover
         overwrite: bool = False,
         data_validator: Callable = None,
         collection: str = None,
-    ) -> List[dict]:
-        ...
+    ) -> List[dict]: ...
 
     # Updating existing data
 
@@ -92,8 +85,7 @@ class RepositoryInterface(metaclass=ABCMeta):  # pragma no cover
         array_filters: List[dict] = None,
         data_validator: Callable = None,
         collection: str = None,
-    ) -> dict:
-        ...
+    ) -> dict: ...
 
     @abstractmethod
     def update_on_id(
@@ -105,8 +97,7 @@ class RepositoryInterface(metaclass=ABCMeta):  # pragma no cover
         array_filters: List[dict] = None,
         data_validator: Callable = None,
         collection: str = None,
-    ) -> dict:
-        ...
+    ) -> dict: ...
 
     @abstractmethod
     def update_many(
@@ -118,8 +109,7 @@ class RepositoryInterface(metaclass=ABCMeta):  # pragma no cover
         array_filters: List[dict] = None,
         data_validator: Callable = None,
         collection: str = None,
-    ) -> int:
-        ...
+    ) -> int: ...
 
     @abstractmethod
     def replace_one(
@@ -129,8 +119,7 @@ class RepositoryInterface(metaclass=ABCMeta):  # pragma no cover
         upsert: bool = True,
         data_validator: Callable = None,
         collection: str = None,
-    ) -> dict:
-        ...
+    ) -> dict: ...
 
     @abstractmethod
     def replace_on_id(
@@ -140,8 +129,7 @@ class RepositoryInterface(metaclass=ABCMeta):  # pragma no cover
         upsert: bool = True,
         data_validator: Callable = None,
         collection: str = None,
-    ) -> dict:
-        ...
+    ) -> dict: ...
 
     @abstractmethod
     def replace_many(
@@ -151,19 +139,15 @@ class RepositoryInterface(metaclass=ABCMeta):  # pragma no cover
         upsert: bool = True,
         data_validator: Callable = None,
         collection: str = None,
-    ) -> int:
-        ...
+    ) -> int: ...
 
     # Deleting existing data
 
     @abstractmethod
-    def delete_one(self, filters: dict, collection: str = None) -> int:
-        ...
+    def delete_one(self, filters: dict, collection: str = None) -> int: ...
 
     @abstractmethod
-    def delete_on_id(self, id: str, collection: str = None) -> int:
-        ...
+    def delete_on_id(self, id: str, collection: str = None) -> int: ...
 
     @abstractmethod
-    def delete_many(self, filters: dict, collection: str = None) -> int:
-        ...
+    def delete_many(self, filters: dict, collection: str = None) -> int: ...

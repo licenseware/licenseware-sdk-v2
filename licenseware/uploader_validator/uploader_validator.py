@@ -13,7 +13,6 @@ from licenseware.utils.logger import log
 
 
 class UploaderValidator(FileNameValidator, FileContentValidator):
-
     """ """
 
     def __init__(

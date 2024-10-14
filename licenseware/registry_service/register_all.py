@@ -5,8 +5,7 @@ from licenseware.utils.dramatiq_redis_broker import broker
 from licenseware.utils.logger import log
 
 
-class RegistrationFailed(Exception):
-    ...
+class RegistrationFailed(Exception): ...
 
 
 def registration_failed(retries_so_far: int, exception):

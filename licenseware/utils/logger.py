@@ -105,21 +105,25 @@ def _get_payload(json_payload):
 
 if not outside_flask:
     log.configure(
-        patcher=lambda record: record["extra"].update(
-            tenant_id=request.headers.get("Tenantid"),
-            host=request.headers.get("Host"),
-            user_agent=request.headers.get("User-Agent"),
-            accept=request.headers.get("Accept"),
-            content_type=request.headers.get("Content-Type"),
-            request_url=request.url,
-            request_method=request.method,
-            json_payload=dict(_get_payload(request.get_json()))
-            if request.get_json()
-            else None,
-            multiform_payload=request.files if request.files else None,
-        )
-        if has_request_context()
-        else None,
+        patcher=lambda record: (
+            record["extra"].update(
+                tenant_id=request.headers.get("Tenantid"),
+                host=request.headers.get("Host"),
+                user_agent=request.headers.get("User-Agent"),
+                accept=request.headers.get("Accept"),
+                content_type=request.headers.get("Content-Type"),
+                request_url=request.url,
+                request_method=request.method,
+                json_payload=(
+                    dict(_get_payload(request.get_json()))
+                    if request.get_json()
+                    else None
+                ),
+                multiform_payload=request.files if request.files else None,
+            )
+            if has_request_context()
+            else None
+        ),
         extra=Placeholder(),
     )
 

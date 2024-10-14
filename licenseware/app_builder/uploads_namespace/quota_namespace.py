@@ -67,8 +67,7 @@ def get_quota_namespace(ns: Namespace, uploaders: List[UploaderBuilder]):
         @ns.response(
             code=200, description="Utilization within monthly quota", model=quota_model
         )
-        class TempUploaderResource(UR):
-            ...
+        class TempUploaderResource(UR): ...
 
         UploaderResource = type(
             uploader.uploader_id.replace("_", "").capitalize() + "quota",

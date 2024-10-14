@@ -31,7 +31,7 @@ def get_flask_request(
     headers: dict = None,
     args: dict = None,
     json: dict = None,
-    files: list = []
+    files: list = [],
     # decorators: List[Callable] = [] #TODO
 ):
     """

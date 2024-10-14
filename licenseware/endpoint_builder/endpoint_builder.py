@@ -67,7 +67,6 @@ from licenseware.utils.miscellaneous import http_methods
 
 
 class EndpointBuilder:
-
     """
     Usage:
 
@@ -133,15 +132,13 @@ class EndpointBuilder:
 
         if self.apidoc:
 
-            class BaseResource(Resource):
-                ...
+            class BaseResource(Resource): ...
 
             BaseResource.__apidoc__ = self.apidoc
         else:
 
             @ns.doc(id=self.doc_id, description=self.doc_description)
-            class BaseResource(Resource):
-                ...
+            class BaseResource(Resource): ...
 
         CResource = type(
             self.handler.__name__ + self.http_method.capitalize(),

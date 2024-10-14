@@ -36,7 +36,6 @@ You can also import individually the function bellow:
 
 """
 
-
 import itertools
 import os
 import re

@@ -5,7 +5,6 @@ from licenseware.common.validators.file_validators import validate_filename
 
 
 class FileNameValidator:
-
     """
     This class is reponsible for validating filenames
     """
