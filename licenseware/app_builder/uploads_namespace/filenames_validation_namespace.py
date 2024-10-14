@@ -8,7 +8,6 @@ Notice also the separation of creating the resource and the given namespace.
 
 """
 
-
 from typing import List
 
 from flask import request
@@ -78,8 +77,7 @@ def get_filenames_validation_namespace(ns: Namespace, uploaders: List[UploaderBu
             description="Filenames validation response",
             model=filenames_resp_model,
         )
-        class TempUploaderResource(UR):
-            ...
+        class TempUploaderResource(UR): ...
 
         # Adding extra swagger query parameters if provided
         if uploader.query_params_on_validation:

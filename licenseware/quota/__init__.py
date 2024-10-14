@@ -18,5 +18,4 @@ res, status_code = q.check_quota(units=1)
 
 """
 
-
 from .quota import Quota

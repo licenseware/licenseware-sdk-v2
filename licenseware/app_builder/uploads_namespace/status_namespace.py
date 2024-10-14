@@ -39,8 +39,7 @@ def get_status_namespace(ns: Namespace, uploaders: List[UploaderBuilder]):
                 500: "Something went wrong while handling the request",
             },
         )
-        class TempUploaderResource(UR):
-            ...
+        class TempUploaderResource(UR): ...
 
         UploaderResource = type(
             uploader.uploader_id.replace("_", "").capitalize() + "status",

@@ -59,7 +59,6 @@ class BaseCreator(metaclass=ABCMeta):
         template_filename: str = None,
         **template_vars
     ):
-
         """
 
         This methods uses the jinja template to generate a new file.

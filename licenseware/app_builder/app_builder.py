@@ -212,9 +212,9 @@ class AppBuilder:
             )
             response.headers.set("Access-Control-Allow-Credentials", "true")
             # FORCE HTTPS
-            response.headers[
-                "Strict-Transport-Security"
-            ] = "max-age=31536000; includeSubDomains"
+            response.headers["Strict-Transport-Security"] = (
+                "max-age=31536000; includeSubDomains"
+            )
             # XSS
             response.headers["X-XSS-Protection"] = "1; mode=block"
             response.headers["X-Content-Type-Options"] = "nosniff"

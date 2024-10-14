@@ -29,10 +29,8 @@ class MongoRepository(RepositoryInterface):
 
     def _setids(self, cursor: Cursor):
 
-        getid = (
-            lambda doc: {"_id": utils.get_object_id_str(doc["_id"])}
-            if "_id" in doc
-            else {}
+        getid = lambda doc: (
+            {"_id": utils.get_object_id_str(doc["_id"])} if "_id" in doc else {}
         )
 
         return [{**doc, **getid(doc)} for doc in cursor]

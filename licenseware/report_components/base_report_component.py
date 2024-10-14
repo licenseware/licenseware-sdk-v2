@@ -228,8 +228,9 @@ class BaseReportComponent:
     def set_style_attributes(self):
         raise NotImplementedError("Please overwrite method `set_style_attributes`")
 
-    def set_allowed_filters(self):
-        ...  # Component filters are optional, Report filters are needed
+    def set_allowed_filters(
+        self,
+    ): ...  # Component filters are optional, Report filters are needed
 
     def get_registration_payload(self):
 

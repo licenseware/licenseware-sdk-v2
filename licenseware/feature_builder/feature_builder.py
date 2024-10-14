@@ -189,7 +189,6 @@ Once the quota is being used another GET request to `/features/feature_path` wil
 
 """
 
-
 from typing import List
 
 from flask import Request

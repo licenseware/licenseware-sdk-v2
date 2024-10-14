@@ -23,7 +23,6 @@ class MongoDataSync(MongoCrud):
 
 
 class DataSyncRoute(SchemaNamespace):
-
     """
     Create a data sync endpoint with machine authorization.
     Receives a schema and a collection name as optional (it will use mongo data collection by default)
@@ -43,8 +42,7 @@ class DataSyncRoute(SchemaNamespace):
 
 
 def get_data_sync_namespace(ns: Namespace, data_sync_schema: Schema):
-    class DataSyncSchema(data_sync_schema):
-        ...
+    class DataSyncSchema(data_sync_schema): ...
 
     collection_name = None
     if hasattr(data_sync_schema, "Meta"):
